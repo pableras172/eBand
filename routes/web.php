@@ -42,3 +42,6 @@ Route::get('/greeting/{locale}', function (string $locale) {
     App::setLocale($locale); 
     return view('dashboard');
 });
+
+Route::resource('instrument',\App\Http\Controllers\InstrumentController::class);
+

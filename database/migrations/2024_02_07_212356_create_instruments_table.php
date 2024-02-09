@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('instruments', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->unique();
+            $table->string('icon', 2048)->nullable();
+            $table->integer('orden');
             $table->timestamps();
         });
     }
