@@ -29,7 +29,7 @@ class InstrumentController extends Controller
      */
     public function create()
     {
-        //
+        return view('instrument.create');
     }
 
     /**
@@ -37,7 +37,16 @@ class InstrumentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $inst = new Instrument();
+        $inst->name=$request->name;
+        $inst->icon=$request->icon;
+        $inst->orden=$request->orden;
+        $inst->save();
+        //Instrument::create($inst);
+
+        $intruments = Instrument::all();
+
+        return view('instrument.index', compact('intruments'));
     }
 
     /**
