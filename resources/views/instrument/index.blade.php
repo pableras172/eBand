@@ -43,7 +43,9 @@
                                         </td>
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
-                                            <img src="{{ $intrument->icon }}" alt="{{ $intrument->name }}" class="rounded-full h-15 w-15 object-cover">
+                                            <div class="mt-2">
+                                                <img src="{{ asset('storage/imagenes/instruments/'.$intrument->icon) }}" alt="{{ $intrument->name }}" class="rounded-full" style="width: 50px; height: 50px;">
+                                            </div>                                                
                                         </td>
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
