@@ -37,10 +37,17 @@ class InstrumentController extends Controller
      */
     public function store(Request $request)
     {
+        $data = request()->validate([
+            'name' => 'required|max:100|unique:instruments,name',
+            'icon' => 'required|image',
+            'orden' => 'required|numeric|unique:instruments,orden'
+
+        ]);
+
        
         $inst = new Instrument();
         $inst->name=$request->name;
-        $inst->icon=$request->icon;
+        $inst->icon=$this->saveFile($request);
         $inst->orden=$request->orden;
         $inst->save();
         //Instrument::create($inst);
@@ -70,32 +77,9 @@ class InstrumentController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Instrument $instrument)
-    {
-        
-        //dd($request->file('icon'));
-
-
-        //$icon = $request->file('icon');
-
-        // Guarda el archivo en la carpeta de almacenamiento de Laravel (por ejemplo, en public/storage)
-        //$iconPath = $icon->store('public/imagenes/instruments');
-
-         //get the image from the form
-         $fileNameWithTheExtension = $request->file('icon')->getClientOriginalName();
-
-
-         //get the name of the file
-         $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME); 
-         //get extension of the file
-         $extension = $request->file('icon')->getClientOriginalExtension(); 
-         //create a new name for the file using the timestamp
-         $newFileName = $fileName . '_' . time() . '.' . $extension; 
-         //save the iamge onto a public directory into a separately folder
-         $path = $request->file('icon')->storeAs('public/imagenes/instruments', $newFileName);
-        
-        
+    {  
         //dd($iconPath);
-        $instrument->icon = $newFileName;
+        $instrument->icon = $this->saveFile($request);
         //dd($iconPath);
         $instrument->update();
 
@@ -108,5 +92,20 @@ class InstrumentController extends Controller
     public function destroy(Instrument $instrument)
     {
         //
+    }
+
+    private function saveFile(Request $request){
+
+        $fileNameWithTheExtension = $request->file('icon')->getClientOriginalName();
+        //get the name of the file
+        $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME); 
+        //get extension of the file
+        $extension = $request->file('icon')->getClientOriginalExtension(); 
+        //create a new name for the file using the timestamp
+        $newFileName = $fileName . '_' . time() . '.' . $extension; 
+        //save the iamge onto a public directory into a separately folder
+        $path = $request->file('icon')->storeAs('imagenes/instruments', $newFileName);
+        return $newFileName;
+
     }
 }
