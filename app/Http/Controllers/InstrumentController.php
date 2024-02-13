@@ -78,6 +78,10 @@ class InstrumentController extends Controller
      */
     public function update(Request $request, Instrument $instrument)
     {  
+
+        //'email' => 'required|unique:users,email,'.$this->route('user')->id
+
+
         //dd($iconPath);
         $instrument->icon = $this->saveFile($request);
         //dd($iconPath);

@@ -49,11 +49,16 @@
                                         </td>
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <a href="{{ route('instrument.show', $intrument->id) }}" class="text-blue-600 hover:text-blue-900 mb-2 mr-2">View</a>                                            
+                                            <a href="{{ route('instrument.show', $intrument->id) }}" >
+                                                <span class="material-symbols-outlined">
+                                                    edit
+                                                </span>
+                                            </a>                                            
                                             <form class="inline-block" action="{{ route('instrument.destroy', $intrument->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                <input type="submit" class="text-red-600 hover:text-red-900 mb-2 mr-2" value="Delete">
+                                                <span class="material-symbols-outlined">delete</span>
+                                                <!--input type="submit" class="text-red-600 hover:text-red-900 mb-2 mr-2" value="Delete"-->
                                             </form>
                                         </td>
                                     </tr>
