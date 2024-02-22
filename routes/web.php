@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
+use App\Livewire\Instrument\InstrumentClass;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,5 +44,10 @@ Route::get('/greeting/{locale}', function (string $locale) {
     return view('dashboard');
 });
 
-Route::resource('instrument',\App\Http\Controllers\InstrumentController::class);
+//Route::resource('instrument',\App\Http\Controllers\InstrumentController::class);
+
+Route::resource('instrument',InstrumentClass::class);
+
+//Route::get('/instrument/show', ShowInstrument::class)->name('instrument.show');
+//Route::get('/instrument/create', CreateInstrument::class)->name('instrument.create');
 
