@@ -46,3 +46,10 @@ Route::get('/greeting/{locale}', function (string $locale) {
 
 Route::resource('instrument',InstrumentClass::class);
 
+Route::get('/manifest.json', function () {
+    $manifestService = app(\App\Services\ManifestService::class);
+    $manifest = $manifestService->generate();
+
+    return response($manifest, 200)
+        ->header('Content-Type', 'application/json');
+});

@@ -2,35 +2,68 @@
     <x-application-logo class="block h-12 w-auto" />
 
     <h1 class="mt-8 text-2xl font-medium text-gray-900 dark:text-white">
-        Welcome to your Jetstream application!
+        Bienvenido al escritorio de eBand
     </h1>
 
     <p class="mt-6 text-gray-500 dark:text-gray-400 leading-relaxed">
-        Laravel Jetstream provides a beautiful, robust starting point for your next Laravel application. Laravel is designed
-        to help you build your application using a development environment that is simple, powerful, and enjoyable. We believe
-        you should love expressing your creativity through programming, so we have spent time carefully crafting the Laravel
-        ecosystem to be a breath of fresh air. We hope you love it.
+       A través de este escritorio tendras acceso directo a las asistencias de los ensayos, calendarios de la banda, listas e actuaciones...etc
     </p>
 </div>
 
 <div class="bg-gray-200 dark:bg-gray-800 bg-opacity-25 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 p-6 lg:p-8">
     <div>
         <div class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-6 h-6 stroke-gray-400">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-            </svg>
+            <svg height="64px" width="64px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 389.24 389.24" xml:space="preserve" fill="#000000">
+
+                <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="7.7848000000000015"/>
+                
+                <g id="SVGRepo_iconCarrier"> <g transform="translate(17 14)"> <path style="fill:#F5E6C6;" d="M85.526,88.82c0-50.8,41.2-92,92-92s92,41.2,92,92c0,67.6-41.2,132-92,132 S85.526,156.82,85.526,88.82L85.526,88.82z"/> <path style="fill:#EFDBB2;" d="M232.726,15.22c22.4,16.8,36.8,43.6,36.8,73.6c0,67.6-41.2,132-92,132 C207.926,196.42,232.726,128.02,232.726,15.22z"/> <path style="fill:#FFC729;" d="M89.926,79.22c0,0,79.2,24.4,117.6-26.4c28.4,35.2,62,20.8,62,20.8s-20.8-76.4-84-76.4 C98.726-2.78,89.926,79.22,89.926,79.22z"/> <path style="fill:#EEB516;" d="M217.926,5.22c0,10.4,0,29.6-18.8,52c24.4,31.6,70.8,10,70.8,10L217.926,5.22z"/> <g> <path style="fill:#C89406;" d="M130.726,92.82c-13.6,0-28-1.6-42.8-4.8c-4.4-0.8-7.2-5.2-6-9.6c0.8-4.4,5.2-7.2,9.6-6 c50.4,11.2,93.6,1.2,106.8-25.2c2-4,6.8-5.6,10.8-3.6s5.6,6.8,3.6,10.8C199.526,79.22,169.526,92.82,130.726,92.82z"/> <path style="fill:#C89406;" d="M249.926,85.22c-20.4,0-40-10.4-50.8-28.4c-2.4-3.6-1.2-8.8,2.8-10.8c3.6-2.4,8.8-1.2,10.8,2.8 c10.4,16.8,31.6,24.8,50.4,18.4c4.4-1.2,8.8,0.8,10,5.2s-0.8,8.8-5.2,10C261.926,84.42,255.926,85.22,249.926,85.22z"/> <path style="fill:#C89406;" d="M177.526,228.82c-53.2,0-100-65.6-100-140c0-55.2,44.8-100,100-100s100,44.8,100,100 C277.526,163.22,230.726,228.82,177.526,228.82z M177.526,4.82c-46.4,0-84,37.6-84,84c0,66,39.2,124,84,124s84-58,84-124 C261.526,42.42,223.926,4.82,177.526,4.82z"/> </g> <g> <path style="fill:#80D440;" d="M363.526,344.02l-18.4-60.8c-9.6-34-36.4-60.4-70.8-69.2l-5.2-1.6c-0.4,0-0.8-0.4-1.2-0.4 c-4.4-1.2-8.8,0.4-12,3.6c-21.6,25.2-48.8,40.8-78.4,40.8s-56.8-15.6-78.4-40.4c-2.8-3.2-7.6-4.8-12-3.6h-1.2l-5.2,1.6 c-34,8.8-61.2,35.2-70.8,69.2l-18.4,60.8c-2.8,10.4,4.8,20.4,15.2,20.4h341.6C359.126,364.42,366.726,354.42,363.526,344.02 L363.526,344.02z"/> <path style="fill:#6EA62A;" d="M348.326,372.42H6.726c-7.6,0-14.4-3.2-18.8-9.2c-4.8-6-6-13.6-4-21.2l18.4-61.2 c10.4-36.4,39.6-65.2,76.4-74.4l4.8-1.6c0.8-0.4,1.6-0.4,2.4-0.4h0.4c6.8-1.2,14.4,1.2,18.8,6.4c14.8,17.2,39.6,37.6,72.4,37.6 c26,0,51.2-13.2,72.4-38l0.4-0.4c5.2-5.2,12.4-7.6,19.2-6c0.8,0,1.6,0.4,2,0.8l5.2,1.6c36.4,9.2,65.6,38,76,74.8l18.4,60.8 c2.4,7.2,0.8,15.2-3.6,21.2C363.126,368.82,355.926,372.42,348.326,372.42z M87.126,220.42l-4,1.2c-31.6,8.4-56.8,32.4-65.6,63.6 l-18.4,61.2c-0.8,2.4,0,4.8,1.6,7.2c1.2,1.6,3.6,2.8,6,2.8h341.6c2.8,0,5.2-1.2,6.4-3.2c0.8-1.2,2-3.6,1.2-6.8l0,0l-18.4-60.8 c-8.8-31.2-33.6-55.6-65.2-63.6l-5.2-1.6c-0.8,0-1.2-0.4-1.6-0.4c-1.6-0.4-3.2,0.8-4,1.6c-24,28-54,43.2-84.4,43.2 s-60-15.2-84.4-43.2c-0.8-0.8-2.4-1.6-4-1.2C88.726,220.42,87.926,220.42,87.126,220.42z"/> </g> <g> <path style="fill:#67CB1B;" d="M106.726,342.02c2-7.6,10-13.6,18-13.6h162v28h-184L106.726,342.02z"/> <path style="fill:#67CB1B;" d="M26.726,342.02c2-7.6,10-13.6,18-13.6h22v28h-44L26.726,342.02z"/> </g> <g> <path style="fill:#89DB4A;" d="M295.526,364.02c0,0-6.4-21.6-9.6-32.4 M79.926,298.82c-1.2,2.4-2,4.8-3.2,7.2 M69.926,328.82 c-3.2,10.8-7.6,25.2-10.8,35.2"/> <path style="fill:#6EA62A;" d="M59.126,372.02c-0.8,0-1.6,0-2.4-0.4c-4.4-1.2-6.4-6-5.2-10c2.8-9.2,7.2-23.6,10.8-35.2 c1.2-4.4,5.6-6.8,10-5.2c4.4,1.2,6.8,5.6,5.2,10c-3.6,11.6-8,26-10.8,35.2C65.526,370.02,62.326,372.02,59.126,372.02z M287.926,366.42l-9.6-32.4c-1.2-4.4,1.2-8.8,5.2-10c4.4-1.2,8.8,1.2,10,5.2l9.6,32.4L287.926,366.42z M76.726,314.02 c-1.2,0-2.4-0.4-3.6-0.8c-4-2-5.6-6.8-3.6-10.8c0.4-1.2,0.8-2,1.2-3.2c0.4-1.2,1.2-2.8,2-4c2-4,6.8-5.6,10.8-3.6s5.6,6.8,3.6,10.8 c-0.4,1.2-0.8,2-1.2,3.2c-0.4,1.2-1.2,2.8-2,4C82.326,312.42,79.526,314.02,76.726,314.02z"/> </g> </g> </g>
+                
+                </svg>
             <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                <a href="https://laravel.com/docs">Documentation</a>
+                <a href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">Perfil</a>
             </h2>
         </div>
 
         <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-            Laravel has wonderful documentation covering every aspect of the framework. Whether you're new to the framework or have previous experience, we recommend reading all of the documentation from beginning to end.
+            Personaliza tu perfil de usuario. Cuantos mas datos facilites, mejor comunicados podremos estar.
         </p>
 
         <p class="mt-4 text-sm">
-            <a href="https://laravel.com/docs" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
-                Explore the documentation
+            <a href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
+                Acceder al perfil
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
+                    <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
+                </svg>
+            </a>
+        </p>
+    </div>
+
+    <div>
+        <div class="flex items-center">
+            <svg height="64px" width="64px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 423.803 423.803" xml:space="preserve" fill="#000000">
+
+                <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                
+                <g id="SVGRepo_iconCarrier"> <path style="fill:#80D440;" d="M131.751,134.501h96l44,152.8h-140V134.501z"/> <path style="fill:#FFC729;" d="M103.751,110.501l-32-12l-28,32l20,40l-43.6,21.2l-8.4,42.8h92l16-44L103.751,110.501z"/> <g> <path style="fill:#C89406;" d="M69.751,182.901c-1.2,0-2.4-0.4-3.6-0.8c-15.6-8.4-26.4-28.8-26.4-51.2s18-40.4,40.4-40.4 c6.8,0,12.8,1.6,18.8,4.4c4,2,5.6,6.8,3.6,10.8s-6.8,5.6-10.8,3.6s-7.2-2.8-11.6-2.8c-13.6,0-24.4,10.8-24.4,24.4 c0,16,7.6,31.6,17.6,36.8c4,2,5.2,6.8,3.2,10.8C75.351,181.301,72.551,182.901,69.751,182.901z"/> <path style="fill:#C89406;" d="M54.151,242.101h-40.4c-4.4,0-8.8-2-11.2-5.6s-3.2-7.6-2-11.6l6.4-23.2c8-26,26.4-32.4,46.4-37.2 c4.4-1.2,8.8,1.6,9.6,6c1.2,4.4-1.6,8.8-6,9.6c-20,4.8-29.6,10-34.8,26l-5.6,20h37.6c4.4,0,8,3.6,8,8 S58.551,242.101,54.151,242.101z"/> </g> <path style="fill:#80D440;" d="M258.551,298.501h-209.6c-6,0-10.8-6-8.8-12l10.8-37.6c10.4-34.8,34.4-44.4,66.8-52"/> <path style="fill:#6EA62A;" d="M258.551,306.501h-209.6c-5.6,0-10.8-2.8-14-7.2c-3.2-4.4-4-10-2.4-15.2l10.8-37.2 c12-40.4,41.2-50.4,72.4-57.6c4.4-1.2,8.8,1.6,9.6,6c1.2,4.4-1.6,8.8-6,9.6c-33.6,8-52.4,17.2-60.8,46.4l-10.8,37.6 c0,0.4-0.4,0.8,0,1.2c0,0.4,0.4,0.8,1.2,0.8h209.6c4.4,0,8,3.6,8,8S262.951,306.501,258.551,306.501z"/> <path style="fill:#80D440;" d="M132.951,208.101c-21.2-12.8-36-43.2-36-75.6c0-31.6,25.6-56.8,56.8-56.8c11.2,0,22,3.2,30.8,8.8"/> <path style="fill:#6EA62A;" d="M132.951,216.101c-1.6,0-2.8-0.4-4-1.2c-24-14.4-40-47.6-40-82.4c0-35.6,29.2-64.8,64.8-64.8 c12.4,0,24.8,3.6,35.2,10c3.6,2.4,4.8,7.2,2.4,11.2c-2.4,3.6-7.2,4.8-11.2,2.4c-7.6-4.8-17.2-7.6-26.4-7.6 c-26.8,0-48.8,22-48.8,48.8c0,29.2,13.2,57.2,32,68.8c3.6,2.4,4.8,7.2,2.8,10.8C138.151,214.901,135.751,216.101,132.951,216.101z"/> <path style="fill:#80D440;" d="M255.751,230.501l16,60"/> <path style="fill:#6EA62A;" d="M271.751,298.501c-3.6,0-6.8-2.4-7.6-6l-16-60c-1.2-4.4,1.2-8.8,5.6-9.6c4.4-1.2,8.8,1.6,9.6,5.6 l16,60c1.2,4.4-1.2,8.8-5.6,9.6C272.951,298.501,272.551,298.501,271.751,298.501z"/> <path style="fill:#D6913C;" d="M163.751,120.501c0-45.6,36.8-82.4,82.4-82.4s82.4,36.8,82.4,82.4c0,60.4-36.8,118-82.4,118 S163.751,181.301,163.751,120.501L163.751,120.501z"/> <path style="fill:#FF793B;" d="M346.951,386.101h-253.6c-9.6,0-16.4-9.2-14-18.4l16.8-58.4c8.8-30.4,32.8-54,63.6-62l4.8-1.2l0,0 c4.4-1.2,9.2,0.4,12.4,4c19.2,22,43.6,24.4,69.6,24.4s50.4-2.4,69.6-24.4c3.2-3.6,8-5.2,12.4-4l0,0l5.2,1.2 c30.8,8,54.8,31.6,63.6,62l7.2,24.8"/> <path style="fill:#C6490F;" d="M346.951,394.101h-253.6c-6.8,0-13.6-3.2-17.6-8.8c-4.4-5.6-6-12.8-4-19.6l16.8-58.4 c9.6-33.2,36-58.8,69.2-67.6l4.8-1.2c7.2-2,15.2,0.4,20.4,6.4c17.6,20,40,21.6,63.6,21.6s46-1.6,63.6-21.6c5.2-6,13.2-8.4,20.4-6.4 l4.8,1.2c33.2,8.8,60,34.4,69.6,67.6l7.2,24.8c1.2,4.4-1.2,8.8-5.6,10s-8.8-1.2-10-5.6l-7.2-24.8c-8-27.6-30-49.2-58-56.4l-4.8-1.2 c-1.6-0.4-3.6,0-4.8,1.6c-21.6,24.8-48.8,26.8-75.2,26.8s-53.6-2-75.6-27.2c-1.2-1.2-2.8-2-4.4-1.6l-4.8,1.2 c-27.6,7.2-50,28.8-58,56.8l-16.8,58.4c-0.4,2,0,4,1.2,5.6c0.8,0.8,2.4,2.4,5.2,2.4h253.6c4.4,0,8,3.6,8,8 S351.351,394.101,346.951,394.101z"/> <path style="fill:#FF793B;" d="M333.351,386.101h67.6c9.6,0,16.4-9.2,14-18.4l-16.8-58.4"/> <path style="fill:#C6490F;" d="M400.951,394.101h-67.6c-4.4,0-8-3.6-8-8s3.6-8,8-8h67.6c2.8,0,4.4-1.6,5.2-2.4c1.2-1.6,1.6-4,1.2-6 l-16.8-58.4c-1.2-4.4,1.2-8.8,5.6-10s8.8,1.2,10,5.6l16.8,58.4c2,7.2,0.4,14.4-4,20 C414.551,390.901,407.751,394.101,400.951,394.101z"/> <path style="fill:#C47615;" d="M327.751,109.701c-2.8,64.8-42.8,124.8-92,124.8c23.2-18.4,42.8-62.4,51.2-132 C314.151,110.901,327.751,107.301,327.751,109.701L327.751,109.701z"/> <path style="fill:#A46210;" d="M245.751,246.501c-48.8,0-90-57.6-90-126c0-2.4,0-4.8,0.4-7.6c0.8-4.4,5.2-7.2,9.6-6.4 c4.4,0.8,7.2,5.2,6.4,9.6c-0.4,1.2-0.4,2.8-0.4,4.4c0,58.4,34.4,110,74,110s74.4-51.6,74.4-110c0-4.4-0.4-8.8-1.2-12.4 c-0.8-4.4,2-8.4,6.4-9.2s8.4,2,9.2,6.4c0.8,4.8,1.2,10,1.2,15.6C336.151,187.701,293.751,246.501,245.751,246.501z"/> <path style="fill:#3A3030;" d="M163.751,114.501c3.2-42.8,38.8-76.4,82-76.4c40.8,0,74.4,29.6,81.2,68.4c0,0-34.8,4.4-50.4-18 l-1.2,2.8c-12.8,25.6-53.6,38.8-105.6,27.2L163.751,114.501L163.751,114.501z"/> <path style="fill:#231F20;" d="M206.151,130.901c-12,0-24.8-1.6-38.4-4.4l-1.6-0.4l-10.8-7.6l0.4-4.8c3.6-46.8,43.2-84,90-84 c44,0,81.6,31.6,89.2,75.2l1.6,8.4l-8.4,1.2c-1.2,0-30.4,3.6-49.6-12.4C264.551,120.501,238.551,130.901,206.151,130.901z M172.951,110.901c44.4,9.6,83.2,0,95.2-23.2l6.8-16l8.4,12c8.4,12,24,14.4,33.6,14.8c-9.6-31.2-38-52.8-71.2-52.8 c-37.2,0-68.4,28-73.6,64.4L172.951,110.901z"/> </g>
+                
+                </svg>
+            <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
+                <a href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">Listado de músicos</a>
+            </h2>
+        </div>
+
+        <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+            Aqui puedes ver un listado de los músicos creados en la aplicación. Si tus roles lo permiten podras editar la información de los usuarios.
+        </p>
+
+        <p class="mt-4 text-sm">
+            <a href="{{ route('users.index') }}" :active="request()->routeIs('users.index')" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
+                Ver listado de músicos
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
                     <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
@@ -41,21 +74,26 @@
 
     <div>
         <div class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-6 h-6 stroke-gray-400">
-                <path stroke-linecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
-            </svg>
+            <svg height="64px" width="64px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 366.032 366.032" xml:space="preserve" fill="#000000">
+
+                <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                
+                <g id="SVGRepo_iconCarrier"> <polygon style="fill:#FFE53C;" points="358.032,94.886 251.232,100.086 118.032,135.286 118.032,69.686 221.232,25.286 358.032,14.886 "/> <ellipse transform="matrix(-0.2588 -0.9659 0.9659 -0.2588 -221.0526 452.9212)" style="fill:#939598;" cx="63.245" cy="311.271" rx="38.399" ry="55.998"/> <path style="fill:#6D6E71;" d="M52.832,358.886c-8.4,0-16.4-1.2-23.6-4c-14.8-5.2-24.4-14.8-28-27.6c-6.8-25.2,15.2-52,50-61.2l0,0 c34.8-9.2,67.2,3.2,74,28.4c6.8,25.2-15.2,52-50,61.2C67.632,358.086,60.032,358.886,52.832,358.886z M55.232,281.686 c-25.2,6.8-42.8,26-38.4,41.6c2,7.2,8.4,13.2,18,16.4c10.4,3.6,23.6,4,36.4,0.4c25.2-6.8,42.8-26,38.4-41.6 C105.232,282.886,80.432,275.286,55.232,281.686L55.232,281.686z"/> <ellipse transform="matrix(-0.2588 -0.9659 0.9659 -0.2588 111.9458 644.4493)" style="fill:#939598;" cx="303.228" cy="279.275" rx="38.399" ry="55.998"/> <g> <path style="fill:#6D6E71;" d="M292.432,327.286c-25.2,0-46-12-51.2-31.2c-3.2-12.4,0.4-26,10.4-37.6c9.2-10.8,23.2-19.2,39.2-23.6 s32.4-4,46,0.8c14.8,5.2,24.4,14.8,28,27.6c3.2,12.4-0.4,26-10.4,37.6c-9.2,10.8-23.2,19.2-39.2,23.6 C307.632,326.086,299.632,327.286,292.432,327.286z M313.632,247.286c-6,0-12,0.8-18.4,2.4l0,0c-12.8,3.6-24,10-31.2,18.4 c-6.4,7.6-9.2,16-7.2,23.2c4.4,16,29.2,23.6,54.4,16.8c12.8-3.6,24-10,31.2-18.4c6.4-7.6,9.2-16,7.2-23.2s-8.4-13.2-18-16.4 C326.432,248.486,320.032,247.286,313.632,247.286z M293.232,242.086L293.232,242.086L293.232,242.086z"/> <path style="fill:#6D6E71;" d="M118.032,303.286c-4.4,0-8-3.6-8-8v-210c0-15.6,8.8-29.6,22.8-36l2-1.2c64-31.2,135.2-44.8,206-40 h2.4c0.4,0,0.4,0,0.8,0c12.4,1.2,22,11.6,22,24v231.2c0,4.4-3.6,8-8,8s-8-3.6-8-8v-231.2c0-4-3.2-7.6-7.2-8h-2.4h-0.4 c-68-4.8-136.4,8.4-198,38.4l-2.4,1.2c-8.4,4-13.6,12-13.6,21.6v210C126.032,299.686,122.432,303.286,118.032,303.286z"/> <path style="fill:#6D6E71;" d="M118.032,152.886c-2.8,0-6-1.6-7.2-4.4c-2-4-0.4-8.8,3.6-10.8l20-9.6 c63.6-30.8,135.2-44.8,206.4-40.4l17.6,1.2c4.4,0.4,7.6,4,7.6,8.4c-0.4,4.4-4,7.6-8.4,7.6l-17.6-1.2 c-68.4-4.4-137.2,9.2-198.4,38.8l-20,9.6C120.432,152.486,119.232,152.886,118.032,152.886z"/> </g> </g>
+                
+                </svg>
             <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                <a href="https://laracasts.com">Laracasts</a>
+                <a href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">Instrumentos</a>
             </h2>
         </div>
 
         <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-            Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
+            Accede al listado de los instrumentos dados de alta en la banda. Si tus roles lo permiten puedes editar la información del instrumento.
         </p>
-
         <p class="mt-4 text-sm">
-            <a href="https://laracasts.com" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
-                Start watching Laracasts
+            <a href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
+                Ver listado de instrumentos
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
                     <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
@@ -66,31 +104,31 @@
 
     <div>
         <div class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-6 h-6 stroke-gray-400">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-            </svg>
+            <svg height="64px" width="64px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 384 384" xml:space="preserve" fill="#000000">
+
+                <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                
+                <g id="SVGRepo_iconCarrier"> <path style="fill:#F5E6C6;" d="M360,160v176c0,17.6-14.4,32-32,32H60c-17.6,0-36-14.4-36-32V164"/> <path style="fill:#E5B54C;" d="M328,376H60c-20.8,0-44-17.2-44-40V164c0-4.4,3.6-8,8-8s8,3.6,8,8v172c0,13.2,15.2,24,28,24h268 c13.2,0,24-10.8,24-24V160c0-4.4,3.6-8,8-8s8,3.6,8,8v176C368,358,350,376,328,376z"/> <path style="fill:#80D440;" d="M272,160H24c-8.8,0-16-7.2-16-16V96c0-17.6,14.4-32,32-32h44h36h144h32h48c17.6,0,32,14.4,32,32v48 c0,7.6-5.2,13.6-12,15.6"/> <g> <path style="fill:#6EA62B;" d="M272,168H24c-13.2,0-24-10.8-24-24V96c0-22,18-40,40-40h304c22,0,40,18,40,40v48 c0,10.8-7.2,20-17.6,23.2c-4.4,1.2-8.8-1.2-10-5.6c-1.2-4.4,1.2-8.8,5.6-10c2.8-0.8,6.4-3.6,6.4-8V96c0-13.2-10.8-24-24-24H40 c-13.2,0-24,10.8-24,24v48c0,4.4,3.6,8,8,8h248c4.4,0,8,3.6,8,8S276.4,168,272,168z"/> <path style="fill:#6EA62B;" d="M320,168h-12c-4.4,0-8-3.6-8-8s3.6-8,8-8h12c4.4,0,8,3.6,8,8S324.4,168,320,168z"/> </g> <path style="fill:#FFE53C;" d="M104,112L104,112c-8.8,0-16-7.2-16-16V32c0-8.8,7.2-16,16-16l0,0c8.8,0,16,7.2,16,16v64 C120,104.8,112.8,112,104,112z"/> <path style="fill:#C39215;" d="M104,120c-13.2,0-24-10.8-24-24V32c0-13.2,10.8-24,24-24s24,10.8,24,24v64 C128,109.2,117.2,120,104,120z M104,24c-4.4,0-8,3.6-8,8v64c0,4.4,3.6,8,8,8s8-3.6,8-8V32C112,27.6,108.4,24,104,24z"/> <path style="fill:#FFE53C;" d="M280,112L280,112c-8.8,0-16-7.2-16-16V32c0-8.8,7.2-16,16-16l0,0c8.8,0,16,7.2,16,16v64 C296,104.8,288.8,112,280,112z"/> <path style="fill:#C39215;" d="M280,120c-13.2,0-24-10.8-24-24V32c0-13.2,10.8-24,24-24s24,10.8,24,24v64 C304,109.2,293.2,120,280,120z M280,24c-4.4,0-8,3.6-8,8v64c0,4.4,3.6,8,8,8s8-3.6,8-8V32C288,27.6,284.4,24,280,24z"/> <g> <path style="fill:#6EA62B;" d="M120,232H72c-4.4,0-8-3.6-8-8s3.6-8,8-8h48c4.4,0,8,3.6,8,8S124.4,232,120,232z"/> <path style="fill:#6EA62B;" d="M120,296H72c-4.4,0-8-3.6-8-8s3.6-8,8-8h48c4.4,0,8,3.6,8,8S124.4,296,120,296z"/> <path style="fill:#6EA62B;" d="M212,232h-48c-4.4,0-8-3.6-8-8s3.6-8,8-8h48c4.4,0,8,3.6,8,8S216.4,232,212,232z"/> <path style="fill:#6EA62B;" d="M212,296h-48c-4.4,0-8-3.6-8-8s3.6-8,8-8h48c4.4,0,8,3.6,8,8S216.4,296,212,296z"/> </g> <g> <path style="fill:#C6490F;" d="M304,232h-48c-4.4,0-8-3.6-8-8s3.6-8,8-8h48c4.4,0,8,3.6,8,8S308.4,232,304,232z"/> <path style="fill:#C6490F;" d="M304,296h-48c-4.4,0-8-3.6-8-8s3.6-8,8-8h48c4.4,0,8,3.6,8,8S308.4,296,304,296z"/> </g> </g>
+                
+                </svg>
             <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                <a href="https://tailwindcss.com/">Tailwind</a>
+                Calendario
             </h2>
         </div>
 
         <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-            Laravel Jetstream is built with Tailwind, an amazing utility first CSS framework that doesn't get in your way. You'll be amazed how easily you can build and maintain fresh, modern designs with this wonderful framework at your fingertips.
+            Comprueba las fechas marcadas en el calendario con los eventos que vamos a realizar.
         </p>
-    </div>
+        <p class="mt-4 text-sm">
+            <a href="#" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
+                Ver calendario
 
-    <div>
-        <div class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-6 h-6 stroke-gray-400">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-            </svg>
-            <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                Authentication
-            </h2>
-        </div>
-
-        <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-            Authentication and registration views are included with Laravel Jetstream, as well as support for user email verification and resetting forgotten passwords. So, you're free to get started with what matters most: building your application.
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
+                    <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
+                </svg>
+            </a>
         </p>
     </div>
 </div>
