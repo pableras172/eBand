@@ -26,7 +26,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','instrument_id','telefono','porcentaje','forastero','observaciones','fechaAlta','activo',
     ];
 
     /**
@@ -65,12 +65,17 @@ class User extends Authenticatable
         self::created(function (User $user) {
             if (!$user->roles()->get()->contains(2)) {
                 $user->roles()->attach(2);
-            }
+           }           
         });
     }
 
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    public function instrument()
+    {
+        return $this->belongsTo('App\Models\Instrument');
     }
 }

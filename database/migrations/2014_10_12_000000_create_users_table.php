@@ -20,6 +20,14 @@ return new class extends Migration
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->string('telefono', 10)->nullable();
+            $table->integer('porcentaje')->nullable();
+            $table->boolean('forastero')->default(false);
+            $table->text('observaciones')->nullable();
+            $table->date('fechaAlta')->nullable();
+            $table->boolean('activo')->default(true);
+            $table->unsignedBigInteger('instrument_id')->nullable();
+            $table->foreign('instrument_id')->references('id')->on('instruments')->onDelete('set null');
             $table->timestamps();
         });
     }

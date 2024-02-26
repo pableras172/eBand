@@ -25,6 +25,10 @@ class UpdateUserRequest extends FormRequest
                 'required',
                 'array',
             ],
+            'instrument_id'=> ['exists:instruments,id'],
+            'telefono'     => ['required', 'string'],
+            'porcentaje'   => ['required', 'numeric'],
+            'fechaAlta'    => ['required', 'date'],
         ];
     }
 

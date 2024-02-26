@@ -17,7 +17,12 @@
                     </x-nav-link>
                 </div>
                 
-                
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
+                        {{ __('Musics') }}
+                    </x-nav-link>
+                </div>   
+
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
@@ -238,6 +243,10 @@
                 <x-responsive-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
                         {{ __('Instruments') }}
                 </x-responsive-nav-link>
+               
+                <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
+                        {{ __('Musics') }}
+                </x-responsive-nav-link>               
                 
                 <div class="border-t border-gray-200 dark:border-gray-600"></div>
 
