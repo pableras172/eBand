@@ -65,7 +65,11 @@
                                             {{ $user->fechaAlta ? \Carbon\Carbon::parse($user->fechaAlta)->format('d/m/Y') : '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $user->instrument->name }}
+                                            @if ($user->instrument)
+                                                {{ $user->instrument->name }}
+                                            @else
+                                                No te instrument asignat
+                                            @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $user->activo ? 'Si' : 'No' }}
