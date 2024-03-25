@@ -3,6 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 use App\Livewire\Instrument\InstrumentClass;
+use App\Livewire\Contratos\ListadoContratos;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ActuacionController;
+use App\Http\Controllers\ContratosController;
+use App\Http\Controllers\ListaController;
+use App\Http\Controllers\ListasUsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +39,23 @@ Route::middleware([
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('tasks', \App\Http\Controllers\TasksController::class);
     Route::resource('users', \App\Http\Controllers\UsersController::class);
+
+    Route::resource('instrument',InstrumentClass::class);
+    Route::resource('calendar',CalendarController::class);
+
+    Route::get('/actuacion/createtocontract/{contratos}', [ActuacionController::class, 'createtocontract'])->name('actuacion.createtocontract');
+    Route::resource('actuacion',ActuacionController::class);
+
+    Route::resource('contratos',ListadoContratos::class);
+
+    Route::resource('listas',ListaController::class);
+
+    Route::get('/listas/actuacion/{actuacion_id}', [ListaController::class, 'actuacion'])->name('listas.actuacion');
+
+    Route::post('/listauser', [ListasUsersController::class, 'store']);
+    Route::delete('/listauser/{listaId}/{usuarioId}', [ListasUsersController::class, 'destroy']);
+
+
 });
 
 Route::get('/greeting/{locale}', function (string $locale) {
@@ -44,7 +67,12 @@ Route::get('/greeting/{locale}', function (string $locale) {
     return view('dashboard');
 });
 
-Route::resource('instrument',InstrumentClass::class);
+
+
+
+
+
+//Route::get('/search-contratos', ContratosClass::class);
 
 Route::get('/manifest.json', function () {
     $manifestService = app(\App\Services\ManifestService::class);

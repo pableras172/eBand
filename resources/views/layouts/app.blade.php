@@ -12,7 +12,9 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
         <link rel="manifest" href="manifest.json">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
         <link rel="apple-touch-icon" sizes="57x57" href="/storage/imagenes/apple-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="/storage/imagenes/apple-icon-60x60.png">
@@ -38,6 +40,7 @@
 
         <!-- Styles -->
         @livewireStyles
+        
     </head>
     <body class="font-sans antialiased" x-data="themeSwitcher()" :class="{ 'dark': switchOn }">
         <x-banner />
@@ -63,5 +66,6 @@
         @stack('modals')
 
         @livewireScripts
+        
     </body>
 </html>

@@ -25,9 +25,8 @@ return new class extends Migration
             $table->boolean('forastero')->default(false);
             $table->text('observaciones')->nullable();
             $table->date('fechaAlta')->nullable();
-            $table->boolean('activo')->default(true);
-            $table->unsignedBigInteger('instrument_id')->nullable();
-            $table->foreign('instrument_id')->references('id')->on('instruments')->onDelete('set null');
+            $table->boolean('activo')->default(true);            
+            $table->foreignId('instrument_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

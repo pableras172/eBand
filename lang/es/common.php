@@ -14,6 +14,6 @@ return [
     */
 
     'idioma' => 'Idioma',
-    
+    'dashboard'=>'Tablón',
 
 ];

@@ -22,8 +22,13 @@ class DatabaseSeeder extends Seeder
             PermissionsTableSeeder::class,
             RolesTableSeeder::class,
             PermissionRoleTableSeeder::class,
-            //UsersTableSeeder::class,
+            InstrumentSeeder::class,
+            UsersTableSeeder::class,
             RoleUserTableSeeder::class,
+            TipoactuacionsSeeder::class,
+            ContratosSeeder::class,
+            ActuacionSeeder::class,
+            ListaSeeder::class,
         ]);
     }
 }

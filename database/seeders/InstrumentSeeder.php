@@ -13,21 +13,20 @@ class InstrumentSeeder extends Seeder
      */
     public function run(): void
     {
-        $intrument = [
-            [
-                'id'             => 1,
-                'name'           => 'Trompeta',    
-                'orden'           => 1,    
-                
-            ],
-            [
-                'id'             => 2,
-                'name'           => 'Clarinet',               
-                'orden'           => 2,               
-            ],
+        $instruments = [
+            ['name' => 'Flauta', 'orden' => 1],
+            ['name' => 'Clarinete', 'orden' => 2],
+            ['name' => 'Saxo Alto', 'orden' => 3],
+            ['name' => 'Saxo Tenor', 'orden' => 4],
+            ['name' => 'Trompeta', 'orden' => 5],
+            ['name' => 'Trombón', 'orden' => 6],
+            ['name' => 'Tuba', 'orden' => 7],
+            ['name' => 'Percusión', 'orden' => 8],
+            ['name' => 'Piano', 'orden' => 9],           
+            // Agrega más instrumentos aquí si es necesario
         ];
 
-        Instrument::insert($intrument);
+        Instrument::insert($instruments);
     }
 }
 

@@ -1,10 +1,10 @@
 <x-form-section submit="updateProfileInformation">
     <x-slot name="title">
-        {{ __('Profile Information') }}
+        {{ __('Informació del perfil') }}
     </x-slot>
 
     <x-slot name="description">
-        {{ __('Update your account\'s profile information and email address.') }}
+        {{ __('Actualice la información del perfil y la dirección de correo electrónico de su cuenta.') }}
     </x-slot>
 
     <x-slot name="form">
@@ -21,7 +21,7 @@
                                     reader.readAsDataURL($refs.photo.files[0]);
                             " />
 
-            <x-label for="photo" value="{{ __('Photo') }}" />
+            <x-label for="photo" value="{{ __('Foto') }}" />
 
             <!-- Current Profile Photo -->
             <div class="mt-2" x-show="! photoPreview">
@@ -37,12 +37,12 @@
             </div>
 
             <x-secondary-button class="mt-2 me-2" type="button" x-on:click.prevent="$refs.photo.click()">
-                {{ __('Select A New Photo') }}
+                {{ __('Seleccione una nueva foto') }}
             </x-secondary-button>
 
             @if ($this->user->profile_photo_path)
             <x-secondary-button type="button" class="mt-2" wire:click="deleteProfilePhoto">
-                {{ __('Remove Photo') }}
+                {{ __('Borrar foto') }}
             </x-secondary-button>
             @endif
 
@@ -52,7 +52,7 @@
 
         <!-- Name -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="name" value="{{ __('Name') }}" />
+            <x-label for="name" value="{{ __('Nom') }}" />
             <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.name" required
                 autocomplete="name" />
             <x-input-error for="name" class="mt-2" />
@@ -73,13 +73,13 @@
                 <button type="button"
                     class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
                     wire:click.prevent="sendEmailVerification">
-                    {{ __('Click here to re-send the verification email.') }}
+                    {{ __('Haga clic aquí para volver a enviar el correo electrónico de verificación.') }}
                 </button>
             </p>
 
             @if ($this->verificationLinkSent)
             <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
-                {{ __('A new verification link has been sent to your email address.') }}
+                {{ __('Se ha enviado un nuevo enlace de verificación a su dirección de correo electrónico.') }}
             </p>
             @endif
             @endif
@@ -88,7 +88,7 @@
        <div class="col-span-6 sm:col-span-4">
             <x-label for="instrument" value="{{ __('Instrument') }}" />
             <select id="instrument" name="instrument" wire:model="state.instrument_id" class="mt-1 block w-full" required>
-                <option value="">{{ __('Select Instrument') }}</option>
+                <option value="">{{ __('Selecciona Instrument') }}</option>
         
                 @foreach ($state['instruments'] as $instrument)
                     <option value="{{ $instrument['id'] }}">{{ $instrument['name'] }}</option>
@@ -99,42 +99,42 @@
 
         <!-- Telefono -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="telefono" value="{{ __('Telefono') }}" />
+            <x-label for="telefono" value="{{ __('Telefon') }}" />
             <x-input id="telefono" type="text" class="mt-1 block w-full" wire:model="state.telefono" />
             <x-input-error for="telefono" class="mt-2" />
         </div>
 
         <!-- Porcentaje -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="porcentaje" value="{{ __('Porcentaje') }}" />
+            <x-label for="porcentaje" value="{{ __('Percentaje') }}" />
             <x-input id="porcentaje" type="number" class="mt-1 block w-full" wire:model="state.porcentaje" />
             <x-input-error for="porcentaje" class="mt-2" />
         </div>
 
         <!-- Forastero -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="forastero" value="{{ __('Forastero') }}" />
+            <x-label for="forastero" value="{{ __('Foraster') }}" />
             <x-input id="forastero" type="checkbox" class="mt-1 block" wire:model="state.forastero" />
             <x-input-error for="forastero" class="mt-2" />
         </div>
 
         <!-- Observaciones -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="observaciones" value="{{ __('Observaciones') }}" />
+            <x-label for="observaciones" value="{{ __('Observacions') }}" />
             <textarea id="observaciones" class="mt-1 block w-full" wire:model="state.observaciones"></textarea>
             <x-input-error for="observaciones" class="mt-2" />
         </div>
 
         <!-- Fecha Alta -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="fechaAlta" value="{{ __('Fecha Alta') }}" />
+            <x-label for="fechaAlta" value="{{ __('Data Alta') }}" />
             <x-input id="fechaAlta" type="date" class="mt-1 block w-full" wire:model="state.fechaAlta" />
             <x-input-error for="fechaAlta" class="mt-2" />
         </div>
 
         <!-- Activo -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="activo" value="{{ __('Activo') }}" />
+            <x-label for="activo" value="{{ __('Actiu') }}" />
             <x-input id="activo" type="checkbox" class="mt-1 block" wire:model="state.activo" />
             <x-input-error for="activo" class="mt-2" />
         </div>
@@ -144,11 +144,11 @@
 
     <x-slot name="actions">
         <x-action-message class="me-3" on="saved">
-            {{ __('Saved.') }}
+            {{ __('Guardat.') }}
         </x-action-message>
 
         <x-button wire:loading.attr="disabled" wire:target="photo">
-            {{ __('Save') }}
+            {{ __('Guardar') }}
         </x-button>
     </x-slot>
 </x-form-section>

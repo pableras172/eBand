@@ -18,5 +18,7 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'email' => 'Dirección de correo electrónico',
     'logout' => 'Cerrar sesión',
+    'manageaccount'=>'Gestión de cuenta',
+    'miperfil'=>'Mi perfil',
 
 ];

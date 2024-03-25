@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Users List
+            Llistat de músics
         </h2>
     </x-slot>
 
     @if(request()->has('success') && request()->success)
     <div class="bg-green-200 text-green-800 py-2 px-4 mb-4 rounded">
-        ¡Se ha creado el usuario!
+        ¡Usuari creat!
     </div>
     @endif
 
@@ -27,10 +27,10 @@
                                 <thead>
                                 <tr>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Profile Photo
+                                        
                                     </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Name
+                                        Nom
                                     </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Email
@@ -39,13 +39,13 @@
                                         Fecha Alta
                                     </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Instrument ID
+                                        Instrument
                                     </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Activo
+                                        Actiu
                                     </th>                                    
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Acciones
+                                        Accions
                                     </th>                                    
                                 </tr>
                                 </thead>

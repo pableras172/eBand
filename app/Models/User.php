@@ -78,4 +78,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Models\Instrument');
     }
+
+    public function listas()
+    {
+        return $this->belongsToMany(Listas::class)
+            ->withPivot('coche', 'pagada', 'cuentas'); // También puedes incluir timestamps si los tienes en la tabla pivot
+    }
+
 }
