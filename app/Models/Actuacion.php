@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Contratos;
 use App\Models\Listas;
+use App\Models\Tipoactuacion;
 
 class Actuacion extends Model
 {
@@ -19,5 +20,10 @@ class Actuacion extends Model
     public function contrato()
     {
         return $this->belongsTo(Contratos::class, 'contratos_id');
+    }
+
+    public function tipoactuacion()
+    {
+        return $this->belongsTo(Tipoactuacion::class, 'tipoactuacions_id');
     }
 }

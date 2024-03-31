@@ -17,7 +17,7 @@ class ActuacionController extends Controller
 
      public function index()
      {
-         $actuaciones = Actuacion::with('contrato', 'listas')
+         $actuaciones = Actuacion::with('contrato', 'listas','tipoactuacion')
              ->whereDate('fechaActuacion', '>=', now()->toDateString())
              ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
              ->get();
