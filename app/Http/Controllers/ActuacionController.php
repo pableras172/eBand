@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Actuacion;
 use App\Models\Contratos;
-use App\Models\Tipoactuacions;
+use App\Models\Tipoactuacion;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -40,7 +40,7 @@ class ActuacionController extends Controller
         ->where('contratos_id', '=', $id)
         ->get();
 
-        $tipoActuacion = Tipoactuacions::all();
+        $tipoActuacion = Tipoactuacion::all();
 
         $contrato = Contratos::find($id);
 
@@ -95,7 +95,7 @@ public function store(Request $request)
     ->get();
 
     $contrato = Contratos::find($request->contratos_id);
-    $tipoActuacion = Tipoactuacions::all();
+    $tipoActuacion = Tipoactuacion::all();
     return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato'));
 }
 

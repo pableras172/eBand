@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 
 use Illuminate\Database\Seeder;
-use App\Models\Tipoactuacions;
+use App\Models\Tipoactuacion;
 
-class TipoactuacionsSeeder extends Seeder
+class TipoactuacionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -22,6 +22,6 @@ class TipoactuacionsSeeder extends Seeder
             ],
         ];
 
-        Tipoactuacions::insert($t);
+        Tipoactuacion::insert($t);
     }
 }

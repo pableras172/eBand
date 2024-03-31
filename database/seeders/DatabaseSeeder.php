@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             InstrumentSeeder::class,
             UsersTableSeeder::class,
             RoleUserTableSeeder::class,
-            TipoactuacionsSeeder::class,
+            TipoactuacionSeeder::class,
             ContratosSeeder::class,
             ActuacionSeeder::class,
             ListaSeeder::class,

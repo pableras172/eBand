@@ -9,6 +9,7 @@ use App\Http\Controllers\ActuacionController;
 use App\Http\Controllers\ContratosController;
 use App\Http\Controllers\ListaController;
 use App\Http\Controllers\ListasUsersController;
+use App\Http\Controllers\TipoActuacionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,18 +26,33 @@ use App\Http\Controllers\ListasUsersController;
     return view('welcome');
 });*/
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/', function () {
-        return view('dashboard');
-    })->name('dashboard');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',])->group(
+    function () {
+        
+        Route::get('/', function () {return view('dashboard');})->name('dashboard');
+        Route::resource('tasks', \App\Http\Controllers\TasksController::class);
+        Route::resource('users', \App\Http\Controllers\UsersController::class);
+        
+        Route::resource('tipoactuacion',TipoActuacionController::class);
+
+        Route::resource('instrument',InstrumentClass::class);
+        Route::resource('calendar',CalendarController::class);
+
+        Route::get('/actuacion/createtocontract/{contratos}', [ActuacionController::class, 'createtocontract'])->name('actuacion.createtocontract');
+        Route::resource('actuacion',ActuacionController::class);
+        Route::resource('contratos',ListadoContratos::class);
+        Route::resource('listas',ListaController::class);
+
+        Route::get('/listas/actuacion/{actuacion_id}', [ListaController::class, 'actuacion'])->name('listas.actuacion');
+
+        Route::post('/listauser', [ListasUsersController::class, 'store']);
+        Route::delete('/listauser/{listaId}/{usuarioId}', [ListasUsersController::class, 'destroy']);
+
 });
 
-
-Route::group(['middleware' => 'auth'], function () {
+/*
+Route::group(['middleware' => 'auth'], 
+    function () {
     Route::resource('tasks', \App\Http\Controllers\TasksController::class);
     Route::resource('users', \App\Http\Controllers\UsersController::class);
 
@@ -57,6 +73,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 
 });
+*/
 
 Route::get('/greeting/{locale}', function (string $locale) {
     if (! in_array($locale, ['en', 'es'])) {
