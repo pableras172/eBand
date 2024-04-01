@@ -3,7 +3,7 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ $actuacion->descripcion }}
         </h2>
-        <div class="flex items-center mt-2 text-gray-500 w-full">
+        <div class="flex items-center mt-2 mb-4 text-gray-500 w-full">
             <!-- Icono de calendario -->
             <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 width="16px" height="16px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve"
@@ -116,6 +116,8 @@
             <!-- Número de músicos -->
             <span style="margin: auto;">{{ $actuacion->musicos }}</span>
         </div>
+        <hr>
+        <p class="text-center mt-2 mb-2">{{ $actuacion->observaciones }}</p>
     </x-slot>
 
 
@@ -141,7 +143,7 @@
                                     @endif                                    
                                 >
                                     <div class="flex items-center">
-                                        <img src="{{ asset('storage/'.$user->profile_photo_url) }}" alt="{{ $user->name }}" class="h-10 w-10 rounded-full">
+                                        <img src="{{ asset($user->profile_photo_url) }}" alt="{{ $user->name }}" class="h-10 w-10 rounded-full">
                                         <span class="ml-3 font-medium">{{ $user->name }}</span>
                                     </div>
                                     <div>
@@ -326,7 +328,7 @@
 
                 },
                 error: function(xhr, status, error) {
-                    // Manejar errores si es necesario
+                    
                 }
             });
 
