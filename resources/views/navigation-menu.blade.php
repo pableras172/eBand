@@ -287,7 +287,7 @@
                 <x-responsive-nav-link href="{{ route('contratos.index') }}" :active="request()->routeIs('contratos.index')">
                     {{ __('Contractes') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('contratos.index')">
+                <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
                     {{ __('Tipus d\'actuació') }}
                 </x-responsive-nav-link>
                 @endcan

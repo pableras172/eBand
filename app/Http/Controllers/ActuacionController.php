@@ -38,6 +38,7 @@ class ActuacionController extends Controller
     {
         $actuaciones =  Actuacion::with('contrato','listas')
         ->where('contratos_id', '=', $id)
+        ->orderBy('fechaActuacion', 'asc')
         ->get();
 
         $tipoActuacion = Tipoactuacion::all();
@@ -113,7 +114,15 @@ public function store(Request $request)
      */
     public function edit(Actuacion $actuacion)
     {
-        //
+        // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
+        $actuaciones =  Actuacion::with('contrato','listas')
+        ->where('contratos_id', '=', $actuacion->contratos_id)
+        ->get();
+
+        $contrato = Contratos::find($actuacion->contratos_id);
+        $tipoActuacion = Tipoactuacion::all();
+
+        return view('livewire.contratos.actuacions',compact('actuaciones','actuacion','tipoActuacion','contrato'));
     }
 
     /**
@@ -129,6 +138,20 @@ public function store(Request $request)
      */
     public function destroy(Actuacion $actuacion)
     {
-        //
+        // Verificar si la actuación existe
+        if ($actuacion) {
+            // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
+            $actuaciones =  Actuacion::with('contrato','listas')
+            ->where('contratos_id', '=', $actuacion->contratos_id)
+            ->get();
+
+            $contrato = Contratos::find($actuacion->contratos_id);
+            $tipoActuacion = Tipoactuacion::all();
+
+        
+            $actuacion->delete();
+            return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato'));            
+        } 
     }
+    
 }
