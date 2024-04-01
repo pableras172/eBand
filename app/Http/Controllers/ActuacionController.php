@@ -130,7 +130,48 @@ public function store(Request $request)
      */
     public function update(Request $request, Actuacion $actuacion)
     {
-        //
+                    // Validar los datos de entrada
+            $request->validate([
+                'fechaActuacion' => 'required|date',
+                'descripcion' => 'required|string',
+                'tipoactuacions_id' => 'required|exists:tipoactuacions,id',
+                'coches' => 'nullable|integer',
+                'preciocoche' => 'nullable|numeric',
+                'musicos' => 'nullable|integer',
+                'preciomusico' => 'nullable|numeric',
+                'totalcoches' => 'nullable|integer',
+                'totalmusicos' => 'nullable|integer',
+                'totalactuacion' => 'nullable|numeric',
+                'contratos_id' => 'required|exists:contratos,id',        
+                'observaciones' => 'nullable|string',
+            ]);
+        
+            // Asignar los valores del request al objeto Actuacion
+            $actuacion->fechaActuacion = $request->fechaActuacion;
+            $actuacion->descripcion = $request->descripcion;
+            $actuacion->tipoactuacions_id = $request->tipoactuacions_id;
+            $actuacion->coches = $request->coches;
+            $actuacion->preciocoche = $request->preciocoche;
+            $actuacion->musicos = $request->musicos;
+            $actuacion->preciomusico = $request->preciomusico;
+            $actuacion->totalcoches = $request->totalcoches;
+            $actuacion->totalmusicos = $request->totalmusicos;
+            $actuacion->totalactuacion = $request->totalactuacion;
+            $actuacion->contratos_id = $request->contratos_id;
+            $actuacion->pagado = false;
+            $actuacion->observaciones = $request->observaciones;
+        
+            // Guardar la actuación en la base de datos
+            $actuacion->update();
+        
+            // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
+            $actuaciones =  Actuacion::with('contrato','listas')
+            ->where('contratos_id', '=', $request->contratos_id)
+            ->get();
+        
+            $contrato = Contratos::find($request->contratos_id);
+            $tipoActuacion = Tipoactuacion::all();
+            return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato'));
     }
 
     /**
@@ -138,20 +179,26 @@ public function store(Request $request)
      */
     public function destroy(Actuacion $actuacion)
     {
+        try {
         // Verificar si la actuación existe
-        if ($actuacion) {
-            // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
-            $actuaciones =  Actuacion::with('contrato','listas')
-            ->where('contratos_id', '=', $actuacion->contratos_id)
-            ->get();
+            if ($actuacion) {
+                // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
+                $actuaciones =  Actuacion::with('contrato','listas')
+                ->where('contratos_id', '=', $actuacion->contratos_id)
+                ->get();
 
-            $contrato = Contratos::find($actuacion->contratos_id);
-            $tipoActuacion = Tipoactuacion::all();
-
-        
-            $actuacion->delete();
-            return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato'));            
-        } 
+                $contrato = Contratos::find($actuacion->contratos_id);
+                $tipoActuacion = Tipoactuacion::all();
+            
+                $actuacion->delete();
+            }
+        } catch (\Illuminate\Database\QueryException $exception) {
+            // Manejar la excepción de integridad referencial
+            return redirect()->back()->with('error', 'No puedes eliminar esta actuación porque tiene listas relacionadas');
+        }
+        $eliminado=true;
+        return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato','eliminado'));            
+         
     }
     
 }

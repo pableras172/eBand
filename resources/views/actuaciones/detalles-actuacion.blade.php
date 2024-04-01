@@ -129,7 +129,7 @@
                         <h2 class="px-3 py-2 font-medium flex-grow">
                             {{ $usuariosDelInstrumento->first()->instrument->name }}
                         </h2>
-                        <img class="w-10 h-10 rounded-full px-1 py-1" src="{{ $usuariosDelInstrumento->first()->instrument->icon }}">
+                        <img class="w-10 h-10 rounded-full px-1 py-1" src="{{ asset('storage/imagenes/instruments/'. $usuariosDelInstrumento->first()->instrument->icon) }}">
                     </div>
                     
                                      
@@ -141,8 +141,7 @@
                                     @endif                                    
                                 >
                                     <div class="flex items-center">
-                                        <img class="w-10 h-10 rounded-full" src="{{ $user->profile_photo_path }}"
-                                            alt="{{ $user->name }}">
+                                        <img src="storage/{{ $user->profile_photo_url }}" alt="{{ $user->name }}" class="h-10 w-10 rounded-full">
                                         <span class="ml-3 font-medium">{{ $user->name }}</span>
                                     </div>
                                     <div>
