@@ -80,7 +80,7 @@ class ListaController extends Controller
         }
 
         // Obtener todos los usuarios
-        $usuarios = User::all();
+        $usuarios = User::where('activo', 1)->get();
 
         // Marcar los usuarios seleccionados y con coche
         foreach ($usuarios as $usuario) {

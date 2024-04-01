@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         Route::get('/listas/actuacion/{actuacion_id}', [ListaController::class, 'actuacion'])->name('listas.actuacion');
 
         Route::post('/listauser', [ListasUsersController::class, 'store']);
+        Route::post('/listausercar', [ListasUsersController::class, 'storecar']);
         Route::delete('/listauser/{listaId}/{usuarioId}', [ListasUsersController::class, 'destroy']);
 
 });

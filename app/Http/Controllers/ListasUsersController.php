@@ -48,6 +48,32 @@ class ListasUsersController extends Controller
     }
 
     /**
+ * Store a newly created resource in storage.
+ */
+public function storecar(Request $request)
+{
+    // Validar los datos recibidos en la solicitud
+    $request->validate([
+        'lista_id' => 'required|exists:listas,id',
+        'usuario_id' => 'required|exists:users,id',        
+    ]);
+
+    // Actualizar el campo "coche" en la tabla ListasUser
+    $updated = ListasUser::where('listas_id', $request->lista_id)
+                        ->where('user_id', $request->usuario_id)
+                        ->update(['coche' => $request->estado]);
+
+    if ($updated) {
+        // Devolver una respuesta adecuada
+        return response()->json(['message' => 'Campo "coche" actualizado correctamente'], 200);
+    } else {
+        // Devolver una respuesta indicando que la relación no fue encontrada
+        return response()->json(['message' => 'Relación lista-usuario no encontrada'], 404);
+    }
+}
+
+
+    /**
      * Display the specified resource.
      */
     public function show(ListasUser $listaUser)
