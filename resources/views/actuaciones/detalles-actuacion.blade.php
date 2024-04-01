@@ -141,7 +141,7 @@
                                     @endif                                    
                                 >
                                     <div class="flex items-center">
-                                        <img src="storage/{{ $user->profile_photo_url }}" alt="{{ $user->name }}" class="h-10 w-10 rounded-full">
+                                        <img src="{{ asset('storage/'.$user->profile_photo_url }}) }}" alt="{{ $user->name }}" class="h-10 w-10 rounded-full">
                                         <span class="ml-3 font-medium">{{ $user->name }}</span>
                                     </div>
                                     <div>
