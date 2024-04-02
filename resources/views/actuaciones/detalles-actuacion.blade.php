@@ -261,10 +261,14 @@
                     @endforeach
                 </div>                               
             </div>
-        <div class="block m-auto text-center">
-            <a href="{{ route('actuacion.index') }}" class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded">{{ __('Tornar al llistat') }}</a>
+        
         </div>
-        </div>
+        <div class="flex justify-center mt-4 mb-4">
+            <a  href="{{ route('actuacion.index') }}"
+                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                Tornar al llistat
+            </a>
+        </div> 
 
     </div>
 

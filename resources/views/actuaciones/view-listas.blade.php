@@ -39,7 +39,7 @@
                 @foreach ($actuacionesDelMes->sortBy('fechaActuacion') as $actuacion)
                     <div
                         class="relative flex flex-col shadow-md rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 max-w-sm">
-                        <a href="" class="z-20 absolute h-full w-full top-0 left-0">&nbsp;</a>
+                        <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}" class="z-20 absolute h-full w-full top-0 left-0">&nbsp;</a>
                         <div class="h-auto overflow-hidden">
                             <div class="h-40 overflow-hidden relative">
                                 <img src="{{ asset('storage/imagenes/tipoactuacion/' . $actuacion->tipoactuacion->icon) }}"
@@ -62,7 +62,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                         </svg>
-                                    </a>--}}
+                                    </a>
                                     <a class="text-orange-600 hover:text-blue-500"
                                         href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}"
                                         alt="Més informació">
@@ -94,7 +94,7 @@
                                                 </path>
                                             </g>
                                         </svg>
-                                    </a>
+                                    </a>--}}
                                 </div>
                             </div>
                         </div>
