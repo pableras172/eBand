@@ -11,8 +11,8 @@
         </div>
     @endif
     
-    <div class="container mx-auto py-10 px-2 sm:px-6 lg:px-0">
-        <div class="block mb-8">
+    <div class="container mx-auto py-2 px-2 sm:px-6 lg:px-0">
+        <div class="block mb-2">
             <div class="flex justify-end">
                 <a href="{{ route('contratos.create') }}"
                     class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Nou contracte</a>
@@ -31,7 +31,7 @@
                                         Població
                                     </th>
                                     <th scope="col"
-                                        class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         Descripció
                                     </th>
                                     <th scope="col"
@@ -43,7 +43,7 @@
                                         Data de Fi
                                     </th>
                                     <th scope="col"
-                                        class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         Contacte
                                     </th>
                                     <th scope="col"
@@ -58,7 +58,7 @@
                                         <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $contrato->poblacion }}
                                         </td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             {{ $contrato->descripcion }}
                                         </td>
                                         <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
@@ -67,17 +67,17 @@
                                         <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             {{ $contrato->fechafin ? \Carbon\Carbon::parse($contrato->fechafin)->format('d/m/Y') : '-' }}
                                         </td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             {{ $contrato->contacto }}
                                         </td>
                                         <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
                                             <a href="{{ route('contratos.edit', $contrato->id) }}"
-                                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mb-2">
                                                 Editar
                                             </a>          
                                             &nbsp;                      
                                             <a href="{{ route('actuacion.createtocontract', $contrato->id) }}"
-                                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-gray-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mb-2 mr-2">
                                                 Actuacions
                                              </a>
                                              

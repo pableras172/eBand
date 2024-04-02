@@ -12,10 +12,10 @@
     @endif
 
     <div>
-        <div class="max-w-6xl mx-auto py-10 sm:px-6 lg:px-8">
-            <div class="block mb-8">
+        <div class="container mx-auto py-2 px-2 sm:px-6 lg:px-0">        
+            <div class="block mb-2">
                 <div class="flex justify-end">
-                    <a href="{{ route('users.create') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Add User</a>
+                    <a href="{{ route('users.create') }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Nou músic</a>
                 </div>
             </div>
                     
@@ -26,56 +26,74 @@
                             <table class="min-w-full divide-y divide-gray-200 w-full">
                                 <thead>
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         
                                     </th>
-                                    <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Nom
                                     </th>
-                                    <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <!-- EMAIL -->
+                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         Email
                                     </th>                                    
-                                    <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <!-- FECHA ALTA -->
+                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         Fecha Alta
                                     </th>
-                                    <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <!-- INSTRUMENT -->
+                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         Instrument
                                     </th>
-                                    <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <!-- ACTIU -->
+                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         Actiu
                                     </th>                                    
-                                    <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Accions
                                     </th>                                    
                                 </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach ($users as $user)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    
+                                        @if ($user->activo == 0)
+                                            <tr style="background-color: #891212; color: white">
+                                        @else
+                                            <tr>
+                                        @endif
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
                                             <img src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}" class="h-10 w-10 rounded-full">
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        @if ($user->activo == 0)
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-white-900">
+                                        @else
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                                        @endif
+                                        
                                             {{ $user->name }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <!-- EMAIL -->
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             {{ $user->email }}
                                         </td>   
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <!-- FECHA ALTA -->
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             {{ $user->fechaAlta ? \Carbon\Carbon::parse($user->fechaAlta)->format('d/m/Y') : '-' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <!-- INSTRUMENT -->
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             @if ($user->instrument)
                                                 {{ $user->instrument->name }}
                                             @else
                                                 No te instrument asignat
                                             @endif
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <!-- ACTIU -->
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             {{ $user->activo ? 'Si' : 'No' }}
                                         </td>
 
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">                                                                                        
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm font-medium">                                                                                        
                                             <a href="{{ route('users.edit', $user->id) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                                 Editar
                                             </a>                                            
@@ -84,6 +102,7 @@
                                 @endforeach
                                 </tbody>
                             </table>
+                            {{ $users->links() }}
                         </div>
                     </div>
                 </div>
