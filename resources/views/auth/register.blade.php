@@ -5,6 +5,11 @@
         </x-slot>
 
         <x-validation-errors class="mb-4" />
+        @if ($errors->has('g-recaptcha-response'))
+            <span class="feedbak-error">
+                <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
+            </span>
+        @endif
 
         <form method="POST" action="{{ route('register') }}">
             @csrf
@@ -61,19 +66,19 @@
             @endif
 
             <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                    href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
+
                 {!! NoCaptcha::display() !!}
-                @if ($errors->has('g-recaptcha-response'))
-                    <span class="feedbak-error">
-                        <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
-                    </span>
-                @endif
-                <x-button class="ms-4">
-                    {{ __('Register') }}
-                </x-button>
+               
+                
+            </div>
+            <div class="flex items-center justify-end mt-4">
+                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                href="{{ route('login') }}">
+                {{ __('Already registered?') }}
+            </a>
+            <x-button class="ms-4">
+                {{ __('Register') }}
+            </x-button>
             </div>
         </form>
     </x-authentication-card>
