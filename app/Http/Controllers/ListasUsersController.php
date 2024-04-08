@@ -180,4 +180,19 @@ public function setdisponible(Request $request)
             return response()->json(['message' => 'Relación lista-usuario no encontrada'], 404);
         }
     }
+
+    public function clean($listaId)
+    {
+        if (ListasUser::where('listas_id', $listaId)->delete()) {            
+
+            $totalFilas = ListasUser::where('listas_id', $listaId)->count();
+
+            // Contar el número de elementos con el campo "coche" igual a 1
+            $cochesCount = ListasUser::where('listas_id', $listaId)->where('coche', 1)->count();
+            // Devolver una respuesta adecuada
+            return response()->json(['message' => 'Lista limpia',
+            'total_filas' => $totalFilas,
+            'coches_count' => $cochesCount], 200);
+        } 
+    }
 }

@@ -141,7 +141,7 @@
     @endcannot
 
     <div class="bg-gray-100">
-        <div class="max-w-sm mx-auto my-10">
+        <div class="max-w-sm mx-auto my-6">
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                 <div class="divide-y divide-gray-200">
                     @foreach ($usuarios->groupBy('instrument_id') as $instrumento => $usuariosDelInstrumento)
@@ -285,22 +285,37 @@
             </div>
         </div>
     </div>
-    <div style="height: 150px">
+    <div style="height: 175px">
 
     </div>
     <footer
-        class="fixed bottom-0 left-0 z-20 w-full p-4 bg-white border-t border-gray-200 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
+        class="fixed bottom-0 left-0 z-20 w-full p-4 bg-white border-t border-black-800 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
         @can('admin')
-            <div>{{ __('Musics Seleccionats:') }}&nbsp;<span id="musics_count" style="font-weight: bold">{{ $totalFilas }}</span> de <span id="musics_count" style="font-weight: bold">{{ $actuacion->musicos }}</span></div>
-            <div>{{ __('Cotxes Seleccionats:') }}&nbsp;<span id="coches_count" style="font-weight: bold">{{ $cochesCount }}</span> de <span id="musics_count" style="font-weight: bold">{{ $actuacion->coches }}</span></div>
-            <div class="flex justify-center mt-4 mb-4">
-                <a href="#"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                    {{ __('Buidar llista') }}
-                </a>
+            <div class="flex justify-center items-center mt-4 mb-4">
+                <div>
+                    {{ __('Musics Seleccionats:') }}&nbsp;
+                    <span id="musics_count" style="font-weight: bold">{{ $totalFilas }}</span>
+                    de
+                    <span id="musics_total" style="font-weight: bold">{{ $actuacion->musicos }}</span>
+                </div>
+            </div>
+            <div class="flex justify-center items-center mb-4">
+                <div>
+                    {{ __('Cotxes Seleccionats:') }}&nbsp;
+                    <span id="coches_count" style="font-weight: bold">{{ $cochesCount }}</span>
+                    de
+                    <span id="coches_total" style="font-weight: bold">{{ $actuacion->coches }}</span>
+                </div>
             </div>
         @endcan
         <div class="flex justify-center mt-4 mb-4">
+            @can('admin')
+                <a id="cleanListaButton" href="#"
+                data-lista-id="{{ $lista->id }}" 
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-4">
+                    {{ __('Buidar llista') }}
+                </a>
+            @endcan
             <a href="{{ route('actuacion.index') }}"
                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
                 {{ __('Tornar al llistat') }}
@@ -372,7 +387,7 @@
                     updateContadores(numFilas, numElementosConCoche);
                 },
                 error: function(xhr, status, error) {
-                    componente.checked=false;
+                    componente.checked = false;
                 }
             });
 
@@ -407,6 +422,40 @@
             $('#musics_count').text(musics);
             $('#coches_count').text(cotxes);
         }
+
+        // Obtener el botón "Buidar llista" por su identificador
+        var cleanListaButton = document.getElementById('cleanListaButton');
+
+        // Agregar un event listener para el clic en el botón
+        cleanListaButton.addEventListener('click', function(event) {
+            // Prevenir el comportamiento predeterminado del enlace
+            event.preventDefault();
+
+            // Obtener el listaId de los atributos de datos del botón
+            var listaId = cleanListaButton.getAttribute('data-lista-id');
+
+            // Confirmar con el usuario antes de realizar la acción
+            if (confirm("¿Estás seguro de que quieres limpiar la lista?")) {
+                // Enviar una solicitud DELETE a la ruta correspondiente
+                fetch(`/listauserclean/${listaId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json'
+                        },
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error al limpiar la lista');
+                        }
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Manejar errores si es necesario
+                    });
+            }
+        });
     </script>
 
 
