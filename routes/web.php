@@ -47,6 +47,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
 
         Route::post('/listauser', [ListasUsersController::class, 'store']);
         Route::post('/listausercar', [ListasUsersController::class, 'storecar']);
+        Route::post('/listauserdisp', [ListasUsersController::class, 'setdisponible']);
         Route::delete('/listauser/{listaId}/{usuarioId}', [ListasUsersController::class, 'destroy']);
 
 });
@@ -77,7 +78,7 @@ Route::group(['middleware' => 'auth'],
 */
 
 Route::get('/greeting/{locale}', function (string $locale) {
-    if (! in_array($locale, ['en', 'es'])) {
+    if (! in_array($locale, ['ca_VL', 'es'])) {
         abort(400);
     }
  

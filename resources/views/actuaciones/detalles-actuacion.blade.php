@@ -120,7 +120,29 @@
         <p class="text-center mt-2 mb-2">{{ $actuacion->observaciones }}</p>
     </x-slot>
 
-
+    @cannot('admin')
+        @if($usuarioDisponible)
+            <div class="flex justify-center mt-4 mb-4">
+                <a id="btnodisponible" href="" onclick="nodisponible(this)"
+                    data-lista-id="{{ $lista->id }}"
+                    data-usuario-id="{{ Auth::user()->id }}"
+                    data-disponible="0"
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                    Comunicar no disponible
+                </a>
+            </div>
+        @else
+        <div class="flex justify-center mt-4 mb-4">
+            <a id="btnodisponible" href="" onclick="nodisponible(this)"
+                data-lista-id="{{ $lista->id }}"
+                data-usuario-id="{{ Auth::user()->id }}"
+                data-disponible="1"
+                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                Comunicar disponible
+            </a>
+        </div>
+        @endif
+    @endcannot
 
     <div class="bg-gray-100">
         <div class="max-w-sm mx-auto my-10">
@@ -145,6 +167,9 @@
                                     <div class="flex items-center">
                                         <img src="{{ asset($user->profile_photo_url) }}" alt="{{ $user->name }}" class="h-10 w-10 rounded-full">
                                         <span class="ml-3 font-medium">{{ $user->name }}</span>
+                                        @if (!$user->disponible)
+                                            <span class="ml-3 font-medium">{{ __(' - (No disponile)') }}</span>
+                                        @endif
                                     </div>
                                     <div>
                                         @if ($user->coche)
@@ -326,6 +351,31 @@
                     lista_id: listaId,
                     usuario_id: usuarioId,
                     estado: componente.checked ? 1 : 0,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+
+                },
+                error: function(xhr, status, error) {
+                    
+                }
+            });
+
+        }
+
+        function nodisponible(componente) {
+            var listaId = componente.getAttribute('data-lista-id');
+            var usuarioId = componente.getAttribute('data-usuario-id');
+            var disponible = componente.getAttribute('data-disponible');
+           
+
+            $.ajax({
+                url: '/listauserdisp',
+                method: 'POST',
+                data: {
+                    lista_id: listaId,
+                    usuario_id: usuarioId,
+                    disponible: disponible==1 ? 1 : 0,
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {

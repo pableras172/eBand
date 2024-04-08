@@ -72,6 +72,38 @@ public function storecar(Request $request)
     }
 }
 
+public function setdisponible(Request $request)
+{
+    // Validar los datos recibidos en la solicitud
+    $request->validate([
+        'lista_id' => 'required|exists:listas,id',
+        'usuario_id' => 'required|exists:users,id',        
+    ]);
+
+    $existingRelation = ListasUser::where('listas_id', $request->lista_id)
+                                   ->where('user_id', $request->usuario_id)
+                                   ->first();
+
+    if ($existingRelation && $request->disponible) {
+        // Si la relación existe, elimino el registro para que aparezca marcable
+        $existingRelation->where('listas_id', $request->lista_id)
+                ->where('user_id', $request->usuario_id)
+                ->delete();
+        return response()->json(['message' => 'Disponibilidad actualizada correctamente'], 200);
+    } else {
+
+        $listaUser = new ListasUser();
+        $listaUser->listas_id = $request->lista_id;
+        $listaUser->user_id = $request->usuario_id;
+        $listaUser->disponible = $request->disponible;
+        // Guardar el registro en la base de datos
+        $listaUser->save();
+
+        return response()->json(['message' => 'Relación lista-usuario creada correctamente'], 201);
+    }
+}
+
+
 
     /**
      * Display the specified resource.

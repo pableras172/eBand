@@ -13,8 +13,8 @@ return [
     |
     */
 
-    'idioma' => 'Language',
-    'dashboard'=>'Tablón',
+    'idioma' => 'Idioma',
+    'dashboard' => 'Taulell',
     'bienvenido_titulo' => 'Benvingut al tauler de comandament de eBand',
     'bienvenido_contenido' => 'A través d\'aquest tauler de comandament tindràs accés directe a les assistències dels assajos, calendari de la banda, llistes d\'actuacions, etc.',
 
@@ -36,4 +36,7 @@ return [
     'calendario_var' => 'Veure calendari',
 
     'calendario_proximas' => 'Calendari de la banda - Próximes actuacions',
+
+
+
 ];

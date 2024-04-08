@@ -13,11 +13,10 @@ return [
     |
     */
 
-    'reset' => 'Tu contraseña ha sido restablecida.',
-    'sent' => 'Hemos enviado por correo electrónico el enlace para restablecer tu contraseña.',
-    'throttled' => 'Por favor, espera antes de intentarlo de nuevo.',
-    'token' => 'Este token para restablecer la contraseña no es válido.',
-    'user' => "No podemos encontrar un usuario con esa dirección de correo electrónico.",
-    
+    'reset' => 'La teva contrasenya ha sigut restablida.',
+    'sent' => 'Hem enviat per correu electrònic el teu enllaç per restablir la contrasenya.',
+    'throttled' => 'Si us plau, espera abans de tornar-ho a intentar.',
+    'token' => 'Aquest token de restabliment de contrasenya no és vàlid.',
+    'user' => "No podem trobar un usuari amb aquesta adreça de correu electrònic.",  
 
 ];

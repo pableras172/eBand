@@ -2,11 +2,11 @@
     <x-application-logo class="block h-12 w-auto" />
 
     <h1 class="mt-8 text-2xl font-medium text-gray-900 dark:text-white">
-        Bienvenido al escritorio de eBand
+        {{__('common.bienvenido_titulo')}}
     </h1>
 
     <p class="mt-6 text-gray-500 dark:text-gray-400 leading-relaxed">
-       A través de este escritorio tendras acceso directo a las asistencias de los ensayos, calendarios de la banda, listas e actuaciones...etc
+        {{__('common.bienvenido_contenido')}}
     </p>
 </div>
 
@@ -28,12 +28,12 @@
         </div>
 
         <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-            Personaliza tu perfil de usuario. Cuantos mas datos facilites, mejor comunicados podremos estar.
+            {{__('common.perfil_descripcion')}}
         </p>
 
         <p class="mt-4 text-sm">
             <a href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
-                Acceder al perfil
+                {{__('common.perfil_acceder')}}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
                     <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
                 </svg>
@@ -53,17 +53,17 @@
                 
                 </svg>
             <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                <a href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">Listado de músicos</a>
+                <a href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">{{__('common.listado_musicos_titulo')}}</a>
             </h2>
         </div>
 
         <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-            Aqui puedes ver un listado de los músicos creados en la aplicación. Si tus roles lo permiten podras editar la información de los usuarios.
+            {{__('common.listado_musicos_descripcion')}}
         </p>
 
         <p class="mt-4 text-sm">
             <a href="{{ route('users.index') }}" :active="request()->routeIs('users.index')" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
-                Ver listado de músicos
+                {{__('common.listado_musicos_ver')}}
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
                     <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
@@ -84,16 +84,16 @@
                 
                 </svg>
             <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                <a href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">Instrumentos</a>
+                <a href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')"> {{__('common.instrumentos')}}</a>
             </h2>
         </div>
 
         <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-            Accede al listado de los instrumentos dados de alta en la banda. Si tus roles lo permiten puedes editar la información del instrumento.
+            {{__('common.instrumentos_descripcion')}}
         </p>
         <p class="mt-4 text-sm">
             <a href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
-                Ver listado de instrumentos
+                {{__('common.instrumentos_listado_ver')}}
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
                     <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
@@ -114,16 +114,16 @@
                 
                 </svg>
             <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                Calendario
+                {{__('common.calendario')}}
             </h2>
         </div>
 
         <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-            Comprueba las fechas marcadas en el calendario con los eventos que vamos a realizar.
+            {{__('common.calendario_descripcion')}}
         </p>
         <p class="mt-4 text-sm">
             <a href="#" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
-                Ver calendario
+                {{__('common.calendario_var')}}
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
                     <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />

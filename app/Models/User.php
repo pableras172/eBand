@@ -82,7 +82,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function listas()
     {
         return $this->belongsToMany(Listas::class)
-            ->withPivot('coche', 'pagada', 'cuentas'); // También puedes incluir timestamps si los tienes en la tabla pivot
+            ->withPivot('coche', 'pagada', 'cuentas','disponible'); // También puedes incluir timestamps si los tienes en la tabla pivot
     }
 
     public function hasRole($role)

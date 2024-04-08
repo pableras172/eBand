@@ -6,6 +6,7 @@ use App\Models\Listas;
 use App\Models\User;
 use App\Models\Actuacion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ListaController extends Controller
 {
@@ -16,54 +17,7 @@ class ListaController extends Controller
     {
 
         
-    }
-
-    /*public function actuacion($request)
-    {
-        // Obtener el actuacion_id de la solicitud
-        $actuacion_id = $request;
-    
-        // Obtener la actuación y cargar las relaciones 'actuacion' y 'users'
-        $listas = Lista::where('actuacions_id', $actuacion_id)
-            ->with(['actuacion', 'users.instrument']) // Cargar la relación 'instrument' dentro de 'users'
-            ->get();
-    
-        // Ordenar los usuarios por el campo 'orden' de 'instruments'
-        $listas->each(function ($lista) {
-            $lista->users = $lista->users->sortBy('instrument.orden');
-        });
-    
-        return view('actuaciones.detalles-actuacion', compact('listas'));
-    }*/
-
-/*public function actuacion($request)
-    {
-        // Obtener el id de la actuación de la solicitud
-        $actuacion_id = $request;
-    
-        // Obtener la actuación y cargar las relaciones 'actuacion' y 'users' con el campo 'coche' de la tabla pivot
-        $listas = Lista::where('actuacions_id', $actuacion_id)
-            ->with(['actuacion', 'users' => function ($query) {
-                $query->select('users.*', 'lista_user.coche'); // Seleccionar el campo 'coche' de la tabla pivot
-            }])
-            ->get();
-    
-        // Obtener todos los usuarios
-        $usuarios = User::all();
-    
-        // Marcamos los usuarios que están en la lista y obtenemos la información del coche
-        $listas->each(function ($lista) use ($usuarios) {
-            $usuarios->each(function ($usuario) use ($lista) {
-                // Marcar si el usuario está en la lista
-                $usuario->selected = $lista->users->contains('id', $usuario->id);
-    
-                // Obtener la información del coche para este usuario desde la relación 'users'
-                $usuario->coche = $usuario->pivot->coche ?? false;
-            });
-        });
-    
-        return view('actuaciones.detalles-actuacion', compact('listas', 'usuarios'));
-    }*/
+    }    
 
     public function actuacion($actuacionId)
     {
@@ -79,6 +33,13 @@ class ListaController extends Controller
             $lista->save(); // Guardar la nueva lista en la base de datos
         }
 
+        $usuarioDisponible = true;
+
+        if ($lista->users->contains(Auth::user()->id)
+        && !$lista->users()->where('id', (Auth::user()->id))->first()->pivot->disponible) {
+            $usuarioDisponible = false;
+        }
+
         // Obtener todos los usuarios
         $usuarios = User::where('activo', 1)->get();
 
@@ -86,18 +47,23 @@ class ListaController extends Controller
         foreach ($usuarios as $usuario) {
             $usuario->seleccionado = false; // Por defecto, no seleccionado
             $usuario->coche = false; // Por defecto, no marcado
-
+            $usuario->disponible = true;
             // Verificar si el usuario está en la lista
             if ($lista->users->contains($usuario->id)) {
+                if (!$lista->users()->where('id', $usuario->id)->first()->pivot->disponible) {
+                    $usuario->disponible = false;
+                    continue;
+                }
                 $usuario->seleccionado = true;
                 // Verificar si el usuario tiene marcado el campo coche en la lista
                 if ($lista->users()->where('id', $usuario->id)->first()->pivot->coche) {
                     $usuario->coche = true;
                 }
+                
             }
         }
 
-        return view('actuaciones.detalles-actuacion', compact('actuacion', 'usuarios','lista'));
+        return view('actuaciones.detalles-actuacion', compact('actuacion', 'usuarios','lista','usuarioDisponible'));
     }
     
 

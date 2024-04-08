@@ -13,13 +13,13 @@ return [
     |
     */
 
-    'failed' => 'Estas credenciales no coinciden con nuestros registros.',
-    'password' => 'La contraseña proporcionada es incorrecta.',
-    'throttle' => 'Demasiados intentos de inicio de sesión. Por favor, inténtalo de nuevo en :seconds segundos.',
-    'email' => 'Correo electrónico',
-    'logout' => 'Cerrar sesión',
-    'manageaccount' => 'Gestionar cuenta',
-    'miperfil' => 'Mi perfil',
+    'failed' => 'Estes credencials no coincideixen amb els nostres registres.',
+    'password' => 'La contrasenya proporcionada és incorrecta.',
+    'throttle' => 'Massa intents d\'inici de sessió. Siusplau, intenta-ho de nou en :seconds segons.',
+    'email' => 'Direcció de correu electrònic',
+    'logout' => 'Tancar sessió',
+    'manageaccount' => 'Gestió del compte',
+    'miperfil' => 'El meu perfil',
     
 
 ];

@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class ListasUser extends Model
 {
     protected $table = "listas_user";
+    protected $fillable = [
+        'disponible',
+    ];
     use HasFactory;
     
 }

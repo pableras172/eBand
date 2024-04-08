@@ -17,6 +17,6 @@ class Listas extends Model
     public function users()
     {
         return $this->belongsToMany(User::class)
-            ->withPivot('coche', 'pagada', 'cuentas'); // También puedes incluir timestamps si los tienes en la tabla pivot
+            ->withPivot('coche', 'pagada', 'cuentas','disponible'); // También puedes incluir timestamps si los tienes en la tabla pivot
     }
 }
