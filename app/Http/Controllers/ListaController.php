@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Actuacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ListasUser;
 
 class ListaController extends Controller
 {
@@ -63,7 +64,13 @@ class ListaController extends Controller
             }
         }
 
-        return view('actuaciones.detalles-actuacion', compact('actuacion', 'usuarios','lista','usuarioDisponible'));
+        // Contar el número total de filas en ListasUser con el lista_id dado
+        $totalFilas = ListasUser::where('listas_id', $actuacionId)->count();
+
+        // Contar el número de elementos con el campo "coche" igual a 1
+        $cochesCount = ListasUser::where('listas_id', $actuacionId)->where('coche', 1)->count();
+
+        return view('actuaciones.detalles-actuacion', compact('actuacion', 'usuarios','lista','usuarioDisponible','totalFilas','cochesCount'));
     }
     
 

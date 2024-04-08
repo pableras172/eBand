@@ -121,26 +121,22 @@
     </x-slot>
 
     @cannot('admin')
-        @if($usuarioDisponible)
+        @if ($usuarioDisponible)
             <div class="flex justify-center mt-4 mb-4">
-                <a id="btnodisponible" href="" onclick="nodisponible(this)"
-                    data-lista-id="{{ $lista->id }}"
-                    data-usuario-id="{{ Auth::user()->id }}"
-                    data-disponible="0"
+                <a id="btnodisponible" href="" onclick="nodisponible(this)" data-lista-id="{{ $lista->id }}"
+                    data-usuario-id="{{ Auth::user()->id }}" data-disponible="0"
                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
                     Comunicar no disponible
                 </a>
             </div>
         @else
-        <div class="flex justify-center mt-4 mb-4">
-            <a id="btnodisponible" href="" onclick="nodisponible(this)"
-                data-lista-id="{{ $lista->id }}"
-                data-usuario-id="{{ Auth::user()->id }}"
-                data-disponible="1"
-                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                Comunicar disponible
-            </a>
-        </div>
+            <div class="flex justify-center mt-4 mb-4">
+                <a id="btnodisponible" href="" onclick="nodisponible(this)" data-lista-id="{{ $lista->id }}"
+                    data-usuario-id="{{ Auth::user()->id }}" data-disponible="1"
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                    Comunicar disponible
+                </a>
+            </div>
         @endif
     @endcannot
 
@@ -149,23 +145,22 @@
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                 <div class="divide-y divide-gray-200">
                     @foreach ($usuarios->groupBy('instrument_id') as $instrumento => $usuariosDelInstrumento)
-                    <div class="flex items-center justify-between bg-gray-200">
-                        <h2 class="px-3 py-2 font-medium flex-grow">
-                            {{ $usuariosDelInstrumento->first()->instrument->name }}
-                        </h2>
-                        <img class="w-10 h-10 rounded-full px-1 py-1" src="{{ asset('storage/imagenes/instruments/'. $usuariosDelInstrumento->first()->instrument->icon) }}">
-                    </div>
-                    
-                                     
-                        <ul class="divide-y divide-gray-200">                           
-                            @foreach ($usuariosDelInstrumento->sortBy('name') as $user)                            
-                                <li class="p-3 flex justify-between items-center user-card" 
-                                    @if(Auth::user()->id == $user->id )
-                                        style="background-color: #ffbd59;"
-                                    @endif                                    
-                                >
+                        <div class="flex items-center justify-between bg-gray-200">
+                            <h2 class="px-3 py-2 font-medium flex-grow">
+                                {{ $usuariosDelInstrumento->first()->instrument->name }}
+                            </h2>
+                            <img class="w-10 h-10 rounded-full px-1 py-1"
+                                src="{{ asset('storage/imagenes/instruments/' . $usuariosDelInstrumento->first()->instrument->icon) }}">
+                        </div>
+
+
+                        <ul class="divide-y divide-gray-200">
+                            @foreach ($usuariosDelInstrumento->sortBy('name') as $user)
+                                <li class="p-3 flex justify-between items-center user-card"
+                                    @if (Auth::user()->id == $user->id) style="background-color: #ffbd59;" @endif>
                                     <div class="flex items-center">
-                                        <img src="{{ asset($user->profile_photo_url) }}" alt="{{ $user->name }}" class="h-10 w-10 rounded-full">
+                                        <img src="{{ asset($user->profile_photo_url) }}" alt="{{ $user->name }}"
+                                            class="h-10 w-10 rounded-full">
                                         <span class="ml-3 font-medium">{{ $user->name }}</span>
                                         @if (!$user->disponible)
                                             <span class="ml-3 font-medium">{{ __(' - (No disponile)') }}</span>
@@ -251,14 +246,16 @@
 
                                         @cannot('admin')
                                             <input style="float: left;margin-right: 15px;" type="checkbox"
-                                                data-lista-id="{{ $lista->id }}" data-usuario-id="{{ $user->id }}"
-                                                {{ $user->seleccionado ? 'checked' : '' }}
-                                                disabled >
+                                                data-lista-id="{{ $lista->id }}"
+                                                data-usuario-id="{{ $user->id }}"
+                                                {{ $user->seleccionado ? 'checked' : '' }} disabled>
                                         @endcan
 
                                         @can('admin')
                                             <input style="float: left;margin-right: 15px;" type="checkbox"
-                                                data-lista-id="{{ $lista->id }}" data-usuario-id="{{ $user->id }}"
+                                                data-lista-id="{{ $lista->id }}"
+                                                data-usuario-id="{{ $user->id }}"
+                                                data-usuario-percent="{{ $user->porcentaje }}"
                                                 {{ $user->seleccionado ? 'checked' : '' }}
                                                 onchange="actualizarSeleccion(this)">
 
@@ -284,19 +281,32 @@
                             @endforeach
                         </ul>
                     @endforeach
-                </div>                               
+                </div>
             </div>
-        
         </div>
-        <div class="flex justify-center mt-4 mb-4">
-            <a  href="{{ route('actuacion.index') }}"
-                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                Tornar al llistat
-            </a>
-        </div> 
+    </div>
+    <div style="height: 150px">
 
     </div>
-
+    <footer
+        class="fixed bottom-0 left-0 z-20 w-full p-4 bg-white border-t border-gray-200 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
+        @can('admin')
+            <div>{{ __('Musics Seleccionats:') }}&nbsp;<span id="musics_count" style="font-weight: bold">{{ $totalFilas }}</span> de <span id="musics_count" style="font-weight: bold">{{ $actuacion->musicos }}</span></div>
+            <div>{{ __('Cotxes Seleccionats:') }}&nbsp;<span id="coches_count" style="font-weight: bold">{{ $cochesCount }}</span> de <span id="musics_count" style="font-weight: bold">{{ $actuacion->coches }}</span></div>
+            <div class="flex justify-center mt-4 mb-4">
+                <a href="#"
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                    {{ __('Buidar llista') }}
+                </a>
+            </div>
+        @endcan
+        <div class="flex justify-center mt-4 mb-4">
+            <a href="{{ route('actuacion.index') }}"
+                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                {{ __('Tornar al llistat') }}
+            </a>
+        </div>
+    </footer>
 
     <script>
         function actualizarSeleccion(checkbox) {
@@ -315,7 +325,10 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
-                        // Manejar la respuesta si es necesario
+                        var numFilas = response.total_filas;
+                        var numElementosConCoche = response.coches_count;
+                        updateContadores(numFilas, numElementosConCoche);
+
                     },
                     error: function(xhr, status, error) {
                         // Manejar errores si es necesario
@@ -330,7 +343,7 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
-                        // Manejar la respuesta si es necesario
+                        updateContadores(numFilas, numElementosConCoche);
                     },
                     error: function(xhr, status, error) {
                         // Manejar errores si es necesario
@@ -354,10 +367,12 @@
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
-
+                    var numFilas = response.total_filas;
+                    var numElementosConCoche = response.coches_count;
+                    updateContadores(numFilas, numElementosConCoche);
                 },
                 error: function(xhr, status, error) {
-                    
+                    componente.checked=false;
                 }
             });
 
@@ -367,7 +382,7 @@
             var listaId = componente.getAttribute('data-lista-id');
             var usuarioId = componente.getAttribute('data-usuario-id');
             var disponible = componente.getAttribute('data-disponible');
-           
+
 
             $.ajax({
                 url: '/listauserdisp',
@@ -375,17 +390,22 @@
                 data: {
                     lista_id: listaId,
                     usuario_id: usuarioId,
-                    disponible: disponible==1 ? 1 : 0,
+                    disponible: disponible == 1 ? 1 : 0,
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
 
                 },
                 error: function(xhr, status, error) {
-                    
+
                 }
             });
 
+        }
+
+        function updateContadores(musics, cotxes) {
+            $('#musics_count').text(musics);
+            $('#coches_count').text(cotxes);
         }
     </script>
 

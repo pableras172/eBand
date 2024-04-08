@@ -297,8 +297,8 @@
                     {{ __('Castellano') }}
                 </x-responsive-nav-link>
 
-                <x-responsive-nav-link href="/greeting/en">
-                    {{ __('English') }}
+                <x-responsive-nav-link href="/greeting/ca_VL">
+                    {{ __('Valencià') }}
                 </x-responsive-nav-link>
 
                 <!-- Team Management -->

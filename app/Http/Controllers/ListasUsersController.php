@@ -43,8 +43,18 @@ class ListasUsersController extends Controller
         // Guardar el registro en la base de datos
         $listaUser->save();
 
-        // Devolver una respuesta adecuada
-        return response()->json(['message' => 'Relación lista-usuario creada correctamente'], 201);
+        // Contar el número total de filas en ListasUser con el lista_id dado
+        $totalFilas = ListasUser::where('listas_id', $request->lista_id)->count();
+
+        // Contar el número de elementos con el campo "coche" igual a 1
+        $cochesCount = ListasUser::where('listas_id', $request->lista_id)->where('coche', 1)->count();
+
+        // Devolver una respuesta adecuada con los datos solicitados
+        return response()->json([
+            'message' => 'Relación lista-usuario creada correctamente',
+            'total_filas' => $totalFilas,
+            'coches_count' => $cochesCount
+        ], 201);
     }
 
     /**
@@ -63,9 +73,17 @@ public function storecar(Request $request)
                         ->where('user_id', $request->usuario_id)
                         ->update(['coche' => $request->estado]);
 
+        // Contar el número total de filas en ListasUser con el lista_id dado
+        $totalFilas = ListasUser::where('listas_id', $request->lista_id)->count();
+
+        // Contar el número de elementos con el campo "coche" igual a 1
+        $cochesCount = ListasUser::where('listas_id', $request->lista_id)->where('coche', 1)->count();
+
     if ($updated) {
         // Devolver una respuesta adecuada
-        return response()->json(['message' => 'Campo "coche" actualizado correctamente'], 200);
+        return response()->json(['message' => 'Campo "coche" actualizado correctamente',
+        'total_filas' => $totalFilas,
+        'coches_count' => $cochesCount], 200);
     } else {
         // Devolver una respuesta indicando que la relación no fue encontrada
         return response()->json(['message' => 'Relación lista-usuario no encontrada'], 404);
@@ -147,8 +165,16 @@ public function setdisponible(Request $request)
             // Eliminar la relación lista-usuario
             //$listaUser->delete();
             $lista->users()->detach($usuarioId);
+            
+            // Contar el número total de filas en ListasUser con el lista_id dado
+            $totalFilas = ListasUser::where('listas_id', $request->lista_id)->count();
+
+            // Contar el número de elementos con el campo "coche" igual a 1
+            $cochesCount = ListasUser::where('listas_id', $request->lista_id)->where('coche', 1)->count();
             // Devolver una respuesta adecuada
-            return response()->json(['message' => 'Relación lista-usuario eliminada correctamente'], 200);
+            return response()->json(['message' => 'Relación lista-usuario eliminada correctamente',
+            'total_filas' => $totalFilas,
+            'coches_count' => $cochesCount], 200);
         } else {
             // Devolver una respuesta indicando que la relación no fue encontrada
             return response()->json(['message' => 'Relación lista-usuario no encontrada'], 404);
