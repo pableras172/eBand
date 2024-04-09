@@ -7,6 +7,7 @@ use App\Models\Contratos;
 use App\Models\Tipoactuacion;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use OneSignal;
 
 class ActuacionController extends Controller
 {
@@ -99,6 +100,41 @@ public function store(Request $request)
     $tipoActuacion = Tipoactuacion::all();
     return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato'));
 }
+
+    public function notificarActuacion(Request $request)
+    {
+        // Validar los datos de entrada
+        $request->validate([
+            'id' => 'required|integer',        
+        ]);    
+        
+        $actuaciones = Actuacion::with('contrato', 'listas')
+            ->where('id', '=', $request->id)
+            ->get();  
+        
+        // Verifica si se encontraron actuaciones
+        if ($actuaciones->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron actuaciones con el ID proporcionado'], 404);
+        }
+
+        // Formatear la fecha
+        $fechaFormateada = Carbon::parse($actuaciones[0]->fechaActuacion)->format('d-m-Y');
+
+        // Enviar notificación OneSignal
+        OneSignal::sendNotificationToSegment(
+            "El proper ".$fechaFormateada." - ".$actuaciones[0]->descripcion,
+            "Active Subscriptions", 
+            env('APP_URL')."/listas/actuacion/".$request->id, 
+            null, 
+            null, 
+            null, 
+            "Nova actuació - ".$actuaciones[0]->contrato->poblacion, 
+            "Accedix per a vore els detalls"
+        );
+
+        // Devolver una respuesta adecuada
+        return response()->json(['message' => 'Notificación enviada correctamente'], 200);
+    }
 
 
     /**

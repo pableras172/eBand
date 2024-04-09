@@ -40,6 +40,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
 
         Route::get('/actuacion/createtocontract/{contratos}', [ActuacionController::class, 'createtocontract'])->name('actuacion.createtocontract');
         Route::resource('actuacion',ActuacionController::class);
+        Route::post('/notificaractuacion', [ActuacionController::class, 'notificarActuacion']);
         Route::resource('contratos',ListadoContratos::class);
         Route::resource('listas',ListaController::class);
 
@@ -49,8 +50,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         Route::post('/listausercar', [ListasUsersController::class, 'storecar']);
         Route::post('/listauserdisp', [ListasUsersController::class, 'setdisponible']);
         Route::delete('/listauserclean/{listaId}', [ListasUsersController::class, 'clean']);
-        Route::delete('/listauser/{listaId}/{usuarioId}', [ListasUsersController::class, 'destroy']);
-
+        Route::delete('/listauser/{listaId}/{usuarioId}', [ListasUsersController::class, 'destroy']);        
 });
 
 /*
