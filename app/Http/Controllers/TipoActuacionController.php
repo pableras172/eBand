@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Validation\Rule;
+
 
 class TipoActuacionController extends Controller
 {
@@ -38,7 +40,6 @@ class TipoActuacionController extends Controller
             'icon' => 'required|image'          
 
         ]);
-
        
         $tipoa = new Tipoactuacion();
         $tipoa->nombre=$request->name;
@@ -54,10 +55,10 @@ class TipoActuacionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Tipoactuacion $tipoActuacion)
+    public function show(Tipoactuacion $tipoactuacion)
     {
-        dd($tipoActuacion);
-        return view('tipoactuacion.edit-tipoactuacion', compact('tipoActuacion'));
+        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        return view('tipoactuacion.edit-tipoactuacion', compact('tipoactuacion'));
     }
 
     /**
@@ -66,28 +67,56 @@ class TipoActuacionController extends Controller
     public function edit(Tipoactuacion $tipoActuacion)
     {
         abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        //dd($tipoActuacion);
         return view('tipoactuacion.edit-tipoactuacion', compact('tipoActuacion'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tipoactuacion $tipoActuacion)
+    public function update(Request $request, Tipoactuacion $tipoactuacion)
     {
-        //
+        // Validar los datos del formulario
+        $request->validate([
+            'nombre' => [
+                'required',
+                'max:100',
+                Rule::unique('tipoactuacions')->ignore($tipoactuacion->id),
+            ],
+            'icon' => 'required|image',    
+        ]);
+        
+    
+        // Actualizar el nombre del tipo de actuación
+        $tipoactuacion->nombre = $request->nombre;
+    
+        // Si se proporcionó una nueva imagen, actualizarla
+        if ($request->hasFile('icon')) {
+            $imagePath = $this->saveFile($request);
+            $tipoactuacion->icon = $imagePath;
+        }
+    
+        // Guardar los cambios en la base de datos
+        $tipoactuacion->save();
+    
+        // Redireccionar a la página de detalles del tipo de actuación actualizado
+        return redirect()->route('tipoactuacion.index')
+                         ->with('success', 'Tipo de actuación creada.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tipoactuacion $tipoActuacion)
+    public function destroy(Tipoactuacion $tipoactuacion)
     {
         // Elimina el instrumento de la base de datos
-        $tipoActuacion->delete();
+        if($tipoactuacion->delete()){
+            return redirect()->route('tipoactuacion.index', ['success' => 'Se ha eliminado el tipo de actuación']);
+        }else{
+            return redirect()->route('tipoactuacion.index', ['error' => 'No se ha eliminado el tipo de actuación']);
+        }
     
         // Redirige al usuario a la página de índice de instrumentos
-        return redirect()->route('tipoactuacion.index', ['success' => true]);
+        
     }
 
     private function saveFile(Request $request){
