@@ -9,7 +9,7 @@
                         <x-application-mark class="block h-9 w-auto" />
                     </a>
                 </div>
-                
+
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
@@ -23,29 +23,29 @@
                     </x-nav-link>
                 </div>
                 @can('admin')
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
-                        {{ __('Musics') }}
-                    </x-nav-link>
-                </div>
-               
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
+                            {{ __('Musics') }}
+                        </x-nav-link>
+                    </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
-                        {{ __('Instruments') }}
-                    </x-nav-link>
-                </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('contratos.index') }}" :active="request()->routeIs('contratos.index')">
-                        {{ __('Contractes') }}
-                    </x-nav-link>
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
-                        {{ __('Tipus d\'actuació') }}
-                    </x-nav-link>
-                </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
+                            {{ __('Instruments') }}
+                        </x-nav-link>
+                    </div>
+
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link href="{{ route('contratos.index') }}" :active="request()->routeIs('contratos.index')">
+                            {{ __('Contractes') }}
+                        </x-nav-link>
+                    </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
+                            {{ __('Tipus d\'actuació') }}
+                        </x-nav-link>
+                    </div>
                 @endcan
             </div>
 
@@ -193,7 +193,8 @@
             </div>
             <!-- Hamburger -->
             <div class="-mr-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                <button @click="open = ! open"
+                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -253,10 +254,8 @@
             </div>
 
             <div class="mt-3 space-y-1">
+
                
-                <x-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
-                    {{ __('Mi perfil') }}
-                </x-responsive-nav-link>
 
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                     <x-responsive-nav-link href="{{ route('api-tokens.index') }}" :active="request()->routeIs('api-tokens.index')">
@@ -264,17 +263,17 @@
                     </x-responsive-nav-link>
                 @endif
 
-                
-                
+
+
                 @can('admin')
-                <div class="border-t border-gray-200 dark:border-gray-600"></div>
-                <x-responsive-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
-                    {{ __('Instruments') }}
-                </x-responsive-nav-link>
-                
-                <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
-                    {{ __('Musics') }}
-                </x-responsive-nav-link>
+                    <div class="border-t border-gray-200 dark:border-gray-600"></div>
+                    <x-responsive-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
+                        {{ __('Instruments') }}
+                    </x-responsive-nav-link>
+
+                    <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
+                        {{ __('Musics') }}
+                    </x-responsive-nav-link>
                 @endcan
 
                 <div class="border-t border-gray-200 dark:border-gray-600"></div>
@@ -282,14 +281,14 @@
                 <x-responsive-nav-link href="{{ route('actuacion.index') }}" :active="request()->routeIs('actuacion.index')">
                     {{ __('Calendari') }}
                 </x-responsive-nav-link>
-                
+
                 @can('admin')
-                <x-responsive-nav-link href="{{ route('contratos.index') }}" :active="request()->routeIs('contratos.index')">
-                    {{ __('Contractes') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
-                    {{ __('Tipus d\'actuació') }}
-                </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('contratos.index') }}" :active="request()->routeIs('contratos.index')">
+                        {{ __('Contractes') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
+                        {{ __('Tipus d\'actuació') }}
+                    </x-responsive-nav-link>
                 @endcan
                 <div class="border-t border-gray-200 dark:border-gray-600"></div>
 

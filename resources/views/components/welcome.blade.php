@@ -23,7 +23,7 @@
                 
                 </svg>
             <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                <a href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">Perfil</a>
+                <a href="{{ route('profile.show') }}">Perfil</a>
             </h2>
         </div>
 
@@ -32,7 +32,7 @@
         </p>
 
         <p class="mt-4 text-sm">
-            <a href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
+            <a href="{{ route('profile.show') }}"  class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
                 {{__('common.perfil_acceder')}}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
                     <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
@@ -53,7 +53,7 @@
                 
                 </svg>
             <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                <a href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">{{__('common.listado_musicos_titulo')}}</a>
+                <a href="{{ route('users.index') }}">{{__('common.listado_musicos_titulo')}}</a>
             </h2>
         </div>
 
@@ -62,7 +62,7 @@
         </p>
 
         <p class="mt-4 text-sm">
-            <a href="{{ route('users.index') }}" :active="request()->routeIs('users.index')" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
+            <a href="{{ route('users.index') }}" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
                 {{__('common.listado_musicos_ver')}}
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
@@ -84,7 +84,7 @@
                 
                 </svg>
             <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                <a href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')"> {{__('common.instrumentos')}}</a>
+                <a href="{{ route('instrument.index') }}" > {{__('common.instrumentos')}}</a>
             </h2>
         </div>
 
@@ -92,7 +92,7 @@
             {{__('common.instrumentos_descripcion')}}
         </p>
         <p class="mt-4 text-sm">
-            <a href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
+            <a href="{{ route('instrument.index') }}"  class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
                 {{__('common.instrumentos_listado_ver')}}
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">

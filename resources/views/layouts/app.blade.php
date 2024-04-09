@@ -34,7 +34,16 @@
         <meta name="msapplication-TileImage" content="/storage/imagenes/ms-icon-144x144.png">
         <meta name="theme-color" content="#ffffff">
 
-
+        <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+        <script>
+          window.OneSignalDeferred = window.OneSignalDeferred || [];
+          OneSignalDeferred.push(function(OneSignal) {
+            OneSignal.init({
+              appId: "7bd1d5a1-fa0a-4db2-87ef-559374d418d5",
+            });
+          });
+        </script>
+        
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
