@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Instrument;
+use Ramsey\Uuid\Uuid;
+
 class UsersController extends Controller
 {
     public function index()
@@ -83,5 +85,24 @@ class UsersController extends Controller
         $user->delete();
 
         return redirect()->route('users.index');
+    }
+
+    public function getuuid(User $user)
+    {
+        // Verificar si el usuario ya tiene un UUID
+        if (!$user->uuid) {
+            // Generar un nuevo UUID
+            $uuid = Uuid::uuid4()->toString();
+
+            // Asignar el UUID al usuario y guardarlo en la base de datos
+            $user->uuid = $uuid;
+            $user->save();
+        } else {
+            // El usuario ya tiene un UUID, simplemente obtenerlo
+            $uuid = $user->uuid;
+        }
+
+        // Devolver el UUID como respuesta en formato JSON
+        return response()->json(['uuid' => $uuid]);
     }
 }

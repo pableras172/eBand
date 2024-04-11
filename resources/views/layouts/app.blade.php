@@ -39,12 +39,31 @@
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(function(OneSignal) {            
-            OneSignal.init({
-                appId: "7bd1d5a1-fa0a-4db2-87ef-559374d418d5",                                             
-            });
+        var userUUID = '';
+        var userId = {{ Auth::user()->id }};
+        $.ajax({
+            url: '/usersuuid/' + userId,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                userUUID = response.uuid;
+                OneSignalDeferred.push(function(OneSignal) {
+                    OneSignal.init({
+                        appId: "7bd1d5a1-fa0a-4db2-87ef-559374d418d5",
+                    }).then(function() {
+                        OneSignal.login(userUUID);
+                    }).catch(function(error) {
+                        // Manejar cualquier error que ocurra durante la inicialización de OneSignal
+                        console.error('Error initializing OneSignal:', error);
+                    });
+                });
+
+            },
+            error: function(xhr, status, error) {
+                // Manejo de errores
+                console.error('Error al obtener el UUID del usuario:', error);
+            }
         });
-        
     </script>
 
     <!-- Scripts -->

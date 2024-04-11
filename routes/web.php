@@ -50,7 +50,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         Route::post('/listausercar', [ListasUsersController::class, 'storecar']);
         Route::post('/listauserdisp', [ListasUsersController::class, 'setdisponible']);
         Route::delete('/listauserclean/{listaId}', [ListasUsersController::class, 'clean']);
-        Route::delete('/listauser/{listaId}/{usuarioId}', [ListasUsersController::class, 'destroy']);        
+        Route::delete('/listauser/{listaId}/{usuarioId}', [ListasUsersController::class, 'destroy']);   
+        
+        Route::get('/usersuuid/{user}',[\App\Http\Controllers\UsersController::class,'getuuid']);
 });
 
 /*

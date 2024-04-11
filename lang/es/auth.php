@@ -20,6 +20,14 @@ return [
     'logout' => 'Cerrar sesión',
     'manageaccount' => 'Gestionar cuenta',
     'miperfil' => 'Mi perfil',
-    
+    'nombreyapellidos'=>'Nombre y apellidos',
+    'contrase'=>'Contraseña',
+    'repite'=>'Repite la contraseña',
+    'terminos'=>'Acepto los :terms_of_service y :privacy_policy',
+    'terminosservicio'=>'Terminos del servicio',
+    'politicaprivacidad'=>'Politica de privacidad',
+    'yaregistrado'=>'¿Ya estas registrado?',
+    'registrar'=>'Registrar',
+    'olvidado'=>'¿Has olvidado tu contraseña?',
 
 ];
