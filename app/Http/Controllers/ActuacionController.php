@@ -8,6 +8,8 @@ use App\Models\Tipoactuacion;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use OneSignal;
+use App\Models\User;
+use App\Models\ListasUser;
 
 class ActuacionController extends Controller
 {
@@ -133,6 +135,56 @@ public function store(Request $request)
         );
 
         // Devolver una respuesta adecuada
+        return response()->json(['message' => 'Notificación enviada correctamente'], 200);
+    }
+
+    public function notificarActuacionLista(Request $request)
+    {
+        // Validar los datos de entrada
+        $request->validate([
+            'id' => 'required|integer',        
+        ]);    
+        
+        $asistentes = ListasUser::where('listas_id', $request->id)->get();
+        
+        // Verifica si se encontraron actuaciones
+        if ($asistentes->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron musicos para la actuación'], 404);
+        }
+
+        $actuaciones = Actuacion::with('contrato', 'listas')
+        ->where('id', '=', $request->id)
+        ->get();  
+
+        // Formatear la fecha
+        $fechaFormateada = Carbon::parse($actuaciones[0]->fechaActuacion)->format('d-m-Y');
+
+        foreach ($asistentes as $asistente) {
+
+            $dest = User::where('id', $asistente->user_id)->first();
+            if (!$dest || !$dest->uuid) {
+                continue;
+            }
+
+            $message = "Tens una nova actuació  - ".$actuaciones[0]->contrato->poblacion;
+
+            if($asistente->coche){
+                $message = "Tens una nova actuació agafant el cotxe  - ".$actuaciones[0]->contrato->poblacion;
+            }
+
+
+            OneSignal::sendNotificationToExternalUser(
+                "El proper ".$fechaFormateada." - ".$actuaciones[0]->descripcion,
+                $dest->uuid,
+                env('APP_URL')."/listas/actuacion/".$request->id, 
+                null, 
+                null, 
+                null, 
+                $message, 
+                "Accedix per a vore els detalls"
+            );
+        }
+
         return response()->json(['message' => 'Notificación enviada correctamente'], 200);
     }
 

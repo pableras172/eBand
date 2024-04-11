@@ -315,6 +315,12 @@
                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-4">
                     {{ __('Buidar llista') }}
                 </a>
+                <a id="avisarMarcados" href="#"
+                data-lista-id="{{ $lista->id }}" 
+                onclick="enviarNotif({{$actuacion->id}},'{{$actuacion->descripcion}}')"
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-4">
+                    {{ __('Avisar seleccionats') }}
+                </a>                
             @endcan
             <a href="{{ route('actuacion.index') }}"
                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
@@ -421,6 +427,28 @@
         function updateContadores(musics, cotxes) {
             $('#musics_count').text(musics);
             $('#coches_count').text(cotxes);
+        }
+
+        function enviarNotif(idActua, detalle) {
+
+        if (confirm('Seguro que quieres notificar a los usuarios marcados de la actuación:' + detalle)) {
+
+                $.ajax({
+                    url: '/notificaractuacionlista',
+                    method: 'POST',
+                    data: {
+                        id: idActua,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+
+                    },
+                    error: function(xhr, status, error) {
+
+                    }
+                });
+            }
+
         }
 
         @can('admin')
