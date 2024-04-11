@@ -58,10 +58,9 @@
                                 </p>
                                 <div class="relative z-40 flex items-center gap-2">
                                     @can('admin')
-                                        <a class="text-orange-600 hover:text-blue-500" href="#" alt="Notificar"
-                                        data-actuacion-id="{{ $actuacion->id }}"
-                                        data-actuacion-inf="{{$actuacion->descripcion}}"
-                                            id="enviarNotificacion">
+                                        <a class="enviarNotificacion text-orange-600 hover:text-blue-500" href="#"
+                                            alt="Notificar" data-actuacion-id="{{ $actuacion->id }}"
+                                            data-actuacion-inf="{{ $actuacion->descripcion }}">
                                             <svg width="32px" height="32px" viewBox="0 0 24 24" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -130,18 +129,20 @@
             </div>
         @endforeach
     </div>
+    @can('admin')
     <script>
-        var enviarNotificacion = document.getElementById('enviarNotificacion');
+        var botonesNotificacion = document.querySelectorAll('.enviarNotificacion');
 
         // Agregar un event listener para el clic en el botón
-        enviarNotificacion.addEventListener('click', function(event) {
-            event.preventDefault();
-            var listaId = enviarNotificacion.getAttribute('data-actuacion-id');
-            var mensaje = enviarNotificacion.getAttribute('data-actuacion-inf');
+        botonesNotificacion.addEventListener('click', function(boton) {
+            boton.preventDefault();
+            var listaId = boton.getAttribute('data-actuacion-id');
+            var mensaje = boton.getAttribute('data-actuacion-inf');
 
             enviarNotif(listaId, mensaje);
-        
+
         });
+
         function enviarNotif(idActua, detalle) {
 
             if (confirm('Seguro que quieres notificar a todos los usuarios de la actuación:' + detalle)) {
@@ -164,5 +165,5 @@
 
         }
     </script>
-
+    @endcan
 </x-app-layout>

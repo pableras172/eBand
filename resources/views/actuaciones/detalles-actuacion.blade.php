@@ -423,6 +423,7 @@
             $('#coches_count').text(cotxes);
         }
 
+        @can('admin')
         // Obtener el botón "Buidar llista" por su identificador
         var cleanListaButton = document.getElementById('cleanListaButton');
 
@@ -456,6 +457,7 @@
                     });
             }
         });
+        @endcan
     </script>
 
 
