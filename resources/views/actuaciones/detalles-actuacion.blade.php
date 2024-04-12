@@ -289,9 +289,9 @@
 
     </div>
     <footer
-        class="fixed bottom-0 left-0 z-20 w-full p-4 bg-white border-t border-black-800 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
+        class="fixed bottom-0 left-0 z-20 w-full p-2 bg-white border-t border-black-800 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
         @can('admin')
-            <div class="flex justify-center items-center mt-4 mb-4">
+            <div class="flex justify-center items-center mt-2 mb-2">
                 <div>
                     {{ __('Musics Seleccionats:') }}&nbsp;
                     <span id="musics_count" style="font-weight: bold">{{ $totalFilas }}</span>
@@ -299,7 +299,7 @@
                     <span id="musics_total" style="font-weight: bold">{{ $actuacion->musicos }}</span>
                 </div>
             </div>
-            <div class="flex justify-center items-center mb-4">
+            <div class="flex justify-center items-center mb-2">
                 <div>
                     {{ __('Cotxes Seleccionats:') }}&nbsp;
                     <span id="coches_count" style="font-weight: bold">{{ $cochesCount }}</span>
@@ -308,7 +308,7 @@
                 </div>
             </div>
         @endcan
-        <div class="flex justify-center mt-4 mb-4">
+        <div class="flex justify-center mt-2 mb-2">
             @can('admin')
                 <a id="cleanListaButton" href="#"
                 data-lista-id="{{ $lista->id }}" 
