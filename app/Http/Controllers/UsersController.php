@@ -72,6 +72,12 @@ class UsersController extends Controller
             $user->activo=0;
         }
 
+        if($request->forastero){
+            $user->forastero=1;
+        }else{
+            $user->forastero=0;
+        }
+
         $user->update($request->validated());
         $user->roles()->sync($request->input('roles', []));
 
