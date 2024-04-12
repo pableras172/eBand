@@ -139,7 +139,33 @@
             </div>
         @endif
     @endcannot
-
+    @can('admin')
+        <div class="floating-button">
+            <a href="#" class="verForasteros" onclick="verForasteros()">
+                <svg height="16px" width="16px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"
+                    fill="#000000">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                        <style type="text/css">
+                            .st0 {
+                                fill: #d28741;
+                            }
+                        </style>
+                        <g>
+                            <path class="st0"
+                                d="M512,282.163c-0.881-1.49-21.826-38.71-63.998-76.621c-21.106-18.932-47.584-38.03-79.667-52.494 c-32.041-14.455-69.743-24.183-112.337-24.162c-42.595-0.014-80.296,9.707-112.341,24.162 c-48.12,21.722-83.626,53.753-107.33,80.244C12.627,259.846,0.644,281.037,0,282.163l29.331,16.484l13.676,7.749l0.024-0.042 l0.007-0.014c0.895-1.629,20.324-34.688,56.487-66.326c18.068-15.848,40.244-31.331,66.274-42.786 c26.061-11.456,55.91-18.96,90.199-18.974c35.104,0.014,65.561,7.881,92.056,19.798c39.685,17.848,70.324,45.171,90.808,68.131 c10.245,11.462,17.938,21.785,22.98,29.1c2.525,3.657,4.385,6.566,5.574,8.49c0.594,0.966,1.02,1.679,1.286,2.119l0.252,0.448 l0.042,0.063l9.707-5.518l-9.734,5.469L512,282.163z">
+                            </path>
+                            <path class="st0"
+                                d="M255.999,210.339c-47.71,0-86.388,38.674-86.388,86.391c0,47.71,38.678,86.384,86.388,86.384 c47.71,0,86.388-38.674,86.388-86.384C342.386,249.014,303.708,210.339,255.999,210.339z">
+                            </path>
+                        </g>
+                    </g>
+                </svg>
+            </a>
+        </div>
+    @endcan
     <div class="bg-gray-100">
         <div class="max-w-sm mx-auto my-6">
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
@@ -156,12 +182,27 @@
 
                         <ul class="divide-y divide-gray-200">
                             @foreach ($usuariosDelInstrumento->sortBy('name') as $user)
-                                <li class="p-3 flex justify-between items-center user-card"
+                                @cannot('admin')
+                                    @if ($user->forastero)
+                                        @continue
+                                    @endif
+                                @endcannot
+
+                                <li class="@if ($user->forastero) forastero @endif p-3 flex justify-between items-center user-card "
                                     @if (Auth::user()->id == $user->id) style="background-color: #ffbd59;" @endif>
+
                                     <div class="flex items-center">
                                         <img src="{{ asset($user->profile_photo_url) }}" alt="{{ $user->name }}"
                                             class="h-10 w-10 rounded-full">
-                                        <span class="ml-3 font-medium">{{ $user->name }}</span>
+                                        <span class="ml-2 font-medium flex items-center">
+                                            {{ $user->name }}
+                                            @if ($user->forastero)
+                                                <button type="button"
+                                                    class="ml-1 font-medium bg-orange-600 text-white p-2 rounded leading-none flex items-center">
+                                                    {{ __('common.llogat') }}
+                                                </button>
+                                            @endif
+                                        </span>
                                         @if (!$user->disponible)
                                             <span class="ml-3 font-medium">{{ __(' - (No disponile)') }}</span>
                                         @endif
@@ -310,17 +351,15 @@
         @endcan
         <div class="flex justify-center mt-2 mb-2">
             @can('admin')
-                <a id="cleanListaButton" href="#"
-                data-lista-id="{{ $lista->id }}" 
+                <a id="cleanListaButton" href="#" data-lista-id="{{ $lista->id }}"
                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-4">
                     {{ __('Buidar llista') }}
                 </a>
-                <a id="avisarMarcados" href="#"
-                data-lista-id="{{ $lista->id }}" 
-                onclick="enviarNotif({{$actuacion->id}},'{{$actuacion->descripcion}}')"
+                <a id="avisarMarcados" href="#" data-lista-id="{{ $lista->id }}"
+                    onclick="enviarNotif({{ $actuacion->id }},'{{ $actuacion->descripcion }}')"
                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-4">
                     {{ __('Avisar seleccionats') }}
-                </a>                
+                </a>
             @endcan
             <a href="{{ route('actuacion.index') }}"
                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
@@ -431,7 +470,7 @@
 
         function enviarNotif(idActua, detalle) {
 
-        if (confirm('Seguro que quieres notificar a los usuarios marcados de la actuación:' + detalle)) {
+            if (confirm('Seguro que quieres notificar a los usuarios marcados de la actuación:' + detalle)) {
 
                 $.ajax({
                     url: '/notificaractuacionlista',
@@ -452,41 +491,52 @@
         }
 
         @can('admin')
-        // Obtener el botón "Buidar llista" por su identificador
-        var cleanListaButton = document.getElementById('cleanListaButton');
+            // Obtener el botón "Buidar llista" por su identificador
+            var cleanListaButton = document.getElementById('cleanListaButton');
 
-        // Agregar un event listener para el clic en el botón
-        cleanListaButton.addEventListener('click', function(event) {
-            // Prevenir el comportamiento predeterminado del enlace
-            event.preventDefault();
+            // Agregar un event listener para el clic en el botón
+            cleanListaButton.addEventListener('click', function(event) {
+                // Prevenir el comportamiento predeterminado del enlace
+                event.preventDefault();
 
-            // Obtener el listaId de los atributos de datos del botón
-            var listaId = cleanListaButton.getAttribute('data-lista-id');
+                // Obtener el listaId de los atributos de datos del botón
+                var listaId = cleanListaButton.getAttribute('data-lista-id');
 
-            // Confirmar con el usuario antes de realizar la acción
-            if (confirm("¿Estás seguro de que quieres limpiar la lista?")) {
-                // Enviar una solicitud DELETE a la ruta correspondiente
-                fetch(`/listauserclean/${listaId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json'
-                        },
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Error al limpiar la lista');
-                        }
-                        window.location.reload();
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        // Manejar errores si es necesario
-                    });
-            }
-        });
+                // Confirmar con el usuario antes de realizar la acción
+                if (confirm("¿Estás seguro de que quieres limpiar la lista?")) {
+                    // Enviar una solicitud DELETE a la ruta correspondiente
+                    fetch(`/listauserclean/${listaId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json'
+                            },
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error al limpiar la lista');
+                            }
+                            window.location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            // Manejar errores si es necesario
+                        });
+                }
+            });
         @endcan
-    </script>
 
+        function verForasteros() {
+            var elementosForasteros = document.querySelectorAll('.forastero');
+            elementosForasteros.forEach(function(elemento) {
+                if (elemento.style.display === 'none') {
+                    elemento.style.display = 'flex'; // Mostrar el elemento si estaba oculto
+                } else {
+                    elemento.style.display = 'none'; // Ocultar el elemento si estaba visible
+                }
+            });
+        }
+
+    </script>
 
 </x-app-layout>

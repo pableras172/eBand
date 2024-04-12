@@ -29,5 +29,6 @@ return [
     'yaregistrado'=>'¿Ya estas registrado?',
     'registrar'=>'Registrar',
     'olvidado'=>'¿Has olvidado tu contraseña?',
+    'recordarme'=>'Recuerdame',
 
 ];

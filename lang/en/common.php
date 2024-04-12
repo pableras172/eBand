@@ -36,4 +36,5 @@ return [
     'calendario_var' => 'Veure calendari',
 
     'calendario_proximas' => 'Calendari de la banda - Próximes actuacions',
+    'llogat'=>'f',
 ];

@@ -15,3 +15,30 @@
   'GRAD' 0,
   'opsz' 20
 }
+
+.forastero{
+  display: none;
+}
+
+/* En tu archivo de estilos CSS o en línea dentro de la vista Blade */
+.floating-button {
+  position: fixed;
+  left: 15px; /* Ajusta el valor según tu preferencia para la posición horizontal */
+  bottom: 50%; /* Posiciona el botón en la mitad vertical */
+  transform: translateY(50%); /* Centra verticalmente el botón */
+}
+
+.verForasteros {
+  display: inline-block;
+  padding: 10px 10px;
+  background-color: #435364; /* Color de fondo del botón */
+  color: white; /* Color del texto del botón */
+  border: none;
+  border-radius: 50%; /* Hace que el botón sea redondo */
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.verForasteros:hover {
+  background-color: #637e9b; /* Color de fondo del botón al pasar el ratón por encima */
+}
