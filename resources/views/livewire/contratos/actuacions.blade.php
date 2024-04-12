@@ -115,7 +115,9 @@
 
         <!-- Grid de actuaciones -->
         <div class="mt-8">
-            <h2 class="text-center text-lg font-semibold mb-4">Actuaciones del Contrato</h2>
+            <div class="w-full bg-white">
+                <h2 class="text-center text-lg font-semibold mb-4"> {{ __('common.actuacionescontrato') }}</h2>
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach ($actuaciones as $actuacion)
                     <div>
@@ -137,6 +139,10 @@
                                 </div>
                             </div>
                             <div class="flex justify-center">
+                                <a  href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}"
+                                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mb-2 mr-2">
+                                    Llista
+                                </a>
                                 <a href="{{ route('actuacion.edit', $actuacion->id) }}"
                                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-gray-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mb-2 mr-2">
                                     Editar

@@ -37,4 +37,6 @@ return [
     
     'calendario_proximas' => 'Calendario de la banda - Próximas actuaciones',
 
+    'actuacionescontrato'=>'Actuaciones del contrato',
+
 ];

@@ -114,15 +114,15 @@
                 
                 </svg>
             <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
-                {{__('common.calendario')}}
-            </h2>
+                <a href="{{ route('actuacion.index') }}" >  {{__('common.calendario')}}</a>
+            </h2>            
         </div>
 
         <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
             {{__('common.calendario_descripcion')}}
         </p>
         <p class="mt-4 text-sm">
-            <a href="#" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
+            <a href="{{ route('actuacion.index') }}" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
                 {{__('common.calendario_var')}}
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
