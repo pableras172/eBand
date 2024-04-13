@@ -39,5 +39,8 @@ return [
 
     'actuacionescontrato'=>'Actuaciones del contrato',
     'llogat'=>'f',
+    'notificargrupo'=>'Seguro que quieres notificar a todos los usuarios de la actuación:',
+    'enero'=>'Enero',
+    'May'=>'Mayo',
 
 ];

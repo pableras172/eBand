@@ -25,9 +25,9 @@ class ActuacionController extends Controller
              ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
              ->get();
      
-         // Agrupar las actuaciones por mes
+      
          $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
-             return Carbon::parse($actuacion->fechaActuacion)->format('F Y');
+             return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
          });
      
          return view('actuaciones.view-listas', compact('actuacionesPorMes'));

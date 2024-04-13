@@ -32,7 +32,7 @@
             <h2
                 class="mb-2 mt-2 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl text-center">
                 <span
-                    class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">{{ $mes }}</span>
+                    class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">{{ __($mes) }}</span>
             </h2>
             <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -51,10 +51,11 @@
                             <h3 class="text-xl mb-2 font-medium">{{ $actuacion->descripcion }}</h3>
                             <h3 class="text-xl mb-2 font-medium">{{ __('Contracte') }}:
                                 {{ $actuacion->contrato->poblacion }}</h3>
+                                <hr class="p-2">
                             <div class="flex justify-between items-center">
                                 <p class="text-base text-black-400">
                                     <i class="w-8 fas fa-calendar-alt p-2 bg-gray-200 rounded-full text-black"></i>
-                                    {{ $actuacion->fechaActuacion }}
+                                    {{ Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y') }}
                                 </p>
                                 <div class="relative z-40 flex items-center gap-2">
                                     @can('admin')
@@ -130,40 +131,41 @@
         @endforeach
     </div>
     @can('admin')
-    <script>
-        var botonesNotificacion = document.querySelectorAll('.enviarNotificacion');
+        <script>
+            var botonesNotificacion = document.querySelectorAll('.enviarNotificacion');
 
-        // Agregar un event listener para el clic en el botón
-        botonesNotificacion.addEventListener('click', function(boton) {
-            boton.preventDefault();
-            var listaId = boton.getAttribute('data-actuacion-id');
-            var mensaje = boton.getAttribute('data-actuacion-inf');
+            // Iterar sobre cada botón y agregar el event listener
+            botonesNotificacion.forEach(function(boton) {
+                boton.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    var listaId = boton.getAttribute('data-actuacion-id');
+                    var mensaje = boton.getAttribute('data-actuacion-inf');
 
-            enviarNotif(listaId, mensaje);
-
-        });
-
-        function enviarNotif(idActua, detalle) {
-
-            if (confirm('Seguro que quieres notificar a todos los usuarios de la actuación:' + detalle)) {
-
-                $.ajax({
-                    url: '/notificaractuacion',
-                    method: 'POST',
-                    data: {
-                        id: idActua,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-
-                    },
-                    error: function(xhr, status, error) {
-
-                    }
+                    enviarNotif(listaId, mensaje);
                 });
-            }
+            });
 
-        }
-    </script>
+            function enviarNotif(idActua, detalle) {
+
+                if (confirm('{{__('common.notificargrupo')}}' + detalle)) {
+
+                    $.ajax({
+                        url: '/notificaractuacion',
+                        method: 'POST',
+                        data: {
+                            id: idActua,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+
+                        },
+                        error: function(xhr, status, error) {
+
+                        }
+                    });
+                }
+
+            }
+        </script>
     @endcan
 </x-app-layout>
