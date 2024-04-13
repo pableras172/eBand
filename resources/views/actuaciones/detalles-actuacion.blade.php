@@ -149,13 +149,13 @@
                             <h2 class="px-3 py-2 font-medium flex-grow">
                                 {{ $usuariosDelInstrumento->first()->instrument->name }}
                             </h2>
-
+                            @can('admin')
                             <button type="button" id="f_{{ $usuariosDelInstrumento->first()->instrument->name }}"
                                 class="ml-3 mr-3 bg-red-900 text-white p-2 rounded leading-none flex items-center justify-center" onclick="mostrarForasters(this)"
                                 data-instrument-name="{{ $usuariosDelInstrumento->first()->instrument->name }}">
                                 <i class="fas fa-eye"></i>                                
                             </button>
-                            
+                            @endcan
                             <img class="w-10 h-10 rounded-full px-1 py-1"
                                 src="{{ asset('storage/imagenes/instruments/' . $usuariosDelInstrumento->first()->instrument->icon) }}">
                         </div>
