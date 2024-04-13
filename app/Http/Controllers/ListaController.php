@@ -24,7 +24,7 @@ class ListaController extends Controller
     {
         // Obtener la actuación y la lista relacionada
         $actuacion = Actuacion::findOrFail($actuacionId);
-        $lista = $actuacion->listas->first();
+        $lista = $actuacion->lista;
 
         if ($lista == null) {
             $lista = new Listas();
@@ -37,8 +37,8 @@ class ListaController extends Controller
         $usuarioDisponible = true;
 
         if ($lista->users->contains(Auth::user()->id)
-        && !$lista->users()->where('id', (Auth::user()->id))->first()->pivot->disponible) {
-            $usuarioDisponible = false;
+            && !$lista->users()->where('id', (Auth::user()->id))->first()->pivot->disponible) {
+                $usuarioDisponible = false;
         }
 
         // Obtener todos los usuarios

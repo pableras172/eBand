@@ -20,7 +20,7 @@ class ActuacionController extends Controller
 
      public function index()
      {
-         $actuaciones = Actuacion::with('contrato', 'listas','tipoactuacion')
+         $actuaciones = Actuacion::with('contrato', 'lista','tipoactuacion')
              ->whereDate('fechaActuacion', '>=', now()->toDateString())
              ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
              ->get();
@@ -39,7 +39,7 @@ class ActuacionController extends Controller
      */
     public function createtocontract(Request $request, string $id)
     {
-        $actuaciones =  Actuacion::with('contrato','listas')
+        $actuaciones =  Actuacion::with('contrato','lista')
         ->where('contratos_id', '=', $id)
         ->orderBy('fechaActuacion', 'asc')
         ->get();
@@ -94,7 +94,7 @@ public function store(Request $request)
     $actuacion->save();
 
     // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
-    $actuaciones =  Actuacion::with('contrato','listas')
+    $actuaciones =  Actuacion::with('contrato','lista')
     ->where('contratos_id', '=', $request->contratos_id)
     ->get();
 
@@ -110,7 +110,7 @@ public function store(Request $request)
             'id' => 'required|integer',        
         ]);    
         
-        $actuaciones = Actuacion::with('contrato', 'listas')
+        $actuaciones = Actuacion::with('contrato', 'lista')
             ->where('id', '=', $request->id)
             ->get();  
         
@@ -152,7 +152,7 @@ public function store(Request $request)
             return response()->json(['message' => 'No se encontraron musicos para la actuación'], 404);
         }
 
-        $actuaciones = Actuacion::with('contrato', 'listas')
+        $actuaciones = Actuacion::with('contrato', 'lista')
         ->where('id', '=', $request->id)
         ->get();  
 
@@ -203,7 +203,7 @@ public function store(Request $request)
     public function edit(Actuacion $actuacion)
     {
         // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
-        $actuaciones =  Actuacion::with('contrato','listas')
+        $actuaciones =  Actuacion::with('contrato','lista')
         ->where('contratos_id', '=', $actuacion->contratos_id)
         ->get();
 
@@ -253,7 +253,7 @@ public function store(Request $request)
             $actuacion->update();
         
             // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
-            $actuaciones =  Actuacion::with('contrato','listas')
+            $actuaciones =  Actuacion::with('contrato','lista')
             ->where('contratos_id', '=', $request->contratos_id)
             ->get();
         
@@ -271,7 +271,7 @@ public function store(Request $request)
         // Verificar si la actuación existe
             if ($actuacion) {
                 // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
-                $actuaciones =  Actuacion::with('contrato','listas')
+                $actuaciones =  Actuacion::with('contrato','lista')
                 ->where('contratos_id', '=', $actuacion->contratos_id)
                 ->get();
 

@@ -22,8 +22,8 @@ return new class extends Migration
             $table->decimal('preciomusico', 8, 2)->nullable();
             $table->integer('totalcoches')->nullable();
             $table->integer('totalmusicos')->nullable();
-            $table->decimal('totalactuacion', 10, 2)->nullable();
-            $table->foreignId('contratos_id')->constrained();
+            $table->decimal('totalactuacion', 10, 2)->nullable();            
+            $table->foreignId('contratos_id')->references('id')->on('contratos')->cascadeOnDelete();
             $table->boolean('pagado');
             $table->text('observaciones')->nullable();
             $table->timestamps();

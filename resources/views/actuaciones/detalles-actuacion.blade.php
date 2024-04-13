@@ -139,33 +139,7 @@
             </div>
         @endif
     @endcannot
-    @can('admin')
-        <div class="floating-button">
-            <a href="#" class="verForasteros" onclick="verForasteros()">
-                <svg height="16px" width="16px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"
-                    fill="#000000">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <style type="text/css">
-                            .st0 {
-                                fill: #d28741;
-                            }
-                        </style>
-                        <g>
-                            <path class="st0"
-                                d="M512,282.163c-0.881-1.49-21.826-38.71-63.998-76.621c-21.106-18.932-47.584-38.03-79.667-52.494 c-32.041-14.455-69.743-24.183-112.337-24.162c-42.595-0.014-80.296,9.707-112.341,24.162 c-48.12,21.722-83.626,53.753-107.33,80.244C12.627,259.846,0.644,281.037,0,282.163l29.331,16.484l13.676,7.749l0.024-0.042 l0.007-0.014c0.895-1.629,20.324-34.688,56.487-66.326c18.068-15.848,40.244-31.331,66.274-42.786 c26.061-11.456,55.91-18.96,90.199-18.974c35.104,0.014,65.561,7.881,92.056,19.798c39.685,17.848,70.324,45.171,90.808,68.131 c10.245,11.462,17.938,21.785,22.98,29.1c2.525,3.657,4.385,6.566,5.574,8.49c0.594,0.966,1.02,1.679,1.286,2.119l0.252,0.448 l0.042,0.063l9.707-5.518l-9.734,5.469L512,282.163z">
-                            </path>
-                            <path class="st0"
-                                d="M255.999,210.339c-47.71,0-86.388,38.674-86.388,86.391c0,47.71,38.678,86.384,86.388,86.384 c47.71,0,86.388-38.674,86.388-86.384C342.386,249.014,303.708,210.339,255.999,210.339z">
-                            </path>
-                        </g>
-                    </g>
-                </svg>
-            </a>
-        </div>
-    @endcan
+
     <div class="bg-gray-100">
         <div class="max-w-sm mx-auto my-6">
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
@@ -175,22 +149,29 @@
                             <h2 class="px-3 py-2 font-medium flex-grow">
                                 {{ $usuariosDelInstrumento->first()->instrument->name }}
                             </h2>
+
+                            <button type="button" id="f_{{ $usuariosDelInstrumento->first()->instrument->name }}"
+                                class="ml-3 mr-3 bg-red-900 text-white p-2 rounded leading-none flex items-center justify-center" onclick="mostrarForasters(this)"
+                                data-instrument-name="{{ $usuariosDelInstrumento->first()->instrument->name }}">
+                                <i class="fas fa-eye"></i>                                
+                            </button>
+                            
                             <img class="w-10 h-10 rounded-full px-1 py-1"
                                 src="{{ asset('storage/imagenes/instruments/' . $usuariosDelInstrumento->first()->instrument->icon) }}">
                         </div>
 
 
                         <ul class="divide-y divide-gray-200">
-                            @foreach ($usuariosDelInstrumento->sortBy('name') as $user)
+                            @foreach ($usuariosDelInstrumento->sortBy('name')->sortBy('forastero') as $user)
                                 @cannot('admin')
                                     @if ($user->forastero)
                                         @continue
                                     @endif
-                                @endcannot
-
-                                <li class="@if ($user->forastero) forastero @endif p-3 flex justify-between items-center user-card "
-                                    @if (Auth::user()->id == $user->id) style="background-color: #ffbd59;" @endif>
-
+                                @endcannot                                
+                                <li class="@if ($user->forastero)forastero {{$user->instrument->name}}@endif p-3 flex justify-between items-center user-card "
+                                    style="@if (Auth::user()->id == $user->id) background-color: #ffbd59; @endif
+                                    @if ($user->forastero) display: none; {{$user->instrument->name}}@endif" >                                    
+                                    
                                     <div class="flex items-center">
                                         <img src="{{ asset($user->profile_photo_url) }}" alt="{{ $user->name }}"
                                             class="h-10 w-10 rounded-full">
@@ -198,7 +179,7 @@
                                             {{ $user->name }}
                                             @if ($user->forastero)
                                                 <button type="button"
-                                                    class="ml-1 font-medium bg-orange-600 text-white p-2 rounded leading-none flex items-center">
+                                                    class="ml-2 mr-2 font-medium bg-red-900 text-white p-2 rounded leading-none flex items-center">
                                                     {{ __('common.llogat') }}
                                                 </button>
                                             @endif
@@ -526,16 +507,23 @@
             });
         @endcan
 
-        function verForasteros() {
-            var elementosForasteros = document.querySelectorAll('.forastero');
-            elementosForasteros.forEach(function(elemento) {
-                if (elemento.style.display === 'none') {
-                    elemento.style.display = 'flex'; // Mostrar el elemento si estaba oculto
-                } else {
-                    elemento.style.display = 'none'; // Ocultar el elemento si estaba visible
-                }
-            });
-        }
+    function mostrarForasters(button) {
+        // Obtenemos el valor del atributo data-instrument-name del botón
+        const instrumentName = button.getAttribute('data-instrument-name');
+        
+        // Seleccionamos todos los elementos <li> con la clase correspondiente al instrumento
+        const elementsToShowHide = document.querySelectorAll(`.forastero.${instrumentName}`);
+
+        // Iteramos sobre los elementos para mostrarlos u ocultarlos
+        elementsToShowHide.forEach(element => {
+            // Si el elemento está visible, lo ocultamos; si está oculto, lo mostramos
+            if (element.style.display === 'none') {
+                element.style.display = 'flex';
+            } else {
+                element.style.display = 'none';
+            }
+        });
+    }
 
     </script>
 

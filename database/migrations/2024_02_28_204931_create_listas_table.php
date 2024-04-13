@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('listas', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('actuacions_id')->constrained(); 
+            $table->id();            
+            $table->foreignId('actuacions_id')->references('id')->on('actuacions')->cascadeOnDelete(); 
             $table->boolean('pagada')->default(false);
             $table->boolean('cuentas')->default(false);
             $table->timestamps();

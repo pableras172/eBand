@@ -131,12 +131,18 @@ public function update(Request $request, Contratos $contrato)
  */
 public function destroy(Contratos $contrato)
 {
-    $contrato->delete();
 
-    return redirect()->route('contratos.index')
-        ->with('success', 'Contrato eliminado correctamente.');
-}
+    try {
+            if ($contrato) {
+                $contrato->delete();
+            }
+        } catch (\Illuminate\Database\QueryException $exception) {
+            return redirect()->back()->with('error', 'No se ha podido eliminar el contrato.');
+        }
 
-
+        return redirect()->route('contratos.index')
+                            ->with('deletesuccess', 'Contrato eliminado correctamente.');          
+         
+    }
 
 }

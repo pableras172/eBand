@@ -12,9 +12,10 @@ class Actuacion extends Model
 {
     use HasFactory;
 
-    public function listas()
+    public function lista()
     {
-        return $this->hasMany(Listas::class, 'actuacions_id');
+        //return $this->hasMany(Listas::class, 'actuacions_id');
+        return $this->hasOne(Listas::class, 'actuacions_id');
     }
 
     public function contrato()

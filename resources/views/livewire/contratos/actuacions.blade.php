@@ -18,13 +18,6 @@
             </div>
         @endif
 
-        @if (isset($eliminado))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-                role="alert">
-                <strong class="font-bold">¡Eliminado!</strong>
-                <span class="block sm:inline">{{ 'Se ha eliminado la actuación.' }}</span>
-            </div>
-        @endif
         <!-- Formulario -->
         <form
             @if (isset($actuacion)) action="{{ route('actuacion.update', $actuacion->id) }}"
@@ -139,7 +132,7 @@
                                 </div>
                             </div>
                             <div class="flex justify-center">
-                                <a  href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}"
+                                <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}"
                                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mb-2 mr-2">
                                     Llista
                                 </a>
@@ -149,7 +142,7 @@
                                 </a>
 
                                 <form action="{{ route('actuacion.destroy', $actuacion) }}" method="post"
-                                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta actuacion?')">
+                                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta actuacion?Si la actuación tiene una lista, también se eliminará.')">
                                     @csrf
                                     @method('DELETE')
                                     <div class="block text-right">
@@ -173,7 +166,7 @@
                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
                 Tornar al llistat
             </a>
-        </div>        
+        </div>
     </div>
-    
+
 </x-app-layout>

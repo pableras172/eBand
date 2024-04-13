@@ -10,6 +10,13 @@
             S'ha creat el contracte!
         </div>
     @endif
+    @if (request()->has('deletesuccess') && request()->success)
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+            role="alert">
+            <strong class="font-bold">¡Eliminado!</strong>
+            <span class="block sm:inline">{{ 'Se ha eliminado el contrato.' }}</span>
+        </div>
+    @endif
     
     <div class="container mx-auto py-2 px-2 sm:px-6 lg:px-0">
         <div class="block mb-2">

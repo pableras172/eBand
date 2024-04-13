@@ -6,9 +6,19 @@
     </x-slot>
 
     <div class="container mx-auto py-10 px-4 sm:px-0">
-        <form method="post" class="max-w-lg mx-auto" action="{{ isset($contrato) ? route('contratos.update', $contrato->id) : route('contratos.store') }}">
+
+        @if (session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">¡Error!</strong>
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        @endif
+
+
+        <form method="post" class="max-w-lg mx-auto"
+            action="{{ isset($contrato) ? route('contratos.update', $contrato->id) : route('contratos.store') }}">
             @csrf
-            @if(isset($contrato))
+            @if (isset($contrato))
                 @method('PUT')
             @endif
             <div class="mb-4">
@@ -73,12 +83,36 @@
             </div>
             <div class="flex justify-center">
                 <button type="submit" id="submitBtn"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-gray-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Guardar</button>
-                <a href="{{ route('contratos.index') }}"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition  ml-2">
-                    Cancelar
-                </a>                    
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-gray-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition ml-2">Guardar</button>
             </div>
         </form>
-    </div>    
+
+
+
+    </div>
+    </div>
+    <div style="height: 75px">
+
+    </div>
+    <footer
+        class="fixed bottom-0 left-0 z-20 w-full p-2 bg-white border-t border-black-800 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
+        <div class="flex justify-center">
+            <form action="{{ route('contratos.destroy', $contrato) }}" method="post"
+                onsubmit="return confirm('¿Estás seguro de que deseas eliminar este contrato? Se eliminaran las actuaciones y las listas relacionadas.')">
+                @csrf
+                @method('DELETE')
+                <div class="block text-right">
+                    <button type="submit"
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                        Eliminar
+                    </button>
+                </div>
+            </form>
+
+            <a href="{{ route('contratos.index') }}"
+                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition  ml-2">
+                Cancelar
+            </a>
+        </div>
+    </footer>
 </x-app-layout>
