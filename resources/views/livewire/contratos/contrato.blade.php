@@ -97,6 +97,7 @@
     <footer
         class="fixed bottom-0 left-0 z-20 w-full p-2 bg-white border-t border-black-800 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
         <div class="flex justify-center">
+            @if (isset($contrato))
             <form action="{{ route('contratos.destroy', $contrato) }}" method="post"
                 onsubmit="return confirm('¿Estás seguro de que deseas eliminar este contrato? Se eliminaran las actuaciones y las listas relacionadas.')">
                 @csrf
@@ -108,6 +109,7 @@
                     </button>
                 </div>
             </form>
+            @endif
 
             <a href="{{ route('contratos.index') }}"
                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition  ml-2">
