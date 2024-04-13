@@ -270,15 +270,17 @@ public function store(Request $request)
         try {
         // Verificar si la actuación existe
             if ($actuacion) {
+                $actuacion->delete();
+
+                $cid = $actuacion->contratos_id;
                 // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
                 $actuaciones =  Actuacion::with('contrato','lista')
-                ->where('contratos_id', '=', $actuacion->contratos_id)
+                ->where('contratos_id', '=', $cid)
                 ->get();
 
-                $contrato = Contratos::find($actuacion->contratos_id);
-                $tipoActuacion = Tipoactuacion::all();
-            
-                $actuacion->delete();
+                $contrato = Contratos::find($cid);
+                $tipoActuacion = Tipoactuacion::all();           
+                
             }
         } catch (\Illuminate\Database\QueryException $exception) {
             // Manejar la excepción de integridad referencial

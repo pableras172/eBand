@@ -37,7 +37,7 @@ class CreateNewUser implements CreatesNewUsers
                 'password' => Hash::make($input['password']),
                 'activo' => false,
                 'fechaAlta' => now(),
-                'uuid'=>Uuid::uuid4()->toString();
+                'uuid'=>Uuid::uuid4()->toString(),
             ]), function (User $user) {
                 $this->createTeam($user);  
                 $user->roles()->sync(2);             
