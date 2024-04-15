@@ -16,7 +16,15 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
-        },
+            colors: {
+                fondobotonazul: '#23325A',                   
+                fondobotonnaranja: '#E7A572',                   
+                fondoclaro: '#F7E6D3',                   
+                fondobotonrojo: '#792B43', 
+                fondofosrastero: '#97A9A9', 
+
+              },
+        },       
     },
 
     plugins: [forms, typography],

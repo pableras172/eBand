@@ -2,9 +2,9 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             @if (isset($actuacion))
-                Modificar actuación en {{ $contrato->descripcion }}
+                {{__('Modificar actuación en')}} {{ $contrato->descripcion }}
             @else
-                Añadir actuación a {{ $contrato->descripcion }}
+            {{__('Añadir actuación a ')}} {{ $contrato->descripcion }}
             @endif
         </h2>
     </x-slot>
@@ -13,7 +13,7 @@
         <!-- Mensajes de error o éxito -->
         @if (session('error'))
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">¡Error!</strong>
+                <strong class="font-bold">{{__('Error')}}</strong>
                 <span class="block sm:inline">{{ session('error') }}</span>
             </div>
         @endif
@@ -32,23 +32,23 @@
             @endif
 
             <div class="mb-4">
-                <label for="fechaActuacion" class="block text-sm font-medium text-gray-700">Fecha de Actuación</label>
+                <label for="fechaActuacion" class="block text-sm font-medium text-gray-700">{{__('Data actuacio')}}</label>
                 <input type="date" id="fechaActuacion" name="fechaActuacion" required
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                     @if (isset($actuacion)) value="{{ $actuacion->fechaActuacion }}" @endif>
             </div>
             <div class="mb-4">
-                <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
+                <label for="descripcion" class="block text-sm font-medium text-gray-700">{{__('Descripció')}}</label>
                 <textarea id="descripcion" name="descripcion" rows="3" required
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                     @if (isset($actuacion))
-{{ $actuacion->descripcion }}
-@endif
+                        {{ $actuacion->descripcion }}
+                    @endif
                 </textarea>
             </div>
 
             <div class="mb-4">
-                <label for="tipoactuacions_id" class="block text-sm font-medium text-gray-700">Tipo de Actuación</label>
+                <label for="tipoactuacions_id" class="block text-sm font-medium text-gray-700">{{__('Tipus')}}</label>
                 <select id="tipoactuacions_id" name="tipoactuacions_id" required
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                     <!-- Iterar sobre las opciones del select -->
@@ -61,25 +61,25 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="mb-4">
-                    <label for="coches" class="block text-sm font-medium text-gray-700">Número de Coches</label>
+                    <label for="coches" class="block text-sm font-medium text-gray-700">{{__('Cantitat de cotxes')}}</label>
                     <input type="number" id="coches" name="coches"
                         value="{{ isset($actuacion) ? $actuacion->coches : '' }}"
                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                 </div>
                 <div class="mb-4">
-                    <label for="preciocoche" class="block text-sm font-medium text-gray-700">Precio por Coche</label>
+                    <label for="preciocoche" class="block text-sm font-medium text-gray-700">{{__('Preu cotxe')}}</label>
                     <input type="number" id="preciocoche" name="preciocoche" step="0.01"
                         value="{{ isset($actuacion) ? $actuacion->preciocoche : '' }}"
                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                 </div>
                 <div class="mb-4">
-                    <label for="musicos" class="block text-sm font-medium text-gray-700">Número de Músicos</label>
+                    <label for="musicos" class="block text-sm font-medium text-gray-700">{{__('Numero musics')}}</label>
                     <input type="number" id="musicos" name="musicos"
                         value="{{ isset($actuacion) ? $actuacion->musicos : '' }}"
                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                 </div>
                 <div class="mb-4">
-                    <label for="preciomusico" class="block text-sm font-medium text-gray-700">Precio por Músico</label>
+                    <label for="preciomusico" class="block text-sm font-medium text-gray-700">{{__('Preu music')}}</label>
                     <input type="number" id="preciomusico" name="preciomusico" step="0.01"
                         value="{{ isset($actuacion) ? $actuacion->preciomusico : '' }}"
                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
@@ -89,12 +89,12 @@
             </div>
 
             <div class="mb-4">
-                <label for="observaciones" class="block text-sm font-medium text-gray-700">Observaciones</label>
+                <label for="observaciones" class="block text-sm font-medium text-gray-700">{{__('Observacions')}}</label>
                 <textarea id="observaciones" name="observaciones" rows="3"
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">{{ isset($actuacion) ? $actuacion->observaciones : '' }}</textarea>
             </div>
             <div class="mb-4">
-                <label for="pagado" class="block text-sm font-medium text-gray-700">Pagado</label>
+                <label for="pagado" class="block text-sm font-medium text-gray-700">{{__('Pagat')}}</label>
                 <input type="checkbox" id="pagado" name="pagado"
                     class="mt-1 focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                     {{ isset($actuacion) && $actuacion->pagado ? 'checked' : '' }}>
@@ -125,20 +125,20 @@
                                 <div class="ml-4">
                                     <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
                                         {{ $actuacion->descripcion }}</div>
-                                    <p class="mt-2 text-gray-500">Tipo: {{ $actuacion->tipoactuacion->nombre }}</p>
-                                    <p class="mt-2 text-gray-500">Musics: {{ $actuacion->musicos }}</p>
-                                    <p class="mt-2 text-gray-500">Coches: {{ $actuacion->coches }}</p>
+                                    <p class="mt-2 text-gray-500">{{__('Tipus')}}: {{ $actuacion->tipoactuacion->nombre }}</p>
+                                    <p class="mt-2 text-gray-500">{{__('Numero musics')}}: {{ $actuacion->musicos }}</p>
+                                    <p class="mt-2 text-gray-500">{{__('Cantitat de cotxes')}}: {{ $actuacion->coches }}</p>
                                     <p class="mt-2 text-gray-500">{{ $actuacion->observaciones }}</p>
                                 </div>
                             </div>
                             <div class="flex justify-center">
                                 <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}"
                                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mb-2 mr-2">
-                                    Llista
+                                    {{__('Llista')}}
                                 </a>
                                 <a href="{{ route('actuacion.edit', $actuacion->id) }}"
                                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-gray-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mb-2 mr-2">
-                                    Editar
+                                    {{__('Editar')}}
                                 </a>
 
                                 <form action="{{ route('actuacion.destroy', $actuacion) }}" method="post"
@@ -148,7 +148,7 @@
                                     <div class="block text-right">
                                         <button type="submit"
                                             class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mb-2">
-                                            Eliminar
+                                            {{__('Eliminar')}}
                                         </button>
                                     </div>
                                 </form>
@@ -164,7 +164,7 @@
         <div class="flex justify-center mt-4 mb-4">
             <a href="{{ route('contratos.index') }}"
                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                Tornar al llistat
+                {{__('Tornar al llistat')}}
             </a>
         </div>
     </div>

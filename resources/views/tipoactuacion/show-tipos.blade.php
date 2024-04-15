@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Tipus de actuació
+            {{ __('Tipus de actuacio') }}
         </h2>
     </x-slot>
 
@@ -24,7 +24,7 @@
                     <div class="p-4 lg:p-6 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
                         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                             <div class="block text-right mb-4">
-                                <a href="tipoactuacion/create" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-block">{{ __('Afegir') }}</a>
+                                <a href="tipoactuacion/create" class="bg-green-800 hover:bg-green-600 text-white font-bold py-2 px-4 rounded inline-block">{{ __('Afegir') }}</a>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full divide-y divide-gray-200">
@@ -53,7 +53,7 @@
                                                     </div>
                                                 </td>
                                                 <td class="px-4 py-1 whitespace-nowrap text-sm font-medium text-center">
-                                                    <a href="tipoactuacion/{{ $tipoactuacion->id }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                                    <a href="tipoactuacion/{{ $tipoactuacion->id }}" class="bg-fondobotonazul hover:bg-fondobotonazul-900 text-white font-bold py-2 px-4 rounded">
                                                         {{ __('Editar') }}
                                                     </a>
                                                 </td>

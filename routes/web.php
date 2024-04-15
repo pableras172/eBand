@@ -81,13 +81,24 @@ Route::group(['middleware' => 'auth'],
 });
 */
 
-Route::get('/greeting/{locale}', function (string $locale) {
+/*Route::get('/greeting/{locale}', function (string $locale) {
     if (! in_array($locale, ['ca_VL', 'es'])) {
         abort(400);
     }
  
     App::setLocale($locale); 
     return view('dashboard');
+});*/
+
+Route::get('/greeting/{locale}', function (string $locale) {
+    if (! in_array($locale, ['ca_VL', 'es'])) {
+        abort(400);
+    }
+
+    // Establecer la cookie de preferencia de idioma
+    $response = redirect()->route('dashboard')->withCookie(cookie('locale', $locale, config('session.lifetime')));
+
+    return $response;
 });
 
 

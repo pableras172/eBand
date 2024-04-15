@@ -42,5 +42,6 @@ return [
     'notificargrupo'=>'Seguro que quieres notificar a todos los usuarios de la actuación:',
     'enero'=>'Enero',
     'May'=>'Mayo',
+    'Comunicar no disponible'=>'Comunicar no disponible'
 
 ];

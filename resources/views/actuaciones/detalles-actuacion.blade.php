@@ -126,7 +126,7 @@
                 <a id="btnodisponible" href="" onclick="nodisponible(this)" data-lista-id="{{ $lista->id }}"
                     data-usuario-id="{{ Auth::user()->id }}" data-disponible="0"
                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                    Comunicar no disponible
+                    {{__('Comunicar no disponible')}}
                 </a>
             </div>
         @else
@@ -134,7 +134,7 @@
                 <a id="btnodisponible" href="" onclick="nodisponible(this)" data-lista-id="{{ $lista->id }}"
                     data-usuario-id="{{ Auth::user()->id }}" data-disponible="1"
                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                    Comunicar disponible
+                    {{__('Comunicar disponible')}}
                 </a>
             </div>
         @endif
@@ -145,13 +145,13 @@
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                 <div class="divide-y divide-gray-200">
                     @foreach ($usuarios->groupBy('instrument_id') as $instrumento => $usuariosDelInstrumento)
-                        <div class="flex items-center justify-between bg-gray-200">
+                        <div class="flex items-center justify-between bg-fondoclaro">
                             <h2 class="px-3 py-2 font-medium flex-grow">
                                 {{ $usuariosDelInstrumento->first()->instrument->name }}
                             </h2>
                             @can('admin')
                             <button type="button" id="f_{{ $usuariosDelInstrumento->first()->instrument->name }}"
-                                class="ml-3 mr-3 bg-red-900 text-white p-2 rounded leading-none flex items-center justify-center" onclick="mostrarForasters(this)"
+                                class="ml-3 mr-3 bg-fondobotonnaranja text-white p-2 rounded leading-none flex items-center justify-center" onclick="mostrarForasters(this)"
                                 data-instrument-name="{{ $usuariosDelInstrumento->first()->instrument->name }}">
                                 <i class="fas fa-eye"></i>                                
                             </button>
@@ -179,7 +179,7 @@
                                             {{ $user->name }}
                                             @if ($user->forastero)
                                                 <button type="button"
-                                                    class="ml-2 mr-2 font-medium bg-red-900 text-white p-2 rounded leading-none flex items-center">
+                                                    class="ml-2 mr-2 font-medium bg-fondobotonnaranja text-white p-2 rounded leading-none flex items-center">
                                                     {{ __('common.llogat') }}
                                                 </button>
                                             @endif
@@ -342,8 +342,8 @@
                     {{ __('Avisar seleccionats') }}
                 </a>
             @endcan
-            <a href="{{ route('actuacion.index') }}"
-                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-blue-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+            <a href="{{ url()->previous()  }}"
+                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-fondobotonazul hover:bg-fondobotonazul-100 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
                 {{ __('Tornar al llistat') }}
             </a>
         </div>
