@@ -24,9 +24,9 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'telefono' => ['required', 'string', 'telefono', 'max:9', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],            
             'password' => $this->passwordRules(),
+            'telefono' => ['required', 'numeric', 'max:9'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
             'g-recaptcha-response' => 'required|captcha'            
         ])->validate();

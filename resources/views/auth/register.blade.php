@@ -20,15 +20,15 @@
                     autofocus autocomplete="name" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-2">
                 <x-label for="email" value="{{ __('auth.email') }}" />
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
                     required autocomplete="username" />
             </div>
 
-            <div class="col-span-6 sm:col-span-4">
-                <x-label for="instrument" value="{{ __('auth.instrument') }}" />
-                <select id="instrument" name="instrument" wire:model="state.instrument_id" class="mt-1 block w-full"
+            <div class="col-span-6 sm:col-span-4 mt-2">
+                <x-label for="instrument_id" value="{{ __('auth.instrument') }}" />
+                <select id="instrument_id" name="instrument_id" wire:model="state.instrument_id" class="mt-1 block w-full"
                     required>
                     <option value="">{{ __('Selecciona Instrument') }}</option>
     
@@ -39,19 +39,19 @@
                 <x-input-error for="instrument_id" class="mt-2" />
             </div>
 
-            <div>
+            <div class="mt-2">
                 <x-label for="telefono" value="{{ __('auth.telefono') }}" />
                 <x-input id="telefono" class="block mt-1 w-full" type="text" name="telefono" :value="old('telefono')" required
                     autofocus autocomplete="telefono" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-2">
                 <x-label for="password" value="{{ __('auth.contrase') }}" />
                 <x-input id="password" class="block mt-1 w-full" type="password" name="password" required
                     autocomplete="new-password" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-2">
                 <x-label for="password_confirmation" value="{{ __('auth.repite') }}" />
                 <x-input id="password_confirmation" class="block mt-1 w-full" type="password"
                     name="password_confirmation" required autocomplete="new-password" />
