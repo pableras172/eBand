@@ -8,7 +8,7 @@ use App\Models\Actuacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ListasUser;
-
+use DateTime;
 class ListaController extends Controller
 {
     /**
@@ -70,7 +70,14 @@ class ListaController extends Controller
         // Contar el número de elementos con el campo "coche" igual a 1
         $cochesCount = ListasUser::where('listas_id', $actuacionId)->where('coche', 1)->count();
 
-        return view('actuaciones.detalles-actuacion', compact('actuacion', 'usuarios','lista','usuarioDisponible','totalFilas','cochesCount'));
+        //Comprobamos las fechas para no dejar comunicar el no disponible si son menos de 2 dias
+
+        $date1 = new DateTime($actuacion->fechaActuacion);
+        $date2 = new DateTime(); // Fecha actual
+        
+        $antelacion = $date1->diff($date2);
+
+        return view('actuaciones.detalles-actuacion', compact('actuacion', 'usuarios','lista','usuarioDisponible','totalFilas','cochesCount','antelacion'));
     }
     
 

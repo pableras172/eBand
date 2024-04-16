@@ -130,7 +130,7 @@ class TipoActuacionController extends Controller
                 $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME); 
                 $extension = $file->getClientOriginalExtension(); 
                 $newFileName = $fileName . '_' . time() . '.' . $extension; 
-                $path = $file->storeAs('imagenes/tipoactuacion', $newFileName);
+                $path = $file->storeAs('imagenes/tipoactuacion', $newFileName,'public');
                 
                 return $newFileName;
             } else {

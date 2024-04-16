@@ -41,6 +41,7 @@
         </p>
     </div>
 
+    @can('admin')
     <div>
         <div class="flex items-center">
             <svg height="64px" width="64px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 423.803 423.803" xml:space="preserve" fill="#000000">
@@ -71,7 +72,8 @@
             </a>
         </p>
     </div>
-
+    @endcan
+    @can('admin')
     <div>
         <div class="flex items-center">
             <svg height="64px" width="64px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 366.032 366.032" xml:space="preserve" fill="#000000">
@@ -101,7 +103,7 @@
             </a>
         </p>
     </div>
-
+    @endcan
     <div>
         <div class="flex items-center">
             <svg height="64px" width="64px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 384 384" xml:space="preserve" fill="#000000">

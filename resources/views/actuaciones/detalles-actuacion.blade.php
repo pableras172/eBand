@@ -120,23 +120,29 @@
         <p class="text-center mt-2 mb-2">{{ $actuacion->observaciones }}</p>
     </x-slot>
 
-    @cannot('admin')
-        @if ($usuarioDisponible)
+    @cannot('admin')    
+        @if ($antelacion->days <= 2)
             <div class="flex justify-center mt-4 mb-4">
-                <a id="btnodisponible" href="" onclick="nodisponible(this)" data-lista-id="{{ $lista->id }}"
-                    data-usuario-id="{{ Auth::user()->id }}" data-disponible="0"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                    {{__('Comunicar no disponible')}}
-                </a>
+                {{__('No se puede cambiar la disponibilidad con pocos dias de antelación.')}}
             </div>
         @else
-            <div class="flex justify-center mt-4 mb-4">
-                <a id="btnodisponible" href="" onclick="nodisponible(this)" data-lista-id="{{ $lista->id }}"
-                    data-usuario-id="{{ Auth::user()->id }}" data-disponible="1"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                    {{__('Comunicar disponible')}}
-                </a>
-            </div>
+            @if ($usuarioDisponible)
+                <div class="flex justify-center mt-4 mb-4">
+                    <a id="btnodisponible" href="" onclick="nodisponible(this)" data-lista-id="{{ $lista->id }}"
+                        data-usuario-id="{{ Auth::user()->id }}" data-disponible="0"
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                        {{__('Comunicar no disponible')}}
+                    </a>
+                </div>
+            @else
+                <div class="flex justify-center mt-4 mb-4">
+                    <a id="btnodisponible" href="" onclick="nodisponible(this)" data-lista-id="{{ $lista->id }}"
+                        data-usuario-id="{{ Auth::user()->id }}" data-disponible="1"
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                        {{__('Comunicar disponible')}}
+                    </a>
+                </div>
+            @endif
         @endif
     @endcannot
 

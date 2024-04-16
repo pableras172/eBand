@@ -67,5 +67,6 @@
     "Mostrar forasters":"Ver forasteros",
     "Ocultar forasters":"Ocultar forasteros",
     "olvidar contraseña":"¿Olvidaste tu contraseña? No hay problema. Simplemente indicanos tu dirección de correo electrónico y te enviaremos un enlace para restablecer la contraseña que te permitirá elegir una nueva.",
-    "Email Password Reset Link":"Obtener el enlace"
+    "Email Password Reset Link":"Obtener el enlace",
+    "No se puede cambiar la disponibilidad con pocos dias de antelación.":"No se puede cambiar la disponibilidad con pocos dias de antelación."
 }

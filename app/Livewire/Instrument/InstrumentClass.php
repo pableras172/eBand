@@ -121,7 +121,7 @@ class InstrumentClass extends Component
                 $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME); 
                 $extension = $file->getClientOriginalExtension(); 
                 $newFileName = $fileName . '_' . time() . '.' . $extension; 
-                $path = $file->storeAs('imagenes/instruments', $newFileName);
+                $path = $file->storeAs('imagenes/instruments', $newFileName,'public');
                 
                 return $newFileName;
             } else {

@@ -108,7 +108,7 @@ class InstrumentController extends Controller
         //create a new name for the file using the timestamp
         $newFileName = $fileName . '_' . time() . '.' . $extension; 
         //save the iamge onto a public directory into a separately folder
-        $path = $request->file('icon')->storeAs('imagenes/instruments', $newFileName);
+        $path = $request->file('icon')->storeAs('imagenes/instruments', $newFileName,'public');
         return $newFileName;
 
     }
