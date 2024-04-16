@@ -26,6 +26,25 @@
                     required autocomplete="username" />
             </div>
 
+            <div class="col-span-6 sm:col-span-4">
+                <x-label for="instrument" value="{{ __('auth.instrument') }}" />
+                <select id="instrument" name="instrument" wire:model="state.instrument_id" class="mt-1 block w-full"
+                    required>
+                    <option value="">{{ __('Selecciona Instrument') }}</option>
+    
+                    @foreach ($instruments as $instrument)
+                        <option value="{{ $instrument['id'] }}">{{ $instrument['name'] }}</option>
+                    @endforeach
+                </select>
+                <x-input-error for="instrument_id" class="mt-2" />
+            </div>
+
+            <div>
+                <x-label for="telefono" value="{{ __('auth.telefono') }}" />
+                <x-input id="telefono" class="block mt-1 w-full" type="text" name="telefono" :value="old('telefono')" required
+                    autofocus autocomplete="telefono" />
+            </div>
+
             <div class="mt-4">
                 <x-label for="password" value="{{ __('auth.contrase') }}" />
                 <x-input id="password" class="block mt-1 w-full" type="password" name="password" required

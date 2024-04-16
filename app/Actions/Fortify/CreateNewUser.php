@@ -25,9 +25,10 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'telefono' => ['required', 'string', 'telefono', 'max:9', 'unique:users'],
             'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
-            'g-recaptcha-response' => 'required|captcha',
+            'g-recaptcha-response' => 'required|captcha'            
         ])->validate();
 
         return DB::transaction(function () use ($input) {
@@ -37,6 +38,8 @@ class CreateNewUser implements CreatesNewUsers
                 'password' => Hash::make($input['password']),
                 'activo' => false,
                 'fechaAlta' => now(),
+                'instrument_id' => $input['instrument_id'],
+                'telefono'=>$input['telefono'],
                 'uuid'=>Uuid::uuid4()->toString(),
             ]), function (User $user) {
                 $this->createTeam($user);  

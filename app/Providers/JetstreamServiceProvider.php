@@ -11,6 +11,8 @@ use App\Actions\Jetstream\RemoveTeamMember;
 use App\Actions\Jetstream\UpdateTeamName;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Jetstream\Jetstream;
+use App\Models\Instrument;
+use Laravel\Fortify\Fortify;
 //use App\Http\Livewire\UpdateProfileInformationForm;
 //use Livewire\Livewire;
 
@@ -39,7 +41,9 @@ class JetstreamServiceProvider extends ServiceProvider
         Jetstream::deleteTeamsUsing(DeleteTeam::class);
         Jetstream::deleteUsersUsing(DeleteUser::class);
         //Livewire::component('profile.update-profile-information-form', UpdateProfileInformationForm::class);
-
+        Fortify::registerView(function () {            
+            return view('auth.register', ['instruments'=>Instrument::all()]);
+        });
     }
 
     /**

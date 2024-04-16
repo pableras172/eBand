@@ -30,6 +30,8 @@ return [
     'registrar'=>'Registrar',
     'olvidado'=>'¿Has olvidado tu contraseña?',
     'recordarme'=>'Recordam',
+    'telefono'=>'Mòbil',
+    'instrument'=>'Instrument',
     
 
 ];
