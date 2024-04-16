@@ -441,14 +441,10 @@
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
-                    console.log(response);
-                    alert(response);
+
                 },
-                error: function(xhr, status, error) {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
-                    alert(error);
+                error: function(xhr, status, error) {                   
+                   
                 }
             });
 
