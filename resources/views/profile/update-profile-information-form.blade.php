@@ -24,6 +24,7 @@
 
                 <x-label for="photo" value="{{ __('Foto') }}" />
 
+
                 <!-- Current Profile Photo -->
                 <div class="mt-2" x-show="! photoPreview">
                     <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}"
@@ -36,7 +37,8 @@
                         x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
                     </span>
                 </div>
-
+                <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">{{ __('Tamano maximo 1Mb') }}</p>
+                
                 <x-secondary-button class="mt-2 me-2" type="button" x-on:click.prevent="$refs.photo.click()">
                     {{ __('Seleccione una nueva foto') }}
                 </x-secondary-button>

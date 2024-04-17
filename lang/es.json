@@ -1,5 +1,5 @@
 {
-    "Comunicar no disponible": "No disponible",
+    "Comunicar no disponible": "Avisar no disponible",
     "Comunicar disponible": "Comunicar disponible",
     "Musics Seleccionats:": "Músicos Seleccionados:",
     "Cotxes Seleccionats:": "Coches Seleccionados:",
@@ -9,7 +9,6 @@
     "Llistat de músics":"Listado de músicos",
     "Usuari creat":"Usuario creado",
     "Nom":"Nombre",
-    "Email":"Email",
     "Fecha Alta":"Fecha Alta",
     "Instrument":"Instrumento",
     "Actiu":"Activo",
@@ -27,7 +26,6 @@
     "Percentaje":"Porcentaje",
     "Telefon":"Teléfono",
     "Data Alta":"Fecha de Alta",
-    "Password":"Contraseña",
     "Imatge":"Imagen",
     "Nou instrument":"Nuevo instrumento",
     "Valor predeterminado: Banda2024 (Puedes cambiarlo)":"Valor predeterminado: Banda2024 (Puedes cambiarlo)",
@@ -58,7 +56,6 @@
     "Preu music":"Precio músico",
     "Pagat":"Pagado",
     "Llista":"Lista",
-    "Dashboard":"Dashboard",
     "Calendari":"Calendario",
     "Musics":"Músicos",
     "Instruments":"Instrumentos",
@@ -67,7 +64,6 @@
     "Mostrar forasters":"Ver forasteros",
     "Ocultar forasters":"Ocultar forasteros",
     "olvidar contraseña":"¿Olvidaste tu contraseña? No hay problema. Simplemente indicanos tu dirección de correo electrónico y te enviaremos un enlace para restablecer la contraseña que te permitirá elegir una nueva.",
-    "Email Password Reset Link":"Obtener el enlace",
     "No se puede cambiar la disponibilidad con pocos dias de antelación.":"No se puede cambiar la disponibilidad con pocos dias de antelación.",
     "(and :count more error)": "(y :count error más)",
     "(and :count more errors)": "(y :count error más)|(y :count errores más)|(y :count errores más)",
@@ -912,5 +908,6 @@
     "Zambia": "Zambia",
     "Zimbabwe": "Zimbabwe",
     "Zip / Postal Code": "Zip / Código postal",
-    "Åland Islands": "Islas Åland"
+    "Åland Islands": "Islas Åland",
+    "Tamano maximo 1Mb":"Tamaño maximo 1Mb"
 }

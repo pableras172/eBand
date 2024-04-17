@@ -1,6 +1,6 @@
 {
-    "Comunicar no disponible": "No disponible",
-    "Comunicar disponible": "Comunicar disponible",
+    "Comunicar no disponible": "Avisar no disponible",
+    "Comunicar disponible": "Avisar disponible",
     "Musics Seleccionats:": "Músics Seleccionats:",
     "Cotxes Seleccionats:": "Cotxes Seleccionats:",
     "Buidar llista": "Buidar llista",
@@ -9,7 +9,6 @@
     "Llistat de músics":"Llistat de músics",
     "Usuari creat":"Usuari creat!",
     "Nom":"Nom",
-    "Email":"Email",
     "Fecha Alta":"Data Alta",
     "Instrument":"Instrument",
     "Actiu":"Actiu",
@@ -27,7 +26,6 @@
     "Percentaje":"Percentaje",
     "Telefon":"Telefon",
     "Data Alta":"Data Alta",
-    "Password":"Password",
     "Imatge":"Imatge",
     "Nou instrument":"Nou instrument",
     "Valor predeterminado: Banda2024 (Puedes cambiarlo)":"Valor per defecte: Banda2024 (Pots canviar-la)",
@@ -58,7 +56,6 @@
     "Preu music":"Preu músic",
     "Pagat":"Pagat",
     "Llista":"Llista",
-    "Dashboard":"Dashboard",
     "Calendari":"Calendari",
     "Musics":"Musics",
     "Instruments":"Instruments",
@@ -67,7 +64,6 @@
     "Mostrar forasters":"Mostrar forasters",
     "Ocultar forasters":"Ocultar forasters",
     "olvidar contraseña":"Has oblidat la teva contrasenya? Cap problema. Només cal que ens comuniqueu la vostra adreça de correu electrònic i us enviarem per correu electrònic un enllaç de restabliment de la contrasenya que us permetrà triar-ne una de nova.'",
-    "Email Password Reset Link":"Obtindre enllaç",
     "No se puede cambiar la disponibilidad con pocos dias de antelación.":"No pots canviar la disponibilitat en pocs dies de antelació.",
     "(and :count more error)": "(i :count error més)",
     "(and :count more errors)": "(i :count error més)|(i :count errors més)|(i :count errors més)",
@@ -912,5 +908,6 @@
     "Zambia": "Zàmbia",
     "Zimbabwe": "Zimbabwe",
     "Zip / Postal Code": "Còdi postal",
-    "Åland Islands": "Illes Alands"
+    "Åland Islands": "Illes Alands",
+    "Tamano maximo 1Mb":"Tamany màxim 1Mb"
 }

@@ -84,6 +84,7 @@
             <span class="mr-4"
                 style="margin: auto;">{{ \Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y') }}</span>
             <!-- Icono de usuarios -->
+            @if($actuacion->musicos>0)
             <svg width="16px" height="16px" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1"
                 fill="#000000">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -115,25 +116,99 @@
             </svg>
             <!-- Número de músicos -->
             <span style="margin: auto;">{{ $actuacion->musicos }}</span>
+            @endif
+            @if ($actuacion->coches>0)
+            <svg id="anyadirCoche" width="32px" height="32px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                    stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <path
+                        d="M200.8 353.9c-8 0-14.5-6.5-14.5-14.5v-60.9c0-8 6.5-14.5 14.5-14.5s14.5 6.5 14.5 14.5v60.9c0 8-6.5 14.5-14.5 14.5z"
+                        fill="#A4A9AD"></path>
+                    <path
+                        d="M200.8 263.9c-8 0-14.5 6.5-14.5 14.5v25.5h29v-25.5c0-8-6.5-14.5-14.5-14.5z"
+                        fill=""></path>
+                    <path
+                        d="M597.5 353.9c-8 0-14.5-6.5-14.5-14.5v-60.9c0-8 6.5-14.5 14.5-14.5s14.5 6.5 14.5 14.5v60.9c0 8-6.4 14.5-14.5 14.5z"
+                        fill="#A4A9AD"></path>
+                    <path
+                        d="M597.5 263.9c-8 0-14.5 6.5-14.5 14.5v25.5h29v-25.5c0-8-6.4-14.5-14.5-14.5z"
+                        fill=""></path>
+                    <path
+                        d="M635.3 287.2H163c-8 0-14.5-6.5-14.5-14.5s6.5-14.5 14.5-14.5h472.3c8 0 14.5 6.5 14.5 14.5s-6.5 14.5-14.5 14.5z"
+                        fill="#A4A9AD"></path>
+                    <path d="M839.9 390h29v91.6h-29z" fill="#333E48"></path>
+                    <path
+                        d="M840 390v29.2c4.6 1.6 9.4 2.4 14.5 2.4s10-0.9 14.5-2.4V390h-29z"
+                        fill=""></path>
+                    <path
+                        d="M854.5 377.1m-29.7 0a29.7 29.7 0 1 0 59.4 0 29.7 29.7 0 1 0-59.4 0Z"
+                        fill="#A4A9AD"></path>
+                    <path
+                        d="M901.7 478H693.1l-20.3-119.7C669.7 340 652 325 633.4 325H179c-18.6 0-36.3 15-39.4 33.3L92.8 634.2c-3.1 18.3 9.5 33.3 28.1 33.3h780.8c18.6 0 33.8-15.2 33.8-33.8v-122c0-18.5-15.2-33.7-33.8-33.7z"
+                        fill="#cc0000"></path>
+                    <path d="M866.2 565.3h69.3v47h-69.3z" fill="#FFB819"></path>
+                    <path
+                        d="M877.2 612.3h-15.9c-3.7 0-6.8-3-6.8-6.7V572c0-3.7 3-6.7 6.8-6.7h15.9v47z"
+                        fill="#FFFFFF"></path>
+                    <path d="M104.5 565.3l-8 47h60.3v-47z" fill="#FFB819"></path>
+                    <path
+                        d="M145.9 612.3h15.9c3.7 0 6.7-3 6.7-6.7V572c0-3.7-3-6.7-6.7-6.7h-15.9v47z"
+                        fill="#FFFFFF"></path>
+                    <path
+                        d="M403.6 667.5c0-65.6-53.2-118.8-118.8-118.8S166 601.9 166 667.5h237.6z"
+                        fill=""></path>
+                    <path
+                        d="M284.8 667.5m-97.5 0a97.5 97.5 0 1 0 195 0 97.5 97.5 0 1 0-195 0Z"
+                        fill="#333E48"></path>
+                    <path
+                        d="M284.8 667.5m-49.4 0a49.4 49.4 0 1 0 98.8 0 49.4 49.4 0 1 0-98.8 0Z"
+                        fill="#A4A9AD"></path>
+                    <path
+                        d="M832.6 667.5c0-65.6-53.2-118.8-118.8-118.8S595 601.9 595 667.5h237.6z"
+                        fill=""></path>
+                    <path
+                        d="M713.8 667.5m-97.5 0a97.5 97.5 0 1 0 195 0 97.5 97.5 0 1 0-195 0Z"
+                        fill="#333E48"></path>
+                    <path
+                        d="M713.8 667.5m-49.4 0a49.4 49.4 0 1 0 98.8 0 49.4 49.4 0 1 0-98.8 0Z"
+                        fill="#A4A9AD"></path>
+                    <path
+                        d="M961.3 659.6c0 9.9-8.1 18-18 18h-40.5c-9.9 0-18-8.1-18-18v-29.2c0-9.9 8.1-18 18-18h40.5c9.9 0 18 8.1 18 18v29.2zM139.3 659.6c0 9.9-8.1 18-18 18H80.8c-9.9 0-18-8.1-18-18v-29.2c0-9.9 8.1-18 18-18h40.5c9.9 0 18 8.1 18 18v29.2z"
+                        fill="#A4A9AD"></path>
+                    <path
+                        d="M458.5 379.2c0-8.5 7-15.5 15.5-15.5h126.9c8.5 0 15.5 7 15.5 15.5v69.9c0 8.5-7 15.5-15.5 15.5h-127c-8.5 0-15.5-7-15.5-15.5v-69.9zM199.7 378.9c1.4-8.4 9.6-15.3 18.1-15.3h138.5c8.5 0 15.5 7 15.5 15.5V449c0 8.5-7 15.5-15.5 15.5H200.7c-8.5 0-14.3-6.9-12.9-15.3l11.9-70.3z"
+                        fill="#333E48"></path>
+                    <path
+                        d="M524.5 518.7H472c-8 0-14.5-6.5-14.5-14.5s6.5-14.5 14.5-14.5h52.5c8 0 14.5 6.5 14.5 14.5s-6.5 14.5-14.5 14.5zM242.1 518.7h-52.5c-8 0-14.5-6.5-14.5-14.5s6.5-14.5 14.5-14.5h52.5c8 0 14.5 6.5 14.5 14.5s-6.5 14.5-14.5 14.5z"
+                        fill="#00B3E3"></path>
+                    <path
+                        d="M600.9 363.7h-127c-8.5 0-15.5 7-15.5 15.5v17.3c0-8.5 7-15.5 15.5-15.5h126.9c8.5 0 15.5 7 15.5 15.5v-17.3c0-8.6-6.9-15.5-15.4-15.5zM356.2 363.7H217.8c-8.5 0-16.6 6.9-18.1 15.3l-2.8 16.5c1.8-8 9.7-14.4 17.9-14.4h141.5c8.5 0 15.5 7 15.5 15.5v-17.3c-0.1-8.7-7-15.6-15.6-15.6z"
+                        fill=""></path>
+                </g>
+            </svg>
+            <span style="margin: auto;">{{ $actuacion->coches }}</span>
+            @endif
         </div>
         <hr>
         <p class="text-center mt-2 mb-2">{{ $actuacion->observaciones }}</p>
     </x-slot>
 
-    @cannot('admin')    
-        @if ($antelacion->days <= 2)
-            <div class="flex justify-center mt-4 mb-4">
-                {{__('No se puede cambiar la disponibilidad con pocos dias de antelación.')}}
-            </div>
-        @else
-            @if ($usuarioDisponible)
+    @cannot('admin') 
+            @if ($usuarioDisponible)          
                 <div class="flex justify-center mt-4 mb-4">
-                    <a id="btnodisponible" href="" onclick="nodisponible(this)" data-lista-id="{{ $lista->id }}"
+                    <a id="btnodisponible" href="" @if ($antelacion->days > 2) onclick="nodisponible(this)" @else onclick="alert('{{__('No se puede cambiar la disponibilidad con pocos dias de antelación.')}}')" @endif data-lista-id="{{ $lista->id }}"
                         data-usuario-id="{{ Auth::user()->id }}" data-disponible="0"
                         class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
                         {{__('Comunicar no disponible')}}
                     </a>
                 </div>
+                @if ($antelacion->days <= 2)
+                    <div class="flex justify-center mt-4 mb-4">
+                        {{__('No se puede cambiar la disponibilidad con pocos dias de antelación.')}}
+                    </div>
+                @endif
             @else
                 <div class="flex justify-center mt-4 mb-4">
                     <a id="btnodisponible" href="" onclick="nodisponible(this)" data-lista-id="{{ $lista->id }}"
@@ -142,8 +217,7 @@
                         {{__('Comunicar disponible')}}
                     </a>
                 </div>
-            @endif
-        @endif
+            @endif        
     @endcannot
 
     <div class="bg-gray-100">
@@ -195,90 +269,93 @@
                                         @endif
                                     </div>
                                     <div>
+                                        
                                         @if ($user->coche)
                                             @cannot('admin')
-                                                <svg id="anyadirCoche" width="32px" height="32px"
-                                                    viewBox="0 0 1024 1024" class="icon" version="1.1"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="#000000">
-                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                                                        stroke-linejoin="round"></g>
-                                                    <g id="SVGRepo_iconCarrier">
-                                                        <path
-                                                            d="M200.8 353.9c-8 0-14.5-6.5-14.5-14.5v-60.9c0-8 6.5-14.5 14.5-14.5s14.5 6.5 14.5 14.5v60.9c0 8-6.5 14.5-14.5 14.5z"
-                                                            fill="#A4A9AD"></path>
-                                                        <path
-                                                            d="M200.8 263.9c-8 0-14.5 6.5-14.5 14.5v25.5h29v-25.5c0-8-6.5-14.5-14.5-14.5z"
-                                                            fill=""></path>
-                                                        <path
-                                                            d="M597.5 353.9c-8 0-14.5-6.5-14.5-14.5v-60.9c0-8 6.5-14.5 14.5-14.5s14.5 6.5 14.5 14.5v60.9c0 8-6.4 14.5-14.5 14.5z"
-                                                            fill="#A4A9AD"></path>
-                                                        <path
-                                                            d="M597.5 263.9c-8 0-14.5 6.5-14.5 14.5v25.5h29v-25.5c0-8-6.4-14.5-14.5-14.5z"
-                                                            fill=""></path>
-                                                        <path
-                                                            d="M635.3 287.2H163c-8 0-14.5-6.5-14.5-14.5s6.5-14.5 14.5-14.5h472.3c8 0 14.5 6.5 14.5 14.5s-6.5 14.5-14.5 14.5z"
-                                                            fill="#A4A9AD"></path>
-                                                        <path d="M839.9 390h29v91.6h-29z" fill="#333E48"></path>
-                                                        <path
-                                                            d="M840 390v29.2c4.6 1.6 9.4 2.4 14.5 2.4s10-0.9 14.5-2.4V390h-29z"
-                                                            fill=""></path>
-                                                        <path
-                                                            d="M854.5 377.1m-29.7 0a29.7 29.7 0 1 0 59.4 0 29.7 29.7 0 1 0-59.4 0Z"
-                                                            fill="#A4A9AD"></path>
-                                                        <path
-                                                            d="M901.7 478H693.1l-20.3-119.7C669.7 340 652 325 633.4 325H179c-18.6 0-36.3 15-39.4 33.3L92.8 634.2c-3.1 18.3 9.5 33.3 28.1 33.3h780.8c18.6 0 33.8-15.2 33.8-33.8v-122c0-18.5-15.2-33.7-33.8-33.7z"
-                                                            fill="#cc0000"></path>
-                                                        <path d="M866.2 565.3h69.3v47h-69.3z" fill="#FFB819"></path>
-                                                        <path
-                                                            d="M877.2 612.3h-15.9c-3.7 0-6.8-3-6.8-6.7V572c0-3.7 3-6.7 6.8-6.7h15.9v47z"
-                                                            fill="#FFFFFF"></path>
-                                                        <path d="M104.5 565.3l-8 47h60.3v-47z" fill="#FFB819"></path>
-                                                        <path
-                                                            d="M145.9 612.3h15.9c3.7 0 6.7-3 6.7-6.7V572c0-3.7-3-6.7-6.7-6.7h-15.9v47z"
-                                                            fill="#FFFFFF"></path>
-                                                        <path
-                                                            d="M403.6 667.5c0-65.6-53.2-118.8-118.8-118.8S166 601.9 166 667.5h237.6z"
-                                                            fill=""></path>
-                                                        <path
-                                                            d="M284.8 667.5m-97.5 0a97.5 97.5 0 1 0 195 0 97.5 97.5 0 1 0-195 0Z"
-                                                            fill="#333E48"></path>
-                                                        <path
-                                                            d="M284.8 667.5m-49.4 0a49.4 49.4 0 1 0 98.8 0 49.4 49.4 0 1 0-98.8 0Z"
-                                                            fill="#A4A9AD"></path>
-                                                        <path
-                                                            d="M832.6 667.5c0-65.6-53.2-118.8-118.8-118.8S595 601.9 595 667.5h237.6z"
-                                                            fill=""></path>
-                                                        <path
-                                                            d="M713.8 667.5m-97.5 0a97.5 97.5 0 1 0 195 0 97.5 97.5 0 1 0-195 0Z"
-                                                            fill="#333E48"></path>
-                                                        <path
-                                                            d="M713.8 667.5m-49.4 0a49.4 49.4 0 1 0 98.8 0 49.4 49.4 0 1 0-98.8 0Z"
-                                                            fill="#A4A9AD"></path>
-                                                        <path
-                                                            d="M961.3 659.6c0 9.9-8.1 18-18 18h-40.5c-9.9 0-18-8.1-18-18v-29.2c0-9.9 8.1-18 18-18h40.5c9.9 0 18 8.1 18 18v29.2zM139.3 659.6c0 9.9-8.1 18-18 18H80.8c-9.9 0-18-8.1-18-18v-29.2c0-9.9 8.1-18 18-18h40.5c9.9 0 18 8.1 18 18v29.2z"
-                                                            fill="#A4A9AD"></path>
-                                                        <path
-                                                            d="M458.5 379.2c0-8.5 7-15.5 15.5-15.5h126.9c8.5 0 15.5 7 15.5 15.5v69.9c0 8.5-7 15.5-15.5 15.5h-127c-8.5 0-15.5-7-15.5-15.5v-69.9zM199.7 378.9c1.4-8.4 9.6-15.3 18.1-15.3h138.5c8.5 0 15.5 7 15.5 15.5V449c0 8.5-7 15.5-15.5 15.5H200.7c-8.5 0-14.3-6.9-12.9-15.3l11.9-70.3z"
-                                                            fill="#333E48"></path>
-                                                        <path
-                                                            d="M524.5 518.7H472c-8 0-14.5-6.5-14.5-14.5s6.5-14.5 14.5-14.5h52.5c8 0 14.5 6.5 14.5 14.5s-6.5 14.5-14.5 14.5zM242.1 518.7h-52.5c-8 0-14.5-6.5-14.5-14.5s6.5-14.5 14.5-14.5h52.5c8 0 14.5 6.5 14.5 14.5s-6.5 14.5-14.5 14.5z"
-                                                            fill="#00B3E3"></path>
-                                                        <path
-                                                            d="M600.9 363.7h-127c-8.5 0-15.5 7-15.5 15.5v17.3c0-8.5 7-15.5 15.5-15.5h126.9c8.5 0 15.5 7 15.5 15.5v-17.3c0-8.6-6.9-15.5-15.4-15.5zM356.2 363.7H217.8c-8.5 0-16.6 6.9-18.1 15.3l-2.8 16.5c1.8-8 9.7-14.4 17.9-14.4h141.5c8.5 0 15.5 7 15.5 15.5v-17.3c-0.1-8.7-7-15.6-15.6-15.6z"
-                                                            fill=""></path>
-                                                    </g>
-                                                </svg>
+                                                <div class="flex items-center">
+                                                    <input style="float: left;margin-right: 15px;" type="checkbox"
+                                                        data-lista-id="{{ $lista->id }}"
+                                                        data-usuario-id="{{ $user->id }}"
+                                                        {{ $user->seleccionado ? 'checked' : '' }} disabled>
+                                                    
+
+                                                    <svg id="anyadirCoche" width="32px" height="32px"
+                                                        viewBox="0 0 1024 1024" class="icon" version="1.1"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                            stroke-linejoin="round"></g>
+                                                        <g id="SVGRepo_iconCarrier">
+                                                            <path
+                                                                d="M200.8 353.9c-8 0-14.5-6.5-14.5-14.5v-60.9c0-8 6.5-14.5 14.5-14.5s14.5 6.5 14.5 14.5v60.9c0 8-6.5 14.5-14.5 14.5z"
+                                                                fill="#A4A9AD"></path>
+                                                            <path
+                                                                d="M200.8 263.9c-8 0-14.5 6.5-14.5 14.5v25.5h29v-25.5c0-8-6.5-14.5-14.5-14.5z"
+                                                                fill=""></path>
+                                                            <path
+                                                                d="M597.5 353.9c-8 0-14.5-6.5-14.5-14.5v-60.9c0-8 6.5-14.5 14.5-14.5s14.5 6.5 14.5 14.5v60.9c0 8-6.4 14.5-14.5 14.5z"
+                                                                fill="#A4A9AD"></path>
+                                                            <path
+                                                                d="M597.5 263.9c-8 0-14.5 6.5-14.5 14.5v25.5h29v-25.5c0-8-6.4-14.5-14.5-14.5z"
+                                                                fill=""></path>
+                                                            <path
+                                                                d="M635.3 287.2H163c-8 0-14.5-6.5-14.5-14.5s6.5-14.5 14.5-14.5h472.3c8 0 14.5 6.5 14.5 14.5s-6.5 14.5-14.5 14.5z"
+                                                                fill="#A4A9AD"></path>
+                                                            <path d="M839.9 390h29v91.6h-29z" fill="#333E48"></path>
+                                                            <path
+                                                                d="M840 390v29.2c4.6 1.6 9.4 2.4 14.5 2.4s10-0.9 14.5-2.4V390h-29z"
+                                                                fill=""></path>
+                                                            <path
+                                                                d="M854.5 377.1m-29.7 0a29.7 29.7 0 1 0 59.4 0 29.7 29.7 0 1 0-59.4 0Z"
+                                                                fill="#A4A9AD"></path>
+                                                            <path
+                                                                d="M901.7 478H693.1l-20.3-119.7C669.7 340 652 325 633.4 325H179c-18.6 0-36.3 15-39.4 33.3L92.8 634.2c-3.1 18.3 9.5 33.3 28.1 33.3h780.8c18.6 0 33.8-15.2 33.8-33.8v-122c0-18.5-15.2-33.7-33.8-33.7z"
+                                                                fill="#cc0000"></path>
+                                                            <path d="M866.2 565.3h69.3v47h-69.3z" fill="#FFB819"></path>
+                                                            <path
+                                                                d="M877.2 612.3h-15.9c-3.7 0-6.8-3-6.8-6.7V572c0-3.7 3-6.7 6.8-6.7h15.9v47z"
+                                                                fill="#FFFFFF"></path>
+                                                            <path d="M104.5 565.3l-8 47h60.3v-47z" fill="#FFB819"></path>
+                                                            <path
+                                                                d="M145.9 612.3h15.9c3.7 0 6.7-3 6.7-6.7V572c0-3.7-3-6.7-6.7-6.7h-15.9v47z"
+                                                                fill="#FFFFFF"></path>
+                                                            <path
+                                                                d="M403.6 667.5c0-65.6-53.2-118.8-118.8-118.8S166 601.9 166 667.5h237.6z"
+                                                                fill=""></path>
+                                                            <path
+                                                                d="M284.8 667.5m-97.5 0a97.5 97.5 0 1 0 195 0 97.5 97.5 0 1 0-195 0Z"
+                                                                fill="#333E48"></path>
+                                                            <path
+                                                                d="M284.8 667.5m-49.4 0a49.4 49.4 0 1 0 98.8 0 49.4 49.4 0 1 0-98.8 0Z"
+                                                                fill="#A4A9AD"></path>
+                                                            <path
+                                                                d="M832.6 667.5c0-65.6-53.2-118.8-118.8-118.8S595 601.9 595 667.5h237.6z"
+                                                                fill=""></path>
+                                                            <path
+                                                                d="M713.8 667.5m-97.5 0a97.5 97.5 0 1 0 195 0 97.5 97.5 0 1 0-195 0Z"
+                                                                fill="#333E48"></path>
+                                                            <path
+                                                                d="M713.8 667.5m-49.4 0a49.4 49.4 0 1 0 98.8 0 49.4 49.4 0 1 0-98.8 0Z"
+                                                                fill="#A4A9AD"></path>
+                                                            <path
+                                                                d="M961.3 659.6c0 9.9-8.1 18-18 18h-40.5c-9.9 0-18-8.1-18-18v-29.2c0-9.9 8.1-18 18-18h40.5c9.9 0 18 8.1 18 18v29.2zM139.3 659.6c0 9.9-8.1 18-18 18H80.8c-9.9 0-18-8.1-18-18v-29.2c0-9.9 8.1-18 18-18h40.5c9.9 0 18 8.1 18 18v29.2z"
+                                                                fill="#A4A9AD"></path>
+                                                            <path
+                                                                d="M458.5 379.2c0-8.5 7-15.5 15.5-15.5h126.9c8.5 0 15.5 7 15.5 15.5v69.9c0 8.5-7 15.5-15.5 15.5h-127c-8.5 0-15.5-7-15.5-15.5v-69.9zM199.7 378.9c1.4-8.4 9.6-15.3 18.1-15.3h138.5c8.5 0 15.5 7 15.5 15.5V449c0 8.5-7 15.5-15.5 15.5H200.7c-8.5 0-14.3-6.9-12.9-15.3l11.9-70.3z"
+                                                                fill="#333E48"></path>
+                                                            <path
+                                                                d="M524.5 518.7H472c-8 0-14.5-6.5-14.5-14.5s6.5-14.5 14.5-14.5h52.5c8 0 14.5 6.5 14.5 14.5s-6.5 14.5-14.5 14.5zM242.1 518.7h-52.5c-8 0-14.5-6.5-14.5-14.5s6.5-14.5 14.5-14.5h52.5c8 0 14.5 6.5 14.5 14.5s-6.5 14.5-14.5 14.5z"
+                                                                fill="#00B3E3"></path>
+                                                            <path
+                                                                d="M600.9 363.7h-127c-8.5 0-15.5 7-15.5 15.5v17.3c0-8.5 7-15.5 15.5-15.5h126.9c8.5 0 15.5 7 15.5 15.5v-17.3c0-8.6-6.9-15.5-15.4-15.5zM356.2 363.7H217.8c-8.5 0-16.6 6.9-18.1 15.3l-2.8 16.5c1.8-8 9.7-14.4 17.9-14.4h141.5c8.5 0 15.5 7 15.5 15.5v-17.3c-0.1-8.7-7-15.6-15.6-15.6z"
+                                                                fill=""></path>
+                                                        </g>
+                                                    </svg>
+                                            </div>
                                             @endcan
                                         @endif
 
-                                        @cannot('admin')
-                                            <input style="float: left;margin-right: 15px;" type="checkbox"
-                                                data-lista-id="{{ $lista->id }}"
-                                                data-usuario-id="{{ $user->id }}"
-                                                {{ $user->seleccionado ? 'checked' : '' }} disabled>
-                                        @endcan
-
+                                       
                                         @can('admin')
                                             <input style="float: left;margin-right: 15px;" type="checkbox"
                                                 data-lista-id="{{ $lista->id }}"
@@ -293,7 +370,7 @@
                                                     data-lista-id="{{ $lista->id }}"
                                                     data-usuario-id="{{ $user->id }}" onclick="setCoche(this)"
                                                     class="appearance-none w-10 focus:outline-none checked:bg-blue-300 h-5 bg-gray-300 rounded-full before:inline-block before:rounded-full before:bg-blue-500 before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5"
-                                                    {{ $user->coche ? 'checked' : '' }} /> <!-- Corrección aquí -->
+                                                    {{ $user->coche ? 'checked' : '' }} /> 
                                                 <span class="ml-3 text-gray-900 text-sm font-medium">Coche</span>
                                             </label>
 
