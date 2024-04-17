@@ -18,6 +18,8 @@ return [
 
     'name' => env('APP_NAME', 'eBand'),
 
+    'banda'=> env('BAND_NAME',''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

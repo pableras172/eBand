@@ -130,7 +130,7 @@ public function store(Request $request)
             null, 
             null, 
             null, 
-            "Nova actuació - ".$actuaciones[0]->contrato->poblacion, 
+            config('app.banda', '')." - Nova actuació - ".$actuaciones[0]->contrato->poblacion, 
             "Accedix per a vore els detalls"
         );
 
@@ -166,7 +166,7 @@ public function store(Request $request)
                 continue;
             }
 
-            $message = "Tens una nova actuació  - ".$actuaciones[0]->contrato->poblacion;
+            $message = config('app.banda', '')." - Tens una nova actuació  - ".$actuaciones[0]->contrato->poblacion;
 
             if($asistente->coche){
                 $message = "Tens una nova actuació agafant el cotxe  - ".$actuaciones[0]->contrato->poblacion;
