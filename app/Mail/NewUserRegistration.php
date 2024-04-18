@@ -43,7 +43,7 @@ class NewUserRegistration extends Mailable
         return new Content(
             markdown: 'mail.users.newuser',
             with: [
-                'url' => config('app.url').'\/users\/'.$this->user->id.'/edit',
+                'url' => config('app.url').'/users/'.$this->user->id.'/edit',
                 'username'=>$this->user->name,
             ],
         );
