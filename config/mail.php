@@ -15,6 +15,8 @@ return [
 
     'default' => env('MAIL_MAILER', 'smtp'),
 
+    'mail_admin'=>env('MAIL_ADMIN', 'noexiste@noexiste.com'),
+
     /*
     |--------------------------------------------------------------------------
     | Mailer Configurations

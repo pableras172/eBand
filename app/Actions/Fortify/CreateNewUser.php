@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewUserRegistration;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -43,9 +45,11 @@ class CreateNewUser implements CreatesNewUsers
                 'uuid'=>Uuid::uuid4()->toString(),
             ]), function (User $user) {
                 $this->createTeam($user);  
-                $user->roles()->sync(2);             
+                $user->roles()->sync(2); 
+                Mail::to(config('mail.mail_admin', ''))->send(new NewUserRegistration($user));            
             });
-        });
+        });        
+       
     }
 
     /**
