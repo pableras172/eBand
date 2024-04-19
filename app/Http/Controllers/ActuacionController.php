@@ -37,16 +37,16 @@ class ActuacionController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function createtocontract(Request $request, string $id)
+    public function createtocontract(Request $request, $contratosId)
     {
         $actuaciones =  Actuacion::with('contrato','lista')
-        ->where('contratos_id', '=', $id)
+        ->where('contratos_id', '=', $contratosId)
         ->orderBy('fechaActuacion', 'asc')
         ->get();
 
         $tipoActuacion = Tipoactuacion::all();
 
-        $contrato = Contratos::find($id);
+        $contrato = Contratos::find( $contratosId);
 
         return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato'));
     }
@@ -335,6 +335,7 @@ public function store(Request $request)
         return view('actuaciones.resumen-usuario', [
             'totalesPorTipoActuacion' => $totalesPorTipoActuacion,
             'year' => $year, // Pasamos el año a la vista para mostrarlo
+            'usuario'=>$user, 
         ]);
     }
 
@@ -356,6 +357,7 @@ public function store(Request $request)
         'actuaciones' => $actuaciones,
         'year' => $year,
         'type' => $type,
+        '$usuario'=>$user,        
     ]);
 }
 

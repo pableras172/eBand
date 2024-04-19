@@ -34,29 +34,29 @@
                             <table class="min-w-full divide-y divide-gray-200 w-full">
                                 <thead>
                                 <tr>
-                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-2 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         
                                     </th>
-                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-2 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{__('Nom')}}
                                     </th>
                                     <!-- EMAIL -->
-                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                                    <th scope="col" class="px-2 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         {{__('Email')}}
                                     </th>                                    
                                     <!-- FECHA ALTA -->
-                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                                    <th scope="col" class="px-2 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         {{__('Fecha Alta')}}
                                     </th>
                                     <!-- INSTRUMENT -->
-                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                                    <th scope="col" class="px-2 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         {{__('Instrument')}}
                                     </th>
                                     <!-- ACTIU -->
-                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                                    <th scope="col" class="px-2 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         {{__('Actiu')}}
                                     </th>                                    
-                                    <th scope="col" class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th scope="col" class="px-2 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{__('Accions')}}
                                     </th>                                    
                                 </tr>
@@ -69,26 +69,31 @@
                                         @else
                                             <tr  @if ($user->forastero==1) class="listaforastero" @endif style="@if($user->forastero==1)background-color: #97a9a9; display: none; @endif">
                                         @endif
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                                        <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900">
                                             <img src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}" class="h-10 w-10 rounded-full">
                                         </td>
                                         @if ($user->activo == 0)
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-white-900">
+                                        <td class="px-2 py-2 whitespace-nowrap text-sm text-white-900">
                                         @else
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                                        <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900">
                                         @endif                                        
-                                            {{ $user->name }}                                           
+                                            <div class="flex justify-between">
+                                                {{ $user->name }}
+                                                <a href="{{ route('actuaciones.usuario', [$user->id, date('Y')]) }}" alt="{{__('Estadísticas')}}">
+                                                    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffbd59"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3.29289 9.29289C3 9.58579 3 10.0572 3 11V17C3 17.9428 3 18.4142 3.29289 18.7071C3.58579 19 4.05719 19 5 19C5.94281 19 6.41421 19 6.70711 18.7071C7 18.4142 7 17.9428 7 17V11C7 10.0572 7 9.58579 6.70711 9.29289C6.41421 9 5.94281 9 5 9C4.05719 9 3.58579 9 3.29289 9.29289Z" fill="#1C274C"></path> <path opacity="0.4" d="M17.2929 2.29289C17 2.58579 17 3.05719 17 4V17C17 17.9428 17 18.4142 17.2929 18.7071C17.5858 19 18.0572 19 19 19C19.9428 19 20.4142 19 20.7071 18.7071C21 18.4142 21 17.9428 21 17V4C21 3.05719 21 2.58579 20.7071 2.29289C20.4142 2 19.9428 2 19 2C18.0572 2 17.5858 2 17.2929 2.29289Z" fill="#1C274C"></path> <path opacity="0.7" d="M10 7C10 6.05719 10 5.58579 10.2929 5.29289C10.5858 5 11.0572 5 12 5C12.9428 5 13.4142 5 13.7071 5.29289C14 5.58579 14 6.05719 14 7V17C14 17.9428 14 18.4142 13.7071 18.7071C13.4142 19 12.9428 19 12 19C11.0572 19 10.5858 19 10.2929 18.7071C10 18.4142 10 17.9428 10 17V7Z" fill="#1C274C"></path> <path d="M3 21.25C2.58579 21.25 2.25 21.5858 2.25 22C2.25 22.4142 2.58579 22.75 3 22.75H21C21.4142 22.75 21.75 22.4142 21.75 22C21.75 21.5858 21.4142 21.25 21 21.25H3Z" fill="#1C274C"></path> </g></svg>
+                                                </a>
+                                            </div>
                                         </td>
                                         <!-- EMAIL -->
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
+                                        <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             {{ $user->email }}
                                         </td>   
                                         <!-- FECHA ALTA -->
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
+                                        <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             {{ $user->fechaAlta ? \Carbon\Carbon::parse($user->fechaAlta)->format('d/m/Y') : '-' }}
                                         </td>
                                         <!-- INSTRUMENT -->
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
+                                        <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             @if ($user->instrument)
                                                 {{ $user->instrument->name }}
                                             @else
@@ -96,19 +101,19 @@
                                             @endif
                                         </td>
                                         <!-- ACTIU -->
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
+                                        <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             {{ $user->activo ? 'Si' : 'No' }}
                                         </td>
 
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm font-medium">                                                                                        
+                                        <td class="px-2 py-2 whitespace-nowrap text-sm font-medium">                                                                                        
                                             <a href="{{ route('users.edit', $user->id) }}" class="bg-fondobotonazul hover:bg-fondobotonazul-400 text-white font-bold py-2 px-4 rounded">
                                                 {{__('Editar')}}
-                                            </a>                                            
+                                            </a>                                                                               
                                         </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
-                            </table>
+                            </table>                            
                             {{ $users->links() }}
                         </div>
                     </div>
