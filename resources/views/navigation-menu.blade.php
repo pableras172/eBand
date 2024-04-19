@@ -67,7 +67,7 @@
                         <x-slot name="content">
                             <div class="w-60 px-4">
                                 <!-- Team Management -->
-                                <x-nav-link href="{{ route('actuaciones.usuario', [Auth::user()->id, date('Y')]) }}">
+                                <x-nav-link href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}">
                                     Tipus de actuacio
                                 </x-nav-link>
                             </div>
@@ -370,8 +370,8 @@
                 </div>
 
                 <!-- Team Settings -->
-                <x-responsive-nav-link href="{{ route('actuaciones.usuario', [Auth::user()->id, date('Y')]) }}"
-                    :active="request()->routeIs('actuaciones.usuario')">
+                <x-responsive-nav-link href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}"
+                    :active="request()->routeIs('actuaciones.usuario.anyo')">
                     {{ __('Les meves actuacions') }}
                 </x-responsive-nav-link>
 

@@ -10,6 +10,9 @@ use Carbon\Carbon;
 use OneSignal;
 use App\Models\User;
 use App\Models\ListasUser;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class ActuacionController extends Controller
 {
@@ -19,7 +22,7 @@ class ActuacionController extends Controller
     
 
      public function index()
-     {
+     {        
          $actuaciones = Actuacion::with('contrato', 'lista','tipoactuacion')
              ->whereDate('fechaActuacion', '>=', now()->toDateString())
              ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
@@ -39,6 +42,8 @@ class ActuacionController extends Controller
      */
     public function createtocontract(Request $request, $contratosId)
     {
+        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $actuaciones =  Actuacion::with('contrato','lista')
         ->where('contratos_id', '=', $contratosId)
         ->orderBy('fechaActuacion', 'asc')
@@ -56,6 +61,7 @@ class ActuacionController extends Controller
      */
 public function store(Request $request)
 {
+    abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
     // Validar los datos de entrada
     $request->validate([
         'fechaActuacion' => 'required|date',
@@ -105,6 +111,7 @@ public function store(Request $request)
 
     public function notificarActuacion(Request $request)
     {
+        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         // Validar los datos de entrada
         $request->validate([
             'id' => 'required|integer',        
@@ -140,6 +147,7 @@ public function store(Request $request)
 
     public function notificarActuacionLista(Request $request)
     {
+        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         // Validar los datos de entrada
         $request->validate([
             'id' => 'required|integer',        
@@ -202,7 +210,8 @@ public function store(Request $request)
      */
     public function edit(Actuacion $actuacion)
     {
-        // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
+        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $actuaciones =  Actuacion::with('contrato','lista')
         ->where('contratos_id', '=', $actuacion->contratos_id)
         ->get();
@@ -218,6 +227,7 @@ public function store(Request $request)
      */
     public function update(Request $request, Actuacion $actuacion)
     {
+            abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
                     // Validar los datos de entrada
             $request->validate([
                 'fechaActuacion' => 'required|date',
@@ -267,6 +277,9 @@ public function store(Request $request)
      */
     public function destroy(Actuacion $actuacion)
     {
+       
+        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+       
         try {
         // Verificar si la actuación existe
             if ($actuacion) {
@@ -293,6 +306,10 @@ public function store(Request $request)
 
     public function getTotalActuacionesUsuario(User $user, $year = null)
     {
+        if($user->id!=Auth::user()->id){
+            abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        }
+
         // Obtener el año actual si no se proporciona uno
         if ($year === null) {
             $year = Carbon::now()->year;
@@ -340,25 +357,28 @@ public function store(Request $request)
     }
 
     public function getListadoActuacionesUsuarioAndTipo(User $user, $year, $type)
-{
-    // Obtener las actuaciones del usuario para el año y tipo especificados
-    $actuaciones = $user->listas()
-        ->whereHas('actuacion', function ($query) use ($year, $type) {
-            $query->whereYear('fechaActuacion', $year)
-                ->whereHas('tipoactuacion', function ($query) use ($type) {
-                    $query->where('id', $type);
-                });
-        })
-        ->with('actuacion.tipoactuacion', 'actuacion.contrato')
-        ->get();
+    {
+        if($user->id!=Auth::user()->id){
+            abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        }
+        // Obtener las actuaciones del usuario para el año y tipo especificados
+        $actuaciones = $user->listas()
+            ->whereHas('actuacion', function ($query) use ($year, $type) {
+                $query->whereYear('fechaActuacion', $year)
+                    ->whereHas('tipoactuacion', function ($query) use ($type) {
+                        $query->where('id', $type);
+                    });
+            })
+            ->with('actuacion.tipoactuacion', 'actuacion.contrato')
+            ->get();
 
-    // Puedes pasar $actuaciones a la vista para mostrar el listado
-    return view('actuaciones.listado-actuaciones-tipo-usuario', [
-        'actuaciones' => $actuaciones,
-        'year' => $year,
-        'type' => $type,
-        'usuario'=>$user,        
-    ]);
+        // Puedes pasar $actuaciones a la vista para mostrar el listado
+        return view('actuaciones.listado-actuaciones-tipo-usuario', [
+            'actuaciones' => $actuaciones,
+            'year' => $year,
+            'type' => $type,
+            'usuario'=>$user,        
+        ]);
 }
 
     

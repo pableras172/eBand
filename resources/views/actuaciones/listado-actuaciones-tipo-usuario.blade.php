@@ -12,15 +12,8 @@
 	<div class="p-4 max-w-md bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white">{{__('Listado de actuaciones del año: ') }}{{$year}}</h3>
-            <div class="relative">
-                
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M9.293 11.707a1 1 0 0 1-1.414 0L4.586 8.414a1 1 0 0 1 1.414-1.414L10 10.586l4.293-4.293a1 1 0 1 1 1.414 1.414l-5 5a1 1 0 0 1-1.414 0z"/>
-                    </svg>
-                </div>
-            </div>
         </div>
+        <hr>
         <div class="flow-root">
             <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
                 @foreach($actuaciones as $actuacion)
