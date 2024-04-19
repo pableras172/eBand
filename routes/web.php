@@ -39,7 +39,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         Route::resource('calendar',CalendarController::class);
 
         
-        Route::get('/actuacion/{user}', [ActuacionController::class, 'getTotalActuacionesUsuario'])->name('actuaciones.usuario');
+        Route::get('/actuacion/{user}/{year}', [ActuacionController::class, 'getTotalActuacionesUsuario'])->name('actuaciones.usuario');
+        Route::get('/actuacion/{user}/{year}/{type}', [ActuacionController::class, 'getListadoActuacionesUsuarioAndTipo'])->name('actuaciones.usuario.listatipo');
        
         Route::get('/actuacion/createtocontract/{contratos}', [ActuacionController::class, 'createtocontract'])->name('actuacion.createtocontract');
         Route::resource('actuacion',ActuacionController::class);

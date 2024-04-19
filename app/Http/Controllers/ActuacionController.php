@@ -291,33 +291,73 @@ public function store(Request $request)
          
     }
 
-    public function getTotalActuacionesUsuario(User $user)
+    public function getTotalActuacionesUsuario(User $user, $year = null)
     {
+        // Obtener el año actual si no se proporciona uno
+        if ($year === null) {
+            $year = Carbon::now()->year;
+        }
+    
         // Obtener todas las listas del usuario con sus respectivas actuaciones y tipos de actuación
-        $listasConActuaciones = $user->listas()->with('actuacion.tipoactuacion')->get();
+        $listasConActuaciones = $user->listas()
+                ->with('actuacion.tipoactuacion')
+                ->whereHas('actuacion', function ($query) use ($year) {
+                    $query->whereYear('fechaActuacion', $year);
+                })
+                ->get();
 
+            //dd($listasConActuaciones);
         // Inicializar un array para almacenar los totales por tipo de actuación junto con sus iconos
         $totalesPorTipoActuacion = [];
-
+    
         // Iterar sobre cada lista y sumar al total correspondiente en base al tipo de actuación
         foreach ($listasConActuaciones as $lista) {
-            $tipoActuacion = $lista->actuacion->tipoactuacion;
-            $tipoActuacionNombre = $tipoActuacion->nombre;
-            $tipoActuacionIcono = $tipoActuacion->icon;
-
-            if (!isset($totalesPorTipoActuacion[$tipoActuacionNombre])) {
-                $totalesPorTipoActuacion[$tipoActuacionNombre] = [
-                    'total' => 0,
-                    'icono' => $tipoActuacionIcono,
-                ];
+            $actuacion = $lista->actuacion;
+            if ($actuacion) {
+                $tipoActuacion = $actuacion->tipoactuacion;
+                $tipoActuacionNombre = $tipoActuacion->nombre;
+                $tipoActuacionIcono = $tipoActuacion->icon;
+                $tipoActuacId = $tipoActuacion->id;
+    
+                if (!isset($totalesPorTipoActuacion[$tipoActuacionNombre])) {
+                    $totalesPorTipoActuacion[$tipoActuacionNombre] = [
+                        'total' => 0,
+                        'icono' => $tipoActuacionIcono,
+                        'tipoactuacion_id' => $tipoActuacId,
+                    ];
+                }
+                $totalesPorTipoActuacion[$tipoActuacionNombre]['total']++;
             }
-            $totalesPorTipoActuacion[$tipoActuacionNombre]['total']++;
         }
-
+    
         // Ahora $totalesPorTipoActuacion contiene los totales por tipo de actuación junto con sus iconos
         // Puedes pasar esto a la vista para mostrarlos
-        return view('actuaciones.resumen-usuario', ['totalesPorTipoActuacion' => $totalesPorTipoActuacion]);
+        return view('actuaciones.resumen-usuario', [
+            'totalesPorTipoActuacion' => $totalesPorTipoActuacion,
+            'year' => $year, // Pasamos el año a la vista para mostrarlo
+        ]);
     }
+
+    public function getListadoActuacionesUsuarioAndTipo(User $user, $year, $type)
+{
+    // Obtener las actuaciones del usuario para el año y tipo especificados
+    $actuaciones = $user->listas()
+        ->whereHas('actuacion', function ($query) use ($year, $type) {
+            $query->whereYear('fechaActuacion', $year)
+                ->whereHas('tipoactuacion', function ($query) use ($type) {
+                    $query->where('id', $type);
+                });
+        })
+        ->with('actuacion.tipoactuacion', 'actuacion.contrato')
+        ->get();
+
+    // Puedes pasar $actuaciones a la vista para mostrar el listado
+    return view('actuaciones.listado-actuaciones-tipo-usuario', [
+        'actuaciones' => $actuaciones,
+        'year' => $year,
+        'type' => $type,
+    ]);
+}
 
     
 }
