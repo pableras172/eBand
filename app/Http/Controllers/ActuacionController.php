@@ -290,5 +290,34 @@ public function store(Request $request)
         return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato','eliminado'));            
          
     }
+
+    public function getTotalActuacionesUsuario(User $user)
+    {
+        // Obtener todas las listas del usuario con sus respectivas actuaciones y tipos de actuación
+        $listasConActuaciones = $user->listas()->with('actuacion.tipoactuacion')->get();
+
+        // Inicializar un array para almacenar los totales por tipo de actuación junto con sus iconos
+        $totalesPorTipoActuacion = [];
+
+        // Iterar sobre cada lista y sumar al total correspondiente en base al tipo de actuación
+        foreach ($listasConActuaciones as $lista) {
+            $tipoActuacion = $lista->actuacion->tipoactuacion;
+            $tipoActuacionNombre = $tipoActuacion->nombre;
+            $tipoActuacionIcono = $tipoActuacion->icon;
+
+            if (!isset($totalesPorTipoActuacion[$tipoActuacionNombre])) {
+                $totalesPorTipoActuacion[$tipoActuacionNombre] = [
+                    'total' => 0,
+                    'icono' => $tipoActuacionIcono,
+                ];
+            }
+            $totalesPorTipoActuacion[$tipoActuacionNombre]['total']++;
+        }
+
+        // Ahora $totalesPorTipoActuacion contiene los totales por tipo de actuación junto con sus iconos
+        // Puedes pasar esto a la vista para mostrarlos
+        return view('actuaciones.resumen-usuario', ['totalesPorTipoActuacion' => $totalesPorTipoActuacion]);
+    }
+
     
 }

@@ -15,6 +15,7 @@ class StoreUserRequest extends FormRequest
             'email'         => ['required', 'email', 'unique:users'],
             'password'      => ['required', 'string', 'min:8'],
             'telefono'      => ['required', 'string'],
+            'uuid'      => ['string'],
             'porcentaje'    => ['required', 'numeric'],
             'fechaAlta'     => ['required', 'date'],
             'roles.*'       => ['integer'],

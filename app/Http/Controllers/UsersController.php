@@ -37,12 +37,25 @@ class UsersController extends Controller
 
     public function store(StoreUserRequest $request)
     {
-       
+        // Crear el usuario con los datos validados del formulario
         $user = User::create($request->validated());
-        $user->roles()->sync($request->input('roles', []));
-
-        return redirect()->route('users.index',['success' => true]);
+    
+        // Si la creación del usuario ha sido exitosa
+        if ($user) {
+            // Actualizar el campo email_verified_at con la fecha y hora actual
+            $user->update(['email_verified_at' => now()]);
+            
+            // Sincronizar los roles del usuario
+            $user->roles()->sync($request->input('roles', []));
+    
+            // Redireccionar al índice de usuarios con un mensaje de éxito
+            return redirect()->route('users.index', ['success' => true]);
+        } else {
+            // Si la creación del usuario ha fallado, redireccionar al formulario con un mensaje de error
+            return redirect()->back()->withErrors(['message' => 'Error al crear el usuario']);
+        }
     }
+    
 
     public function show(User $user)
     {

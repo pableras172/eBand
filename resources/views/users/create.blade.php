@@ -56,7 +56,7 @@
                         
                         <div class="px-4 py-5 bg-white sm:p-6">
                             <label for="password" class="block font-medium text-sm text-gray-700">{{__('Password')}}</label>
-                            <input type="password" name="password" id="password" class="form-input rounded-md shadow-sm mt-1 block w-full" value="{{ isset($user) ? '' : 'Banda2024' }}" />
+                            <input type="password" name="password" id="password" class="form-input rounded-md shadow-sm mt-1 block w-full" value="{{ isset($user) ? '' : Hash::make('Banda2024') }}" />
                             <span class="text-sm text-gray-500">{{__('Valor predeterminado: Banda2024 (Puedes cambiarlo)')}}</span>
                             @error('password')
                                 <p class="text-sm text-red-600">{{ $message }}</p>
