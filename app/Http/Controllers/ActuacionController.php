@@ -357,7 +357,7 @@ public function store(Request $request)
         'actuaciones' => $actuaciones,
         'year' => $year,
         'type' => $type,
-        '$usuario'=>$user,        
+        'usuario'=>$user,        
     ]);
 }
 
