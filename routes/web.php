@@ -42,13 +42,14 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
 
         Route::get('/actuaciones/{user}/{year}', [ActuacionController::class, 'getTotalActuacionesUsuario'])->name('actuaciones.usuario.anyo');
         Route::get('/actuaciones/{user}/{year}/{type}', [ActuacionController::class, 'getListadoActuacionesUsuarioAndTipo'])->name('actuaciones.usuario.listatipo');
-       
         
-        
-        Route::resource('actuacion',ActuacionController::class);
-        Route::post('/notificaractuacion', [ActuacionController::class, 'notificarActuacion']);
         Route::post('/notificaractuacionlista', [ActuacionController::class, 'notificarActuacionLista']);
-        Route::resource('contratos',ListadoContratos::class);
+        Route::post('/notificaractuacion', [ActuacionController::class, 'notificarActuacion']);        
+        Route::resource('actuacion',ActuacionController::class);
+        
+        Route::get('/contratos/{year}',[ListadoContratos::class,'contratosPorAnyo'])->name('contratos.anyo');
+        Route::resource('contratos',ListadoContratos::class);        
+        
         Route::resource('listas',ListaController::class);
 
         Route::get('/listas/actuacion/{actuacion_id}', [ListaController::class, 'actuacion'])->name('listas.actuacion');

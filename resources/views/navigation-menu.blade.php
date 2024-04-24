@@ -46,6 +46,11 @@
                             {{ __('Tipus de actuacio') }}
                         </x-nav-link>
                     </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link href="#">
+                            {{ __('Comptes') }}
+                        </x-nav-link>
+                    </div>
                 @endcan
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex items-center">
@@ -68,7 +73,7 @@
                             <div class="w-60 px-4">
                                 <!-- Team Management -->
                                 <x-nav-link href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}">
-                                    Tipus de actuacio
+                                    {{__('Les meves actuacions')}}
                                 </x-nav-link>
                             </div>
                         </x-slot>
@@ -317,6 +322,9 @@
                     </x-responsive-nav-link>
                     <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
                         {{ __('Tipus de actuacio') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="#">
+                        {{ __('Comptes') }}
                     </x-responsive-nav-link>
                 @endcan
                 <div class="border-t border-gray-200 dark:border-gray-600"></div>

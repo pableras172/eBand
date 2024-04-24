@@ -27,7 +27,7 @@ return [
     'listado_musicos_descripcion' => 'Aquí puedes ver un listado de los músicos creados en la aplicación. Si tus roles lo permiten, podrás editar la información de los usuarios.',
     'listado_musicos_ver' => 'Ver listado de músicos',
 
-    'instrumentos' => 'Instruments',
+    'instrumentos' => 'Instrumentos',
     'instrumentos_descripcion' => 'Accede al listado de los instrumentos dados de alta en la banda. Si tus roles lo permiten puedes editar la información del instrumento.',
     'instrumentos_listado_ver' => 'Ver listado de instrumentos',
     
@@ -42,6 +42,11 @@ return [
     'notificargrupo'=>'Seguro que quieres notificar a todos los usuarios de la actuación:',
     'enero'=>'Enero',
     'May'=>'Mayo',
-    'Comunicar no disponible'=>'Comunicar no disponible'
+    'Comunicar no disponible'=>'Comunicar no disponible',
+    'mis_listados'=>'Mis listados',
+    'mis_listados_text'=>'Resumenes de listas, ensayos y actuaciones en las que he participado',
+    'ver_mislistas'=>'Ver mis listados'
+
+
 
 ];

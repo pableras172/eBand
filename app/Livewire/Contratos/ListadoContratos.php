@@ -9,15 +9,36 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Carbon\Carbon;
 
 class ListadoContratos extends Component
 {
 
-    public function index()
+    public function index($year = null)
     {
-        $contratos = Contratos::orderBy('fechainicio', 'asc')->paginate(10); // Esto paginará los resultados mostrando 10 registros por página
-        return view('livewire.contratos.index', compact('contratos'));
+        if ($year === null) {
+            $year = Carbon::now()->year;
+        }
+
+        $contratos = Contratos::where('anyo', $year)
+            ->orderBy('fechainicio', 'asc')
+            ->paginate(10);
+
+        return view('livewire.contratos.index', compact('contratos', 'year'));
     }
+
+    public function contratosPorAnyo($year = null)
+        {
+            if ($year === null) {
+                $year = Carbon::now()->year;
+            }
+
+            $contratos = Contratos::where('anyo', $year)
+                ->orderBy('fechainicio', 'asc')
+                ->paginate(10);
+
+            return view('livewire.contratos.index', compact('contratos', 'year'));
+        }
     
 
 /**

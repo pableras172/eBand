@@ -12,5 +12,5 @@ class ListasUser extends Model
         'disponible',
     ];
     use HasFactory;
-    
+
 }

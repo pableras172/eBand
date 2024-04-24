@@ -3,28 +3,65 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('common.calendario_proximas') }}
         </h2>
-    </x-slot>
+    </x-slot>    
 
-    {{-- <div class="flex justify-center">
-        <div class="p-4 w-full lg:w-1/2">
-            <!-- Botones de acción -->
-            <div class="p-2 text-gray-900 bg-white rounded-lg shadow-lg font-medium capitalize">
-                <span class="px-2 py-1 cursor-pointer hover:bg-gray-200 hover:text-gray-700 text-sm rounded mb-5">
-                    <i class="w-8 fas fa-stream p-2 bg-gray-200 rounded-full"></i>
-                    <span class="mx-1">Tipus</span>
+    <div class="bg-white border border-gray-200 divide-y divide-gray-200  m-1">
+        <details class="p-2 group" close>
+            <summary class="flex items-center justify-between cursor-pointer">
+                <h5 class="text-lg font-medium text-gray-900">
+                    {{ __('Filtrar actuacions per tipus') }}:
+                </h5>
+
+                <span class="relative flex-shrink-0 ml-1.5 w-5 h-5">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="absolute inset-0 w-5 h-5 opacity-100 group-open:opacity-0" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="absolute inset-0 w-5 h-5 opacity-0 group-open:opacity-100" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                 </span>
-                <span class="px-1 cursor-pointer hover:text-gray-700">
-                    <i class="w-8 fas fa-calendar-alt p-2 bg-gray-200 rounded-full"></i>
-                    <span class="mx-1">Afegir</span>
+            </summary>
+            @foreach ($tiposActuacion as $tipo)
+                <span class="bg-gray-200 px-2 py-1 rounded-md mr-2">{{ $tipo->nombre }}</span>
+            @endforeach
+
+        </details>
+        <details class="p-2 group" close>
+            <summary class="flex items-center justify-between cursor-pointer">
+                <h5 class="text-lg font-medium text-gray-900">
+                    {{ __('Filtrar actuacions per mes') }}:
+                </h5>
+
+                <span class="relative flex-shrink-0 ml-1.5 w-5 h-5">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="absolute inset-0 w-5 h-5 opacity-100 group-open:opacity-0" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="absolute inset-0 w-5 h-5 opacity-0 group-open:opacity-100" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                 </span>
-                <span class="w-10 relative float-right mr-3 cursor-pointer hover:text-gray-700">
-                    <span class="px-1 cursor-pointer hover:text-gray-700">
-                        <i class="fas fa-search p-2 bg-gray-200 rounded-full"></i>
-                    </span>
-                </span>
-            </div>
-        </div>
-    </div> --}}
+            </summary>
+            @foreach ($meses as $mes)
+                <span class="bg-gray-200 px-2 py-1 rounded-md mr-2">{{ $mes }}</span>
+            @endforeach
+
+        </details>
+    </div>
+
 
     <!-- Actuaciones agrupadas por mes -->
     <div class="p-2">
@@ -48,15 +85,22 @@
                             </div>
                         </div>
                         <div class="bg-white py-4 px-3">
-                            <h3 class="text-xl mb-2 font-medium">{{ $actuacion->descripcion }}</h3>
-                            <h3 class="text-xl mb-2 font-medium">{{ __('Contracte') }}:
-                                {{ $actuacion->contrato->poblacion }}</h3>
-                                <hr class="p-2">
+                            <h3 class="text-l mb-2 font-medium">{{ $actuacion->descripcion }}</h3>
+                            <h3 class="text-l mb-2 font-medium">{{ __('Contracte') }}:
+                                {{ $actuacion->contrato->descripcion }}</h3>
+                            <hr class="p-2">
+                            <div class="flex items-center mb-2">
+                                <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve" fill="#000000" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path fill="#eeb759" d="M32,52.789l-12-18C18.5,32,16,28.031,16,24c0-8.836,7.164-16,16-16s16,7.164,16,16 c0,4.031-2.055,8-4,10.789L32,52.789z"></path> <g> <path fill="#394240" d="M32,0C18.746,0,8,10.746,8,24c0,5.219,1.711,10.008,4.555,13.93c0.051,0.094,0.059,0.199,0.117,0.289 l16,24C29.414,63.332,30.664,64,32,64s2.586-0.668,3.328-1.781l16-24c0.059-0.09,0.066-0.195,0.117-0.289 C54.289,34.008,56,29.219,56,24C56,10.746,45.254,0,32,0z M44,34.789l-12,18l-12-18C18.5,32,16,28.031,16,24 c0-8.836,7.164-16,16-16s16,7.164,16,16C48,28.031,45.945,32,44,34.789z"></path> <circle fill="#394240" cx="32" cy="24" r="8"></circle> </g> </g> </g></svg>
+                                {{ $actuacion->contrato->poblacion }}
+                            </div>
                             <div class="flex justify-between items-center">
-                                <p class="text-base text-black-400">
-                                    <i class="w-8 fas fa-calendar-alt p-2 bg-gray-200 rounded-full text-black"></i>
-                                    {{ Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y') }}
-                                </p>
+                                <div class="flex items-center mb-2">
+                                    <svg width="26px" height="26px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M182.067 383.79h664.916v473.911H182.067z" fill="#FCE3C3"></path><path d="M846.983 857.701H170.007V401.632h676.976v456.069zM189.428 838.28h638.134V421.053H189.428V838.28z" fill="#ffc46c"></path><path d="M850.483 861.201H166.507V398.132h683.977v463.069z m-676.976-7h669.977V405.132H173.507v449.069z m657.555-12.421H185.929V417.553h645.134V841.78z m-638.133-7h631.134V424.553H192.929V834.78z" fill="#ffc46c"></path><path d="M179.718 273.282h657.556v138.061H179.718z" fill="#ffc46c"></path><path d="M840.774 414.844H176.219V269.782h664.556v145.062z m-657.555-7h650.556V276.782H183.219v131.062z" fill="#ffc46c"></path><path d="M846.983 421.053H170.007V263.572h676.976v157.481z m-657.555-19.421h638.134V282.994H189.428v118.638z" fill="#ffc46c"></path><path d="M850.483 424.553H166.507v-164.48h683.977v164.48z m-676.976-7h669.977v-150.48H173.507v150.48z m657.555-12.421H185.929V279.494h645.134v125.638z m-638.133-7h631.134V286.494H192.929v111.638z" fill="#ffc46c"></path><path d="M672.215 190.225h63.426v162.87h-63.426z" fill="#ED8F27"></path><path d="M745.351 362.806h-82.847V180.514h82.847v182.292z m-63.426-19.421h44.005v-143.45h-44.005v143.45z" fill="#ffc46c"></path><path d="M281.351 190.225h63.426v162.87h-63.426z" fill="#ED8F27"></path><path d="M354.487 362.806H271.64V180.514h82.847v182.292z m-63.426-19.421h44.005v-143.45h-44.005v143.45z" fill="#ffc46c"></path><path d="M688.071 468.427h66.597v66.597h-66.597z" fill="#B12800"></path><path d="M688.071 596.369h66.597v66.597h-66.597zM688.071 724.31h66.597v66.598h-66.597zM546.156 468.427h66.597v66.597h-66.597z" fill="#228E9D"></path><path d="M546.156 596.369h66.597v66.597h-66.597z" fill="#B12800"></path><path d="M546.156 724.31h66.597v66.598h-66.597zM404.239 468.427h66.598v66.597h-66.598z" fill="#228E9D"></path><path d="M404.239 596.369h66.598v66.597h-66.598z" fill="#B12800"></path><path d="M404.239 724.31h66.598v66.598h-66.598zM262.323 596.369h66.598v66.597h-66.598z" fill="#228E9D"></path><path d="M262.323 724.31h66.598v66.598h-66.598z" fill="#B12800"></path></g></svg>
+                                    <p class="text-base text-black-400">                                    
+                                        {{ Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y') }}
+                                    </p>
+                                </div>
+
                                 <div class="relative z-40 flex items-center gap-2">
                                     @can('admin')
                                         <a class="enviarNotificacion text-orange-600 hover:text-blue-500" href="#"
@@ -78,50 +122,12 @@
                                                         stroke-linecap="round" stroke-linejoin="round"></path>
                                                     <path opacity="0.4"
                                                         d="M15.0195 19.0601C15.0195 20.7101 13.6695 22.0601 12.0195 22.0601C11.1995 22.0601 10.4395 21.7201 9.89953 21.1801C9.35953 20.6401 9.01953 19.8801 9.01953 19.0601"
-                                                        stroke="#eba937" stroke-width="1.5" stroke-miterlimit="10"></path>
+                                                        stroke="#eba937" stroke-width="1.5" stroke-miterlimit="10">
+                                                    </path>
                                                 </g>
                                             </svg>
                                         </a>
-                                    @endcan
-                                    {{-- <a class="text-orange-600 hover:text-blue-500" href="" alt="Generar iCal">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                        </svg>
-                                    </a>
-                                    <a class="text-orange-600 hover:text-blue-500"
-                                        href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}"
-                                        alt="Més informació">
-                                        <svg height="40" width="40" version="1.1" id="Layer_1"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"
-                                            xml:space="preserve" fill="#000000">
-                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                                                stroke-linejoin="round"></g>
-                                            <g id="SVGRepo_iconCarrier">
-                                                <path style="fill:#C6C5CA;"
-                                                    d="M507.837,244.913c-1.147-1.312-28.596-32.502-72.998-63.93 c-59.487-42.105-121.329-64.362-178.84-64.362c-57.51,0-119.352,22.256-178.838,64.362c-44.402,31.428-71.852,62.618-72.998,63.93 c-5.549,6.35-5.549,15.824,0,22.174c1.147,1.312,28.596,32.502,72.998,63.93c59.487,42.105,121.329,64.362,178.838,64.362 c57.511,0,119.353-22.256,178.84-64.362c44.402-31.428,71.852-62.618,72.998-63.93C513.387,260.738,513.387,251.263,507.837,244.913 z">
-                                                </path>
-                                                <path style="fill:#E1E1E3;"
-                                                    d="M255.999,116.62L255.999,116.62c-57.511,0-119.353,22.256-178.84,64.362 c-44.402,31.428-71.852,62.618-72.998,63.93c-5.549,6.35-5.549,15.824,0,22.174c1.147,1.312,28.596,32.502,72.998,63.93 c59.487,42.105,121.329,64.362,178.838,64.362l0,0V116.62H255.999z">
-                                                </path>
-                                                <path style="fill:#fad900;"
-                                                    d="M255.999,160.759c-52.516,0-95.241,42.726-95.241,95.242s42.724,95.242,95.241,95.242 s95.242-42.726,95.242-95.242S308.516,160.759,255.999,160.759z">
-                                                </path>
-                                                <path style="fill:#a28125;"
-                                                    d="M255.999,160.759L255.999,160.759c-52.516,0-95.242,42.726-95.242,95.242 s42.724,95.242,95.241,95.242l0,0V160.759H255.999z">
-                                                </path>
-                                                <path style="fill:#252426;"
-                                                    d="M255.999,214.787c-22.724,0-41.212,18.488-41.212,41.212s18.488,41.212,41.212,41.212 s41.212-18.488,41.212-41.212S278.724,214.787,255.999,214.787z">
-                                                </path>
-                                                <path style="fill:#39383B;"
-                                                    d="M255.999,214.787L255.999,214.787c-22.725,0-41.212,18.488-41.212,41.212 s18.488,41.212,41.212,41.212l0,0V214.787z">
-                                                </path>
-                                            </g>
-                                        </svg>
-                                    </a> --}}
+                                    @endcan                                    
                                 </div>
                             </div>
                         </div>
@@ -147,7 +153,7 @@
 
             function enviarNotif(idActua, detalle) {
 
-                if (confirm('{{__('common.notificargrupo')}}' + detalle)) {
+                if (confirm('{{ __('common.notificargrupo') }}' + detalle)) {
 
                     $.ajax({
                         url: '/notificaractuacion',

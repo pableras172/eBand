@@ -9,10 +9,12 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use OneSignal;
 use App\Models\User;
+use App\Models\Listas;
 use App\Models\ListasUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Lang;
 
 class ActuacionController extends Controller
 {
@@ -28,12 +30,20 @@ class ActuacionController extends Controller
              ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
              ->get();
      
-      
+            // Obtener tipos de actuación únicos
+            $tiposActuacion = $actuaciones->pluck('tipoactuacion')->unique();
+
+            // Obtener meses únicos
+            $meses = $actuaciones->pluck('fechaActuacion')->map(function ($date) {
+                return Carbon::parse($date)->format('m/Y');
+            })->unique();
+
+
          $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
              return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
          });
      
-         return view('actuaciones.view-listas', compact('actuacionesPorMes'));
+         return view('actuaciones.view-listas', compact('actuacionesPorMes','tiposActuacion', 'meses'));
      }
      
     
@@ -109,92 +119,98 @@ public function store(Request $request)
     return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato'));
 }
 
-    public function notificarActuacion(Request $request)
-    {
-        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        // Validar los datos de entrada
-        $request->validate([
-            'id' => 'required|integer',        
-        ]);    
-        
-        $actuaciones = Actuacion::with('contrato', 'lista')
-            ->where('id', '=', $request->id)
-            ->get();  
-        
-        // Verifica si se encontraron actuaciones
-        if ($actuaciones->isEmpty()) {
-            return response()->json(['message' => 'No se encontraron actuaciones con el ID proporcionado'], 404);
-        }
 
-        // Formatear la fecha
-        $fechaFormateada = Carbon::parse($actuaciones[0]->fechaActuacion)->format('d-m-Y');
+
+public function notificarActuacion(Request $request)
+{
+    abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+    // Validar los datos de entrada
+    $request->validate([
+        'id' => 'required|integer',        
+    ]);    
+    
+    $actuaciones = Actuacion::with('contrato', 'lista')
+        ->where('id', '=', $request->id)
+        ->get();  
+    
+    // Verifica si se encontraron actuaciones
+    if ($actuaciones->isEmpty()) {
+        return response()->json(['message' => Lang::get('messages.no_actuaciones_found')], 404);
+    }
+
+    // Formatear la fecha
+    $fechaFormateada = Carbon::parse($actuaciones[0]->fechaActuacion)->format('d-m-Y');
 
         // Enviar notificación OneSignal
         OneSignal::sendNotificationToSegment(
-            "El proper ".$fechaFormateada." - ".$actuaciones[0]->descripcion,
+            Lang::get('messages.new_actuacion_title', ['fecha' => $fechaFormateada, 'descripcion' => $actuaciones[0]->descripcion]),
             "Active Subscriptions", 
             env('APP_URL')."/listas/actuacion/".$request->id, 
             null, 
             null, 
             null, 
-            config('app.banda', '')." - Nova actuació - ".$actuaciones[0]->contrato->poblacion, 
-            "Accedix per a vore els detalls"
+            Lang::get('messages.notification_subtitle', ['banda' => config('app.banda'), 'poblacion' => $actuaciones[0]->contrato->poblacion]), 
+            Lang::get('messages.view_details')
         );
 
         // Devolver una respuesta adecuada
-        return response()->json(['message' => 'Notificación enviada correctamente'], 200);
+        return response()->json(['message' => Lang::get('messages.notification_sent')], 200);
     }
 
-    public function notificarActuacionLista(Request $request)
-    {
-        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        // Validar los datos de entrada
-        $request->validate([
-            'id' => 'required|integer',        
-        ]);    
-        
-        $asistentes = ListasUser::where('listas_id', $request->id)->get();
-        
-        // Verifica si se encontraron actuaciones
-        if ($asistentes->isEmpty()) {
-            return response()->json(['message' => 'No se encontraron musicos para la actuación'], 404);
-        }
+    
+public function notificarActuacionLista(Request $request)
+{
+    abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+    // Validar los datos de entrada
+    $request->validate([
+        'id' => 'required|integer',        
+    ]);    
+    
+    $asistentes = ListasUser::where('listas_id', $request->id)
+                    ->where('disponible', 1)                       
+                    ->get();
 
-        $actuaciones = Actuacion::with('contrato', 'lista')
-        ->where('id', '=', $request->id)
-        ->get();  
+    $lista = Listas::where('id',$request->id) 
+                ->with('actuacion')
+                ->get();
 
-        // Formatear la fecha
-        $fechaFormateada = Carbon::parse($actuaciones[0]->fechaActuacion)->format('d-m-Y');
-
-        foreach ($asistentes as $asistente) {
-
-            $dest = User::where('id', $asistente->user_id)->first();
-            if (!$dest || !$dest->uuid) {
-                continue;
-            }
-
-            $message = config('app.banda', '')." - Tens una nova actuació  - ".$actuaciones[0]->contrato->poblacion;
-
-            if($asistente->coche){
-                $message = "Tens una nova actuació agafant el cotxe  - ".$actuaciones[0]->contrato->poblacion;
-            }
-
-
-            OneSignal::sendNotificationToExternalUser(
-                "El proper ".$fechaFormateada." - ".$actuaciones[0]->descripcion,
-                $dest->uuid,
-                env('APP_URL')."/listas/actuacion/".$request->id, 
-                null, 
-                null, 
-                null, 
-                $message, 
-                "Accedix per a vore els detalls"
-            );
-        }
-
-        return response()->json(['message' => 'Notificación enviada correctamente'], 200);
+    // Verifica si se encontraron músicos
+    if ($asistentes->isEmpty()) {
+        return response()->json(['message' => Lang::get('messages.no_musicians_found')], 404);
     }
+
+    $actuaciones = $lista[0]->actuacion;
+
+    // Formatear la fecha
+    $fechaFormateada = Carbon::parse($actuaciones->fechaActuacion)->format('d-m-Y');
+
+    foreach ($asistentes as $asistente) {
+
+        $dest = User::where('id', $asistente->user_id)->first();
+        if (!$dest || !$dest->uuid) {
+            continue;
+        }
+
+        $message = Lang::get('messages.new_actuacion_notification', ['fecha' => $fechaFormateada, 'poblacion' => $actuaciones->contrato->poblacion]);
+
+        if($asistente->coche){
+            $message = Lang::get('messages.new_actuacion_notification_with_car', ['poblacion' => $actuaciones->contrato->poblacion]);
+        }
+
+        OneSignal::sendNotificationToExternalUser(
+            Lang::get('messages.new_actuacion_title', ['fecha' => $fechaFormateada, 'descripcion' => $actuaciones[0]->descripcion]),
+            $dest->uuid,
+            env('APP_URL')."/listas/actuacion/".$request->id, 
+            null, 
+            null, 
+            null, 
+            $message, 
+            Lang::get('messages.view_details')
+        );
+    }
+
+    return response()->json(['message' => Lang::get('messages.notification_sent')], 200);
+}
 
 
     /**

@@ -37,7 +37,12 @@ return [
 
     'calendario_proximas' => 'Calendari de la banda - Próximes actuacions',
     'llogat'=>'f',
-
-
-
+    'notificargrupo'=>'Segur que vols avisar a tots els usuaris?:',
+    'enero'=>'Gener',
+    'May'=>'Mayo',
+    'Comunicar no disponible'=>'Comunicar no disponible',
+    'mis_listados'=>'Els meus llistats',
+    'mis_listados_text'=>'Resum de les llistes, activitats, reunions, etc... en les que he participat',
+    'ver_mislistas'=>'Vore els meus llistats'
+    
 ];

@@ -14,16 +14,31 @@ use Ramsey\Uuid\Uuid;
 
 class UsersController extends Controller
 {
-    public function index()
+
+   public function index(Request $request)
     {
         abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $users = User::with('roles')
-        ->orderBy('name', 'asc')
-        ->paginate(10);
+        $instrument_id = $request->input('instrument_id');
 
-        return view('users.index', compact('users'));
+        $usersQuery = User::with('roles')
+            ->orderBy('name', 'asc');
+
+        // Filtrar por instrumento si se proporciona un instrument_id
+        if ($instrument_id) {
+            $usersQuery->where('instrument_id', $instrument_id);
+        }
+
+        $users = $usersQuery->paginate(10);
+
+        $instruments = Instrument::select('id', 'name', 'icon')
+            ->withCount('users')
+            ->groupBy('id', 'name', 'icon')
+            ->get();
+
+        return view('users.index', compact('users', 'instruments'));
     }
+
 
     public function create()
     {
