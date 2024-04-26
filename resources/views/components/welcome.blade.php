@@ -2,7 +2,7 @@
     <x-application-logo class="block h-12 w-auto" />
 
     <h1 class="mt-8 text-2xl font-medium text-gray-900 dark:text-white">
-        {{__('common.bienvenido_titulo')}} - {{config('app.banda', '')}}
+        {{__('Hola')}}&nbsp;{{Auth::user()->name}},&nbsp;{{__('common.bienvenido_titulo')}} - {{config('app.banda', '')}}
     </h1>
 
     <p class="mt-6 text-gray-500 dark:text-gray-400 leading-relaxed">

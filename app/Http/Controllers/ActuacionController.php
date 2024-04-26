@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Lang;
+use Exception;
 
 class ActuacionController extends Controller
 {
@@ -124,93 +125,145 @@ public function store(Request $request)
 public function notificarActuacion(Request $request)
 {
     abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+    
     // Validar los datos de entrada
     $request->validate([
         'id' => 'required|integer',        
     ]);    
     
-    $actuaciones = Actuacion::with('contrato', 'lista')
-        ->where('id', '=', $request->id)
-        ->get();  
-    
-    // Verifica si se encontraron actuaciones
-    if ($actuaciones->isEmpty()) {
-        return response()->json(['message' => Lang::get('messages.no_actuaciones_found')], 404);
-    }
+    try {
+        $actuacion = Actuacion::with('contrato')->findOrFail($request->id);
+        
+        // Verifica si se encontró la actuación
+        if (!$actuacion) {
+            $notification = array(
+                'message' =>  Lang::get('messages.no_actuations_found'),
+                'alert_type' => 'error'
+            );
+            return response()->json($notification, 200);           
+        }
 
-    // Formatear la fecha
-    $fechaFormateada = Carbon::parse($actuaciones[0]->fechaActuacion)->format('d-m-Y');
+        // Formatear la fecha
+        $fechaFormateada = Carbon::parse($actuacion->fechaActuacion)->format('d-m-Y');
 
         // Enviar notificación OneSignal
         OneSignal::sendNotificationToSegment(
-            Lang::get('messages.new_actuacion_title', ['fecha' => $fechaFormateada, 'descripcion' => $actuaciones[0]->descripcion]),
+            Lang::get('messages.new_actuacion_title', [
+                'fecha' => $fechaFormateada,
+                'descripcion' => $actuacion->descripcion
+            ]),
             "Active Subscriptions", 
-            env('APP_URL')."/listas/actuacion/".$request->id, 
+            env('APP_URL') . "/listas/actuacion/" . $request->id, 
             null, 
             null, 
             null, 
-            Lang::get('messages.notification_subtitle', ['banda' => config('app.banda'), 'poblacion' => $actuaciones[0]->contrato->poblacion]), 
+            Lang::get('messages.notification_subtitle', [
+                'banda' => config('app.banda'),
+                'poblacion' => $actuacion->contrato->poblacion
+            ]), 
             Lang::get('messages.view_details')
         );
 
-        // Devolver una respuesta adecuada
-        return response()->json(['message' => Lang::get('messages.notification_sent')], 200);
-    }
-
-    
-public function notificarActuacionLista(Request $request)
-{
-    abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-    // Validar los datos de entrada
-    $request->validate([
-        'id' => 'required|integer',        
-    ]);    
-    
-    $asistentes = ListasUser::where('listas_id', $request->id)
-                    ->where('disponible', 1)                       
-                    ->get();
-
-    $lista = Listas::where('id',$request->id) 
-                ->with('actuacion')
-                ->get();
-
-    // Verifica si se encontraron músicos
-    if ($asistentes->isEmpty()) {
-        return response()->json(['message' => Lang::get('messages.no_musicians_found')], 404);
-    }
-
-    $actuaciones = $lista[0]->actuacion;
-
-    // Formatear la fecha
-    $fechaFormateada = Carbon::parse($actuaciones->fechaActuacion)->format('d-m-Y');
-
-    foreach ($asistentes as $asistente) {
-
-        $dest = User::where('id', $asistente->user_id)->first();
-        if (!$dest || !$dest->uuid) {
-            continue;
-        }
-
-        $message = Lang::get('messages.new_actuacion_notification', ['fecha' => $fechaFormateada, 'poblacion' => $actuaciones->contrato->poblacion]);
-
-        if($asistente->coche){
-            $message = Lang::get('messages.new_actuacion_notification_with_car', ['poblacion' => $actuaciones->contrato->poblacion]);
-        }
-
-        OneSignal::sendNotificationToExternalUser(
-            Lang::get('messages.new_actuacion_title', ['fecha' => $fechaFormateada, 'descripcion' => $actuaciones[0]->descripcion]),
-            $dest->uuid,
-            env('APP_URL')."/listas/actuacion/".$request->id, 
-            null, 
-            null, 
-            null, 
-            $message, 
-            Lang::get('messages.view_details')
+        $notification = array(
+            'message' =>  Lang::get('messages.notification_sent'),
+            'alert_type' => 'success'
         );
+        return response()->json($notification, 200);                 
+    } catch (Exception $e) {        
+        $notification = array(
+            'message' =>  Lang::get('messages.notification_fail'),
+            'alert_type' => 'error'
+        );
+        return response()->json($notification, 500); 
     }
-
-    return response()->json(['message' => Lang::get('messages.notification_sent')], 200);
 }
+
+    
+   
+    public function notificarActuacionLista(Request $request)
+    {
+        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+    
+        // Validar los datos de entrada
+        $request->validate([
+            'id' => 'required|integer',        
+        ]);    
+        
+        try {
+
+            $lista = Listas::with('actuacion')->findOrFail($request->id);
+            $actuaciones = $lista->actuacion;
+    
+            // Verificar si se encontraron actuaciones
+            if (!$actuaciones) {
+                $notification = array(
+                    'message' =>  Lang::get('messages.no_actuations_found'),
+                    'alert_type' => 'warning'
+                );
+                return response()->json($notification, 404);
+            }
+    
+            // Formatear la fecha
+            $fechaFormateada = Carbon::parse($actuaciones->fechaActuacion)->format('d-m-Y');
+    
+            $asistentes = ListasUser::where('listas_id', $request->id)
+                ->where('disponible', 1)                       
+                ->get();
+    
+            // Verificar si se encontraron músicos
+            if ($asistentes->isEmpty()) {
+                $notification = array(
+                    'message' =>  Lang::get('messages.no_musicians_found'),
+                    'alert_type' => 'warning'
+                );
+                return response()->json($notification, 200);
+            }
+    
+            foreach ($asistentes as $asistente) {
+                $dest = User::where('id', $asistente->user_id)->first();
+                if (!$dest || !$dest->uuid) {
+                    continue;
+                }
+    
+                $message = Lang::get('messages.new_actuacion_notification', [
+                    'fecha' => $fechaFormateada,
+                    'poblacion' => $actuaciones->contrato->poblacion
+                ]);
+    
+                if ($asistente->coche) {
+                    $message = Lang::get('messages.new_actuacion_notification_with_car', [
+                        'poblacion' => $actuaciones->contrato->poblacion
+                    ]);
+                }
+    
+                OneSignal::sendNotificationToExternalUser(
+                    Lang::get('messages.new_actuacion_title', [
+                        'fecha' => $fechaFormateada,
+                        'descripcion' => $actuaciones->descripcion
+                    ]),
+                    $dest->uuid,
+                    env('APP_URL') . "/listas/actuacion/" . $request->id, 
+                    null, 
+                    null, 
+                    null, 
+                    $message, 
+                    Lang::get('messages.view_details')
+                );
+            }
+            $notification = array(
+                'message' =>  Lang::get('messages.notification_sent'),
+                'alert_type' => 'success'
+            );
+            return response()->json($notification, 200);
+        } catch (Exception $e) {
+            $notification = array(
+                'message' =>  Lang::get('messages.notification_fail').' - '.$e->getMessage(),
+                'alert_type' => 'error'
+            );
+            return response()->json($notification, 500);
+        }
+    }
+    
 
 
     /**

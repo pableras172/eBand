@@ -17,6 +17,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
 
     <link rel="apple-touch-icon" sizes="57x57" href="/storage/imagenes/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/storage/imagenes/apple-icon-60x60.png">
@@ -63,8 +66,34 @@
                 // Manejo de errores
                 console.error('Error al obtener el UUID del usuario:', error);
             }
-        });
+        });  
+        
+        
+        function showToast(response){
+            var type = response.alert_type;
+            toastr.options.positionClass='toast-top-full-width';
+            toastr.options.progressBar=true;
+            toastr.options.timeOut = 5000;
+            switch (type) {
+                case 'info':
+                    toastr.info(response.message);                   
+                    break;
+                case 'success':
+                   toastr.success(response.message);                    
+                    break;
+                case 'warning':
+                    toastr.warning(response.message);                    
+                    break;
+                case 'error':
+                    toastr.error(response.message);        
+                    break;
+            }
+
+        }
+
+
     </script>
+       
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -92,7 +121,7 @@
         <!-- Page Content -->
         <main>
             {{ $slot }}
-        </main>
+        </main>        
     </div>
 
     @stack('modals')

@@ -394,21 +394,23 @@
         @endcan
         <div class="flex justify-center mt-2 mb-2">
             @can('admin')
-                <a id="cleanListaButton" href="#" data-lista-id="{{ $lista->id }}"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-4">
-                    {{ __('Buidar llista') }}
-                </a>
-                <a id="avisarMarcados" href="#" data-lista-id="{{ $lista->id }}"
-                    onclick="enviarNotif({{ $lista->id }},'{{ $actuacion->descripcion }}')"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-4">
-                    {{ __('Avisar seleccionats') }}
-                </a>
+                @if(Carbon\Carbon::parse($actuacion->fechaActuacion)->isToday() || Carbon\Carbon::parse($actuacion->fechaActuacion)->isFuture())
+                    <a id="cleanListaButton" href="#" data-lista-id="{{ $lista->id }}"
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-4">
+                        {{ __('Buidar llista') }}
+                    </a>
+                    <a id="avisarMarcados" href="#" data-lista-id="{{ $lista->id }}"
+                        onclick="enviarNotif({{ $lista->id }},'{{ $actuacion->descripcion }}')"
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-4">
+                        {{ __('Avisar seleccionats') }}
+                    </a>
+                @endif
             @endcan
             <a href="{{ url()->previous() }}"
                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-fondobotonazul hover:bg-fondobotonazul-100 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
                 {{ __('Tornar al llistat') }}
             </a>
-        </div>
+        </div>        
     </footer>
 
     <script>
@@ -446,7 +448,7 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
-                        updateContadores(numFilas, numElementosConCoche);
+                        updateContadores(response.total_filas, response.coches_count);
                     },
                     error: function(xhr, status, error) {
                         // Manejar errores si es necesario
@@ -482,10 +484,10 @@
         }
 
         function nodisponible(componente) {
+
             var listaId = componente.getAttribute('data-lista-id');
             var usuarioId = componente.getAttribute('data-usuario-id');
             var disponible = componente.getAttribute('data-disponible');
-
 
             $.ajax({
                 url: '/listauserdisp',
@@ -497,10 +499,10 @@
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
-
+                    showToast(response);                                           
                 },
                 error: function(xhr, status, error) {
-
+                    showToast(xhr.responseJSON);
                 }
             });
 
@@ -523,15 +525,17 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
-
+                        showToast(response);                                           
                     },
                     error: function(xhr, status, error) {
-
+                        showToast(xhr.responseJSON);
                     }
                 });
             }
 
         }
+
+
 
         @can('admin')
             // Obtener el botón "Buidar llista" por su identificador

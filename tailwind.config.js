@@ -19,7 +19,7 @@ export default {
             colors: {
                 fondobotonazul: '#23325A',                   
                 fondobotonnaranja: '#E7A572',                   
-                fondoclaro: '#F7E6D3',                   
+                fondoclaro: '#cbcbcb',
                 fondobotonrojo: '#792B43', 
                 fondofosrastero: '#97A9A9', 
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\ListasUser;
 use App\Models\Listas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Lang;
+use Exception;
 
 class ListasUsersController extends Controller
 {
@@ -106,8 +108,7 @@ public function setdisponible(Request $request)
         // Si la relación existe, elimino el registro para que aparezca marcable
         $existingRelation->where('listas_id', $request->lista_id)
                 ->where('user_id', $request->usuario_id)
-                ->delete();
-        return response()->json(['message' => 'Disponibilidad actualizada correctamente'], 200);
+                ->delete();        
     } else {
 
         $listaUser = new ListasUser();
@@ -115,10 +116,14 @@ public function setdisponible(Request $request)
         $listaUser->user_id = $request->usuario_id;
         $listaUser->disponible = $request->disponible;
         // Guardar el registro en la base de datos
-        $listaUser->save();
-
-        return response()->json(['message' => 'Relación lista-usuario creada correctamente'], 201);
+        $listaUser->save();       
     }
+
+    $notification = array(
+        'message' =>  Lang::get('messages.disponibilidadactualizada'),
+        'alert_type' => 'success'
+    );
+    return response()->json($notification, 200);        
 }
 
 
@@ -167,10 +172,10 @@ public function setdisponible(Request $request)
             $lista->users()->detach($usuarioId);
             
             // Contar el número total de filas en ListasUser con el lista_id dado
-            $totalFilas = ListasUser::where('listas_id', $request->lista_id)->count();
+            $totalFilas = ListasUser::where('listas_id', $listaId)->count();
 
             // Contar el número de elementos con el campo "coche" igual a 1
-            $cochesCount = ListasUser::where('listas_id', $request->lista_id)->where('coche', 1)->count();
+            $cochesCount = ListasUser::where('listas_id', $listaId)->where('coche', 1)->count();
             // Devolver una respuesta adecuada
             return response()->json(['message' => 'Relación lista-usuario eliminada correctamente',
             'total_filas' => $totalFilas,

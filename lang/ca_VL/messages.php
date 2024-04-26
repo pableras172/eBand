@@ -9,4 +9,6 @@ return [
     'new_actuacion_notification_with_car' => 'Tens una nova actuació amb cotxe - :poblacion',
     'view_details' => 'Accedeix per a veure els detalls.',
     'notification_sent' => 'Notificació enviada correctament.',
+    'notification_fail' => 'Error enviant les notificacions',
+    'disponibilidadactualizada'=>'Disponibilitad actualitzada correctament',
 ];

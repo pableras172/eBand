@@ -9,4 +9,6 @@ return [
     'new_actuacion_notification_with_car' => 'Tienes una nueva actuación con coche - :poblacion',
     'view_details' => 'Accede para ver los detalles.',
     'notification_sent' => 'Notificación enviada correctamente.',
+    'notification_fail' => 'No se han podido enviar las notificaciones.',
+    'disponibilidadactualizada'=>'Disponibilidad actualizada correctamente',
 ];

@@ -8,5 +8,7 @@ return [
     'new_actuacion_title' => 'Next :fecha - :descripcion',
     'new_actuacion_notification' => 'You have a new performance on :fecha - :poblacion',
     'new_actuacion_notification_with_car' => 'You have a new performance with car - :poblacion',
-    'view_details' => 'Access to view the details.',    
+    'view_details' => 'Access to view the details.',
+    'notification_fail' => 'No se han podido enviar las notificaciones.',
+    'disponibilidadactualizada'=>'Disponibilitad actualitzada correctament',    
 ];
