@@ -67,6 +67,8 @@ public function store(Request $request)
             'observacions' => 'nullable|string',
         ]);
 
+        
+
         $contrato = new Contratos();
         $contrato->poblacion = $request->poblacion;
         $contrato->fechainicio = $request->fechainicio;
@@ -77,8 +79,11 @@ public function store(Request $request)
         $contrato->correo = $request->correo;
         $contrato->anyo = $request->anyo;
         $contrato->dnicontacto = $request->dnicontacto;
-        $contrato->observacions = $request->observacions;
+        $contrato->observacions = $request->observacions;       
+
         $contrato->save();
+
+
     
         return redirect()->route('contratos.index')
             ->with('success', 'Contrato creado correctamente.');

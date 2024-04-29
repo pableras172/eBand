@@ -42,9 +42,16 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
 
         Route::get('/actuaciones/{user}/{year}', [ActuacionController::class, 'getTotalActuacionesUsuario'])->name('actuaciones.usuario.anyo');
         Route::get('/actuaciones/{user}/{year}/{type}', [ActuacionController::class, 'getListadoActuacionesUsuarioAndTipo'])->name('actuaciones.usuario.listatipo');
-        
+
+        Route::get('/descargarCalendario/{actuacionId}', [ActuacionController::class, 'descargarCalendario']);
+
+        Route::get('/actuaciones-tipo/{tipoactuacion}', [ActuacionController::class, 'getActuacionesPorTipo'])->name('actuaciones-tipo');
+        Route::get('/actuaciones-fecha/{fechaactuacion}', [ActuacionController::class, 'getActuacionesPorFecha'])->name('actuaciones-fecha');
+        Route::get('/actuaciones-poblacion/{poblacion}', [ActuacionController::class, 'getActuacionesPorPoblacion'])->name('actuaciones-poblacion');
+
         Route::post('/notificaractuacionlista', [ActuacionController::class, 'notificarActuacionLista']);
         Route::post('/notificaractuacion', [ActuacionController::class, 'notificarActuacion']);        
+        
         Route::resource('actuacion',ActuacionController::class);
         
         Route::get('/contratos/{year}',[ListadoContratos::class,'contratosPorAnyo'])->name('contratos.anyo');
@@ -103,15 +110,10 @@ Route::get('/greeting/{locale}', function (string $locale) {
     }
 
     // Establecer la cookie de preferencia de idioma
-    $response = redirect()->route('dashboard')->withCookie(cookie('locale', $locale, config('session.lifetime')));
+    $response = redirect()->route('dashboard')->withCookie(cookie('locale', $locale, 30 * 24 * 60));
 
     return $response;
 });
-
-
-
-
-
 
 //Route::get('/search-contratos', ContratosClass::class);
 

@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Lang;
 use Exception;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class ActuacionController extends Controller
 {
@@ -31,20 +34,14 @@ class ActuacionController extends Controller
              ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
              ->get();
      
-            // Obtener tipos de actuación únicos
             $tiposActuacion = $actuaciones->pluck('tipoactuacion')->unique();
-
-            // Obtener meses únicos
-            $meses = $actuaciones->pluck('fechaActuacion')->map(function ($date) {
-                return Carbon::parse($date)->format('m/Y');
-            })->unique();
-
+            $poblaciones = $actuaciones->pluck('contrato.poblacion')->unique();
 
          $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
              return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
          });
      
-         return view('actuaciones.view-listas', compact('actuacionesPorMes','tiposActuacion', 'meses'));
+         return view('actuaciones.view-listas', compact('actuacionesPorMes','tiposActuacion', 'poblaciones'));
      }
      
     
@@ -67,9 +64,7 @@ class ActuacionController extends Controller
         return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
 public function store(Request $request)
 {
     abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -105,10 +100,13 @@ public function store(Request $request)
     $actuacion->totalactuacion = $request->totalactuacion;
     $actuacion->contratos_id = $request->contratos_id;
     $actuacion->pagado = false;
-    $actuacion->observaciones = $request->observaciones;
+    $actuacion->observaciones = $request->observaciones;   
 
     // Guardar la actuación en la base de datos
     $actuacion->save();
+
+    $actuacion->calendar = $this->generateICSFile($actuacion);
+    $actuacion->update();
 
     // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
     $actuaciones =  Actuacion::with('contrato','lista')
@@ -328,6 +326,8 @@ public function notificarActuacion(Request $request)
             $actuacion->pagado = false;
             $actuacion->observaciones = $request->observaciones;
         
+            $actuacion->calendar = $this->generateICSFile($actuacion);
+
             // Guardar la actuación en la base de datos
             $actuacion->update();
         
@@ -450,5 +450,131 @@ public function notificarActuacion(Request $request)
         ]);
 }
 
+
+public function generateICSFile($evento)
+    {    
+        // Contenido del archivo .ics
+        $content =  "BEGIN:VCALENDAR\r\n";
+        $content .= "VERSION:2.0\r\n";
+        $content .= "PRODID:-//eBand\r\n";
+        $content .= "BEGIN:VEVENT\r\n";
+        $content .= "UID:" . uniqid() . "\r\n"; // Generar un ID único para el evento
+        $content .= "DTSTAMP;VALUE=DATE-TIME:" . Carbon::now()->format('Ymd\THis'). "\r\n"; // Fecha y hora actual
+        $content .= "DTSTART;VALUE=DATE-TIME:".Carbon::parse($evento->fechaActuacion)->format('Ymd\THis')."\r\n"; // Fecha y hora de inicio del evento
+        $content .= "DTEND;VALUE=DATE-TIME:".Carbon::parse($evento->fechaActuacion)->format('Ymd\THis')."\r\n"; // Fecha y hora de fin del evento
+        $content .= "SUMMARY:".Config::get('app.banda', 'eBand')." - ".$evento->descripcion."\r\n";
+        $content .= "DESCRIPTION:".$evento->observaciones." - ".Config::get('app.url')."/actuacion/".$evento->id." \r\n";
+        //$content .= "LOCATION:Calle Gandía, 21, 46892, Montaverner\r\n";
+        //$content .= "GEO:38.8891800060307;-0.495599999999996\r\n";
+        $content .= "END:VEVENT\r\n";
+        $content .= "END:VCALENDAR\r\n";
+
+        $newFileName = 'event_' . time() . '.ics'; 
+        Storage::put('eventos/'.$newFileName, $content);
+        return $newFileName;
+    }
+
+    public function descargarCalendario(Request $request, $actuacionId)
+    {
+        $actuacion = Actuacion::find($actuacionId);
+    
+        if (!$actuacion) {
+            abort(404); // Actuación no encontrada
+        }
+    
+        return Storage::download('eventos/'.$actuacion->calendar);
+    }
+
+    public function getActuacionesPorTipo(Request $request, $tipoActuiacionId){
+                
+        $actuaciones = Actuacion::with('contrato', 'lista','tipoactuacion')
+        ->whereDate('fechaActuacion', '>=', now()->toDateString())
+        ->where('tipoactuacions_id', $tipoActuiacionId)
+        ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
+        ->get();
+
+       // Obtener tipos de actuación únicos
+       $tiposActuacion = $actuaciones->pluck('tipoactuacion')->unique();
+       $poblaciones = $actuaciones->pluck('contrato.poblacion')->unique();
+
+       // Obtener meses únicos
+       $meses = $actuaciones->pluck('fechaActuacion')->map(function ($date) {
+           return Carbon::parse($date)->format('m/Y');
+       })->unique();
+
+
+    $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
+        return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
+    });
+
+    $filtrotipo=true;
+
+    return view('actuaciones.view-listas', compact('actuacionesPorMes','tiposActuacion', 'meses','filtrotipo','poblaciones'));
+
+    }
+
+    public function getActuacionesPorFecha(Request $request, $fechaactuacion){
+
+        $fecha = Carbon::createFromFormat('d/m/Y', $fechaactuacion);
+                
+        $actuaciones = Actuacion::with('contrato', 'lista','tipoactuacion')
+        ->where('fechaActuacion', '>=', $fecha->startOfMonth())    
+        ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
+        ->get();
+
+       // Obtener tipos de actuación únicos
+       $tiposActuacion = $actuaciones->pluck('tipoactuacion')->unique();
+       $poblaciones = $actuaciones->pluck('contrato.poblacion')->unique();
+
+       // Obtener meses únicos
+       $meses = $actuaciones->pluck('fechaActuacion')->map(function ($date) {
+           return Carbon::parse($date)->format('m');
+       })->unique();
+
+
+    $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
+        return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
+    });
+
+    $filtro=true;
+
+    return view('actuaciones.view-listas', compact('actuacionesPorMes','tiposActuacion', 'meses','filtro','poblaciones'));
+
+    }
+
+    public function getActuacionesPorPoblacion(Request $request, $poblacion)
+    {
+        // Obtener actuaciones por población y fecha de actuación
+        $actuaciones = Actuacion::with(['contrato', 'lista', 'tipoactuacion'])
+            ->whereHas('contrato', function ($query) use ($poblacion) {
+                $query->where('poblacion', $poblacion);
+            })
+            ->whereDate('fechaActuacion', '>=', now()->toDateString())
+            ->orderBy('fechaActuacion', 'asc')
+            ->get();
+
+        // Obtener tipos de actuación únicos
+        $tiposActuacion = $actuaciones->pluck('tipoactuacion')->unique();
+
+        // Obtener poblaciones únicas de los contratos relacionados
+        $poblaciones = $actuaciones->pluck('contrato.poblacion')->unique();
+
+        // Obtener meses únicos
+        $meses = $actuaciones->pluck('fechaActuacion')->map(function ($date) {
+            return Carbon::parse($date)->format('m');
+        })->unique();
+
+        // Agrupar actuaciones por mes
+        $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
+            return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
+        });
+
+        // Indicador de filtro de población
+        $filtropobla = true;
+
+        return view('actuaciones.view-listas', compact('actuacionesPorMes', 'tiposActuacion', 'meses', 'filtropobla', 'poblaciones'));
+    }
+
+    
     
 }

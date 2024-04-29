@@ -26,10 +26,11 @@ class UsersController extends Controller
 
         // Filtrar por instrumento si se proporciona un instrument_id
         if ($instrument_id) {
-            $usersQuery->where('instrument_id', $instrument_id);
-        }
-
-        $users = $usersQuery->paginate(10);
+            $users = $usersQuery->where('instrument_id', $instrument_id);
+            $users = $usersQuery->paginate(100);
+        }else{
+            $users = $usersQuery->paginate(10);
+        }       
 
         $instruments = Instrument::select('id', 'name', 'icon')
             ->withCount('users')

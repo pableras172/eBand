@@ -19,6 +19,18 @@ class TipoactuacionSeeder extends Seeder
             ],
             [               
                 'nombre' => 'Pasacalle'
+            ], 
+                      [               
+                'nombre' => 'Parcial'
+            ],
+            [               
+                'nombre' => 'Entrada Mora'
+            ],
+            [               
+                'nombre' => 'Entrada Cristiana'
+            ],
+            [               
+                'nombre' => 'Reunio'
             ],
         ];
 

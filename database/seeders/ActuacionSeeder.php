@@ -19,12 +19,12 @@ class ActuacionSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         // Crea 10 actuaciones ficticias
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             $fechaActuacion = $faker->dateTimeBetween('-1 year', '+1 year');
             $actuaciones[] = [
                 'fechaActuacion' => $fechaActuacion,
                 'descripcion' => $faker->sentence(6),
-                'tipoactuacions_id' => $faker->numberBetween(1, 2), // Suponiendo que existen 3 tipos de actuaciones en la tabla "tipo_actuaciones"
+                'tipoactuacions_id' => $faker->numberBetween(1, 8), // Suponiendo que existen 3 tipos de actuaciones en la tabla "tipo_actuaciones"
                 'coches' => $faker->numberBetween(0, 10),
                 'preciocoche' => $faker->randomFloat(2, 10, 100),
                 'musicos' => $faker->numberBetween(1, 20),
@@ -32,7 +32,7 @@ class ActuacionSeeder extends Seeder
                 'totalcoches' => $faker->numberBetween(0, 10),
                 'totalmusicos' => $faker->numberBetween(1, 20),
                 'totalactuacion' => $faker->randomFloat(2, 500, 2000),
-                'contratos_id' => $faker->numberBetween(1, 2), // Suponiendo que existen 2 contratos en la tabla "contratos"
+                'contratos_id' => 7,
                 'pagado' => $faker->boolean(),
                 'observaciones' => $faker->text(100),
                 'created_at' => Carbon::now(),

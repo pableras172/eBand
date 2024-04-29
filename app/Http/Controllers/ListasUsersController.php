@@ -104,18 +104,26 @@ public function setdisponible(Request $request)
                                    ->where('user_id', $request->usuario_id)
                                    ->first();
 
-    if ($existingRelation && $request->disponible) {
-        // Si la relación existe, elimino el registro para que aparezca marcable
-        $existingRelation->where('listas_id', $request->lista_id)
-                ->where('user_id', $request->usuario_id)
-                ->delete();        
+    if ($existingRelation) {
+
+        if($request->disponible){
+            ListasUser::where('listas_id', $request->lista_id)
+            ->where('user_id', $request->usuario_id)
+            ->delete();
+        }else{
+            ListasUser::where('listas_id', $request->lista_id)
+            ->where('user_id', $request->usuario_id)
+            ->update(['disponible' => 0]);
+        } 
+       
+
     } else {
 
         $listaUser = new ListasUser();
         $listaUser->listas_id = $request->lista_id;
         $listaUser->user_id = $request->usuario_id;
         $listaUser->disponible = $request->disponible;
-        // Guardar el registro en la base de datos
+        
         $listaUser->save();       
     }
 
@@ -123,6 +131,7 @@ public function setdisponible(Request $request)
         'message' =>  Lang::get('messages.disponibilidadactualizada'),
         'alert_type' => 'success'
     );
+
     return response()->json($notification, 200);        
 }
 

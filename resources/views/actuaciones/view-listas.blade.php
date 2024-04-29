@@ -5,13 +5,17 @@
         </h2>
     </x-slot>    
 
-    <div class="bg-white border border-gray-200 divide-y divide-gray-200  m-1">
-        <details class="p-2 group" close>
+    <div class="bg-white border border-gray-200 divide-y divide-gray-200  m-2">
+        <details class="p-2 group"  @isset($filtrotipo) open @else close @endisset>
             <summary class="flex items-center justify-between cursor-pointer">
                 <h5 class="text-lg font-medium text-gray-900">
-                    {{ __('Filtrar actuacions per tipus') }}:
+                    {{ __('Filtrar actuacions per tipus') }}: @isset($filtrotipo) {{$tiposActuacion[0]->nombre}} @endisset
                 </h5>
-
+                @isset($filtrotipo)                
+                    <a href="{{ route('actuacion.index') }}" >
+                        <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 15L21 21M21 15L15 21M10 21V14.6627C10 14.4182 10 14.2959 9.97237 14.1808C9.94787 14.0787 9.90747 13.9812 9.85264 13.8917C9.7908 13.7908 9.70432 13.7043 9.53137 13.5314L3.46863 7.46863C3.29568 7.29568 3.2092 7.2092 3.14736 7.10828C3.09253 7.01881 3.05213 6.92127 3.02763 6.81923C3 6.70414 3 6.58185 3 6.33726V4.6C3 4.03995 3 3.75992 3.10899 3.54601C3.20487 3.35785 3.35785 3.20487 3.54601 3.10899C3.75992 3 4.03995 3 4.6 3H19.4C19.9601 3 20.2401 3 20.454 3.10899C20.6422 3.20487 20.7951 3.35785 20.891 3.54601C21 3.75992 21 4.03995 21 4.6V6.33726C21 6.58185 21 6.70414 20.9724 6.81923C20.9479 6.92127 20.9075 7.01881 20.8526 7.10828C20.7908 7.2092 20.7043 7.29568 20.5314 7.46863L17 11" stroke="#b2843e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                    </a>
+                @else
                 <span class="relative flex-shrink-0 ml-1.5 w-5 h-5">
                     <svg xmlns="http://www.w3.org/2000/svg"
                         class="absolute inset-0 w-5 h-5 opacity-100 group-open:opacity-0" fill="none"
@@ -27,18 +31,24 @@
                             d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </span>
+                @endisset               
+                
             </summary>
             @foreach ($tiposActuacion as $tipo)
-                <span class="bg-gray-200 px-2 py-1 rounded-md mr-2">{{ $tipo->nombre }}</span>
-            @endforeach
-
+                <a href="{{ route('actuaciones-tipo', ['tipoactuacion' => $tipo->id]) }}"><span class="bg-gray-200 px-2 py-1 rounded-md mr-2">{{ $tipo->nombre }}</span></a>
+            @endforeach 
         </details>
-        <details class="p-2 group" close>
+
+        <details class="p-2 group" @isset($filtropobla) open @else close @endisset>
             <summary class="flex items-center justify-between cursor-pointer">
                 <h5 class="text-lg font-medium text-gray-900">
-                    {{ __('Filtrar actuacions per mes') }}:
+                    {{ __('Filtrar actuacions per població') }}: @isset($filtropobla) {{$poblaciones[0]}} @endisset
                 </h5>
-
+                @isset($filtropobla)                
+                <a href="{{ route('actuacion.index') }}" >
+                    <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 15L21 21M21 15L15 21M10 21V14.6627C10 14.4182 10 14.2959 9.97237 14.1808C9.94787 14.0787 9.90747 13.9812 9.85264 13.8917C9.7908 13.7908 9.70432 13.7043 9.53137 13.5314L3.46863 7.46863C3.29568 7.29568 3.2092 7.2092 3.14736 7.10828C3.09253 7.01881 3.05213 6.92127 3.02763 6.81923C3 6.70414 3 6.58185 3 6.33726V4.6C3 4.03995 3 3.75992 3.10899 3.54601C3.20487 3.35785 3.35785 3.20487 3.54601 3.10899C3.75992 3 4.03995 3 4.6 3H19.4C19.9601 3 20.2401 3 20.454 3.10899C20.6422 3.20487 20.7951 3.35785 20.891 3.54601C21 3.75992 21 4.03995 21 4.6V6.33726C21 6.58185 21 6.70414 20.9724 6.81923C20.9479 6.92127 20.9075 7.01881 20.8526 7.10828C20.7908 7.2092 20.7043 7.29568 20.5314 7.46863L17 11" stroke="#b2843e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                </a>
+            @else
                 <span class="relative flex-shrink-0 ml-1.5 w-5 h-5">
                     <svg xmlns="http://www.w3.org/2000/svg"
                         class="absolute inset-0 w-5 h-5 opacity-100 group-open:opacity-0" fill="none"
@@ -54,12 +64,17 @@
                             d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </span>
+                @endisset
             </summary>
-            @foreach ($meses as $mes)
-                <span class="bg-gray-200 px-2 py-1 rounded-md mr-2">{{ $mes }}</span>
+            
+            @foreach ($poblaciones as $poblacion)            
+                <a href="{{ route('actuaciones-poblacion', ['poblacion' => $poblacion]) }}"><span class="bg-gray-200 px-2 py-1 rounded-md mr-2">{{ $poblacion }}</span></a>
             @endforeach
-
+            
         </details>
+
+
+
     </div>
 
 
