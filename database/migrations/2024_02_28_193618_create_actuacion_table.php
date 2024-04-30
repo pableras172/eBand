@@ -26,6 +26,7 @@ return new class extends Migration
             $table->foreignId('contratos_id')->references('id')->on('contratos')->cascadeOnDelete();
             $table->boolean('pagado');
             $table->text('observaciones')->nullable();
+            $table->text('calendar')->nullable();
             $table->timestamps();
         });
     }

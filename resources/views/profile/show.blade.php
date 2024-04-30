@@ -1,5 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
+        
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Profile') }}
         </h2>
@@ -30,6 +31,10 @@
             @endif
 
             <div class="mt-10 sm:mt-0">
+                <x-notifications-button />
+            </div>
+            <x-section-border />
+            <div class="mt-10 sm:mt-0">
                 @livewire('profile.logout-other-browser-sessions-form')
             </div>
 
@@ -40,6 +45,7 @@
                     @livewire('profile.delete-user-form')
                 </div>
             @endif
+
         </div>
-    </div>
+    </div>    
 </x-app-layout>
