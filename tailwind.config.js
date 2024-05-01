@@ -22,7 +22,7 @@ export default {
                 fondoclaro: '#cbcbcb',
                 fondobotonrojo: '#792B43', 
                 fondofosrastero: '#97A9A9', 
-
+                azulfechas:'#2F445F',
               },
         },       
     },

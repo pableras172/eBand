@@ -13,7 +13,7 @@
     @if (request()->has('deletesuccess') && request()->success)
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
             <strong class="font-bold">{{ __('Contracte eliminat') }}</strong>
-            <span class="block sm:inline">{{ 'Se ha eliminado el contrato.' }}</span>
+            <span class="block sm:inline">{{ __('Se ha eliminado el contrato.') }}</span>
         </div>
     @endif
 

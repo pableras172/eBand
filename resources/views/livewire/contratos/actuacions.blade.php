@@ -9,7 +9,7 @@
         </h2>
     </x-slot>
 
-    <div class="container mx-auto py-10 px-4 sm:px-8 lg:px-32">
+    <div class="container mx-auto py-5 px-2 sm:px-8 lg:px-32">
         <!-- Mensajes de error o éxito -->
         @if (session('error'))
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -17,7 +17,7 @@
                 <span class="block sm:inline">{{ session('error') }}</span>
             </div>
         @endif
-
+        <div class="w-full bg-white py-4 px-2">
         <!-- Formulario -->
         <form
             @if (isset($actuacion)) action="{{ route('actuacion.update', $actuacion->id) }}"
@@ -105,7 +105,7 @@
                     class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-gray-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Guardar</button>
             </div>
         </form>
-
+    </div>
         <!-- Grid de actuaciones -->
         <div class="mt-8">
             <div class="w-full bg-white">
@@ -116,14 +116,14 @@
                     <div>
                         <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
                             <div class="p-4 flex items-center">
-                                <div class="pr-4 bg-blue-200 p-2 rounded-lg text-center">
+                                <div class="pr-4 bg-azulfechas p-2 rounded-lg text-center">
                                     <p class="text-4xl font-bold text-white">
                                         {{ \Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d') }}</p>
                                     <p class="text-sm text-white">
                                         {{ \Carbon\Carbon::parse($actuacion->fechaActuacion)->format('F Y') }}</p>
                                 </div>
                                 <div class="ml-4">
-                                    <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+                                    <div class="uppercase tracking-wide text-sm text-black font-semibold">
                                         {{ $actuacion->descripcion }}</div>
                                     <p class="mt-2 text-gray-500">{{__('Tipus')}}: {{ $actuacion->tipoactuacion->nombre }}</p>
                                     <p class="mt-2 text-gray-500">{{__('Numero musics')}}: {{ $actuacion->musicos }}</p>

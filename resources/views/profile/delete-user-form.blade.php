@@ -1,31 +1,31 @@
 <x-action-section>
     <x-slot name="title">
-        {{ __('Borrar cuenta') }}
+        {{ __('Desactivar cuenta') }}
     </x-slot>
 
     <x-slot name="description">
-        {{ __('Elimina permanentemente tu cuenta.') }}
+        {{ __('Desactivar permanentemente tu cuenta.') }}
     </x-slot>
 
     <x-slot name="content">
         <div class="max-w-xl text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Una vez que se elimine su cuenta, todos sus recursos y datos se eliminarán permanentemente. Antes de eliminar su cuenta, descargue cualquier dato o información que desee conservar.') }}
+            {{ __('mensaje_eliminar_cuenta') }}
         </div>
 
         <div class="mt-5">
             <x-danger-button wire:click="confirmUserDeletion" wire:loading.attr="disabled">
-                {{ __('Borrar cuenta') }}
+                {{ __('Desactivar cuenta') }}
             </x-danger-button>
         </div>
 
         <!-- Delete User Confirmation Modal -->
         <x-dialog-modal wire:model.live="confirmingUserDeletion">
             <x-slot name="title">
-                {{ __('Borrar cuenta') }}
+                {{ __('Desactivar cuenta') }}
             </x-slot>
 
             <x-slot name="content">
-                {{ __('¿Estás seguro de que quieres eliminar tu cuenta? Una vez que se elimine su cuenta, todos sus recursos y datos se eliminarán permanentemente. Ingrese su contraseña para confirmar que desea eliminar permanentemente su cuenta.') }}
+                {{ __('confirm_eliminar_cuenta') }}
 
                 <div class="mt-4" x-data="{}" x-on:confirming-delete-user.window="setTimeout(() => $refs.password.focus(), 250)">
                     <x-input type="password" class="mt-1 block w-3/4"

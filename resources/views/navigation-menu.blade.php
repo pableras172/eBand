@@ -328,7 +328,9 @@
                     </x-responsive-nav-link>
                 @endcan
                 <div class="border-t border-gray-200 dark:border-gray-600"></div>
-
+                <div class="block px-4 py-2 text-xs text-gray-400">
+                    {{ __('selecciona idioma') }}
+                </div>
                 <x-responsive-nav-link href="/greeting/es">
                     {{ __('Castellano') }}
                 </x-responsive-nav-link>
@@ -376,8 +378,7 @@
                 <div class="block px-4 py-2 text-xs text-gray-400">
                     {{ __('La meva activitat') }}
                 </div>
-
-                <!-- Team Settings -->
+               
                 <x-responsive-nav-link href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}"
                     :active="request()->routeIs('actuaciones.usuario.anyo')">
                     {{ __('Les meves actuacions') }}

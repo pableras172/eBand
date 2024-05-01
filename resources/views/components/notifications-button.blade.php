@@ -10,6 +10,8 @@
         <div class="max-w-xl text-sm text-gray-600 dark:text-gray-400">
             {{ __('Activa o desactiva las notificaciones en este dispositivo. Recuerda que si el navegador te pregunta, debes permitir las notificaciones') }}
         </div>
-        <div class='onesignal-customlink-container'></div>
+        <div class="flex items-center mt-5">
+            <div class='onesignal-customlink-container'></div>
+        </div>
     </x-slot>
 </x-action-section>
