@@ -21,6 +21,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
 
+    <link  rel="stylesheet"  href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
+
     <link rel="apple-touch-icon" sizes="57x57" href="/storage/imagenes/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/storage/imagenes/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/storage/imagenes/apple-icon-72x72.png">

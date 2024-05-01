@@ -331,13 +331,23 @@
                 <div class="block px-4 py-2 text-xs text-gray-400">
                     {{ __('selecciona idioma') }}
                 </div>
-                <x-responsive-nav-link href="/greeting/es">
-                    {{ __('Castellano') }}
-                </x-responsive-nav-link>
 
-                <x-responsive-nav-link href="/greeting/ca_VL">
-                    {{ __('Valencià') }}
-                </x-responsive-nav-link>
+                <div class="grid grid-cols-2 justify-center items-center gap-4">
+                    @if (App::getLocale()!='ca_VL')
+                    <x-responsive-nav-link href="/greeting/ca_VL">
+                        <span class="fi fi-es-ct"></span>
+                    </x-responsive-nav-link>                      
+                        
+                    @endif
+                   
+                    @if (App::getLocale()!='es')
+                    <x-responsive-nav-link href="/greeting/es">
+                        <span class="fi fi-es"></span>
+                    </x-responsive-nav-link>
+                    @endif
+                   
+                </div>
+
 
                 <!-- Team Management -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
