@@ -3,8 +3,9 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Mi actividad') }} - {{$usuario->name}}
         </h2>
-        <div class="flex items-center mt-2 mb-4 text-gray-500 w-full">
-        </div>
+        <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+            {{__('info_listados')}}
+        </p>
     </x-slot>
     <!-- component -->
 <!-- This is an example component -->

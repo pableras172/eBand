@@ -390,6 +390,7 @@ public function notificarActuacion(Request $request)
                 ->whereHas('actuacion', function ($query) use ($year) {
                     $query->whereYear('fechaActuacion', $year);
                 })
+                //->where('disponible','<>','0')
                 ->get();
 
             //dd($listasConActuaciones);
@@ -430,6 +431,7 @@ public function notificarActuacion(Request $request)
         if($user->id!=Auth::user()->id){
             abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         }
+
         // Obtener las actuaciones del usuario para el año y tipo especificados
         $actuaciones = $user->listas()
             ->whereHas('actuacion', function ($query) use ($year, $type) {
@@ -448,7 +450,7 @@ public function notificarActuacion(Request $request)
             'type' => $type,
             'usuario'=>$user,        
         ]);
-}
+    }
 
 
 public function generateICSFile($evento)
