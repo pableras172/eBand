@@ -426,31 +426,118 @@ public function notificarActuacion(Request $request)
         ]);
     }
 
+
+    /**
+     * Obtiene las actuaciones de un usuario por año y poblacion
+     */
+    public function getActuacionesUsuarioPorPoblacionAnyo(User $user, $year, $poblacion)
+    {
+        $actuaciones = $user->listas()
+        ->join('actuacions', 'listas.actuacions_id', '=', 'actuacions.id')
+        ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
+        ->join('contratos', 'actuacions.contratos_id', '=', 'contratos.id')
+        ->select('listas.*', 'actuacions.*','tipoactuacions.id AS tipoactuacion_id','tipoactuacions.nombre AS tipoactuacion_nombre','contratos.poblacion')
+        ->whereYear('actuacions.fechaActuacion', $year) // Filtro por año actual
+        ->where('contratos.poblacion',$poblacion)
+        ->orderBy('actuacions.fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
+        ->get();
+    
+        $tiposActuacion = $actuaciones->pluck('tipoactuacion_nombre', 'tipoactuacion_id')->unique();        
+        $poblaciones = $actuaciones->pluck('poblacion')->unique();   
+        $filtropobla = true;
+
+        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones','filtropobla'));
+    }
+
+
+/**
+ * listado de actuaciones de un usuario por año y tipo
+ */
+
     public function getListadoActuacionesUsuarioAndTipo(User $user, $year, $type)
     {
         if($user->id!=Auth::user()->id){
             abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         }
 
-        // Obtener las actuaciones del usuario para el año y tipo especificados
         $actuaciones = $user->listas()
-            ->whereHas('actuacion', function ($query) use ($year, $type) {
-                $query->whereYear('fechaActuacion', $year)
-                    ->whereHas('tipoactuacion', function ($query) use ($type) {
-                        $query->where('id', $type);
-                    });
+        ->join('actuacions', 'listas.actuacions_id', '=', 'actuacions.id')
+        ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
+        ->join('contratos', 'actuacions.contratos_id', '=', 'contratos.id')
+        ->select('listas.*', 'actuacions.*','tipoactuacions.id AS tipoactuacion_id','tipoactuacions.nombre AS tipoactuacion_nombre','contratos.poblacion')
+        ->whereYear('actuacions.fechaActuacion', $year) // Filtro por año actual
+        ->where('tipoactuacions.id',$type)
+        ->orderBy('actuacions.fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
+        ->get();
+    
+        $tiposActuacion = $actuaciones->pluck('tipoactuacion_nombre', 'tipoactuacion_id')->unique();        
+        $poblaciones = $actuaciones->pluck('poblacion')->unique();  
+
+        $filtrotipo=true; 
+        
+        // Puedes pasar $actuaciones a la vista para mostrar el listado
+        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones','filtrotipo'));
+        
+    }
+
+
+
+    public function getListadoActuacionesUsuarioAndPoblacion(User $user, $year, $poblacion)
+    {
+        // Obtener actuaciones por población y fecha de actuación
+        $actuaciones = Actuacion::with(['contrato', 'lista', 'tipoactuacion'])
+            ->whereHas('contrato', function ($query) use ($poblacion) {
+                $query->where('poblacion', $poblacion);
             })
-            ->with('actuacion.tipoactuacion', 'actuacion.contrato')
+            ->whereYear('fechaActuacion', $year)
+            ->orderBy('fechaActuacion', 'asc')
             ->get();
 
-        // Puedes pasar $actuaciones a la vista para mostrar el listado
-        return view('actuaciones.listado-actuaciones-tipo-usuario', [
-            'actuaciones' => $actuaciones,
-            'year' => $year,
-            'type' => $type,
-            'usuario'=>$user,        
-        ]);
+        // Obtener tipos de actuación únicos
+        $tiposActuacion = $actuaciones->pluck('tipoactuacion')->unique();
+
+        // Obtener poblaciones únicas de los contratos relacionados
+        $poblaciones = $actuaciones->pluck('contrato.poblacion')->unique();
+
+        // Agrupar actuaciones por mes
+        $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
+            return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
+        });
+
+        // Indicador de filtro de población
+        $filtropobla = true;
+
+        return view('actuaciones.view-listas', compact('actuacionesPorMes', 'tiposActuacion', 'meses', 'filtropobla', 'poblaciones','user'));
     }
+
+
+/**
+ * Listado de actuacions filtradas por usuario y año
+ */
+
+    public function getListadoActuacionesUsuarioAnyo(User $user, $year)
+    {
+        if($user->id!=Auth::user()->id){
+            abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        }
+  
+        $actuaciones = $user->listas()
+        ->join('actuacions', 'listas.actuacions_id', '=', 'actuacions.id')
+        ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
+        ->join('contratos', 'actuacions.contratos_id', '=', 'contratos.id')
+        ->select('listas.*', 'actuacions.*','tipoactuacions.id AS tipoactuacion_id','tipoactuacions.nombre AS tipoactuacion_nombre','contratos.poblacion')
+        ->whereYear('actuacions.fechaActuacion', $year) // Filtro por año actual
+        ->orderBy('actuacions.fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
+        ->get();
+    
+        $tiposActuacion = $actuaciones->pluck('tipoactuacion_nombre', 'tipoactuacion_id')->unique();        
+        $poblaciones = $actuaciones->pluck('poblacion')->unique();     
+
+        // Puedes pasar $actuaciones a la vista para mostrar el listado
+        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones'));
+    }
+
+
 
 
 public function generateICSFile($evento)
@@ -487,6 +574,14 @@ public function generateICSFile($evento)
         return Storage::download('eventos/'.$actuacion->calendar);
     }
 
+
+
+
+
+    /**
+     * Filtra las actuaciones por tipo en el calendario principal
+     */
+
     public function getActuacionesPorTipo(Request $request, $tipoActuiacionId){
                 
         $actuaciones = Actuacion::with('contrato', 'lista','tipoactuacion')
@@ -505,44 +600,20 @@ public function generateICSFile($evento)
        })->unique();
 
 
-    $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
-        return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
-    });
+        $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
+            return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
+        });
 
-    $filtrotipo=true;
+        $filtrotipo=true;
 
     return view('actuaciones.view-listas', compact('actuacionesPorMes','tiposActuacion', 'meses','filtrotipo','poblaciones'));
 
-    }
-
-    public function getActuacionesPorFecha(Request $request, $fechaactuacion){
-
-        $fecha = Carbon::createFromFormat('d/m/Y', $fechaactuacion);
-                
-        $actuaciones = Actuacion::with('contrato', 'lista','tipoactuacion')
-        ->where('fechaActuacion', '>=', $fecha->startOfMonth())    
-        ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
-        ->get();
-
-       // Obtener tipos de actuación únicos
-       $tiposActuacion = $actuaciones->pluck('tipoactuacion')->unique();
-       $poblaciones = $actuaciones->pluck('contrato.poblacion')->unique();
-
-       // Obtener meses únicos
-       $meses = $actuaciones->pluck('fechaActuacion')->map(function ($date) {
-           return Carbon::parse($date)->format('m');
-       })->unique();
+    }   
 
 
-    $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
-        return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
-    });
-
-    $filtro=true;
-
-    return view('actuaciones.view-listas', compact('actuacionesPorMes','tiposActuacion', 'meses','filtro','poblaciones'));
-
-    }
+    /**
+     * Filtra las actuaciones por poblacion en el listado del calendario principal
+     */
 
     public function getActuacionesPorPoblacion(Request $request, $poblacion)
     {
@@ -575,8 +646,6 @@ public function generateICSFile($evento)
         $filtropobla = true;
 
         return view('actuaciones.view-listas', compact('actuacionesPorMes', 'tiposActuacion', 'meses', 'filtropobla', 'poblaciones'));
-    }
-
-    
+    }    
     
 }
