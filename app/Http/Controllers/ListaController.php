@@ -65,10 +65,10 @@ class ListaController extends Controller
         }
 
         // Contar el número total de filas en ListasUser con el lista_id dado
-        $totalFilas = ListasUser::where('listas_id', $actuacionId)->count();
+        $totalFilas = ListasUser::where('listas_id', $lista->id)->where('disponible','<>','0')->count();
 
         // Contar el número de elementos con el campo "coche" igual a 1
-        $cochesCount = ListasUser::where('listas_id', $actuacionId)->where('coche', 1)->count();
+        $cochesCount = ListasUser::where('listas_id', $lista->id)->where('coche', 1)->count();
 
         //Comprobamos las fechas para no dejar comunicar el no disponible si son menos de 2 dias
 
