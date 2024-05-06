@@ -240,7 +240,7 @@ public function notificarActuacion(Request $request)
                         'descripcion' => $actuaciones->descripcion
                     ]),
                     $dest->uuid,
-                    env('APP_URL') . "/listas/actuacion/" . $request->id, 
+                    env('APP_URL') . "/listas/actuacion/" . $actuaciones->id, 
                     null, 
                     null, 
                     null, 

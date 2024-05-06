@@ -118,7 +118,8 @@
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                        {{ $actuacion->actuacion->descripcion }}
+                                        <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->actuacion->id]) }}"
+                                            class="">{{ $actuacion->actuacion->descripcion }}</a>
                                     </p>
                                     <div class="flex items-center">
                                         @if (!$actuacion->pivot->disponible)

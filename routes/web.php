@@ -10,6 +10,7 @@ use App\Http\Controllers\ContratosController;
 use App\Http\Controllers\ListaController;
 use App\Http\Controllers\ListasUsersController;
 use App\Http\Controllers\TipoActuacionController;
+use App\Http\Controllers\PDFController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +70,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         Route::delete('/listauser/{listaId}/{usuarioId}', [ListasUsersController::class, 'destroy']);   
         
         Route::get('/usersuuid/{user}',[\App\Http\Controllers\UsersController::class,'getuuid']);
+
+        Route::get('/generate-pdf', [PDFController::class, 'generatePDF']);
 });
 
 /*
