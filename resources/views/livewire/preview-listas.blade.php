@@ -59,7 +59,7 @@
 
                         <ul class="divide-y divide-gray-200">
                             @foreach ($usuariosDelInstrumento->sortBy('name')->sortBy('forastero') as $user)
-                                @if (!$user->seleccionado)
+                                @if (!$user->disponible || !$user->seleccionado)
                                     @continue
                                 @endif
                                 <li class="@if ($user->forastero) forastero {{ $user->instrument->name }} @endif p-3 flex justify-between items-center user-card "
@@ -100,7 +100,7 @@
         </x-slot>
         <x-slot name="footer">
          <div class="flex justify-between w-full">
-            <x-print  w="32" h="32" />
+            <x-print  w="32" h="32" a='{{$actuacion->id}}' />
             <x-secondary-button wire:click="$set('displayingPreviewListas', false)" wire:loading.attr="disabled">
                 {{ __('Close') }}
             </x-secondary-button>

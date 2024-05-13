@@ -52,10 +52,16 @@ class PreviewListas extends Component
 
     public function render()
     {
-        $actuacionId=$this->id;
+        $actuacionId = $this->id;
+        
         // Obtener la actuación y la lista relacionada
         $actuacion = Actuacion::findOrFail($actuacionId);
         $lista = $actuacion->lista;
+    
+        if ($lista->users->contains(Auth::user()->id)
+            && !$lista->users()->where('id', (Auth::user()->id))->first()->pivot->disponible) {
+                $usuarioDisponible = false;
+        }
 
         // Obtener todos los usuarios
         $usuarios = User::where('activo', 1)->get();
@@ -64,10 +70,13 @@ class PreviewListas extends Component
         foreach ($usuarios as $usuario) {
             $usuario->seleccionado = false; // Por defecto, no seleccionado
             $usuario->coche = false; // Por defecto, no marcado
-           
+            $usuario->disponible = true;
             // Verificar si el usuario está en la lista
-            if ($lista->users->contains($usuario->id)) {       
-
+            if ($lista->users->contains($usuario->id)) {
+                if (!$lista->users()->where('id', $usuario->id)->first()->pivot->disponible) {
+                    $usuario->disponible = false;
+                    continue;
+                }
                 $usuario->seleccionado = true;
                 // Verificar si el usuario tiene marcado el campo coche en la lista
                 if ($lista->users()->where('id', $usuario->id)->first()->pivot->coche) {
@@ -76,13 +85,19 @@ class PreviewListas extends Component
                 
             }
         }
-
-        // Contar el número total de filas en ListasUser con el lista_id dado
-        $totalFilas = ListasUser::where('listas_id', $lista->id)->where('disponible','<>','0')->count();
-
-        // Contar el número de elementos con el campo "coche" igual a 1
-        $cochesCount = ListasUser::where('listas_id', $lista->id)->where('coche', 1)->count();
         
-        return view('livewire.preview-listas', compact('actuacion', 'usuarios','lista','totalFilas','cochesCount'));
+        // Verificar si la lista está mostrándose y si hay usuarios disponibles
+        return view('livewire.preview-listas', compact('actuacion', 'usuarios', 'lista'));
     }
+    
+    public function getUsuariosDisponibles($listaId)
+    {
+        return ListasUser::where('listas_id', $listaId)
+            ->where('disponible', 1)
+            ->with(['user' => function ($query) {
+                $query->with('instrument');
+            }])
+            ->get();
+    }    
+    
 }

@@ -1,81 +1,127 @@
+<!doctype html>
 <html>
+
 <head>
-    
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ $actuacion->descripcion }}
-        </h2>
-        <div class="flex items-center mt-2 mb-4 text-gray-500 w-full">
-           
-            <span class="mr-4">{{ $actuacion->contrato->poblacion }}</span>
-            <!-- Icono de calendario -->
-           
-            <!-- Fecha de la actuación -->
-            <span class="mr-4">{{ \Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y') }}</span>
-            <!-- Icono de usuarios -->
-            @if ($actuacion->musicos > 0)
-               
-                <!-- Número de músicos -->
-                <span class="mr-4">{{ $actuacion->musicos }}</span>
-            @endif
-            @if ($actuacion->coches > 0)
-                
-                <span class="mr-4">{{ $actuacion->coches }}</span>
-            @endif
-        </div>
-  
+    <meta charset="utf-8">
+    <title>Lista</title>
+    <style type="text/css">
+        .fondoNegro {
+            background-color: #7E7E7E;
+            color: white;
+            padding: 10px;
+            font-size: 20px;
+            font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, sans-serif;
+            font-weight: bold;
+        }
+    </style>    
 </head>
-<body>
-    
-        <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
-            @foreach ($usuarios->groupBy('instrument_id') as $instrumento => $usuariosDelInstrumento)
-                <details class="p-2 group" open>
-                    <summary class="flex items-center justify-between cursor-pointer">
-                        <h5 class="text-lg font-medium text-gray-900">
-                            {{ $usuariosDelInstrumento->first()->instrument->name }}
-                            ({{ $usuariosDelInstrumento->where('seleccionado', true)->count() }})
-                        </h5>
-                       
-                        </span>
-                    </summary class="flex items-center justify-between cursor-pointer">
 
-                    <ul class="divide-y divide-gray-200">
-                        @foreach ($usuariosDelInstrumento->sortBy('name')->sortBy('forastero') as $user)
-                            @if (!$user->seleccionado)
-                                @continue
+<body
+    style="font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
+    <table width="700px" align="center">
+        <?php
+            $path = '../public/imagenes/logo.png';
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            ?>
+        <tbody>
+            <tr>
+                <td width="50%">
+                    <img alt="" src="{{$base64}}"
+                        width="125" />
+                </td>
+                <th width="50%" align="right">
+                    <h1>Actuació</h1>
+            </tr>
+        </tbody>
+    </table>
+    <table width="700px" align="center" cellpadding="5" style="">
+        <tbody>
+            <tr>
+                <th colspan="6" class="fondoNegro">{{ $actuacion->descripcion }}</th>
+            </tr>
+            <tr>
+                <th width="100px" align="left" valign="middle" class="fondoNegro">Municipio</th>
+                <td width="120px" align="center" valign="middle">{{ $actuacion->contrato->poblacion }}</td>
+                <th width="50px" align="left" valign="middle" class="fondoNegro">Músicos</th>
+                <td width="50px" align="center" valign="middle">{{ $actuacion->musicos }}</td>
+                <th width="50px" align="left" valign="middle" class="fondoNegro">Cotxes</th>
+                <td width="50px" align="center">{{ $actuacion->coches }}</td>
+            </tr>            
+        </tbody>
+    </table>
+    <div>
+    <div><h2>Observaciones</h2></div>
+    <div>{{ $actuacion->observaciones}}</div>    
+    </div>
+    <hr width="700px">
+        <?php
+            $path = '../public/imagenes/car.png';
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $data = file_get_contents($path);
+            $carBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        ?>
+
+@php
+    $columnas = 5; // número de columnas
+    $maxCeldasPorFila = 5; // máximo de celdas por fila
+    $usuariosPorColumna = ceil(count($usuarios) / $columnas); // calcular cuántos usuarios por columna
+    $filaImpar = true; // variable para controlar el color de fondo de las filas
+@endphp
+
+<table width="100%" cellpadding="5">
+    <tbody>
+        @foreach ($usuarios->groupBy('instrument_id') as $instrumento => $usuariosDelInstrumento)
+            <tr>
+                <th bgcolor="#65949C" colspan="{{ $columnas }}" align="center" valign="middle" nowrap="nowrap" scope="col">
+                    {{ $usuariosDelInstrumento->first()->instrument->name }}
+                    ({{ $usuariosDelInstrumento->where('seleccionado', true)->count() }})</th>
+            </tr>
+
+            @php $usersChunked = $usuariosDelInstrumento->sortBy('name')->sortBy('forastero')->chunk($usuariosPorColumna); @endphp
+
+            @foreach ($usersChunked as $chunk)
+                <tr @if ($filaImpar) bgcolor="#f2f2f2" @endif>
+                    @php $celdasEnFila = 0; @endphp
+
+                    @foreach ($chunk as $user)
+                        @if (!$user->seleccionado)
+                            @continue
+                        @endif
+
+                        <td style="text-align: center; vertical-align: middle; white-space: nowrap;">
+                            {{ $user->name }}
+                            @if ($user->coche)
+                                <img src="{{$carBase64}}" width="20px" />
                             @endif
-                            <li class="@if ($user->forastero) forastero {{ $user->instrument->name }} @endif p-3 flex justify-between items-center user-card "
-                                style="@if (Auth::user()->id == $user->id) background-color: #ffbd59; @endif">
+                        </td>
 
-                                <div class="flex items-center">                                  
-                                    <span class="ml-2 font-medium flex items-center">
-                                        {{ $user->name }}
-                                        @if ($user->forastero)
-                                            <button type="button"
-                                                class="ml-2 mr-2 font-medium bg-fondobotonnaranja text-white p-2 rounded leading-none flex items-center">
-                                                {{ __('common.llogat') }}
-                                            </button>
-                                        @endif
-                                    </span>
-                                </div>
+                        @php $celdasEnFila++; @endphp
+                        @if ($celdasEnFila == $maxCeldasPorFila)
+                            @php $celdasEnFila = 0; @endphp
+                            </tr><tr @if ($filaImpar) bgcolor="#f2f2f2" @endif>
+                        @endif
+                    @endforeach
 
-                                <div>
-                                    <div class="flex items-center">
-                                        <input style="float: left;margin-right: 15px;" type="checkbox"
-                                            data-lista-id="{{ $lista->id }}"
-                                            data-usuario-id="{{ $user->id }}"
-                                            {{ $user->seleccionado ? 'checked' : '' }} disabled>
+                    @if ($celdasEnFila < $maxCeldasPorFila)
+                        @for ($i = $celdasEnFila; $i < $maxCeldasPorFila; $i++)
+                            <td style="text-align: center; vertical-align: middle; white-space: nowrap;"></td>
+                        @endfor
+                    @endif
 
-                                        @if ($user->coche)
-                                            Coche
-                                        @endif
-                                    </div>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
-                </details>
+                    @php $filaImpar = !$filaImpar; @endphp
+                </tr>
             @endforeach
-        </div>
-  
+        @endforeach
+    </tbody>
+</table>
+
+
+
+
+    
+    
 </body>
+
 </html>

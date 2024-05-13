@@ -71,7 +71,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         
         Route::get('/usersuuid/{user}',[\App\Http\Controllers\UsersController::class,'getuuid']);
 
-        Route::get('/generate-pdf', [PDFController::class, 'generatePDF']);
+        Route::get('/generate-pdf/{listaId}', [PDFController::class, 'generatePDF']);
 });
 
 /*
