@@ -1,9 +1,9 @@
 <x-mail::message>
-Hola, el usuario {{$username}} ha indicado que no esta disponible para la actuacion:
-{{$actuacio->descripcion}}
+Hola, el usuario {{$username}} ha indicado <strong>{{$customText}}</strong> para la actuacion:
+<strong>{{$actuacio->descripcion}}</strong>
 Fecha: {{$actuacio->fechaActuacion}}
 
-Se marcará como no disponible.
+Se marcará como <strong>{{$customText}}</strong>.
 
 <x-mail::button :url="$url">
 Acceder a la lista
