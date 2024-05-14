@@ -25,9 +25,9 @@
             vertical-align: middle;
         }
         .columna {
-            width: 30%;
+            width: 33%;
             float: left;
-            margin-right: 10px; /* Espacio entre columnas */
+            margin-right: 5px; /* Espacio entre columnas */
         }
     </style>    
 </head>
