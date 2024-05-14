@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use PDF;
 use App\Models\Actuacion;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class PDFController extends Controller
 {
@@ -31,7 +32,7 @@ class PDFController extends Controller
 
         $pdf = PDF::loadView('pdf.document', $data);
 
-        $nombreDocumento = str_slug($actuacion->descripcion) . '.pdf';
+        $nombreDocumento = Str::slug($actuacion->descripcion) . '.pdf';
         return $pdf->download($nombreDocumento);
     }
 }
