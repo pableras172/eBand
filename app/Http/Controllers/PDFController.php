@@ -30,6 +30,8 @@ class PDFController extends Controller
         ];
 
         $pdf = PDF::loadView('pdf.document', $data);
-        return $pdf->download('document.pdf');
+
+        $nombreDocumento = str_slug($actuacion->descripcion) . '.pdf';
+        return $pdf->download($nombreDocumento);
     }
 }
