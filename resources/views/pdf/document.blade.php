@@ -8,10 +8,26 @@
         .fondoNegro {
             background-color: #7E7E7E;
             color: white;
-            padding: 10px;
-            font-size: 20px;
+            padding: 8px;
+            font-size: 18px;
             font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, sans-serif;
             font-weight: bold;
+        }
+        .usuario {
+            margin-bottom: 10px;
+            list-style: none; /* Eliminar los puntos de la lista */
+        }
+        .nombre {
+            font-weight: bold;
+        }
+        .car-img {
+            width: 20px;
+            vertical-align: middle;
+        }
+        .columna {
+            width: 30%;
+            float: left;
+            margin-right: 10px; /* Espacio entre columnas */
         }
     </style>    
 </head>
@@ -32,7 +48,7 @@
                         width="125" />
                 </td>
                 <th width="50%" align="right">
-                    <h1>Actuació</h1>
+                    <h1>{{__('Llista')}}</h1>
             </tr>
         </tbody>
     </table>
@@ -42,86 +58,65 @@
                 <th colspan="6" class="fondoNegro">{{ $actuacion->descripcion }}</th>
             </tr>
             <tr>
-                <th width="100px" align="left" valign="middle" class="fondoNegro">Municipio</th>
+                <th width="100px" align="left" valign="middle" class="fondoNegro">{{__('Població')}}</th>
                 <td width="120px" align="center" valign="middle">{{ $actuacion->contrato->poblacion }}</td>
-                <th width="50px" align="left" valign="middle" class="fondoNegro">Músicos</th>
+                <th width="50px" align="left" valign="middle" class="fondoNegro">{{__('Numero musics')}}</th>
                 <td width="50px" align="center" valign="middle">{{ $actuacion->musicos }}</td>
-                <th width="50px" align="left" valign="middle" class="fondoNegro">Cotxes</th>
+                <th width="50px" align="left" valign="middle" class="fondoNegro">{{__('Cantitat de cotxes')}}</th>
                 <td width="50px" align="center">{{ $actuacion->coches }}</td>
             </tr>            
         </tbody>
     </table>
     <div>
-    <div><h2>Observaciones</h2></div>
-    <div>{{ $actuacion->observaciones}}</div>    
+        <div><h2>{{__('Observacions')}}</h2></div>
+        <div>{{ $actuacion->observaciones}}</div>    
     </div>
     <hr width="700px">
-        <?php
-            $path = '../public/imagenes/car.png';
-            $type = pathinfo($path, PATHINFO_EXTENSION);
-            $data = file_get_contents($path);
-            $carBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        ?>
+    <?php
+        $path = '../public/imagenes/car.png';
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $carBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    ?>
 
-@php
-    $columnas = 5; // número de columnas
-    $maxCeldasPorFila = 5; // máximo de celdas por fila
-    $usuariosPorColumna = ceil(count($usuarios) / $columnas); // calcular cuántos usuarios por columna
-    $filaImpar = true; // variable para controlar el color de fondo de las filas
-@endphp
+    <?php
+        $usuariosPorColumna = ceil(count($usuarios) / 3); // calcular cuántos usuarios por columna
+        $contadorUsuarios = 0;
+        $contadorColumnas = 0;
+    ?>
 
-<table width="100%" cellpadding="5">
-    <tbody>
-        @foreach ($usuarios->groupBy('instrument_id') as $instrumento => $usuariosDelInstrumento)
-            <tr>
-                <th bgcolor="#65949C" colspan="{{ $columnas }}" align="center" valign="middle" nowrap="nowrap" scope="col">
-                    {{ $usuariosDelInstrumento->first()->instrument->name }}
-                    ({{ $usuariosDelInstrumento->where('seleccionado', true)->count() }})</th>
-            </tr>
+    @foreach ($usuarios as $usuario)
+        @if ($contadorUsuarios % $usuariosPorColumna === 0)
+            <div class="columna">
+        @endif
 
-            @php $usersChunked = $usuariosDelInstrumento->sortBy('name')->sortBy('forastero')->chunk($usuariosPorColumna); @endphp
+        <ul>
+            @if ($loop->first || $usuario->instrument->name != $usuarios[$loop->index - 1]->instrument->name)
+                <li class="fondoNegro">{{ $usuario->instrument->name }}</li>
+            @endif
+            <li class="usuario" @if ($loop->index % 2 != 0) style="background-color:#f0f0f0;padding-top: 5px;padding-bottom: 5px;" @endif>
+                <span class="nombre" >{{ $usuario->name }}</span>
+                @if ($usuario->pivot->coche)
+                    <img src="{{$carBase64}}" class="car-img" />
+                @endif
+            </li>
+        </ul>
 
-            @foreach ($usersChunked as $chunk)
-                <tr @if ($filaImpar) bgcolor="#f2f2f2" @endif>
-                    @php $celdasEnFila = 0; @endphp
+        @php $contadorUsuarios++; @endphp
 
-                    @foreach ($chunk as $user)
-                        @if (!$user->seleccionado)
-                            @continue
-                        @endif
+        @if ($contadorUsuarios % $usuariosPorColumna === 0 || $loop->last)
+            </div>
+        @endif
 
-                        <td style="text-align: center; vertical-align: middle; white-space: nowrap;">
-                            {{ $user->name }}
-                            @if ($user->coche)
-                                <img src="{{$carBase64}}" width="20px" />
-                            @endif
-                        </td>
+        @if ($contadorUsuarios % $usuariosPorColumna === 0)
+            @php $contadorColumnas++; @endphp
+        @endif
 
-                        @php $celdasEnFila++; @endphp
-                        @if ($celdasEnFila == $maxCeldasPorFila)
-                            @php $celdasEnFila = 0; @endphp
-                            </tr><tr @if ($filaImpar) bgcolor="#f2f2f2" @endif>
-                        @endif
-                    @endforeach
+        @if ($contadorColumnas == 3)
+            @break
+        @endif
+    @endforeach
 
-                    @if ($celdasEnFila < $maxCeldasPorFila)
-                        @for ($i = $celdasEnFila; $i < $maxCeldasPorFila; $i++)
-                            <td style="text-align: center; vertical-align: middle; white-space: nowrap;"></td>
-                        @endfor
-                    @endif
-
-                    @php $filaImpar = !$filaImpar; @endphp
-                </tr>
-            @endforeach
-        @endforeach
-    </tbody>
-</table>
-
-
-
-
-    
-    
 </body>
 
 </html>
