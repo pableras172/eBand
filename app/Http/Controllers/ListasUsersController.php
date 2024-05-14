@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\ListasUser;
 use App\Models\Listas;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
 use Exception;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserNoDisponible;
 
 class ListasUsersController extends Controller
 {
@@ -103,17 +106,19 @@ public function setdisponible(Request $request)
     $existingRelation = ListasUser::where('listas_id', $request->lista_id)
                                    ->where('user_id', $request->usuario_id)
                                    ->first();
-
+    
     if ($existingRelation) {
 
         if($request->disponible){
             ListasUser::where('listas_id', $request->lista_id)
             ->where('user_id', $request->usuario_id)
             ->delete();
+           
         }else{
             ListasUser::where('listas_id', $request->lista_id)
             ->where('user_id', $request->usuario_id)
             ->update(['disponible' => 0]);
+            
         } 
        
 
@@ -124,7 +129,22 @@ public function setdisponible(Request $request)
         $listaUser->user_id = $request->usuario_id;
         $listaUser->disponible = $request->disponible;
         
-        $listaUser->save();       
+        $listaUser->save(); 
+    }
+
+    $customText = $request->disponible ? 'Disponible':'No disponible';
+
+
+    try {
+
+    $lista = Listas::with('actuacion')->findOrFail($request->lista_id);
+    $actuacion = $lista->actuacion;
+    $user = User::where('id', $request->usuario_id)->first();
+
+    Mail::to(config('mail.mail_admin', ''))->send(new UserNoDisponible($user,$actuacion,$customText)); 
+
+    } catch (\Exception $e) {
+        logger()->error('Error al enviar el correo: ' . $e->getMessage());        
     }
 
     $notification = array(
