@@ -17,10 +17,10 @@ class PDFController extends Controller
         $lista = $actuacion->lista;
 
         // Obtener todos los usuarios de la lista donde disponible = 1
-        $usuarios = $lista->users()
-            ->wherePivot('disponible', true)
-            ->with('instrument')
-            ->orderBy('instrument_id')
+        $usuarios = $lista->users()            
+            ->wherePivot('disponible', true)            
+            ->join('instruments', 'users.instrument_id', '=', 'instruments.id')
+            ->orderBy('instruments.orden')
             ->orderBy('name')
             ->get();
 

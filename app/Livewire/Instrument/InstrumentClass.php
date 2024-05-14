@@ -24,7 +24,9 @@ class InstrumentClass extends Component
      */
     public function index()
     {
-        return view('livewire.instrument.show-instrument', ['intruments' => Instrument::all()]);
+        return view('livewire.instrument.show-instrument', [
+            'intruments' => Instrument::orderBy('orden')->get()
+        ]);
     }
 
     /**

@@ -251,7 +251,7 @@
                                             @endif
                                         </span>
                                         @if (!$user->disponible)
-                                            <span class="ml-3 font-medium">{{ __(' - (No disponile)') }}</span>
+                                            <div class="ml-2"><x-disponible w="24" h="24" /></div>
                                         @endif
                                     </div>
                                     <div>
