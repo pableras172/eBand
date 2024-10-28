@@ -1,10 +1,17 @@
 <div>
+    @if($floatButon)
     <div class="fixed left-0 top-1/2 transform -translate-y-1/2 z-50">
         <button class="cursor-pointer ms-6 text-sm text-gray-400 underline"
             wire:click="$set('displayingPreviewListas', true)">
             <x-lupa w="32" h="32" />
         </button>
     </div>
+    @else
+        <x-label class="cursor-pointer ms-6 text-sm text-gray-400 underline"
+            wire:click="$set('displayingPreviewListas', true)">
+            <x-lupa w="24" h="24" />
+        </x-label>
+    @endif
 
     <x-dialog-modal wire:model.live="displayingPreviewListas">
         <x-slot name="title">

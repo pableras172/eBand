@@ -25,6 +25,8 @@ return new class extends Migration
             $table->decimal('totalactuacion', 10, 2)->nullable();            
             $table->foreignId('contratos_id')->references('id')->on('contratos')->cascadeOnDelete();
             $table->boolean('pagado');
+            $table->boolean('aplicaporcentaje');
+            $table->boolean('aplicapago');
             $table->text('observaciones')->nullable();
             $table->text('calendar')->nullable();
             $table->timestamps();

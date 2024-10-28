@@ -22,36 +22,6 @@
                         {{ __('Calendari') }}
                     </x-nav-link>
                 </div>
-                @can('admin')
-                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
-                            {{ __('Musics') }}
-                        </x-nav-link>
-                    </div>
-
-
-                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
-                            {{ __('Instruments') }}
-                        </x-nav-link>
-                    </div>
-
-                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link href="{{ route('contratos.index') }}" :active="request()->routeIs('contratos.index')">
-                            {{ __('Contractes') }}
-                        </x-nav-link>
-                    </div>
-                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
-                            {{ __('Tipus de actuacio') }}
-                        </x-nav-link>
-                    </div>
-                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link href="#">
-                            {{ __('Comptes') }}
-                        </x-nav-link>
-                    </div>
-                @endcan
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex items-center">
                     <x-dropdown align="right" width="60">
@@ -70,15 +40,81 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <div class="w-60 px-4">
-                                <!-- Team Management -->
+                            <div class="w-60 px-4">                               
                                 <x-nav-link href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}">
                                     {{__('Les meves actuacions')}}
+                                </x-nav-link>
+                            </div>
+                            <div class="w-60 px-4">                               
+                                <x-nav-link href="{{ route('payments.user', [Auth::user()->id]) }}">
+                                    {{__('Els meus pagaments')}}
                                 </x-nav-link>
                             </div>
                         </x-slot>
                     </x-dropdown>
                 </div>
+
+
+                @can('admin')
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex items-center">
+                        <x-dropdown align="right" width="60">
+                            <x-slot name="trigger">
+                                <span class="inline-flex rounded-md">
+                                    <button type="button"
+                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
+                                        {{ __('Administracion') }}
+                                        <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                        </svg>
+                                    </button>
+                                </span>
+                            </x-slot>
+    
+                            <x-slot name="content">
+                                <div class="w-60 px-4 mt-2">                               
+                                    <x-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
+                                        {{ __('Tipus de actuacio') }}
+                                    </x-nav-link>
+                                </div>
+                                <div class="w-60 px-4 mt-2">                               
+                                    <x-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
+                                        {{ __('Instruments') }}
+                                    </x-nav-link>
+                                </div>
+                                <div class="w-60 px-4 mt-2">                               
+                                    <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
+                                        {{ __('Musics') }}
+                                    </x-nav-link>
+                                </div>
+                                <div class="border-t border-gray-200 dark:border-gray-600"></div>
+                                <div class="w-60 px-4 mt-2">                               
+                                    <x-nav-link href="{{ route('contratos.index') }}" :active="request()->routeIs('contratos.index')">
+                                        {{ __('Contractes') }}
+                                    </x-nav-link>
+                                </div>
+                                <div class="w-60 px-4 mt-2">                               
+                                    <x-nav-link href="{{ route('payments.index') }}" :active="request()->routeIs('payments.index')">
+                                        {{ __('Comptes') }}
+                                    </x-nav-link>
+                                </div>
+                                <div class="w-60 px-4 mt-2">                               
+                                    <x-nav-link href="{{ route('paymentresumes.index') }}" :active="request()->routeIs('paymentresumes.index')">
+                                        {{ __('Resums comptes') }}
+                                    </x-nav-link>
+                                </div>
+                                <div class="border-t border-gray-200 dark:border-gray-600"></div>
+                                <div class="w-60 px-4 mt-2">                               
+                                    <x-nav-link href="/configurations">
+                                        {{ __('Configuracion') }}
+                                    </x-nav-link>
+                                </div>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
+
+                @endcan              
 
 
             </div>
@@ -335,9 +371,15 @@
                     <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
                         {{ __('Tipus de actuacio') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link href="#">
+                    <x-responsive-nav-link href="{{ route('payments.index') }}" :active="request()->routeIs('payments.index')">
                         {{ __('Comptes') }}
                     </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('paymentresumes.index') }}" :active="request()->routeIs('payments.index')">
+                        {{ __('Resums comptes') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="/configurations">
+                        {{ __('Configuracion') }}
+                    </x-responsive-nav-link>                    
                 @endcan
                 <div class="border-t border-gray-200 dark:border-gray-600"></div>
                 <div class="block px-4 py-2 text-xs text-gray-400">

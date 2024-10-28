@@ -37,7 +37,7 @@ class ListaController extends Controller
         $usuarioDisponible = true;
 
         if ($lista->users->contains(Auth::user()->id)
-            && !$lista->users()->where('id', (Auth::user()->id))->first()->pivot->disponible) {
+            && !$lista->users()->where('users.id', (Auth::user()->id))->first()->pivot->disponible) {
                 $usuarioDisponible = false;
         }
 
@@ -54,13 +54,13 @@ class ListaController extends Controller
             $usuario->disponible = true;
             // Verificar si el usuario está en la lista
             if ($lista->users->contains($usuario->id)) {
-                if (!$lista->users()->where('id', $usuario->id)->first()->pivot->disponible) {
+                if (!$lista->users()->where('users.id', $usuario->id)->first()->pivot->disponible) {
                     $usuario->disponible = false;
                     continue;
                 }
                 $usuario->seleccionado = true;
                 // Verificar si el usuario tiene marcado el campo coche en la lista
-                if ($lista->users()->where('id', $usuario->id)->first()->pivot->coche) {
+                if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->coche) {
                     $usuario->coche = true;
                 }
                 

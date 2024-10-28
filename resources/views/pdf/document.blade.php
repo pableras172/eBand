@@ -55,7 +55,8 @@
     <table width="700px" align="center" cellpadding="5" style="">
         <tbody>
             <tr>
-                <th colspan="6" class="fondoNegro">{{ $actuacion->descripcion }}</th>
+                <th colspan="5" class="fondoNegro">{{ $actuacion->descripcion }}</th>
+                <th colspan="5" class="fondoNegro">{{ \Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y') }}</th>
             </tr>
             <tr>
                 <th width="100px" align="left" valign="middle" class="fondoNegro">{{__('Població')}}</th>

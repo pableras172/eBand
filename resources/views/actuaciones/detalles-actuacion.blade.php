@@ -3,29 +3,9 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ $actuacion->descripcion }}
         </h2>
-        <div class="flex items-center mt-2 mb-4 text-gray-500 w-full">
-            <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                width="16px" height="16px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve"
-                fill="#000000" transform="rotate(0)">
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                <g id="SVGRepo_iconCarrier">
-                    <g>
-                        <path fill="#eeb759"
-                            d="M32,52.789l-12-18C18.5,32,16,28.031,16,24c0-8.836,7.164-16,16-16s16,7.164,16,16 c0,4.031-2.055,8-4,10.789L32,52.789z">
-                        </path>
-                        <g>
-                            <path fill="#394240"
-                                d="M32,0C18.746,0,8,10.746,8,24c0,5.219,1.711,10.008,4.555,13.93c0.051,0.094,0.059,0.199,0.117,0.289 l16,24C29.414,63.332,30.664,64,32,64s2.586-0.668,3.328-1.781l16-24c0.059-0.09,0.066-0.195,0.117-0.289 C54.289,34.008,56,29.219,56,24C56,10.746,45.254,0,32,0z M44,34.789l-12,18l-12-18C18.5,32,16,28.031,16,24 c0-8.836,7.164-16,16-16s16,7.164,16,16C48,28.031,45.945,32,44,34.789z">
-                            </path>
-                            <circle fill="#394240" cx="32" cy="24" r="8"></circle>
-                        </g>
-                    </g>
-                </g>
-            </svg>
-            <span class="mr-4">{{ $actuacion->contrato->poblacion }}</span>
-            <!-- Icono de calendario -->
-            <svg width="26px" height="26px" viewBox="0 0 1024 1024" class="icon" version="1.1"
+        <div class="flex items-center justify-center mt-2 mb-4 text-gray-500 w-full">
+                <!-- Icono de calendario -->
+                <svg width="26px" height="26px" viewBox="0 0 1024 1024" class="icon" version="1.1"
                 xmlns="http://www.w3.org/2000/svg" fill="#000000">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -67,11 +47,43 @@
                         fill="#228E9D"></path>
                     <path d="M262.323 724.31h66.598v66.598h-66.598z" fill="#B12800"></path>
                 </g>
+                </svg>
+                <!-- Fecha de la actuación -->
+                @php
+                $fechaActuacion = Carbon\Carbon::parse($actuacion->fechaActuacion);
+                $nombreDia = ucfirst($fechaActuacion->translatedFormat('l')); // Nombre del día con la primera letra en mayúscula
+                $fechaFormateada = $fechaActuacion->format('d/m/Y');
+                @endphp
+
+                <p class="text-lg font-bold text-zinc-950">                                    
+                    {{ $nombreDia }} ({{ $fechaFormateada }})
+                </p>
+
+        </div>
+        <div class="flex items-center justify-between mt-2 mb-4 text-gray-500 w-full">
+            <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                width="16px" height="16px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve"
+                fill="#000000" transform="rotate(0)">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <g>
+                        <path fill="#eeb759"
+                            d="M32,52.789l-12-18C18.5,32,16,28.031,16,24c0-8.836,7.164-16,16-16s16,7.164,16,16 c0,4.031-2.055,8-4,10.789L32,52.789z">
+                        </path>
+                        <g>
+                            <path fill="#394240"
+                                d="M32,0C18.746,0,8,10.746,8,24c0,5.219,1.711,10.008,4.555,13.93c0.051,0.094,0.059,0.199,0.117,0.289 l16,24C29.414,63.332,30.664,64,32,64s2.586-0.668,3.328-1.781l16-24c0.059-0.09,0.066-0.195,0.117-0.289 C54.289,34.008,56,29.219,56,24C56,10.746,45.254,0,32,0z M44,34.789l-12,18l-12-18C18.5,32,16,28.031,16,24 c0-8.836,7.164-16,16-16s16,7.164,16,16C48,28.031,45.945,32,44,34.789z">
+                            </path>
+                            <circle fill="#394240" cx="32" cy="24" r="8"></circle>
+                        </g>
+                    </g>
+                </g>
             </svg>
-            <!-- Fecha de la actuación -->
-            <span class="mr-4">{{ \Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y') }}</span>
+            <span class="mr-4">{{ $actuacion->contrato->poblacion }}</span>           
+            
             <!-- Icono de usuarios -->
-            @if ($actuacion->musicos > 0)
+            
                 <svg width="16px" height="16px" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
                     version="1.1" fill="#000000">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -102,10 +114,13 @@
                             d="m 63,27 c -3,5 -7,8 -12,9 -4,1 2,-17 13,-17 5,0 13,3 15,15 -6,1 -14,-5 -16,-7"></path>
                     </g>
                 </svg>
+            @if ($actuacion->musicos > 0)
                 <!-- Número de músicos -->
                 <span class="mr-4">{{ $actuacion->musicos }}</span>
+            @else
+                <span class="mr-4">--</span>
             @endif
-            @if ($actuacion->coches > 0)
+           
                 <svg id="anyadirCoche" width="32px" height="32px" viewBox="0 0 1024 1024" class="icon"
                     version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -163,7 +178,10 @@
                             fill=""></path>
                     </g>
                 </svg>
+            @if ($actuacion->coches > 0)
                 <span class="mr-4">{{ $actuacion->coches }}</span>
+            @else
+                <span class="mr-4">--</span>
             @endif           
         </div>
 
@@ -420,7 +438,7 @@
                     </a>
                 @endif
             @endcan
-            <a href="{{ url()->previous() }}"
+            <a href="{{ route('actuacion.index') }}"
                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-fondobotonazul hover:bg-fondobotonazul-100 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
                 {{ __('Tornar al llistat') }}
             </a>

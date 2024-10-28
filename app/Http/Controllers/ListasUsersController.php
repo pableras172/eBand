@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ListasUser;
 use App\Models\Listas;
 use App\Models\User;
+use App\Models\Configuration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
 use Exception;
@@ -136,16 +137,24 @@ public function setdisponible(Request $request)
 
 
     try {
-
-    $lista = Listas::with('actuacion')->findOrFail($request->lista_id);
-    $actuacion = $lista->actuacion;
-    $user = User::where('id', $request->usuario_id)->first();
-
-    Mail::to(config('mail.mail_admin', ''))->send(new UserNoDisponible($user,$actuacion,$customText)); 
-
+        
+        $lista = Listas::with('actuacion')->findOrFail($request->lista_id);
+        $actuacion = $lista->actuacion;
+        $user = User::where('id', $request->usuario_id)->first();
+    
+        $mailadmin = Configuration::where('param', 'emaildisponibles')->first();
+    
+        if ($mailadmin != null && $mailadmin->value != '') {
+            $emails = explode(';', $mailadmin->value);
+            foreach ($emails as $email) {
+                Mail::to(trim($email))->send(new UserNoDisponible($user, $actuacion, $customText));
+            }
+        }
+    
     } catch (\Exception $e) {
-        logger()->error('Error al enviar el correo: ' . $e->getMessage());        
+        logger()->error('Error al enviar el correo: ' . $e->getMessage());
     }
+    
 
     $notification = array(
         'message' =>  Lang::get('messages.disponibilidadactualizada'),

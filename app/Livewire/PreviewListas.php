@@ -16,6 +16,7 @@ class PreviewListas extends Component
 
     public $displayingPreviewListas= false;
     public $id;
+    public $floatButon=true;
 
     public $showingModal = false;
 
@@ -58,8 +59,8 @@ class PreviewListas extends Component
         $actuacion = Actuacion::findOrFail($actuacionId);
         $lista = $actuacion->lista;
     
-        if ($lista->users->contains(Auth::user()->id)
-            && !$lista->users()->where('id', (Auth::user()->id))->first()->pivot->disponible) {
+        if ($lista && $lista->users && $lista->users->contains(Auth::user()->id)
+            && !$lista->users()->where('users.id', (Auth::user()->id))->first()->pivot->disponible) {
                 $usuarioDisponible = false;
         }
 
@@ -72,14 +73,14 @@ class PreviewListas extends Component
             $usuario->coche = false; // Por defecto, no marcado
             $usuario->disponible = true;
             // Verificar si el usuario está en la lista
-            if ($lista->users->contains($usuario->id)) {
-                if (!$lista->users()->where('id', $usuario->id)->first()->pivot->disponible) {
+            if ($lista && $lista->users && $lista->users->contains($usuario->id)) {
+                if (!$lista->users()->where('users.id', $usuario->id)->first()->pivot->disponible) {
                     $usuario->disponible = false;
                     continue;
                 }
                 $usuario->seleccionado = true;
                 // Verificar si el usuario tiene marcado el campo coche en la lista
-                if ($lista->users()->where('id', $usuario->id)->first()->pivot->coche) {
+                if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->coche) {
                     $usuario->coche = true;
                 }
                 

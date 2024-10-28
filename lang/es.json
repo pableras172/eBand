@@ -1,5 +1,11 @@
 {
+    "Are you sure":"¿Estas segur@?",
+    "Total a pagar":"Total a pagar",
+    "Fecha pago":"Fecha del pago",
     "informacion":"Información",
+    "Generar pago":"Generar pago",   
+    "Introduce una descripción orientativa de lo qque se va a pagar":"Introduce una descripción orientativa de lo qque se va a pagar", 
+    "No hay actuaciones":"No hay actuaciones",
     "info_listados":"En estos listados puedes ver en que eventos has participado o te has marcado como no disponible.",
     "selecciona idioma":"Cambiar el idioma",
     "confirm_eliminar_cuenta":"¿Seguro que quieres desactivar la cuenta? Una vez que desactives la cuenta seguiras teniendo acceso a tus datos en la aplicación pero no podras participar en los eventos programados.",

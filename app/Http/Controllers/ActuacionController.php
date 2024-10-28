@@ -19,6 +19,7 @@ use Exception;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ActuacionController extends Controller
 {
@@ -64,60 +65,82 @@ class ActuacionController extends Controller
         return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato'));
     }
 
+    /**
+     * Crea una nova actuacio asociada al contrat
+     */
 
-public function store(Request $request)
-{
-    abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-    // Validar los datos de entrada
-    $request->validate([
-        'fechaActuacion' => 'required|date',
-        'descripcion' => 'required|string',
-        'tipoactuacions_id' => 'required|exists:tipoactuacions,id',
-        'coches' => 'nullable|integer',
-        'preciocoche' => 'nullable|numeric',
-        'musicos' => 'nullable|integer',
-        'preciomusico' => 'nullable|numeric',
-        'totalcoches' => 'nullable|integer',
-        'totalmusicos' => 'nullable|integer',
-        'totalactuacion' => 'nullable|numeric',
-        'contratos_id' => 'required|exists:contratos,id',        
-        'observaciones' => 'nullable|string',
-    ]);
-
-    // Crear un nuevo objeto Actuacion
-    $actuacion = new Actuacion();
-
-    // Asignar los valores del request al objeto Actuacion
-    $actuacion->fechaActuacion = $request->fechaActuacion;
-    $actuacion->descripcion = $request->descripcion;
-    $actuacion->tipoactuacions_id = $request->tipoactuacions_id;
-    $actuacion->coches = $request->coches;
-    $actuacion->preciocoche = $request->preciocoche;
-    $actuacion->musicos = $request->musicos;
-    $actuacion->preciomusico = $request->preciomusico;
-    $actuacion->totalcoches = $request->totalcoches;
-    $actuacion->totalmusicos = $request->totalmusicos;
-    $actuacion->totalactuacion = $request->totalactuacion;
-    $actuacion->contratos_id = $request->contratos_id;
-    $actuacion->pagado = false;
-    $actuacion->observaciones = $request->observaciones;   
-
-    // Guardar la actuación en la base de datos
-    $actuacion->save();
-
-    $actuacion->calendar = $this->generateICSFile($actuacion);
-    $actuacion->update();
-
-    // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
-    $actuaciones =  Actuacion::with('contrato','lista')
-    ->where('contratos_id', '=', $request->contratos_id)
-    ->get();
-
-    $contrato = Contratos::find($request->contratos_id);
-    $tipoActuacion = Tipoactuacion::all();
-    return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato'));
-}
-
+     public function store(Request $request)
+     {
+         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+     
+         try {
+             // Validar los datos de entrada
+             $request->validate([
+                 'fechaActuacion' => 'required|date',
+                 'descripcion' => 'required|string',
+                 'tipoactuacions_id' => 'required|exists:tipoactuacions,id',
+                 'coches' => 'nullable|integer',
+                 'preciocoche' => 'nullable|numeric',
+                 'musicos' => 'nullable|integer',
+                 'preciomusico' => 'nullable|numeric',
+                 'totalcoches' => 'nullable|integer',
+                 'totalmusicos' => 'nullable|integer',
+                 'totalactuacion' => 'nullable|numeric',
+                 'contratos_id' => 'required|exists:contratos,id',        
+                 'observaciones' => 'nullable|string',
+             ]);
+     
+             // Crear un nuevo objeto Actuacion
+             $actuacion = new Actuacion();
+     
+             // Asignar los valores del request al objeto Actuacion
+             $actuacion->fechaActuacion = $request->fechaActuacion;
+             $actuacion->descripcion = $request->descripcion;
+             $actuacion->tipoactuacions_id = $request->tipoactuacions_id;
+             $actuacion->coches = $request->coches;
+             $actuacion->preciocoche = $request->preciocoche;
+             $actuacion->musicos = $request->musicos;
+             $actuacion->preciomusico = $request->preciomusico;
+             $actuacion->totalcoches = $request->totalcoches;
+             $actuacion->totalmusicos = $request->totalmusicos;
+             $actuacion->totalactuacion = $request->totalactuacion;
+             $actuacion->contratos_id = $request->contratos_id;
+             $actuacion->pagado = $request->pagado;
+             $actuacion->aplicaporcentaje = $request->aplicaporcentaje;
+             $actuacion->noaplicapago = $request->noaplicapago;
+             $actuacion->observaciones = $request->observaciones;   
+             $actuacion->porcentajepersonal = $request->porcentajepersonal;
+     
+             // Guardar la actuación en la base de datos
+             $actuacion->save();
+     
+             $actuacion->calendar = $this->generateICSFile($actuacion);
+             $actuacion->update();
+     
+             // Obtener los datos necesarios para la vista
+             $actuaciones = Actuacion::with('contrato','lista')
+                 ->where('contratos_id', '=', $request->contratos_id)
+                 ->orderBy('fechaActuacion', 'asc')
+                 ->get();
+     
+             $contrato = Contratos::find($request->contratos_id);
+             $tipoActuacion = Tipoactuacion::all();
+     
+             // Retornar la vista con mensaje de éxito
+             return view('livewire.contratos.actuacions', [
+                 'actuaciones' => $actuaciones,
+                 'tipoActuacion' => $tipoActuacion,
+                 'contrato' => $contrato,
+                 'message' => 'Actuación guardada con éxito.'
+             ]);
+         } catch (\Exception $e) {
+             // Manejar cualquier excepción
+             return view('livewire.contratos.actuacions', [
+                 'message' => 'Ha ocurrido un error al guardar la actuación: ' . $e->getMessage(),
+             ]);
+         }
+     }
+     
 
 
 public function notificarActuacion(Request $request)
@@ -135,7 +158,7 @@ public function notificarActuacion(Request $request)
         // Verifica si se encontró la actuación
         if (!$actuacion) {
             $notification = array(
-                'message' =>  Lang::get('messages.no_actuations_found'),
+                'message' => Lang::get('messages.no_actuations_found'),
                 'alert_type' => 'error'
             );
             return response()->json($notification, 200);           
@@ -163,13 +186,17 @@ public function notificarActuacion(Request $request)
         );
 
         $notification = array(
-            'message' =>  Lang::get('messages.notification_sent'),
+            'message' => Lang::get('messages.notification_sent'),
             'alert_type' => 'success'
         );
         return response()->json($notification, 200);                 
-    } catch (Exception $e) {        
+    } catch (\Exception $e) {   
+        Log::error('Error enviando la notificación: ', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]); 
         $notification = array(
-            'message' =>  Lang::get('messages.notification_fail'),
+            'message' => Lang::get('messages.notification_fail'),
             'alert_type' => 'error'
         );
         return response()->json($notification, 500); 
@@ -178,89 +205,92 @@ public function notificarActuacion(Request $request)
 
     
    
-    public function notificarActuacionLista(Request $request)
-    {
-        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-    
-        // Validar los datos de entrada
-        $request->validate([
-            'id' => 'required|integer',        
-        ]);    
-        
-        try {
+public function notificarActuacionLista(Request $request)
+{
+    abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-            $lista = Listas::with('actuacion')->findOrFail($request->id);
-            $actuaciones = $lista->actuacion;
-    
-            // Verificar si se encontraron actuaciones
-            if (!$actuaciones) {
-                $notification = array(
-                    'message' =>  Lang::get('messages.no_actuations_found'),
-                    'alert_type' => 'warning'
-                );
-                return response()->json($notification, 404);
+    // Validar los datos de entrada
+    $request->validate([
+        'id' => 'required|integer',
+    ]);
+
+    try {
+        $lista = Listas::with('actuacion')->findOrFail($request->id);
+        $actuaciones = $lista->actuacion;
+
+        // Verificar si se encontraron actuaciones
+        if (!$actuaciones) {
+            $notification = [
+                'message' => Lang::get('messages.no_actuations_found'),
+                'alert_type' => 'warning'
+            ];
+            return response()->json($notification, 404);
+        }
+
+        // Formatear la fecha
+        $fechaFormateada = Carbon::parse($actuaciones->fechaActuacion)->format('d-m-Y');
+
+        $asistentes = ListasUser::where('listas_id', $request->id)
+            ->where('disponible', 1)
+            ->get();
+
+        // Verificar si se encontraron músicos
+        if ($asistentes->isEmpty()) {
+            $notification = [
+                'message' => Lang::get('messages.no_musicians_found'),
+                'alert_type' => 'warning'
+            ];
+            return response()->json($notification, 200);
+        }
+
+        foreach ($asistentes as $asistente) {
+            $dest = User::where('id', $asistente->user_id)->first();
+            if (!$dest || !$dest->uuid) {
+                continue;
             }
-    
-            // Formatear la fecha
-            $fechaFormateada = Carbon::parse($actuaciones->fechaActuacion)->format('d-m-Y');
-    
-            $asistentes = ListasUser::where('listas_id', $request->id)
-                ->where('disponible', 1)                       
-                ->get();
-    
-            // Verificar si se encontraron músicos
-            if ($asistentes->isEmpty()) {
-                $notification = array(
-                    'message' =>  Lang::get('messages.no_musicians_found'),
-                    'alert_type' => 'warning'
-                );
-                return response()->json($notification, 200);
-            }
-    
-            foreach ($asistentes as $asistente) {
-                $dest = User::where('id', $asistente->user_id)->first();
-                if (!$dest || !$dest->uuid) {
-                    continue;
-                }
-    
-                $message = Lang::get('messages.new_actuacion_notification', [
-                    'fecha' => $fechaFormateada,
+
+            $message = Lang::get('messages.new_actuacion_notification', [
+                'fecha' => $fechaFormateada,
+                'poblacion' => $actuaciones->contrato->poblacion
+            ]);
+
+            if ($asistente->coche) {
+                $message = Lang::get('messages.new_actuacion_notification_with_car', [
                     'poblacion' => $actuaciones->contrato->poblacion
                 ]);
-    
-                if ($asistente->coche) {
-                    $message = Lang::get('messages.new_actuacion_notification_with_car', [
-                        'poblacion' => $actuaciones->contrato->poblacion
-                    ]);
-                }
-    
-                OneSignal::sendNotificationToExternalUser(
-                    Lang::get('messages.new_actuacion_title', [
-                        'fecha' => $fechaFormateada,
-                        'descripcion' => $actuaciones->descripcion
-                    ]),
-                    $dest->uuid,
-                    env('APP_URL') . "/listas/actuacion/" . $actuaciones->id, 
-                    null, 
-                    null, 
-                    null, 
-                    $message, 
-                    Lang::get('messages.view_details')
-                );
             }
-            $notification = array(
-                'message' =>  Lang::get('messages.notification_sent'),
-                'alert_type' => 'success'
+
+            OneSignal::sendNotificationToExternalUser(
+                Lang::get('messages.new_actuacion_title', [
+                    'fecha' => $fechaFormateada,
+                    'descripcion' => $actuaciones->descripcion
+                ]),
+                $dest->uuid,
+                env('APP_URL') . "/listas/actuacion/" . $actuaciones->id,
+                null,
+                null,
+                null,
+                $message,
+                Lang::get('messages.view_details')
             );
-            return response()->json($notification, 200);
-        } catch (Exception $e) {
-            $notification = array(
-                'message' =>  Lang::get('messages.notification_fail').' - '.$e->getMessage(),
-                'alert_type' => 'error'
-            );
-            return response()->json($notification, 500);
         }
+        $notification = [
+            'message' => Lang::get('messages.notification_sent'),
+            'alert_type' => 'success'
+        ];
+        return response()->json($notification, 200);
+    } catch (\Exception $e) {
+        Log::error('Error enviando la notificación: ', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        $notification = [
+            'message' => Lang::get('messages.notification_fail'),
+            'alert_type' => 'error'
+        ];
+        return response()->json($notification, 500);
     }
+}
     
 
 
@@ -323,8 +353,11 @@ public function notificarActuacion(Request $request)
             $actuacion->totalmusicos = $request->totalmusicos;
             $actuacion->totalactuacion = $request->totalactuacion;
             $actuacion->contratos_id = $request->contratos_id;
-            $actuacion->pagado = false;
+            $actuacion->pagado = $request->pagado;
+            $actuacion->aplicaporcentaje = $request->aplicaporcentaje;
+            $actuacion->noaplicapago = $request->noaplicapago;
             $actuacion->observaciones = $request->observaciones;
+            $actuacion->porcentajepersonal = $request->porcentajepersonal;
         
             $actuacion->calendar = $this->generateICSFile($actuacion);
 

@@ -15,6 +15,12 @@ return [
 
     'idioma' => 'Idioma',
     'dashboard'=>'Tablón',
+    'configuracion'=>'Configuración',
+    'crearconfiguracion'=>'Nueva configuración',
+    'crearconfiguracionnombre'=>'Parámetro',
+    'crearconfiguracionvalor'=>'Valor',
+    'crearconfiguracionplaceholder'=>'Nombre de la nueva configuración',
+    'crearconfiguracionvalorplaceholder'=>'Valor de la nueva configuración',
     // Contenido de la página principal
     'bienvenido_titulo' => 'Bienvenido al escritorio de eBand',
     'bienvenido_contenido' => 'A través de este escritorio tendrás acceso directo a las asistencias de los ensayos, calendarios de la banda, listas de actuaciones, etc.',
@@ -45,8 +51,10 @@ return [
     'Comunicar no disponible'=>'Comunicar no disponible',
     'mis_listados'=>'Mis listados',
     'mis_listados_text'=>'Resumenes de listas, ensayos y actuaciones en las que he participado',
-    'ver_mislistas'=>'Ver mis listados'
+    'ver_mislistas'=>'Ver mis listados',
 
-
+    'pagos'=>'Pagos',
+    'pagocreado'=>'Se ha generado el pago',
+    'todosusuarios'=>'Todos los usuarios',
 
 ];

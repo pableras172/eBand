@@ -10,13 +10,7 @@
     </x-slot>
 
     <div class="container mx-auto py-5 px-2 sm:px-8 lg:px-32">
-        <!-- Mensajes de error o éxito -->
-        @if (session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">{{__('Error')}}</strong>
-                <span class="block sm:inline">{{ session('error') }}</span>
-            </div>
-        @endif
+
         <div class="w-full bg-white py-4 px-2">
         <!-- Formulario -->
         <form
@@ -93,12 +87,43 @@
                 <textarea id="observaciones" name="observaciones" rows="3"
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">{{ isset($actuacion) ? $actuacion->observaciones : '' }}</textarea>
             </div>
-            <div class="mb-4">
-                <label for="pagado" class="block text-sm font-medium text-gray-700">{{__('Pagat')}}</label>
-                <input type="checkbox" id="pagado" name="pagado"
-                    class="mt-1 focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                    {{ isset($actuacion) && $actuacion->pagado ? 'checked' : '' }}>
+
+            <div class="mb-4 flex items-center space-x-4">
+                <div class="flex items-center space-x-2">
+                    <input type="hidden" name="pagado" value="0">
+                    <input type="checkbox" id="pagado" name="pagado" value="1"
+                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        {{ isset($actuacion) && $actuacion->pagado ? 'checked' : '' }}>
+                    <label for="pagado" class="text-sm font-medium text-gray-700">{{__('Pagat')}}</label>
+                </div>
+            
+                <div class="flex items-center space-x-2">
+                    <input type="hidden" name="aplicaporcentaje" value="0">
+                    <input type="checkbox" id="aplicaporcentaje" name="aplicaporcentaje" value="1"
+                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        {{ !isset($actuacion) || isset($actuacion) && $actuacion->aplicaporcentaje ? 'checked' : '' }}>
+                    <label for="aplicaporcentaje" class="text-sm font-medium text-gray-700">{{__('Aplicar porcentaje')}}</label>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <input type="hidden" name="noaplicapago" value="0">
+                    <input type="checkbox" id="noaplicapago" name="noaplicapago" value="1"
+                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        {{ (isset($actuacion) && $actuacion->noaplicapago) ? 'checked' : '' }}>
+                    <label for="noaplicapago" class="text-sm font-medium text-gray-700">{{__('No aplica en los pagos')}}</label>
+                </div>                
+
             </div>
+            <div class="grid grid-cols-2">
+                <div class="mb-4">
+                    <label for="porcentajepersonal" class="block text-sm font-medium text-gray-700">{{__('Porcentaje personalizado')}}</label>
+                    <input type="number" id="porcentajepersonal" name="porcentajepersonal"
+                        value="{{ isset($actuacion) ? $actuacion->porcentajepersonal : '' }}"
+                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                </div>
+            </div>
+        
+
             <input type="hidden" id="contratos_id" name="contratos_id" value="{{ $contrato->id }}" />
             <div class="flex justify-center">
                 <button type="submit"

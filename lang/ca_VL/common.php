@@ -15,6 +15,12 @@ return [
 
     'idioma' => 'Idioma',
     'dashboard' => 'Taulell',
+    'configuracion'=>'Configuració',
+    'crearconfiguracion'=>'nova configuració',
+    'crearconfiguracionnombre'=>'Parámetre',
+    'crearconfiguracionvalor'=>'Valor',
+    'crearconfiguracionplaceholder'=>'Nom de la nova configuració',
+    'crearconfiguracionvalorplaceholder'=>'Valor de la nova configuració',
     'bienvenido_titulo' => 'Benvingut al tauler de comandament de eBand',
     'bienvenido_contenido' => 'A través d\'aquest tauler de comandament tindràs accés directe a les assistències dels assajos, calendari de la banda, llistes d\'actuacions, etc.',
 
@@ -43,6 +49,9 @@ return [
     'Comunicar no disponible'=>'Comunicar no disponible',
     'mis_listados'=>'Els meus llistats',
     'mis_listados_text'=>'Resum de les llistes, activitats, reunions, etc... en les que he participat',
-    'ver_mislistas'=>'Vore els meus llistats'
+    'ver_mislistas'=>'Vore els meus llistats',
+    'pagos'=>'Pagaments',
+    'pagocreado'=>'Pagament generat correctament',
+    'todosusuarios'=>'Tots els usuaris',
     
 ];

@@ -1,5 +1,11 @@
 {
+    "Are you sure":"Estas segur@?",
+    "Total a pagar":"Total a pagar",
+    "Fecha pago":"Fecha del pago",
     "informacion":"Informació",
+    "No hay actuaciones":"No hi ha actuacions",
+    "Generar pago":"Generar pagament",
+    "Introduce una descripción orientativa de lo qque se va a pagar":"Introdueix una descripció orientativa del pagament",
     "info_listados":"En aquests llistats pots veure en quins esdeveniments has participat o t'has marcat com a no disponible.",
     "selecciona idioma":"Canvi de idioma",
     "confirm_eliminar_cuenta":"Segur que vols desactivar el compte? Quan desactives el compte continuaràs tenint accés a les teues dades a l'aplicació però no podràs participar en els esdeveniments programats.",

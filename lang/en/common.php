@@ -15,6 +15,12 @@ return [
 
     'idioma' => 'Language',
     'dashboard'=>'Tablón',
+    'configuracion'=>'Configuration',
+    'crearconfiguracion'=>'New configuration',
+    'crearconfiguracionnombre'=>'Parámetro',
+    'crearconfiguracionvalor'=>'Valor',
+    'crearconfiguracionplaceholder'=>'Nombre de la nueva configuración',
+    'crearconfiguracionvalorplaceholder'=>'Valor de la nueva configuración',
     'bienvenido_titulo' => 'Benvingut al tauler de comandament de eBand',
     'bienvenido_contenido' => 'A través d\'aquest tauler de comandament tindràs accés directe a les assistències dels assajos, calendari de la banda, llistes d\'actuacions, etc.',
 
@@ -37,4 +43,7 @@ return [
 
     'calendario_proximas' => 'Calendari de la banda - Próximes actuacions',
     'llogat'=>'f',
+    'pagos'=>'Payments',
+    'pagocreado'=>'Payment generated succesfuly',
+    'todosusuarios'=>'All users',
 ];

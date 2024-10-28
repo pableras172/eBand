@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 use App\Livewire\Instrument\InstrumentClass;
 use App\Livewire\Contratos\ListadoContratos;
+use App\Livewire\Configuration\ConfigurationCreate;
+use App\Livewire\Configuration\ConfigurationEdit;
+use App\Livewire\Configuration\ConfigurationIndex;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ActuacionController;
 use App\Http\Controllers\ContratosController;
@@ -11,6 +14,12 @@ use App\Http\Controllers\ListaController;
 use App\Http\Controllers\ListasUsersController;
 use App\Http\Controllers\TipoActuacionController;
 use App\Http\Controllers\PDFController;
+use App\Livewire\Payment\PaymentIndex;
+use App\Livewire\Payment\PaymentCreate;
+use App\Livewire\Payment\PaymentEdit;
+use App\Livewire\Paymentresume\PaymentresumeIndex;
+use App\Livewire\Paymentresume\PaymentresumeCreate;
+use App\Livewire\Paymentresume\PaymentresumeEdit;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,6 +81,23 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         Route::get('/usersuuid/{user}',[\App\Http\Controllers\UsersController::class,'getuuid']);
 
         Route::get('/generate-pdf/{listaId}', [PDFController::class, 'generatePDF']);
+
+        Route::get('/configurations', ConfigurationIndex::class)->name('configurations.index');    
+        Route::get('/configurations/create',ConfigurationCreate::class)->name('configurations.create');    
+        Route::get('/configurations/{configuration}',ConfigurationEdit::class)->name('configurations.edit');   
+        
+        Route::get('/payments', PaymentIndex::class)->name('payments.index');
+        Route::get('/payments/user/{user}', PaymentIndex::class)->name('payments.user');
+        
+        Route::get('/payments/create',PaymentCreate::class)->name('payments.create');
+        Route::get('/payments/{payment}',PaymentEdit::class)->name('payments.edit');
+
+        Route::get('/pdf/paymentresume/{paymentresume}', [PDFController::class, 'generatePaymentResumePDF'])->name('pdf.paymentresume');
+
+        Route::get('/paymentresumes', PaymentresumeIndex::class)->name('paymentresumes.index');
+        Route::get('/paymentresumes/create',PaymentresumeCreate::class)->name('paymentresumes.create');
+        Route::get('/paymentresumes/{paymetresume}',PaymentresumeEdit::class)->name('paymentresumes.edit');
+        
 });
 
 /*
