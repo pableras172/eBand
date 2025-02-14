@@ -66,7 +66,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         Route::resource('actuacion',ActuacionController::class);
         
         Route::resource('contratos',ListadoContratos::class);        
-        Route::get('/contratos/{year}',[ListadoContratos::class,'contratosPorAnyo'])->name('contratos.anyo');        
+        Route::get('/contratos/year/{year}',[ListadoContratos::class,'contratosPorAnyo'])->name('contratos.anyo');        
         
         Route::resource('listas',ListaController::class);
 

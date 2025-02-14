@@ -115,7 +115,7 @@
 
         document.getElementById('yearSelect').addEventListener('change', function() {
             var year = this.value;  
-            window.location.href = "/contratos/"+year;
+            window.location.href = "/contratos/year/"+year;
         });
     
     
