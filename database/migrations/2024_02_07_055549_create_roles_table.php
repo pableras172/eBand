@@ -3,13 +3,12 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateRolesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -19,12 +18,16 @@ class CreateRolesTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        // Insertar roles por defecto
+        DB::table('roles')->insert([
+            ['id' => 1, 'title' => 'Admin', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'title' => 'User', 'created_at' => now(), 'updated_at' => now()],
+        ]);
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
