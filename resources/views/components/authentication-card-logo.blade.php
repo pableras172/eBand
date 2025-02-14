@@ -5,5 +5,5 @@
     </svg>
 </a-->
 <a href="/">
-    <img style="width: 75px;"src="{{ URL::to('/') }}/imagenes/logo.png" />
+    <img style="width: 200px;"src="{{ URL::to('/') }}/imagenes/logo.png" />
 </a>
