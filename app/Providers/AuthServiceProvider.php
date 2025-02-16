@@ -4,8 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use App\Livewire\Payment\PaymentIndex;
-use App\Models\Payment;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -14,10 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array<class-string, class-string>
      */
-    protected $policies = [
-        //
-        PaymentIndex::class => PaymentPolicy::class,  
-    ];
+    protected $policies = [];
 
     /**
      * Register any authentication / authorization services.
@@ -25,9 +23,35 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
-        //
+
+        // Definir Gate para el rol de administrador
         Gate::define('admin', function ($user) {
             return $user->hasRole('Admin');
+        });
+
+        // 🔍 Sobrescribir el email de verificación
+        VerifyEmail::toMailUsing(function ($notifiable, $verificationUrl) {
+            return (new MailMessage)
+                ->subject('🔑 Verificación de correo electrónico')
+                ->markdown('mail.users.verify-email', [
+                    'url' => $verificationUrl,
+                    'user' => $notifiable->name,
+                ]);
+        });
+
+        // 🔐 Sobrescribir el email de restablecimiento de contraseña
+        ResetPassword::toMailUsing(function ($notifiable, $token) {
+            $emailResetUrl = url(route('password.reset', [
+                'token' => $token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ], false));
+
+            return (new MailMessage)
+                ->subject('🔒 Restablecimiento de contraseña')
+                ->markdown('mail.users.reset-password', [
+                    'url' => $emailResetUrl,
+                    'user' => $notifiable->name,
+                ]);
         });
     }
 }

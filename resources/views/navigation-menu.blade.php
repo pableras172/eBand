@@ -374,7 +374,7 @@
                     <x-responsive-nav-link href="{{ route('payments.index') }}" :active="request()->routeIs('payments.index')">
                         {{ __('Comptes') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link href="{{ route('paymentresumes.index') }}" :active="request()->routeIs('payments.index')">
+                    <x-responsive-nav-link href="{{ route('paymentresumes.index') }}" :active="request()->routeIs('paymentresumes.index')">
                         {{ __('Resums comptes') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link href="/configurations">

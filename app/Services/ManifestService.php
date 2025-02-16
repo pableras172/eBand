@@ -21,17 +21,17 @@ class ManifestService
             'screenshots' => [
                 [
                     'src' => url('/imagenes/screenshots/captura1.png'),
-                    'sizes' => '575x346',
+                    'sizes' => '1920x1080',
                     'type' => 'image/png',
                     'form_factor' => 'wide',
-                    'label' => 'eBand'
+                    'label' => 'Vista escritorio de eBand'
                 ],
                 [
                     'src' => url('/imagenes/screenshots/captura2.png'),
-                    'sizes' => '575x346',
+                    'sizes' => '1080x1920',
                     'type' => 'image/png',
                     'form_factor' => 'narrow',
-                    'label' => 'eBand'
+                    'label' => 'Vista móvil de eBand'
                 ]
             ],
             'icons' => [
@@ -51,37 +51,37 @@ class ManifestService
                     'type' => 'image/png',
                 ],
                 [
-                    'src' => url('/imagenes/icons/favicons/android/android-launchericon-36-36.png'),
+                    'src' => url('/imagenes/icons/android/android-launchericon-36-36.png'),
                     'sizes' => '36x36',
                     'type' => 'image/png',
                     'density' => '0.75'
                 ],
                 [
-                    'src' => url('/imagenes/icons/favicons/android/android-launchericon-48-48.png'),
+                    'src' => url('/imagenes/icons/android/android-launchericon-48-48.png'),
                     'sizes' => '48x48',
                     'type' => 'image/png',
                     'density' => '1.0'
                 ],
                 [
-                    'src' => url('/imagenes/icons/favicons/android/android-launchericon-72-72.png'),
+                    'src' => url('/imagenes/icons/android/android-launchericon-72-72.png'),
                     'sizes' => '72x72',
                     'type' => 'image/png',
                     'density' => '1.5'
                 ],
                 [
-                    'src' => url('/imagenes/icons/favicons/android/android-launchericon-96-96.png'),
+                    'src' => url('/imagenes/icons/android/android-launchericon-96-96.png'),
                     'sizes' => '96x96',
                     'type' => 'image/png',
                     'density' => '2.0'
                 ],
                 [
-                    'src' => url('/imagenes/icons/favicons/android/android-launchericon-144-144.png'),
+                    'src' => url('/imagenes/icons/android/android-launchericon-144-144.png'),
                     'sizes' => '144x144',
                     'type' => 'image/png',
                     'density' => '3.0'
                 ],
                 [
-                    'src' => url('/imagenes/icons/favicons/android/android-launchericon-192-192.png'),
+                    'src' => url('/imagenes/icons/android/android-launchericon-192-192.png'),
                     'sizes' => '192x192',
                     'type' => 'image/png',
                     'density' => '4.0'

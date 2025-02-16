@@ -26,9 +26,10 @@ return new class extends Migration
             $table->foreignId('contratos_id')->references('id')->on('contratos')->cascadeOnDelete();
             $table->boolean('pagado');
             $table->boolean('aplicaporcentaje');
-            $table->boolean('aplicapago');
+            $table->boolean('noaplicapago');
             $table->text('observaciones')->nullable();
             $table->text('calendar')->nullable();
+            $table->decimal('porcentajepersonal', 8, 2)->nullable();
             $table->timestamps();
         });
     }

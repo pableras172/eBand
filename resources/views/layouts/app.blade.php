@@ -40,7 +40,7 @@
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         var userUUID = '';
         var userId = {{ Auth::user()->id }};
-        var appId = {{ config('services.onesignal.app_id') }};
+        var appId = "{{ config('services.onesignal.app_id') }}";
         $.ajax({
             url: '/usersuuid/' + userId,
             type: 'GET',

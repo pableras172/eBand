@@ -1,14 +1,27 @@
 <x-mail::message>
-Hola, el usuario {{$username}} ha indicado <strong>{{$customText}}</strong> para la actuacion:
-<strong>{{$actuacio->descripcion}}</strong>
-Fecha: {{$actuacio->fechaActuacion}}
+# 🎺 ¡Nueva actualización en una actuación!
 
-Se marcará como <strong>{{$customText}}</strong>.
+Hola administrador,  
 
-<x-mail::button :url="$url">
-Acceder a la lista
+El usuario **{{ $username }}** ha indicado lo siguiente para la próxima actuación:
+
+📢 **Estado indicado**:  
+**{{ $customText }}**
+
+🎶 **Actuación**:  
+**{{ $actuacio->descripcion }}**
+
+📆 **Fecha de la actuación**:  
+**{{ \Carbon\Carbon::parse($actuacio->fechaActuacion)->format('d/m/Y H:i') }}**
+
+🔍 **Accede para gestionar la lista:**
+
+<x-mail::button :url="$url" color="primary">
+📋 Ver lista de actuación
 </x-mail::button>
 
-Gracias,<br>
-{{ config('app.name') }}
+---
+
+Gracias por tu dedicación,  
+**El equipo de {{ config('app.name') }}** 🎶
 </x-mail::message>

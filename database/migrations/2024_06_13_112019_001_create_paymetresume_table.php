@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('paymetresume', function (Blueprint $table) {
+        Schema::create('paymentresume', function (Blueprint $table) {
             $table->id();
             $table->string('descripcion', 255, []);
             $table->string('document', 255, [])->nullable();

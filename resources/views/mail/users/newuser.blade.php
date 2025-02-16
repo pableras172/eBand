@@ -1,12 +1,21 @@
 <x-mail::message>
-Hola, un nuevo usuario se ha dado de alta en {{ config('app.name') }}.
-Usuario: {{$username}};
-Accede para revisarlo y activarlo
+# 👋 ¡Nuevo usuario registrado en {{ config('app.name') }}!
 
-<x-mail::button :url="$url">
-Ver usuario
+Hola administrador,  
+
+Un nuevo usuario se ha registrado en **{{ config('app.name') }}**.  
+Aquí tienes los detalles:
+
+- 👤 **Usuario**: **{{ $username }}**
+
+🔍 **Accede para revisarlo y activarlo**:
+
+<x-mail::button :url="$url" color="primary">
+🔗 Ver usuario
 </x-mail::button>
 
-Gracias,<br>
-{{ config('app.name') }}
+¡Gracias por tu atención! 😊
+
+Atentamente,  
+**El equipo de {{ config('app.name') }}** 🎶
 </x-mail::message>
