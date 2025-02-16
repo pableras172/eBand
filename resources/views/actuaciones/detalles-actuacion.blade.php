@@ -200,12 +200,17 @@
 
     @if ($usuarioDisponible)
         <div class="flex justify-center mt-4 mb-4">
-            <a id="btnodisponible" href=""
-                @if ($antelacion->days > 2) onclick="nodisponible(this)" @else onclick="alert('{{ __('No se puede cambiar la disponibilidad con pocos dias de antelación.') }}')" @endif
-                data-lista-id="{{ $lista->id }}" data-usuario-id="{{ Auth::user()->id }}" data-disponible="0"
-                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                {{ __('Comunicar no disponible') }}
-            </a>
+            <a id="btnodisponible"
+            href=""
+            data-lista-id="{{ $lista->id }}"
+            data-usuario-id="{{ Auth::user()->id }}"
+            data-disponible="0"
+            data-antelacion="{{ $antelacion->days }}"
+            onclick="gestionarDisponibilidad(event,this)"
+            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition"
+            aria-label="Comunicar no disponible">
+            {{ __('Comunicar no disponible') }}
+        </a>        
         </div>
         @if ($antelacion->days <= 2)
             <div class="flex justify-center mt-4 mb-4">
@@ -214,11 +219,16 @@
         @endif
     @else
         <div class="flex justify-center mt-2 mb-2">
-            <a id="btnodisponible" href="" onclick="nodisponible(this)" data-lista-id="{{ $lista->id }}"
-                data-usuario-id="{{ Auth::user()->id }}" data-disponible="1"
-                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                {{ __('Comunicar disponible') }}
-            </a>
+            <a id="btnodisponible"
+            href=""
+            data-lista-id="{{ $lista->id }}"
+            data-usuario-id="{{ Auth::user()->id }}"
+            data-disponible="1"            
+            onclick="gestionarDisponibilidad(event,this)"
+            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition"
+            aria-label="Comunicar no disponible">
+            {{ __('Comunicar disponible') }}
+        </a> 
         </div>
     @endif
 
@@ -567,6 +577,42 @@
 
         }
 
+   function gestionarDisponibilidad(evemt,componente) {
+
+        event.preventDefault();
+
+        var listaId = componente.getAttribute('data-lista-id');
+        var usuarioId = componente.getAttribute('data-usuario-id');
+        var disponible = componente.getAttribute('data-disponible');
+        var antelacion = parseInt(componente.getAttribute('data-antelacion'));
+
+        // Verificar si se puede cambiar la disponibilidad
+        if (disponible==0 && antelacion <= 2) {
+            alert('No se puede cambiar la disponibilidad con pocos días de antelación.');
+            return;
+        }
+
+        // Enviar la solicitud AJAX
+        $.ajax({
+            url: '/listauserdisp',
+            method: 'POST',
+            data: {
+                lista_id: listaId,
+                usuario_id: usuarioId,
+                disponible: disponible == 1 ? 1 : 0,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                showToast(response);
+                location.reload();                
+            },
+            error: function(xhr, status, error) {
+                let message = xhr.responseJSON?.message || 'Error al comunicar disponibilidad.';
+                showToast(message);
+                //showToast(message);
+            }
+        });
+    }
 
 
         @can('admin')

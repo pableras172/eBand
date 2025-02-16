@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -13,7 +14,7 @@ use App\Models\Actuacion;
 class UserNoDisponible extends Mailable
 {
     use Queueable, SerializesModels;
-    
+
     public $user;
     public $actuacion;
     public $customText;
@@ -29,6 +30,16 @@ class UserNoDisponible extends Mailable
     }
 
     /**
+     * Get the message envelope with custom subject.
+     */
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: '🎯 Notificación de disponibilidad del usuario ' . $this->user->name
+        );
+    }
+
+    /**
      * Get the message content definition.
      */
     public function content(): Content
@@ -36,18 +47,16 @@ class UserNoDisponible extends Mailable
         return new Content(
             markdown: 'mail.users.nodisponible',
             with: [
-                'url' => config('app.url').'/listas/actuacion/'.$this->actuacion->id,
-                'username'=>$this->user->name,
-                'actuacio'=>$this->actuacion,
-                'customText' => $this->customText, // Pasar el nuevo campo de texto a la plantilla de correo
+                'url' => config('app.url') . '/listas/actuacion/' . $this->actuacion->id,
+                'username' => $this->user->name,
+                'actuacio' => $this->actuacion,
+                'customText' => $this->customText,
             ],
         );
     }
 
     /**
      * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
     public function attachments(): array
     {
