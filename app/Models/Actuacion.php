@@ -27,4 +27,10 @@ class Actuacion extends Model
     {
         return $this->belongsTo(Tipoactuacion::class, 'tipoactuacions_id');
     }
+
+        public function tipo()
+    {
+        return $this->belongsTo(TipoActuacion::class, 'tipoactuacions_id');
+    }
+
 }

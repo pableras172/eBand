@@ -146,11 +146,62 @@
                 </ul>
             </div>
         </div>
+
+        <div class="max-w-xl mx-auto mt-6 p-4 bg-white shadow-md rounded-lg">
+            <canvas id="actuacionesChart"></canvas>
+        </div>
+        
+
+
+        
     </div>
     <script>
         document.getElementById('yearSelect').addEventListener('change', function() {
             var year = this.value;
             window.location.href = "/actuaciones/" + {{ $user->id }} + "/" + year;
         });
+
+ // Obtener datos del backend
+const labels = @json($labels);
+const data = @json($data);
+
+// Generar colores aleatorios para cada barra
+const backgroundColors = labels.map(() => {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return `rgba(${r}, ${g}, ${b}, 0.6)`;
+});
+
+const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
+
+// Configurar el gráfico
+const ctx = document.getElementById('actuacionesChart').getContext('2d');
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Número de actuaciones',
+            data: data,
+            backgroundColor: backgroundColors,
+            borderColor: borderColors,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' },
+            title: {
+                display: true,
+                text: 'Actuaciones por tipo en 2024'
+            }
+        }
+    }
+});
+
+
+
     </script>
 </x-app-layout>

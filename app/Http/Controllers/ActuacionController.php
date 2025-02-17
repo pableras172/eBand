@@ -479,7 +479,32 @@ public function notificarActuacionLista(Request $request)
         $poblaciones = $actuaciones->pluck('poblacion')->unique();   
         $filtropobla = true;
 
-        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones','filtropobla'));
+        $sql = '
+        select
+        tipoactuacions.nombre AS tipo,
+        COUNT(*) as total
+        from
+        `listas`
+        inner join `listas_user` on `listas`.`id` = `listas_user`.`listas_id`
+        inner join `actuacions` on `listas`.`actuacions_id` = `actuacions`.`id`
+        inner join `tipoactuacions` on `actuacions`.`tipoactuacions_id` = `tipoactuacions`.`id`
+        inner join `contratos` on `actuacions`.`contratos_id` = `contratos`.`id`
+        where
+        `listas_user`.`user_id` ='.$user->id.'  
+        and year(`actuacions`.`fechaActuacion`) ='.$year.' 
+        and `contratos`.`poblacion` = "'.$poblacion.'"   
+        group by
+        `tipoactuacions`.`nombre`
+        order by
+        `total` desc';
+
+        $actuacionesGrph = DB::select($sql);    
+
+
+        $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
+        $data = collect($actuacionesGrph)->pluck('total')->toArray();
+
+        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones','filtropobla','labels', 'data'));
     }
 
 
@@ -507,9 +532,34 @@ public function notificarActuacionLista(Request $request)
         $poblaciones = $actuaciones->pluck('poblacion')->unique();  
 
         $filtrotipo=true; 
+
+        $sql = '
+        select
+        tipoactuacions.nombre AS tipo,
+        COUNT(*) as total
+        from
+        `listas`
+        inner join `listas_user` on `listas`.`id` = `listas_user`.`listas_id`
+        inner join `actuacions` on `listas`.`actuacions_id` = `actuacions`.`id`
+        inner join `tipoactuacions` on `actuacions`.`tipoactuacions_id` = `tipoactuacions`.`id`
+        inner join `contratos` on `actuacions`.`contratos_id` = `contratos`.`id`
+        where
+        `listas_user`.`user_id` ='.$user->id.'    
+        and year(`actuacions`.`fechaActuacion`) ='.$year.'         
+        and tipoactuacions_id = '.$type.'   
+        group by 
+        `tipoactuacions`.`nombre` 
+        order by
+        `total` desc';
+
+        $actuacionesGrph = DB::select($sql);    
+
+
+        $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
+        $data = collect($actuacionesGrph)->pluck('total')->toArray();
         
         // Puedes pasar $actuaciones a la vista para mostrar el listado
-        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones','filtrotipo'));
+        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones','filtrotipo','labels','data'));
         
     }
 
@@ -537,10 +587,35 @@ public function notificarActuacionLista(Request $request)
             return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
         });
 
+        $sql = '
+        select
+        tipoactuacions.nombre AS tipo,
+        COUNT(*) as total
+        from
+        `listas`
+        inner join `listas_user` on `listas`.`id` = `listas_user`.`listas_id`
+        inner join `actuacions` on `listas`.`actuacions_id` = `actuacions`.`id`
+        inner join `tipoactuacions` on `actuacions`.`tipoactuacions_id` = `tipoactuacions`.`id`
+        inner join `contratos` on `actuacions`.`contratos_id` = `contratos`.`id`
+        where
+        `listas_user`.`user_id` ='.$user->id.'  
+        and year(`actuacions`.`fechaActuacion`) ='.$year.' 
+        and `contratos`.`poblacion` = '.$poblacion.'  
+        group by
+        `tipoactuacions`.`nombre`
+        order by
+        `total` desc';
+
+        $actuacionesGrph = DB::select($sql);    
+
+
+        $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
+        $data = collect($actuacionesGrph)->pluck('total')->toArray();
+
         // Indicador de filtro de población
         $filtropobla = true;
 
-        return view('actuaciones.view-listas', compact('actuacionesPorMes', 'tiposActuacion', 'meses', 'filtropobla', 'poblaciones','user'));
+        return view('actuaciones.view-listas', compact('actuacionesPorMes', 'tiposActuacion', 'meses', 'filtropobla', 'poblaciones','user', 'labels', 'data'));
     }
 
 
@@ -564,10 +639,42 @@ public function notificarActuacionLista(Request $request)
         ->get();
     
         $tiposActuacion = $actuaciones->pluck('tipoactuacion_nombre', 'tipoactuacion_id')->unique();        
-        $poblaciones = $actuaciones->pluck('poblacion')->unique();     
+        $poblaciones = $actuaciones->pluck('poblacion')->unique();  
+        
+        /*$actuacionesGrph = $user->listas()
+        ->join('actuacions', 'listas.actuacions_id', '=', 'actuacions.id')
+        ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
+        ->selectRaw('tipoactuacions.nombre AS tipo, COUNT(*) as total')
+        ->whereYear('actuacions.fechaActuacion', $year)
+        ->groupBy('tipoactuacions.nombre', 'tipoactuacions.id')
+        ->orderBy('total', 'desc')
+        ->get();*/
+
+        $sql = '
+                select
+                tipoactuacions.nombre AS tipo,
+                COUNT(*) as total
+                from
+                `listas`
+                inner join `listas_user` on `listas`.`id` = `listas_user`.`listas_id`
+                inner join `actuacions` on `listas`.`actuacions_id` = `actuacions`.`id`
+                inner join `tipoactuacions` on `actuacions`.`tipoactuacions_id` = `tipoactuacions`.`id`
+                where
+                `listas_user`.`user_id` ='.$user->id.'  
+                and year(`actuacions`.`fechaActuacion`) ='.$year.' 
+                group by
+                `tipoactuacions`.`nombre`
+                order by
+                `total` desc';
+
+        $actuacionesGrph = DB::select($sql);    
+
+
+        $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
+        $data = collect($actuacionesGrph)->pluck('total')->toArray();
 
         // Puedes pasar $actuaciones a la vista para mostrar el listado
-        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones'));
+    return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones','labels','data'));
     }
 
 
