@@ -103,6 +103,18 @@ class InstrumentClass extends Component
         return redirect()->route('instrument.index');
     }
 
+    public function updateOrder(Request $request)
+    {
+        $ordenes = $request->input('ordenes');
+
+        foreach ($ordenes as $orden) {
+            \App\Models\Instrument::where('id', $orden['id'])->update(['orden' => $orden['orden']]);
+        }
+
+        return response()->json(['status' => 'success', 'alert_type' => 'success', 'message' => 'Orden actualizado correctamente']);
+    }
+
+
     public function destroy(Instrument $instrument)
     {
         // Elimina el instrumento de la base de datos

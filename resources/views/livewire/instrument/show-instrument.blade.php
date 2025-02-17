@@ -2,7 +2,7 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{__('Llistat de Instruments')}}
-        </h2>
+        </h2>       
     </x-slot>
 
     @if (request()->has('success') && request()->success)
@@ -44,37 +44,50 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($intruments as $intrument)
-                                    <tr>
-                                        <td
-                                            class="px-4 py-2 whitespace-nowrap text-sm text-center text-gray-900">
+                            <tbody class="bg-white divide-y divide-gray-200" id="instrumentTable">
+                                @foreach ($intruments as $index => $intrument)
+                                    <tr data-id="{{ $intrument->id }}" class="instrument-row">
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-center text-gray-900">
                                             {{ $intrument->name }}
                                         </td>
-
-                                        <td
-                                            class="px-4 py-2 whitespace-nowrap text-sm text-center text-gray-900">
+                            
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-center text-gray-900">
                                             <div class="mt-2 text-center">
-                                                <img src="{{ asset('storage/imagenes/instruments/' . $intrument->icon) }}"
-                                                    alt="{{ $intrument->name }}" class="rounded-full"
-                                                    style="width: 50px; height: 50px;">
+                                                @if ($intrument->icon)
+                                                    <!-- Si hay imagen, mostrarla -->
+                                                    <img src="{{ asset('storage/imagenes/instruments/' . $intrument->icon) }}"
+                                                         alt="{{ $intrument->name }}" 
+                                                         class="rounded-full"
+                                                         style="width: 50px; height: 50px;">
+                                                @else
+                                                    <!-- Mostrar icono predeterminado si no hay imagen -->
+                                                    <x-nophoto w="40" h="40"/>
+                                                @endif
                                             </div>
                                         </td>
-
-                                        <td
-                                            class="px-4 py-2 whitespace-nowrap text-sm text-center text-gray-900 ">
-                                            {{ $intrument->orden }}
+                                        
+                            
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-center text-gray-900">
+                                            <span class="orden">{{ $intrument->orden }}</span>
                                         </td>
-
+                            
                                         <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-center">
-                                            <a href="{{ route('instrument.show', $intrument->id) }}"
-                                                class="bg-fondobotonazul hover:bg-fondobotonazul-400 text-white font-bold py-2 px-4 rounded">
-                                                {{__('Editar')}}
+                                            <div class="flex justify-center items-center space-x-1">
+                                                                                                <!-- Botón de editar existente -->
+                                            <a href="{{ route('instrument.show', $intrument->id) }}">
+                                                <x-editar w="24" h="24" />
                                             </a>
+                                            <!-- Botón subir -->
+                                                <button class="move-up text-blue-600 hover:text-blue-900 px-1" title="Subir"><x-flechaup w="24" h="24" /></button>
+                                                <!-- Botón bajar -->
+                                                <button class="move-down text-blue-600 hover:text-blue-900 px-1" title="Bajar"><x-flechadown w="24" h="24" /></button>
+
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
+                            
                         </table>
                     </div>
                 </div>
@@ -84,3 +97,4 @@
     </div>
 
 </x-app-layout>
+

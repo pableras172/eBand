@@ -1,80 +1,64 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-           Nuevo instrumento
+            Nuevo instrumento
         </h2>
+        <x-ui.breadcrumbs>
+            <x-ui.breadcrumbs.link href="/">{{__('common.dashboard')}}</x-ui.breadcrumbs.link>
+            <x-ui.breadcrumbs.separator />
+            <x-ui.breadcrumbs.link active
+                > {{__('common.instrumentos')}}</x-ui.breadcrumbs.link
+            >
+        </x-ui.breadcrumbs>
     </x-slot>
 
-    <div>
-        <div class="max-w-4xl mx-auto py-10 sm:px-6 lg:px-8">
-            <div class="mt-5 md:mt-0 md:col-span-2">
-                <form method="post" action="{{ route('instrument.store') }}"  enctype="multipart/form-data">
-                    @csrf
-                    <div class="max-w-6xl mx-auto py-10 sm:px-6 lg:px-8">
-                        <div class="flex flex-col">
-                            <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
-                                    <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                                        <table class="min-w-full divide-y divide-gray-200 w-full">
-                                            
-                                            <tr class="border-b">
-                                                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Nom
-                                                </th>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 bg-white divide-y divide-gray-200">
-                                                    <input type="text" name="name" id="name" class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                                    value="{{ old('name', '') }}" />
-                                                    @error('name')
-                                                        <p class="text-sm text-red-600">{{ $message }}</p>
-                                                    @enderror
-                                                </td>
-                                            </tr>
-                                            <tr class="border-b">
-                                                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Ordre
-                                                </th>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 bg-white divide-y divide-gray-200">
-                                                    <input type="orden" name="orden" id="orden" class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                                        value="{{ old('orden', '') }}" />
-                                                    @error('orden')
-                                                        <p class="text-sm text-red-600">{{ $message }}</p>
-                                                    @enderror
-                                                </td>
-                                            </tr>
-                                            <tr class="border-b">
-                                                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Icon
-                                                </th>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 bg-white divide-y divide-gray-200">
-                                                    <input type="file" class="form-control" name="icon" @error('icon') is-invalid @enderror>
-                                                    @error('image')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </td>
-                                            </tr>
-                                            <tr class="border-b">
-                                                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                
-                                                </th>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 bg-white divide-y divide-gray-200">
-                                                    <button class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
-                                                        Guardar
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="block mt-8">
-                            <a href="{{ route('instrument.index') }}" class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded">Back to list</a>
-                        </div>
-                    </div>
-                </form>
+    <div class="max-w-xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
+        <form method="POST" action="{{ route('instrument.store') }}" enctype="multipart/form-data" class="space-y-4">
+            @csrf
+
+            <!-- Nombre del instrumento -->
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                <input type="text" name="name" id="name" 
+                       class="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" 
+                       value="{{ old('name', '') }}" placeholder="Introduce el nombre" required>
+                @error('name')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
-        </div>
+
+            <!-- Orden -->
+            <div>
+                <label for="orden" class="block text-sm font-medium text-gray-700 mb-1">Orden</label>
+                <input type="number" name="orden" id="orden" 
+                       class="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" 
+                       value="{{ old('orden', '') }}" placeholder="Introduce el orden" required>
+                @error('orden')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Icono -->
+            <div>
+                <label for="icon" class="block text-sm font-medium text-gray-700 mb-1">Icono</label>
+                <input type="file" name="icon" id="icon" 
+                       class="w-full border border-gray-300 rounded-md shadow-sm p-2 cursor-pointer file:bg-blue-100 file:text-blue-700 file:rounded-md file:border-0 file:py-2 file:px-3 hover:file:bg-blue-200" accept="image/*">
+                @error('icon')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Botones -->
+            <div class="flex items-center justify-between pt-4">
+                <button type="submit" 
+                        class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition">
+                    Guardar
+                </button>
+                <a href="{{ route('instrument.index') }}" 
+                   class="text-gray-600 hover:underline text-sm">
+                    ← Volver al listado
+                </a>
+            </div>
+        </form>
     </div>
 </x-app-layout>

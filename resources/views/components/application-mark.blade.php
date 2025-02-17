@@ -4,5 +4,5 @@
 </svg-->
 <!-- Vista que muestra el logo superior dentro de la app -->
 <a href="/">
-  <img style="width: 100px;" src="{{ URL::to('/') }}/imagenes/logo.png" />
+  <img style="width: 75px;" src="{{ URL::to('/') }}/imagenes/logo.png" />
 </a>

@@ -42,7 +42,7 @@
                             <thead>                               
                                 <tr>
                                     <th scope="col"
-                                        class="px-2 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                                        class="px-2 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider  md:table-cell">
                                         {{ __('Població') }}
                                     </th>
                                     <th scope="col"
@@ -74,7 +74,7 @@
                                             {{ $contrato->poblacion }}
                                         </td>
                                         <td
-                                            class="px-2 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
+                                            class="px-2 py-2 whitespace-nowrap text-sm text-gray-900  md:table-cell">
                                             {{ $contrato->descripcion }}
                                         </td>
                                         <td
@@ -90,16 +90,17 @@
                                             {{ $contrato->contacto }}
                                         </td>
                                         <td class="px-2 py-2 whitespace-nowrap text-sm font-medium">
+                                            <div class="flex justify-center items-center space-x-2">
                                             <a href="{{ route('contratos.edit', $contrato->id) }}"
-                                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-fondobotonazul hover:bg-fondobotonazul-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mb-2">
-                                                {{ __('Editar') }}
+                                                class="">
+                                                <x-editar w="24" h="24" />
                                             </a>
                                             &nbsp;
                                             <a href="{{ route('actuacion.createtocontract', $contrato->id) }}"
-                                                class="inline-flex items-center px-2 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-fondobotonnaranja hover:bg-fondobotonnaranja-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mb-2 mr-2">
-                                                {{ __('Actuacions') }}
+                                                class="">
+                                                <x-calendario w="24" h="24" />
                                             </a>
-
+                                        </div>
                                         </td>
                                     </tr>
                                 @endforeach

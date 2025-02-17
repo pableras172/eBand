@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         Route::resource('tipoactuacion',TipoActuacionController::class);
 
         Route::resource('instrument',InstrumentClass::class);
+        Route::post('/update-order', [InstrumentClass::class, 'updateOrder'])->name('instrument.updateOrder');
         Route::resource('calendar',CalendarController::class);
 
         Route::get('/actuacion/createtocontract/{contratos}', [ActuacionController::class, 'createtocontract'])->name('actuacion.createtocontract');
