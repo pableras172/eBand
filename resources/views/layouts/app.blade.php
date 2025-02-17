@@ -42,7 +42,7 @@
         var userId = {{ Auth::user()->id }};
         var appId = "{{ config('services.onesignal.app_id') }}";
         $.ajax({
-            url: '/usersuuid/' +  ,
+            url: '/usersuuid/' +  userId,
             type: 'GET',
             dataType: 'json',
             success: function(response) {
