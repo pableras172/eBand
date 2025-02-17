@@ -20,7 +20,8 @@ return new class extends Migration {
             $table->dateTime('fechaInicio', []);
             $table->dateTime('fechaFin', []);
             $table->decimal('totalPago', 8, 2)->default(0);
-            $table->boolean('confirmadausuaroi')->default(false);    
+            $table->boolean('confirmadausuaroi')->default(false);
+            $table->decimal('paymentresume_id', 8, 2)->default(0);    
             $table->timestamp('created_at', [])->nullable();
             $table->timestamp('updated_at', [])->nullable();
         });

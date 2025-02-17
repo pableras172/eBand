@@ -5,7 +5,7 @@
         </h2>
     </x-slot>    
 
-    <div class="bg-white border border-gray-200 divide-y divide-gray-200  m-2">
+    <div class="w-1/2 md:w-full bg-white border border-gray-200 divide-y divide-gray-200  m-2">
         <details class="p-2 group"  @isset($filtrotipo) open @else close @endisset>
             <summary class="flex items-center justify-between cursor-pointer">
                 <h5 class="text-lg font-medium text-gray-900">

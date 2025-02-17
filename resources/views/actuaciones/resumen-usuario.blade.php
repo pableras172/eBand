@@ -29,7 +29,7 @@
         </div>
         <p class="text-xs">{{__('Fes click en actuació per a vore mes detalls.')}}</p>
         <hr>
-   <div class="flow-root">
+        <div class="flow-root">
         <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($totalesPorTipoActuacion as $tipoActuacionNombre => $tipoActuacion)
             <li class="py-3 sm:py-4">
