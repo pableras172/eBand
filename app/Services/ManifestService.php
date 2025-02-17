@@ -15,7 +15,7 @@ class ManifestService
             'start_url' => '/',
             'display' => 'standalone',
             'background_color' => '#ffffff',
-            'theme_color' => '#034460',
+            'theme_color' => '#9f398b',
             'orientation' => 'portrait',
             'scope' => '/',
             'screenshots' => [

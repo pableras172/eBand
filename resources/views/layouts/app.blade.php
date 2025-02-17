@@ -25,7 +25,7 @@
 
     <link  rel="stylesheet"  href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
 
-    <link rel="apple-touch-icon" href="/imagenes/icons/favicons/logoSmall_192.png">
+    <link rel="apple-touch-icon" href="/imagenes/icons/ios/192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="eBand">
@@ -42,7 +42,7 @@
         var userId = {{ Auth::user()->id }};
         var appId = "{{ config('services.onesignal.app_id') }}";
         $.ajax({
-            url: '/usersuuid/' + userId,
+            url: '/usersuuid/' +  ,
             type: 'GET',
             dataType: 'json',
             success: function(response) {
@@ -50,6 +50,12 @@
                 OneSignalDeferred.push(function(OneSignal) {
                     OneSignal.init({
                         appId: appId,
+                        useSubscriptionWorkaround: true, // Habilitar modo de compatibilidad
+                        allowLocalhostAsSecureOrigin: true, // Para pruebas en local
+                        cookie: {
+                            secure: true,
+                            sameSite: 'none'
+                        },
                     }).then(function() {
                         OneSignal.login(userUUID);
                     }).catch(function(error) {
@@ -63,8 +69,7 @@
                 // Manejo de errores
                 console.error('Error al obtener el UUID del usuario:', error);
             }
-        });  
-        
+        });          
         
         function showToast(response){
             var type = response.alert_type;

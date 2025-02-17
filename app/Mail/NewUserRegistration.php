@@ -7,33 +7,31 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 
 class NewUserRegistration extends Mailable
 {
     use Queueable, SerializesModels;
-    
 
     /**
      * Create a new message instance.
      */
     public function __construct(
-
-        public User $user,
-
+        public User $user
     ) {}
 
     /**
-     * Get the message envelope.
+     * Get the message envelope with custom subject.
      */
-    /*public function envelope(): Envelope
+    public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(config('mail.from')['address'], config('mail.from')['name']),
-            subject: 'Nuevo usuario en '.config('app.banda'),
+            from: new Address(config('mail.from.address'), config('mail.from.name')),
+            subject: '🎉 ¡Nuevo usuario registrado: ' . $this->user->name . '!'
         );
-    }*/
+    }
 
     /**
      * Get the message content definition.
@@ -43,16 +41,14 @@ class NewUserRegistration extends Mailable
         return new Content(
             markdown: 'mail.users.newuser',
             with: [
-                'url' => config('app.url').'/users/'.$this->user->id.'/edit',
-                'username'=>$this->user->name,
+                'url' => config('app.url') . '/users/' . $this->user->id . '/edit',
+                'username' => $this->user->name,
             ],
         );
     }
 
     /**
      * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
     public function attachments(): array
     {
