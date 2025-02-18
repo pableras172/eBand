@@ -492,7 +492,8 @@ public function notificarActuacionLista(Request $request)
         where
         `listas_user`.`user_id` ='.$user->id.'  
         and year(`actuacions`.`fechaActuacion`) ='.$year.' 
-        and `contratos`.`poblacion` = "'.$poblacion.'"   
+        and `contratos`.`poblacion` = "'.$poblacion.'"  
+        and  `listas_user`.`disponible` = 1
         group by
         `tipoactuacions`.`nombre`
         order by

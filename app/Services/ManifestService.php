@@ -36,17 +36,17 @@ class ManifestService
             ],
             'icons' => [
                 [
-                    'src' => url('/imagenes/icons/favicons/logoSmall_192.png'),
+                    'src' => url('/imagenes/icons/favicon/logoSmall_192.png'),
                     'sizes' => '192x192',
                     'type' => 'image/png',
                 ],
                 [
-                    'src' => url('/imagenes/icons/favicons/logoSmall_96.png'),
+                    'src' => url('/imagenes/icons/favicon/logoSmall_96.png'),
                     'sizes' => '96x96',
                     'type' => 'image/png',
                 ],
                 [
-                    'src' => url('/imagenes/icons/favicons/logoSmall_48.png'),
+                    'src' => url('/imagenes/icons/favicon/logoSmall_48.png'),
                     'sizes' => '48x48',
                     'type' => 'image/png',
                 ],
@@ -121,7 +121,8 @@ class ManifestService
                     'url' => $baseUrl . '/manifest.json'
                 ]
             ],
-            'prefer_related_applications' => false
+            'prefer_related_applications' => false,
+            'app_version' => config('app.version') ?? '1.0.0'
         ];
 
         return json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);

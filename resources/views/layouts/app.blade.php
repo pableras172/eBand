@@ -25,6 +25,17 @@
 
     <link  rel="stylesheet"  href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
 
+        <!-- Open Graph (Facebook y WhatsApp) -->
+    <meta property="og:title" content={{ config('app.name', 'Laravel') }} - {{config('app.banda', '')}} />
+    <meta property="og:description" content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
+    <meta property="og:image" content="{{ url('/imagenes/logo.png') }}" />
+    <meta property="og:url" content="{{ url('/') }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="eBand" />
+
+    
+
+
     <link rel="apple-touch-icon" href="/imagenes/icons/ios/192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
