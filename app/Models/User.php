@@ -102,4 +102,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Payment::class);
     }
 
+    public function comments()
+    {
+        return $this->belongsTo(Comment::class, 'user_id');
+    }
+
 }

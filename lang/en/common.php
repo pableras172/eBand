@@ -46,4 +46,12 @@ return [
     'pagos'=>'Payments',
     'pagocreado'=>'Payment generated succesfuly',
     'todosusuarios'=>'All users',
+
+    'agenda'=>'Agenda',
+    'consultaagenda'=>'Consulta la agenda semanal de actuaciones.',
+
+    'comentaris'=>'Comentarios',
+    'comentarisdescription'=>'Ahora puedes añadir comentarios en los eventos para ayudar a tus compañeros, preguntar dudas o incluso animar.',
+    'comentarisacceder'=>'Ver actuaciones',
+    'comentariosactuacion'=>'Comentarios de la actuación',
 ];

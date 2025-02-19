@@ -2,6 +2,25 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+
+            <!-- Open Graph (Facebook y WhatsApp) -->
+    <meta property="og:title" content="{{ config('app.name', 'Laravel') }} - {{config('app.banda', '')}}" />
+    <meta property="og:description" content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
+    <meta property="og:image" content="{{ url('/imagenes/logo.png') }}" />
+    <meta property="og:url" content="{{ url('/') }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="{{ config('app.name', 'Laravel') }} - {{config('app.banda', '')}}" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ config('app.name', 'Laravel') }} - {{config('app.banda', '')}}" />
+    <meta name="twitter:description" content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
+    <meta name="twitter:image" content="{{ url('/imagenes/icons/favicon/logoSmall_192.png') }}" />
+
+    <meta name="title" content="{{ config('app.name', 'Laravel') }} - {{config('app.banda', '')}}" />
+    <meta name="description" content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
+    <link rel="icon" href="{{ url('/imagenes/icons/favicon/logoSmall_192.png') }}" type="image/png">
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -24,16 +43,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
 
     <link  rel="stylesheet"  href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
-
-        <!-- Open Graph (Facebook y WhatsApp) -->
-    <meta property="og:title" content={{ config('app.name', 'Laravel') }} - {{config('app.banda', '')}} />
-    <meta property="og:description" content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
-    <meta property="og:image" content="{{ url('/imagenes/logo.png') }}" />
-    <meta property="og:url" content="{{ url('/') }}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="eBand" />
-
-    
 
 
     <link rel="apple-touch-icon" href="/imagenes/icons/ios/192.png">

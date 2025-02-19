@@ -11,4 +11,9 @@ return [
     'notification_sent' => 'Notificación enviada correctamente.',
     'notification_fail' => 'No se han podido enviar las notificaciones.',
     'disponibilidadactualizada'=>'Disponibilidad actualizada correctamente',
+    'agenda'=>'Agenda',
+    'consultaagenda'=>'Consulta la agenda semanal de actuaciones.',
+    'daily_comments_title' => 'Nuevos comentarios en eBand',
+    'daily_comments_subtitle' => 'Hay :count nuevos comentarios en las últimas 24 horas.',
+    'view_details' => 'Ver comentarios',    
 ];

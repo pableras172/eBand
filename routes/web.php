@@ -20,6 +20,9 @@ use App\Livewire\Payment\PaymentEdit;
 use App\Livewire\Paymentresume\PaymentresumeIndex;
 use App\Livewire\Paymentresume\PaymentresumeCreate;
 use App\Livewire\Paymentresume\PaymentresumeEdit;
+use App\Livewire\Comments\CommentIndex;
+use App\Livewire\Comments\CommentCreate;
+use App\Livewire\Comments\CommentEdit;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,17 +39,44 @@ use App\Livewire\Paymentresume\PaymentresumeEdit;
     return view('welcome');
 });*/
 
+
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified', 'can:admin'])->group(function () {
+        Route::resource('contratos',ListadoContratos::class);        
+        Route::get('/contratos/year/{year}',[ListadoContratos::class,'contratosPorAnyo'])->name('contratos.anyo');  
+        
+        Route::resource('instrument',InstrumentClass::class);
+        Route::post('/update-order', [InstrumentClass::class, 'updateOrder'])->name('instrument.updateOrder');
+
+        Route::resource('users', \App\Http\Controllers\UsersController::class);
+
+        Route::resource('tipoactuacion',TipoActuacionController::class);
+
+        Route::get('/configurations', ConfigurationIndex::class)->name('configurations.index');    
+        Route::get('/configurations/create',ConfigurationCreate::class)->name('configurations.create');    
+        Route::get('/configurations/{configuration}',ConfigurationEdit::class)->name('configurations.edit');  
+
+        Route::get('/paymentresumes', PaymentresumeIndex::class)->name('paymentresumes.index');
+        Route::get('/paymentresumes/create',PaymentresumeCreate::class)->name('paymentresumes.create');
+        Route::get('/paymentresumes/{paymetresume}',PaymentresumeEdit::class)->name('paymentresumes.edit');
+
+        Route::get('/comments', CommentIndex::class)->name('comments.index');
+        Route::get('/comments/create',CommentCreate::class)->name('comments.create');
+        Route::get('/comments/{comment}',CommentEdit::class)->name('comments.edit');
+});
+
+
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',])->group(
     function () {
         
         Route::get('/', function () {return view('dashboard');})->name('dashboard');
         Route::resource('tasks', \App\Http\Controllers\TasksController::class);
-        Route::resource('users', \App\Http\Controllers\UsersController::class);
+        //Route::resource('users', \App\Http\Controllers\UsersController::class);
         
-        Route::resource('tipoactuacion',TipoActuacionController::class);
+        //Route::resource('tipoactuacion',TipoActuacionController::class);
 
-        Route::resource('instrument',InstrumentClass::class);
-        Route::post('/update-order', [InstrumentClass::class, 'updateOrder'])->name('instrument.updateOrder');
+        //Route::resource('instrument',InstrumentClass::class);
+        //Route::post('/update-order', [InstrumentClass::class, 'updateOrder'])->name('instrument.updateOrder');
+        
         Route::resource('calendar',CalendarController::class);
 
         Route::get('/actuacion/createtocontract/{contratos}', [ActuacionController::class, 'createtocontract'])->name('actuacion.createtocontract');
@@ -66,8 +96,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         
         Route::resource('actuacion',ActuacionController::class);
         
-        Route::resource('contratos',ListadoContratos::class);        
-        Route::get('/contratos/year/{year}',[ListadoContratos::class,'contratosPorAnyo'])->name('contratos.anyo');        
+        //Route::resource('contratos',ListadoContratos::class);        
+        //Route::get('/contratos/year/{year}',[ListadoContratos::class,'contratosPorAnyo'])->name('contratos.anyo');        
         
         Route::resource('listas',ListaController::class);
 
@@ -81,11 +111,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         
         Route::get('/usersuuid/{user}',[\App\Http\Controllers\UsersController::class,'getuuid']);
 
-        Route::get('/generate-pdf/{listaId}', [PDFController::class, 'generatePDF']);
-
-        Route::get('/configurations', ConfigurationIndex::class)->name('configurations.index');    
-        Route::get('/configurations/create',ConfigurationCreate::class)->name('configurations.create');    
-        Route::get('/configurations/{configuration}',ConfigurationEdit::class)->name('configurations.edit');   
+        Route::get('/generate-pdf/{listaId}', [PDFController::class, 'generatePDF']); 
         
         Route::get('/payments', PaymentIndex::class)->name('payments.index');
         Route::get('/payments/user/{user}', PaymentIndex::class)->name('payments.user');
@@ -95,9 +121,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
 
         Route::get('/pdf/paymentresume/{paymentresume}', [PDFController::class, 'generatePaymentResumePDF'])->name('pdf.paymentresume');
 
-        Route::get('/paymentresumes', PaymentresumeIndex::class)->name('paymentresumes.index');
-        Route::get('/paymentresumes/create',PaymentresumeCreate::class)->name('paymentresumes.create');
-        Route::get('/paymentresumes/{paymetresume}',PaymentresumeEdit::class)->name('paymentresumes.edit');
+        Route::post('/comments/add', [CommentCreate::class, 'store'])->name('comments.add');        
+
+        //Route::get('/paymentresumes', PaymentresumeIndex::class)->name('paymentresumes.index');
+        //Route::get('/paymentresumes/create',PaymentresumeCreate::class)->name('paymentresumes.create');
+        //Route::get('/paymentresumes/{paymetresume}',PaymentresumeEdit::class)->name('paymentresumes.edit');
         
 });
 

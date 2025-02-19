@@ -53,5 +53,13 @@ return [
     'pagos'=>'Pagaments',
     'pagocreado'=>'Pagament generat correctament',
     'todosusuarios'=>'Tots els usuaris',
-    
+
+    'agenda'=>'Agenda',
+    'consultaagenda'=>'Consulta la agenda semanal de actuaciones.',
+
+    'comentaris'=>'Comentaris',
+    'comentarisdescription'=>'Ara pots afegir comentaris als events per a ajudar als teus companys, preguntar dubtes o animar als companys.',
+    'comentarisacceder'=>'Vore actuacions',
+    'comentariosactuacion'=>'Comentaris de l\'actuació',
+
 ];

@@ -11,4 +11,13 @@ return [
     'view_details' => 'Access to view the details.',
     'notification_fail' => 'No se han podido enviar las notificaciones.',
     'disponibilidadactualizada'=>'Disponibilitad actualitzada correctament',    
+    'comentaris'=>'Comentaris',
+    'comentarisdescription'=>'Ara pots afegir comentaris als events per a ajudar als teus companys, preguntar dubtes o animar als companys.',
+    'comentarisacceder'=>'Vore actuacions',
+    'comentariosactuacion'=>'Comentaris de l\'actuació',
+    'agenda'=>'Agenda',
+    'consultaagenda'=>'Consulta la agenda semanal de actuaciones.',
+    'daily_comments_title' => 'Nuevos comentarios en eBand',
+    'daily_comments_subtitle' => 'Hay :count nuevos comentarios en las últimas 24 horas.',
+    'view_details' => 'Ver comentarios', 
 ];

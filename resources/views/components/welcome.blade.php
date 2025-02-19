@@ -118,6 +118,29 @@
         </p>
     </div>
 
+
+    <div>
+        <div class="flex items-center">
+            <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64px" height="64px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path fill-rule="evenodd" clip-rule="evenodd" fill="#394240" d="M60,0H4C1.789,0,0,1.789,0,4v40c0,2.211,1.789,4,4,4h8v12 c0,1.617,0.973,3.078,2.469,3.695C14.965,63.902,15.484,64,16,64c1.039,0,2.062-0.406,2.828-1.172L33.656,48H60 c2.211,0,4-1.789,4-4V4C64,1.789,62.211,0,60,0z M56,40H32c-1.023,0-2.047,0.391-2.828,1.172L20,50.344V44c0-2.211-1.789-4-4-4H8V8 h48V40z"></path> <path fill-rule="evenodd" clip-rule="evenodd" fill="#ffc46c" d="M56,40H32c-1.023,0-2.047,0.391-2.828,1.172L20,50.344V44 c0-2.211-1.789-4-4-4H8V8h48V40z"></path> </g> </g></svg>
+            <h2 class="ms-3 text-xl font-semibold text-gray-900 dark:text-white">
+                <a href="#"> {{__('common.comentaris')}}</a>
+            </h2>
+        </div>
+
+        <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+            {{__('common.comentarisdescription')}}
+        </p>
+
+        <p class="mt-4 text-sm">
+            <a href="{{ route('actuacion.index') }}"  class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
+                {{__('common.comentarisacceder')}}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
+                    <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
+                </svg>
+            </a>
+        </p>
+    </div>
+
 </div>
 
 <footer class="bg-white dark:bg-gray-900">

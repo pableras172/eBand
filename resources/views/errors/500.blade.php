@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error 404 - Página no encontrada</title>
+    <title>Error 500 - Error en el servidor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -103,8 +103,8 @@
     <img class="logo" src="{{ URL::to('/') }}/imagenes/logo.png" alt="Logo de la app" />
 
     <!-- Mensaje -->
-    <h1>¡Error 404!</h1>
-    <p class="message">¡Ups! Parece que has buscado una nota que no existe en el pentagrama. 🎶</p>
+    <h1>¡Error 500!</h1>
+    <p class="message">Parece que la nota musical no ha sonado muy bien... 🎶</p>
 
     <!-- Botón para volver atrás -->
     <button class="btn-back" onclick="history.back()">⬅️ Volver a la página anterior</button>

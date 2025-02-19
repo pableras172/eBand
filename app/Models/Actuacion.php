@@ -33,4 +33,10 @@ class Actuacion extends Model
         return $this->belongsTo(TipoActuacion::class, 'tipoactuacions_id');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'actuacion_id');
+    }
+
+
 }

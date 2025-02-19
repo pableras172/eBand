@@ -97,9 +97,14 @@
                         $fechaCarbon = \Carbon\Carbon::createFromFormat('m/Y', $mes);
                         $mesFormateado = ucfirst($fechaCarbon->translatedFormat('F Y'));
                     @endphp
-                    <span class="text-zinc-950">
-                        {{ __($mesFormateado) }}
-                    </span>
+                    <div class="flex justify-center items-center space-x-2">
+                        <span class="text-zinc-950">
+                            {{ __($mesFormateado) }} 
+                        </span>
+                        <span class="text-zinc-950 text-sm" style="color: darkgray;">
+                            ({{$actuacionesDelMes->count()}} {{strtolower(__('eventos'))}})
+                        </span>
+                    </div>
                 </h2>
             </div>
             
@@ -143,6 +148,17 @@
                                 </div>
 
                                 <div class="relative z-40 flex items-center gap-2">
+                                    @if ($actuacion->comments()->count()>0)
+                                    <div>
+                                        <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}#messages">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-blue-600 animate-bounce"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    @endif
                                     @can('admin')
                                         @if(Carbon\Carbon::parse($actuacion->fechaActuacion)->isToday() || Carbon\Carbon::parse($actuacion->fechaActuacion)->isFuture())
                                             <a class="enviarNotificacion text-orange-600 hover:text-blue-500" href="#"

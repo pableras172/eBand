@@ -23,7 +23,10 @@ class ListaController extends Controller
     public function actuacion($actuacionId)
     {
         // Obtener la actuación y la lista relacionada
-        $actuacion = Actuacion::findOrFail($actuacionId);
+        //$actuacion = Actuacion::findOrFail($actuacionId);
+        // Cargar la actuación con sus comentarios y el usuario asociado a cada comentario
+        $actuacion = Actuacion::with('comments.user')->findOrFail($actuacionId);
+
         $lista = $actuacion->lista;
 
         if ($lista == null) {

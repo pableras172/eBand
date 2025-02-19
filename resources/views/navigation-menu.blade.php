@@ -40,12 +40,12 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <div class="w-60 px-4">                               
+                            <div class="w-60 px-4 m-2">                               
                                 <x-nav-link href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}">
                                     {{__('Les meves actuacions')}}
                                 </x-nav-link>
                             </div>
-                            <div class="w-60 px-4">                               
+                            <div class="w-60 px-4  m-2">                               
                                 <x-nav-link href="{{ route('payments.user', [Auth::user()->id]) }}">
                                     {{__('Els meus pagaments')}}
                                 </x-nav-link>
@@ -73,39 +73,44 @@
                             </x-slot>
     
                             <x-slot name="content">
-                                <div class="w-60 px-4 mt-2">                               
+                                <div class="w-60 px-4 m-2">                               
                                     <x-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
                                         {{ __('Tipus de actuacio') }}
                                     </x-nav-link>
                                 </div>
-                                <div class="w-60 px-4 mt-2">                               
+                                <div class="w-60 px-4 m-2">                               
                                     <x-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
                                         {{ __('Instruments') }}
                                     </x-nav-link>
                                 </div>
-                                <div class="w-60 px-4 mt-2">                               
+                                <div class="w-60 px-4 m-2">                               
                                     <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
                                         {{ __('Musics') }}
                                     </x-nav-link>
                                 </div>
                                 <div class="border-t border-gray-200 dark:border-gray-600"></div>
-                                <div class="w-60 px-4 mt-2">                               
+                                <div class="w-60 px-4 m-2">                               
                                     <x-nav-link href="{{ route('contratos.index') }}" :active="request()->routeIs('contratos.index')">
                                         {{ __('Contractes') }}
                                     </x-nav-link>
                                 </div>
-                                <div class="w-60 px-4 mt-2">                               
+                                <div class="w-60 px-4 m-2">                               
                                     <x-nav-link href="{{ route('payments.index') }}" :active="request()->routeIs('payments.index')">
                                         {{ __('Comptes') }}
                                     </x-nav-link>
                                 </div>
-                                <div class="w-60 px-4 mt-2">                               
+                                <div class="w-60 px-4 m-2">                               
                                     <x-nav-link href="{{ route('paymentresumes.index') }}" :active="request()->routeIs('paymentresumes.index')">
                                         {{ __('Resums comptes') }}
                                     </x-nav-link>
                                 </div>
+                                <div class="w-60 px-4 m-2">                               
+                                    <x-nav-link href="{{ route('comments.index') }}" :active="request()->routeIs('comments.index')">
+                                        {{ __('Comentaris') }}
+                                    </x-nav-link>
+                                </div>
                                 <div class="border-t border-gray-200 dark:border-gray-600"></div>
-                                <div class="w-60 px-4 mt-2">                               
+                                <div class="w-60 px-4 m-2">                               
                                     <x-nav-link href="/configurations">
                                         {{ __('Configuracion') }}
                                     </x-nav-link>
@@ -339,12 +344,15 @@
                     {{ __('Mi perfil') }}
                 </x-responsive-nav-link>
 
+                <x-responsive-nav-link href="{{ route('actuacion.index') }}" :active="request()->routeIs('actuacion.index')">
+                    {{ __('Calendari') }}
+                </x-responsive-nav-link>
+
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                     <x-responsive-nav-link href="{{ route('api-tokens.index') }}" :active="request()->routeIs('api-tokens.index')">
                         {{ __('API Tokens') }}
                     </x-responsive-nav-link>
                 @endif
-
 
 
                 @can('admin')
@@ -356,21 +364,19 @@
                     <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
                         {{ __('Musics') }}
                     </x-responsive-nav-link>
+
+                    <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
+                        {{ __('Tipus de actuacio') }}
+                    </x-responsive-nav-link>
                 @endcan
 
                 <div class="border-t border-gray-200 dark:border-gray-600"></div>
-
-                <x-responsive-nav-link href="{{ route('actuacion.index') }}" :active="request()->routeIs('actuacion.index')">
-                    {{ __('Calendari') }}
-                </x-responsive-nav-link>
 
                 @can('admin')
                     <x-responsive-nav-link href="{{ route('contratos.index') }}" :active="request()->routeIs('contratos.index')">
                         {{ __('Contractes') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
-                        {{ __('Tipus de actuacio') }}
-                    </x-responsive-nav-link>
+
                     <x-responsive-nav-link href="{{ route('payments.index') }}" :active="request()->routeIs('payments.index')">
                         {{ __('Comptes') }}
                     </x-responsive-nav-link>
@@ -446,6 +452,10 @@
                 <x-responsive-nav-link href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}"
                     :active="request()->routeIs('actuaciones.usuario.anyo')">
                     {{ __('Les meves actuacions') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link  href="{{ route('payments.user', [Auth::user()->id]) }}"
+                    :active="request()->routeIs('payments.user')">
+                    {{__('Els meus pagaments')}}
                 </x-responsive-nav-link>
 
 
