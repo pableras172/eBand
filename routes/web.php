@@ -23,6 +23,7 @@ use App\Livewire\Paymentresume\PaymentresumeEdit;
 use App\Livewire\Comments\CommentIndex;
 use App\Livewire\Comments\CommentCreate;
 use App\Livewire\Comments\CommentEdit;
+use App\Jobs\SendDailyCommentsNotification;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +63,13 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified', 
         Route::get('/comments', CommentIndex::class)->name('comments.index');
         Route::get('/comments/create',CommentCreate::class)->name('comments.create');
         Route::get('/comments/{comment}',CommentEdit::class)->name('comments.edit');
+
+        Route::get('/run-job', function () {
+            dispatch(new SendDailyCommentsNotification());
+            session()->flash('success', 'El Job se ha ejecutado correctamente.');
+            return redirect()->route('comments.index'); // Redirige a la página de comentarios o cualquier otra
+        })->name('run.job');
+        
 });
 
 

@@ -13,7 +13,7 @@ return [
     'disponibilidadactualizada'=>'Disponibilitad actualitzada correctament',
     'agenda'=>'Agenda',
     'consultaagenda'=>'Consulta la agenda semanal de actuaciones.',
-    'daily_comments_title' => 'Nuevos comentarios en eBand',
-    'daily_comments_subtitle' => 'Hay :count nuevos comentarios en las últimas 24 horas.',
-    'view_details' => 'Ver comentarios', 
+    'daily_comments_title' => 'Nous comentaris en eBand - :name',
+    'daily_comments_subtitle' => 'Hi ha :count nuevos comentaris en les actuacions. Accedix a l\'app per a vore-los.',
+    'view_details' => 'Veure comentaris.', 
 ];

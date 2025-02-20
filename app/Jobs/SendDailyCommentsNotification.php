@@ -38,9 +38,9 @@ class SendDailyCommentsNotification implements ShouldQueue
             try {
                 // Enviar notificación a todos los usuarios activos
                 OneSignal::sendNotificationToSegment(
-                    Lang::get('messages.daily_comments_title'),
+                    Lang::get('messages.daily_comments_title', ['name' => config('app.banda')]),
                     "Active Subscriptions",
-                    env('APP_URL') . "/comments",
+                    env('APP_URL').'/actuacion',
                     null,
                     null,
                     null,

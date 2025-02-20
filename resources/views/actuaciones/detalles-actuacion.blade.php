@@ -459,6 +459,9 @@
                 class="chat-container space-y-4 p-4 bg-gray-100 rounded-lg max-h-96 overflow-y-auto">
                 <!-- Recorremos los comentarios -->
                 @forelse ($actuacion->comments as $comment)
+                    @if($comment->eliminado  || $comment->inadecuado)
+                        @continue
+                    @endif
                     <!-- Determinar si el comentario es del usuario actual -->
                     @php
                         $esPropio = auth()->id() === $comment->user_id;
@@ -468,22 +471,25 @@
                         <div class="flex items-end {{ $esPropio ? 'justify-end' : '' }}">
                             <!-- Imagen del usuario -->
                             @if (!$esPropio)
-                                <img src="{{ $comment->user->profile_photo_path ?? asset('/imagenes/no-icon.png') }}"
+                                <img src="{{ $comment->user->profile_photo_url ?? asset('/imagenes/no-icon.png') }}"
                                     alt="{{ $comment->user->name }}" class="w-6 h-6 rounded-full mr-2">
                             @endif
 
                             <!-- Burbuja del comentario -->
-                            <div
-                                class="flex flex-col space-y-1 text-xs max-w-xs mx-2 {{ $esPropio ? 'items-end' : 'items-start' }}">
-                                <div
-                                    class="bg-{{ $esPropio ? 'blue-600 text-white' : 'gray-300 text-gray-800' }} px-4 py-2 rounded-lg {{ $esPropio ? 'rounded-br-none' : 'rounded-bl-none' }}">
-                                    <strong
-                                        class="text-sm">{{ $comment->user->name ?? 'Usuario desconocido' }}</strong><br>
+                            <div class="flex flex-col space-y-1 text-xs max-w-xs mx-2 {{ $esPropio ? 'items-end' : 'items-start' }}">
+                                <div class="
+                                    px-4 py-2 rounded-lg 
+                                    {{ $esPropio ? 'rounded-br-none' : 'rounded-bl-none' }}
+                                    {{ $comment->inadecuado ? 'bg-red-600 text-white' : ($esPropio ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-800') }}
+                                ">
+                                    <strong class="text-sm">{{ $comment->user->name ?? 'Usuario desconocido' }}</strong><br>
                                     {{ $comment->comment }}
                                 </div>
-                                <span
-                                    class="text-gray-500 text-[10px]">{{ $comment->created_at->format('d/m/Y H:i') }}</span>
+                                <span class="text-gray-500 text-[10px]">
+                                    {{ $comment->created_at->format('d/m/Y H:i') }}
+                                </span>
                             </div>
+                            
 
                             <!-- Imagen del usuario (si el comentario es propio) -->
                             @if ($esPropio)

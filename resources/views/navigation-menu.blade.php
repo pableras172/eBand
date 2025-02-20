@@ -360,7 +360,7 @@
                     <x-responsive-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
                         {{ __('Instruments') }}
                     </x-responsive-nav-link>
-
+                 
                     <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
                         {{ __('Musics') }}
                     </x-responsive-nav-link>
@@ -368,6 +368,9 @@
                     <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
                         {{ __('Tipus de actuacio') }}
                     </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('comments.index') }}" :active="request()->routeIs('comments.index')">
+                        {{ __('Comentaris') }}
+                    </x-responsive-nav-link>  
                 @endcan
 
                 <div class="border-t border-gray-200 dark:border-gray-600"></div>

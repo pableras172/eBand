@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('notificaciones:enviar-actuaciones')->mondays()->at('16:00');
         $schedule->job(new SendDailyCommentsNotification())->dailyAt('20:00');
+        
     }
 
     /**
