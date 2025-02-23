@@ -1,66 +1,86 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+ <h1>Proyecto de Gestión de Bandas de Música</h1>
+    <p>Este es un proyecto desarrollado en Laravel 11 con Fortify para la autenticación, y cuenta con una PWA optimizada para la instalación en Windows, Android y Apple.</p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+    <h2>Características principales</h2>
+    <ul>
+        <li><strong>Gestión de usuarios</strong> con Fortify, sobrescribiendo los métodos de verificación de email y restablecimiento de contraseña.</li>
+        <li><strong>PWA (Progressive Web App)</strong> con un <code>manifest.json</code> dinámico generado por <code>ManifestService</code>.</li>
+        <li><strong>Sistema de autenticación</strong> seguro con Laravel Fortify.</li>
+        <li><strong>Interfaz moderna y responsiva</strong> para la administración y gestión de bandas de música.</li>
+    </ul>
 
-## About Laravel
+    <h2>Instalación</h2>
+    <h3>Requisitos</h3>
+    <ul>
+        <li>PHP 8.1 o superior</li>
+        <li>Composer</li>
+        <li>Node.js y npm</li>
+        <li>MySQL o PostgreSQL</li>
+    </ul>
+    
+    <h3>Pasos para instalar</h3>
+    <ol>
+        <li>Clona el repositorio:<br>
+            <code>git clone https://github.com/pableras172/eband.git</code><br>
+            <code>cd proyecto-bandas</code>
+        </li>
+        <li>Instala las dependencias de Laravel:<br>
+            <code>composer install</code>
+        </li>
+        <li>Instala las dependencias de JavaScript:<br>
+            <code>npm install</code>
+        </li>
+        <li>Copia el archivo de entorno y configúralo:<br>
+            <code>cp .env.example .env</code><br>
+            Configura la base de datos en el archivo <code>.env</code>
+        </li>
+        <li>Genera la clave de la aplicación:<br>
+            <code>php artisan key:generate</code>
+        </li>
+        <li>Ejecuta las migraciones y seedea la base de datos:<br>
+            <code>php artisan migrate --seed</code>
+        </li>
+        <li>Inicia el servidor de desarrollo:<br>
+            <code>php artisan serve</code>
+        </li>
+    </ol>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+    <h2>Configuración de la PWA</h2>
+    <p>La aplicación incluye un <code>manifest.json</code> dinámico que se genera a través de <code>ManifestService</code>. Para asegurarse de que funcione correctamente:</p>
+    <ul>
+        <li>Configura la URL base en <code>.env</code></li>
+        <li>Asegúrate de que los archivos de iconos estén en la carpeta <code>public/icons</code></li>
+    </ul>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+    <h2>Personalización de correos</h2>
+    <p>Los correos de verificación y restablecimiento de contraseña han sido sobrescritos en Fortify. Para modificar las plantillas, revisa:</p>
+    <ul>
+        <li><code>app/Mail/VerifyEmail.php</code></li>
+        <li><code>app/Mail/ResetPassword.php</code></li>
+    </ul>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+    <h2>Despliegue</h2>
+    <p>Para desplegar la aplicación en producción:</p>
+    <ol>
+        <li>Ejecuta las migraciones:<br>
+            <code>php artisan migrate --force</code>
+        </li>
+        <li>Compila los assets:<br>
+            <code>npm run build</code>
+        </li>
+        <li>Configura el almacenamiento enlazado:<br>
+            <code>php artisan storage:link</code>
+        </li>
+        <li>Configura correctamente la caché de configuración:<br>
+            <code>php artisan config:cache</code>
+        </li>
+    </ol>
 
-## Learning Laravel
+<h2>Licencia</h2>
+<p>Este proyecto es de propiedad exclusiva del desarrollador. No está permitido modificarlo ni distribuirlo sin autorización expresa.</p>
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+    <hr>
+    <p><strong>Desarrollado por pableras172</strong></p>
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

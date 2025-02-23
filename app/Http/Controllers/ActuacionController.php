@@ -502,8 +502,13 @@ public function notificarActuacionLista(Request $request)
         $actuacionesGrph = DB::select($sql);    
 
 
-        $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
-        $data = collect($actuacionesGrph)->pluck('total')->toArray();
+        if (!empty($actuacionesGrph)) {
+            $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
+            $data = collect($actuacionesGrph)->pluck('total')->toArray();
+        } else {
+            $labels = ['Sin datos']; // Etiqueta predeterminada
+            $data = [0]; // Valor predeterminado para la gráfica
+        }
 
         return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones','filtropobla','labels', 'data'));
     }
@@ -556,8 +561,13 @@ public function notificarActuacionLista(Request $request)
         $actuacionesGrph = DB::select($sql);    
 
 
-        $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
-        $data = collect($actuacionesGrph)->pluck('total')->toArray();
+        if (!empty($actuacionesGrph)) {
+            $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
+            $data = collect($actuacionesGrph)->pluck('total')->toArray();
+        } else {
+            $labels = ['Sin datos']; // Etiqueta predeterminada
+            $data = [0]; // Valor predeterminado para la gráfica
+        }
         
         // Puedes pasar $actuaciones a la vista para mostrar el listado
         return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones','filtrotipo','labels','data'));
@@ -610,8 +620,13 @@ public function notificarActuacionLista(Request $request)
         $actuacionesGrph = DB::select($sql);    
 
 
-        $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
-        $data = collect($actuacionesGrph)->pluck('total')->toArray();
+        if (!empty($actuacionesGrph)) {
+            $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
+            $data = collect($actuacionesGrph)->pluck('total')->toArray();
+        } else {
+            $labels = ['Sin datos']; // Etiqueta predeterminada
+            $data = [0]; // Valor predeterminado para la gráfica
+        }
 
         // Indicador de filtro de población
         $filtropobla = true;
@@ -671,8 +686,13 @@ public function notificarActuacionLista(Request $request)
         $actuacionesGrph = DB::select($sql);    
 
 
-        $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
-        $data = collect($actuacionesGrph)->pluck('total')->toArray();
+        if (!empty($actuacionesGrph)) {
+            $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
+            $data = collect($actuacionesGrph)->pluck('total')->toArray();
+        } else {
+            $labels = ['Sin datos']; // Etiqueta predeterminada
+            $data = [0]; // Valor predeterminado para la gráfica
+        }
 
         // Puedes pasar $actuaciones a la vista para mostrar el listado
     return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones','year', 'user','tiposActuacion','poblaciones','labels','data'));
