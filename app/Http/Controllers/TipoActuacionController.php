@@ -57,7 +57,7 @@ class TipoActuacionController extends Controller
      */
     public function show(Tipoactuacion $tipoactuacion)
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $this->authorize('admin_access');
         return view('tipoactuacion.edit-tipoactuacion', compact('tipoactuacion'));
     }
 

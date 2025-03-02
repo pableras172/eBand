@@ -16,7 +16,7 @@ class PreviewListas extends Component
 
     public $displayingPreviewListas= false;
     public $id;
-    public $floatButon=true;
+    public $floatButon=false;
 
     public $showingModal = false;
 

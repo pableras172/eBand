@@ -17,7 +17,8 @@ class UsersController extends Controller
 
    public function index(Request $request)
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $this->authorize('admin_access');
 
         $instrument_id = $request->input('instrument_id');
 
@@ -43,9 +44,10 @@ class UsersController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+       //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+       $this->authorize('admin_access');
 
-        $roles = Role::pluck('title', 'id');
+        $roles = Role::whereNotIn('title', ['SuperAdmin'])->pluck('title', 'id');
         $instruments = Instrument::all();
 
         return view('users.create', compact('roles'), compact('instruments'));
@@ -53,6 +55,7 @@ class UsersController extends Controller
 
     public function store(StoreUserRequest $request)
     {
+        $this->authorize('admin_access');
         // Crear el usuario con los datos validados del formulario
         $user = User::create($request->validated());
     
@@ -75,16 +78,18 @@ class UsersController extends Controller
 
     public function show(User $user)
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $this->authorize('admin_access');
 
         return view('users.show', compact('user'));
     }
 
     public function edit(User $user)
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $this->authorize('admin_access');
 
-        $roles = Role::pluck('title', 'id');
+        $roles = Role::whereNotIn('title', ['SuperAdmin'])->pluck('title', 'id');
 
         $user->load('roles');       
 
@@ -95,6 +100,8 @@ class UsersController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
+        $this->authorize('admin_access');
+
         if($request->activo){
             $user->activo=1;
         }else{
@@ -115,7 +122,8 @@ class UsersController extends Controller
 
     public function destroy(User $user)
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $this->authorize('admin_access');
 
         $user->delete();
 

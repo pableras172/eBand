@@ -1,3 +1,7 @@
+@php
+    use App\Helpers\ConfigHelper;
+@endphp
+
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
@@ -104,17 +108,24 @@
                                         {{ __('Resums comptes') }}
                                     </x-nav-link>
                                 </div>
+
+                                @if (ConfigHelper::getConfigValue('enableusermessages') === 'true')
                                 <div class="w-60 px-4 m-2">                               
                                     <x-nav-link href="{{ route('comments.index') }}" :active="request()->routeIs('comments.index')">
                                         {{ __('Comentaris') }}
                                     </x-nav-link>
                                 </div>
+                                @endif
+
+
+                                @can('SuperAdmin')
                                 <div class="border-t border-gray-200 dark:border-gray-600"></div>
                                 <div class="w-60 px-4 m-2">                               
                                     <x-nav-link href="/configurations">
                                         {{ __('Configuracion') }}
                                     </x-nav-link>
                                 </div>
+                                @endcan
                             </x-slot>
                         </x-dropdown>
                     </div>
@@ -368,9 +379,13 @@
                     <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
                         {{ __('Tipus de actuacio') }}
                     </x-responsive-nav-link>
+                    
+                    @if (ConfigHelper::getConfigValue('enableusermessages') === 'true')
                     <x-responsive-nav-link href="{{ route('comments.index') }}" :active="request()->routeIs('comments.index')">
                         {{ __('Comentaris') }}
                     </x-responsive-nav-link>  
+                    @endif
+                    
                 @endcan
 
                 <div class="border-t border-gray-200 dark:border-gray-600"></div>
@@ -385,11 +400,15 @@
                     </x-responsive-nav-link>
                     <x-responsive-nav-link href="{{ route('paymentresumes.index') }}" :active="request()->routeIs('paymentresumes.index')">
                         {{ __('Resums comptes') }}
-                    </x-responsive-nav-link>
+                    </x-responsive-nav-link>                                 
+                @endcan
+
+                @can('SuperAdmin')
                     <x-responsive-nav-link href="/configurations">
                         {{ __('Configuracion') }}
-                    </x-responsive-nav-link>                    
-                @endcan
+                    </x-responsive-nav-link>    
+                @endcan  
+
                 <div class="border-t border-gray-200 dark:border-gray-600"></div>
                 <div class="block px-4 py-2 text-xs text-gray-400">
                     {{ __('selecciona idioma') }}

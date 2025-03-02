@@ -7,9 +7,9 @@
         </button>
     </div>
     @else
-        <x-label class="cursor-pointer ms-6 text-sm text-gray-400 underline"
+        <x-label class="cursor-pointer  text-sm text-gray-400 underline"
             wire:click="$set('displayingPreviewListas', true)">
-            <x-lupa w="24" h="24" />
+            <x-lupa w="32" h="32" />            
         </x-label>
     @endif
 

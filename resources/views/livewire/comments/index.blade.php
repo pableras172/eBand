@@ -99,10 +99,12 @@
 
         <div class="mt-2">{{ $comments->links() }}</div>
     </x-ui.container.table>
+    @can('SuperAdmin')
     <div class="flex justify-center">
         <a href="{{ url('/run-job') }}" 
            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">
             🚀 Ejecutar Job Manualmente
         </a>
     </div>
+    @endcan
 </div>

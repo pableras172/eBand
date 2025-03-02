@@ -60,7 +60,7 @@ class ActuacionController extends Controller
 
         $tipoActuacion = Tipoactuacion::all();
 
-        $contrato = Contratos::find( $contratosId);
+        $contrato = Contratos::find($contratosId);
 
         return view('livewire.contratos.actuacions',compact('actuaciones','tipoActuacion','contrato'));
     }

@@ -7,6 +7,10 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
+use App\Policies\UserPolicy;
+use App\Policies\TipoActuacionPolicy;
+use App\Models\User;
+use App\Models\Tipoactuacion;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -15,19 +19,25 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array<class-string, class-string>
      */
-    protected $policies = [];
+    protected $policies = [
+        User::class => UserPolicy::class,
+        Tipoactuacion::class => TipoActuacionPolicy::class,
 
+    ];
     /**
      * Register any authentication / authorization services.
      */
     public function boot(): void
     {
-        $this->registerPolicies();
+        $this->registerPolicies();      
 
-        // Definir Gate para el rol de administrador
         Gate::define('admin', function ($user) {
-            return $user->hasRole('Admin');
+            return $user->hasRole('Admin') || $user->hasRole('SuperAdmin');
         });
+
+        Gate::define('SuperAdmin', function ($user) {
+            return $user->hasRole('SuperAdmin');
+        });     
 
         // 🔍 Sobrescribir el email de verificación
         VerifyEmail::toMailUsing(function ($notifiable, $verificationUrl) {

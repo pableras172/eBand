@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
+use App\Helpers\ConfigHelper;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+       
     }
 
     /**
@@ -21,8 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        ConfigHelper::loadConfigurations();
         Gate::define('viewPulse', function (User $user) {
-            return $user->hasRole('admin');
+            return $user->hasRole('superadmin');
         });
 
     }

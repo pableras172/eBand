@@ -1,4 +1,10 @@
+@php
+use App\Helpers\ConfigHelper;
+@endphp
+
 <x-app-layout>
+
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ $actuacion->descripcion }}
@@ -438,6 +444,8 @@
             </div>
         </div>
     </div>
+
+    @if (ConfigHelper::getConfigValue('enableusermessages') === 'true')
     <!-- component flex-1 p-4 w-full max-w-2xl mx-auto justify-between flex flex-col bg-white rounded-lg shadow-lg -->
     <div class="max-w-md lg:max-w-lg mx-auto px-2 my-4 bg-white rounded-lg shadow-lg">
         <div class="w-full bg-white border-b border-gray-300 p-2 shadow-sm rounded-t-lg">
@@ -541,56 +549,68 @@
                 </div>
             </div>
         </div>
-
-        @can('admin')
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                @livewire('preview-listas', ['id' => $actuacion->id])
-            </div>
-        @endcan
+        
+    @endif
+        
+        
+        
         <div style="height: 175px">
 
         </div>
-        <footer
-            class="fixed bottom-0 left-0 z-20 w-full p-2 bg-white border-t border-black-800 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
+        <footer class="fixed bottom-0 left-0 z-20 w-full bg-white border-t border-gray-300 shadow dark:bg-gray-800 dark:border-gray-600">
             @can('admin')
-                <div class="flex justify-center items-center mt-2 mb-2">
-                    <div>
-                        {{ __('Musics Seleccionats:') }}&nbsp;
-                        <span id="musics_count" style="font-weight: bold">{{ $totalFilas }}</span>
-                        de
-                        <span id="musics_total" style="font-weight: bold">{{ $actuacion->musicos }}</span>
+                <div class="flex justify-around items-center mt-2 mb-2 border-b border-gray-300 p-1 bg-gray-100">
+                    <div class="flex items-center space-x-2">
+                        <!-- Icono -->
+                        <svg width="32px" height="32px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools --> <title>ic_fluent_people_community_28_regular</title> <desc>Created with Sketch.</desc> <g id="🔍-Product-Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="ic_fluent_people_community_28_regular" fill="#00878a" fill-rule="nonzero"> <path d="M17.25,18 C18.4926407,18 19.5,19.0073593 19.5,20.25 L19.5,21.7519766 L19.4921156,21.8604403 C19.1813607,23.9866441 17.2715225,25.0090369 14.0667905,25.0090369 C10.8736123,25.0090369 8.93330141,23.9983408 8.51446278,21.8965776 L8.5,21.75 L8.5,20.25 C8.5,19.0073593 9.50735931,18 10.75,18 L17.25,18 Z M17.25,19.5 L10.75,19.5 C10.3357864,19.5 10,19.8357864 10,20.25 L10,21.670373 C10.2797902,22.870787 11.550626,23.5090369 14.0667905,23.5090369 C16.582858,23.5090369 17.7966388,22.8777026 18,21.6931543 L18,20.25 C18,19.8357864 17.6642136,19.5 17.25,19.5 Z M18.2435553,11.9989081 L23.75,12 C24.9926407,12 26,13.0073593 26,14.25 L26,15.7519766 L25.9921156,15.8604403 C25.6813607,17.9866441 23.7715225,19.0090369 20.5667905,19.0090369 L20.2519278,19.0056708 L20.2519278,19.0056708 C19.9568992,18.2920884 19.4151086,17.7078172 18.7333573,17.3574924 C19.2481703,17.4584023 19.8580822,17.5090369 20.5667905,17.5090369 C23.082858,17.5090369 24.2966388,16.8777026 24.5,15.6931543 L24.5,14.25 C24.5,13.8357864 24.1642136,13.5 23.75,13.5 L18.5,13.5 C18.5,12.9736388 18.4096286,12.468385 18.2435553,11.9989081 Z M4.25,12 L9.75644465,11.9989081 C9.61805027,12.3901389 9.53222663,12.8062147 9.50746303,13.2386463 L9.5,13.5 L4.25,13.5 C3.83578644,13.5 3.5,13.8357864 3.5,14.25 L3.5,15.670373 C3.77979024,16.870787 5.05062598,17.5090369 7.5667905,17.5090369 C8.18886171,17.5090369 8.73132757,17.4704451 9.1985991,17.3944422 C8.5478391,17.7478373 8.03195873,18.3174175 7.74634871,19.0065739 L7.5667905,19.0090369 C4.37361228,19.0090369 2.43330141,17.9983408 2.01446278,15.8965776 L2,15.75 L2,14.25 C2,13.0073593 3.00735931,12 4.25,12 Z M14,10 C15.9329966,10 17.5,11.5670034 17.5,13.5 C17.5,15.4329966 15.9329966,17 14,17 C12.0670034,17 10.5,15.4329966 10.5,13.5 C10.5,11.5670034 12.0670034,10 14,10 Z M14,11.5 C12.8954305,11.5 12,12.3954305 12,13.5 C12,14.6045695 12.8954305,15.5 14,15.5 C15.1045695,15.5 16,14.6045695 16,13.5 C16,12.3954305 15.1045695,11.5 14,11.5 Z M20.5,4 C22.4329966,4 24,5.56700338 24,7.5 C24,9.43299662 22.4329966,11 20.5,11 C18.5670034,11 17,9.43299662 17,7.5 C17,5.56700338 18.5670034,4 20.5,4 Z M7.5,4 C9.43299662,4 11,5.56700338 11,7.5 C11,9.43299662 9.43299662,11 7.5,11 C5.56700338,11 4,9.43299662 4,7.5 C4,5.56700338 5.56700338,4 7.5,4 Z M20.5,5.5 C19.3954305,5.5 18.5,6.3954305 18.5,7.5 C18.5,8.6045695 19.3954305,9.5 20.5,9.5 C21.6045695,9.5 22.5,8.6045695 22.5,7.5 C22.5,6.3954305 21.6045695,5.5 20.5,5.5 Z M7.5,5.5 C6.3954305,5.5 5.5,6.3954305 5.5,7.5 C5.5,8.6045695 6.3954305,9.5 7.5,9.5 C8.6045695,9.5 9.5,8.6045695 9.5,7.5 C9.5,6.3954305 8.6045695,5.5 7.5,5.5 Z" id="🎨-Color"> </path> </g> </g> </g></svg>                    
+                        <!-- Texto -->
+                        <span class="font-bold">{{ $totalFilas }}</span>
+                        <span>de</span>
+                        <span class="font-bold">{{ $actuacion->musicos }}</span>
                     </div>
-                </div>
-                <div class="flex justify-center items-center mb-2">
-                    <div>
-                        {{ __('Cotxes Seleccionats:') }}&nbsp;
+                    
+
+                    <div class="flex items-center space-x-2">
+                       <svg width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.7993 3C17.2899 3 18.5894 4.01393 18.9518 5.45974L19.337 7H20.25C20.6297 7 20.9435 7.28215 20.9932 7.64823L21 7.75C21 8.1297 20.7178 8.44349 20.3518 8.49315L20.25 8.5H19.714L19.922 9.3265C20.5708 9.72128 21.0041 10.435 21.0041 11.25V19.7468C21.0041 20.7133 20.2206 21.4968 19.2541 21.4968H17.75C16.7835 21.4968 16 20.7133 16 19.7468L15.999 18.5H8.004L8.00408 19.7468C8.00408 20.7133 7.22058 21.4968 6.25408 21.4968H4.75C3.7835 21.4968 3 20.7133 3 19.7468V11.25C3 10.4352 3.43316 9.72148 4.08177 9.32666L4.289 8.5H3.75C3.3703 8.5 3.05651 8.21785 3.00685 7.85177L3 7.75C3 7.3703 3.28215 7.05651 3.64823 7.00685L3.75 7H4.663L5.04898 5.46176C5.41068 4.01497 6.71062 3 8.20194 3H15.7993ZM6.504 18.5H4.499L4.5 19.7468C4.5 19.8848 4.61193 19.9968 4.75 19.9968H6.25408C6.39215 19.9968 6.50408 19.8848 6.50408 19.7468L6.504 18.5ZM19.504 18.5H17.499L17.5 19.7468C17.5 19.8848 17.6119 19.9968 17.75 19.9968H19.2541C19.3922 19.9968 19.5041 19.8848 19.5041 19.7468L19.504 18.5ZM18.7541 10.5H5.25C4.83579 10.5 4.5 10.8358 4.5 11.25V17H19.5041V11.25C19.5041 10.8358 19.1683 10.5 18.7541 10.5ZM10.249 14H13.7507C14.165 14 14.5007 14.3358 14.5007 14.75C14.5007 15.1297 14.2186 15.4435 13.8525 15.4932L13.7507 15.5H10.249C9.83478 15.5 9.49899 15.1642 9.49899 14.75C9.49899 14.3703 9.78115 14.0565 10.1472 14.0068L10.249 14H13.7507H10.249ZM17 12C17.5522 12 17.9999 12.4477 17.9999 13C17.9999 13.5522 17.5522 13.9999 17 13.9999C16.4477 13.9999 16 13.5522 16 13C16 12.4477 16.4477 12 17 12ZM6.99997 12C7.55225 12 7.99995 12.4477 7.99995 13C7.99995 13.5522 7.55225 13.9999 6.99997 13.9999C6.4477 13.9999 6 13.5522 6 13C6 12.4477 6.4477 12 6.99997 12ZM15.7993 4.5H8.20194C7.39892 4.5 6.69895 5.04652 6.50419 5.82556L5.71058 9H18.2929L17.4968 5.82448C17.3017 5.04596 16.6019 4.5 15.7993 4.5Z" fill="#710909"></path> </g></svg>
                         <span id="coches_count" style="font-weight: bold">{{ $cochesCount }}</span>
-                        de
+                        <span>de</span>
                         <span id="coches_total" style="font-weight: bold">{{ $actuacion->coches }}</span>
                     </div>
                 </div>
             @endcan
-            <div class="flex justify-center mt-2 mb-2">
+            <div class="flex justify-around items-center py-3">
+                    
+                    @livewire('preview-listas', ['id' => $actuacion->id])
+                                <!-- Botón Volver al Listado -->
+                    <a href="{{ route('actuacion.index') }}"
+                                class="flex flex-col items-center text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition">
+                                <svg width="32px" height="32px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools --> <title>ic_fluent_home_28_regular</title> <desc>Created with Sketch.</desc> <g id="🔍-System-Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="ic_fluent_home_28_regular" fill="#8c8c8c" fill-rule="nonzero"> <path d="M12.5919,3.49635 C13.4146,2.83625 14.5854,2.83625 15.4081,3.49635 L23.1581,9.71468 C23.6903,10.1417 24,10.7872 24,11.4696 L24,22.75 C24,23.9926 22.9926,25 21.75,25 L18.75,25 C17.5074,25 16.5,23.9926 16.5,22.75 L16.5,16.75 C16.5,16.3358 16.1642,16 15.75,16 L12.25,16 C11.8358,16 11.5,16.3358 11.5,16.75 L11.5,22.75 C11.5,23.9926 10.4926,25 9.25,25 L6.25,25 C5.00736,25 4,23.9926 4,22.75 L4,11.4696 C4,10.7872 4.30967,10.1417 4.84191,9.71468 L12.5919,3.49635 Z M14.4694,4.6663 C14.1951,4.44627 13.8049,4.44627 13.5306,4.6663 L5.78064,10.8846 C5.60322,11.027 5.5,11.2421 5.5,11.4696 L5.5,22.75 C5.5,23.1642 5.83579,23.5 6.25,23.5 L9.25,23.5 C9.66421,23.5 10,23.1642 10,22.75 L10,16.75 C10,15.5074 11.0074,14.5 12.25,14.5 L15.75,14.5 C16.9926,14.5 18,15.5074 18,16.75 L18,22.75 C18,23.1642 18.3358,23.5 18.75,23.5 L21.75,23.5 C22.1642,23.5 22.5,23.1642 22.5,22.75 L22.5,11.4696 C22.5,11.2421 22.3968,11.027 22.2194,10.8846 L14.4694,4.6663 Z" id="🎨-Color"> </path> </g> </g> </g></svg>
+                                <span class="text-xs mt-1">{{ __('Inici') }}</span>
+                    </a>
                 @can('admin')
-                    @if (Carbon\Carbon::parse($actuacion->fechaActuacion)->isToday() ||
-                            Carbon\Carbon::parse($actuacion->fechaActuacion)->isFuture())
+                    @if (Carbon\Carbon::parse($actuacion->fechaActuacion)->isToday() || Carbon\Carbon::parse($actuacion->fechaActuacion)->isFuture())
+                        
+                        <!-- Botón Vaciar Lista -->
                         <a id="cleanListaButton" href="#" data-lista-id="{{ $lista->id }}"
-                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-4">
-                            {{ __('Buidar llista') }}
+                            class="flex flex-col items-center text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-red-400 transition">
+                            <svg width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5.75024 2C5.33603 2 5.00024 2.33579 5.00024 2.75V14.2505C5.00024 15.4932 6.0076 16.5005 7.25024 16.5005H9.5V19.5C9.5 20.8807 10.6193 22 12 22C13.3807 22 14.5 20.8807 14.5 19.5V16.5005H16.7502C17.9929 16.5005 19.0002 15.4932 19.0002 14.2505V2.75C19.0002 2.33579 18.6645 2 18.2502 2H5.75024ZM6.50024 11.0003V3.5H12.5V5.25154C12.5 5.66576 12.8358 6.00154 13.25 6.00154C13.6642 6.00154 14 5.66576 14 5.25154V3.5H15V6.25112C15 6.66534 15.3358 7.00112 15.75 7.00112C16.1642 7.00112 16.5 6.66534 16.5 6.25112V3.5H17.5002V11.0003H6.50024ZM6.50024 14.2505V12.5003H17.5002V14.2505C17.5002 14.6647 17.1645 15.0005 16.7502 15.0005H13.75C13.3358 15.0005 13 15.3363 13 15.7505V19.5C13 20.0523 12.5523 20.5 12 20.5C11.4477 20.5 11 20.0523 11 19.5V15.7505C11 15.3363 10.6642 15.0005 10.25 15.0005H7.25024C6.83603 15.0005 6.50024 14.6647 6.50024 14.2505Z" fill="#691111"></path> </g></svg>
+                            <span class="text-xs mt-1">{{ __('Buidar') }}</span>
                         </a>
-                        <a id="avisarMarcados" href="#" data-lista-id="{{ $lista->id }}"
-                            onclick="enviarNotif({{ $lista->id }},'{{ json_encode($actuacion->descripcion) }}')"
-                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-4">
-                            {{ __('Avisar seleccionats') }}
+        
+                        <!-- Botón Avisar Seleccionados -->
+                        <a id="avisarMarcados" href="#" data-lista-id="{{ $lista->id }}" onclick="enviarNotif({{ $lista->id }},'{{ json_encode($actuacion->descripcion) }}')"
+                            class="flex flex-col items-center text-gray-700 hover:text-green-600 dark:text-gray-300 dark:hover:text-green-400 transition">
+                            <svg width="32px" height="32px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools --> <title>ic_fluent_comment_resolve_24_regular</title> <desc>Created with Sketch.</desc> <g id="🔍-Product-Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="ic_fluent_comment_resolve_24_regular" fill="#075a36" fill-rule="nonzero"> <path d="M12.0225923,2.99879075 C11.7257502,3.46221691 11.4861106,3.96580034 11.3136354,4.49957906 L5.25,4.5 C4.28350169,4.5 3.5,5.28350169 3.5,6.25 L3.5,14.75 C3.5,15.7164983 4.28350169,16.5 5.25,16.5 L7.49878573,16.5 L7.49985739,20.2505702 L12.5135149,16.5 L18.75,16.5 C19.7164983,16.5 20.5,15.7164983 20.5,14.75 L20.5010736,12.2672297 C21.0520148,11.9799518 21.5566422,11.6160435 22.0008195,11.1896412 L22,14.75 C22,16.5449254 20.5449254,18 18.75,18 L13.0124851,18 L7.99868152,21.7506795 C7.44585139,22.1641649 6.66249789,22.0512036 6.2490125,21.4983735 C6.08735764,21.2822409 6,21.0195912 6,20.7499063 L5.99921427,18 L5.25,18 C3.45507456,18 2,16.5449254 2,14.75 L2,6.25 C2,4.45507456 3.45507456,3 5.25,3 L12.0225923,2.99879075 Z M17.5,1 C20.5375661,1 23,3.46243388 23,6.5 C23,9.53756612 20.5375661,12 17.5,12 C14.4624339,12 12,9.53756612 12,6.5 C12,3.46243388 14.4624339,1 17.5,1 Z M20.1464558,4.14642633 L16.0541062,8.23877585 L14.9000091,6.69997972 C14.7343237,6.47906582 14.420923,6.4342943 14.2000091,6.59997972 C13.9790952,6.76566515 13.9343237,7.07906582 14.1000091,7.29997972 L15.6000091,9.29997972 C15.782574,9.54339946 16.1384079,9.5686878 16.3535625,9.35353311 L20.8535625,4.85353311 C21.0488247,4.65827097 21.0488247,4.34168848 20.8535625,4.14642633 C20.6583004,3.95116419 20.3417179,3.95116419 20.1464558,4.14642633 Z" id="🎨-Color"> </path> </g> </g> </g></svg>
+                            <span class="text-xs mt-1">{{ __('Avisar') }}</span>
                         </a>
+        
                     @endif
                 @endcan
-                <a href="{{ route('actuacion.index') }}"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-fondobotonazul hover:bg-fondobotonazul-100 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                    {{ __('Tornar al llistat') }}
-                </a>
+        
+
             </div>
         </footer>
+        
 
         <script>
             function actualizarSeleccion(checkbox) {
