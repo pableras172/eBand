@@ -12,7 +12,7 @@ use App\Helpers\ConfigHelper;
 
 
         <style>
-            .scrollbar-w-2::-webkit-scrollbar {
+            .scrollbar  -w-2::-webkit-scrollbar {
                 width: 0.25rem;
                 height: 0.25rem;
             }

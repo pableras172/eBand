@@ -106,8 +106,9 @@
     <h1>¡Error 403!</h1>
     <p class="message">¡Ups! Parece no tienes permisos para acceder. 🎶</p>
 
-    <!-- Botón para volver atrás -->
-    <button class="btn-back" onclick="history.back()">⬅️ Volver a la página anterior</button>
+    <button class="btn-back" onclick="location.href='{{ route('dashboard') }}'">
+        ⬅️ Ir al inicio
+    </button>
 
     <!-- Notas musicales flotantes -->
     <div class="note note1">🎵</div>

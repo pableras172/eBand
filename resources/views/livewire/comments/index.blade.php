@@ -9,12 +9,6 @@
 
     <div class="flex justify-between align-top py-4">
         <x-ui.input wire:model.live="search" type="text" placeholder="{{ __('Buscar comentario') }}..." />
-
-        @can('create', App\Models\Comment::class)
-            <a wire:navigate href="{{ route('comments.create') }}">
-                <x-ui.button>New</x-ui.button>
-            </a>
-        @endcan
     </div>
 
     {{-- Delete Modal --}}
