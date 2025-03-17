@@ -33,9 +33,9 @@
     <div class="w-full max-w-md mx-auto mt-2">
         @include('components.proxima-actuacion')
     </div>
-    <div class="w-full max-w-md mx-auto bg-white shadow-lg rounded-lg p-4 mt-1 flex justify-center items-center">
+    <div class="w-full max-w-md mx-auto bg-white shadow-lg rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         <x-animated-estadisticas />
-     </div>
+    </div>
      
 
 </div>
