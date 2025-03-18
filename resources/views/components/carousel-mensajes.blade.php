@@ -7,7 +7,7 @@
 @endphp
 
 
-<div class="w-full max-w-md bg-white shadow-lg rounded-lg p-4 text-center overflow-hidden">
+<div class="bg-white  p-4">
     {{-- Contenedor del mensaje --}}
     <div class="flex justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-blue-600 animate-bounce" viewBox="0 0 24 24"

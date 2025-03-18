@@ -27,13 +27,13 @@
      </a>
     </div>
 
-    <div class="w-full max-w-md mx-auto mt-2">
+    <div class="w-full max-w-md mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         @include('components.carousel-mensajes')
     </div>
-    <div class="w-full max-w-md mx-auto mt-2">
+    <div class="w-full max-w-md mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         @include('components.proxima-actuacion')
     </div>
-    <div class="w-full max-w-md mx-auto bg-white shadow-lg rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
+    <div class="w-full max-w-md mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         <x-animated-estadisticas />
     </div>
      

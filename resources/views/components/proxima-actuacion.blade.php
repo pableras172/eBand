@@ -14,8 +14,7 @@
         ->with('contrato')
         ->get();
 @endphp
-
-<div class="w-full max-w-md mx-auto bg-white shadow-lg rounded-lg p-4">
+<div>
     <div class="grid grid-cols-2 gap-4">
         <div>
             <x-animated-calendar />
@@ -130,10 +129,7 @@
 
         </div>
     </div>
-
-
-
-
+    
     <div class="mt-4">
         <hr>
         <a href="{{ route('actuacion.index') }}"
@@ -143,4 +139,5 @@
             {{ __('common.calendario') }}
         </a>
     </div>
+
 </div>
