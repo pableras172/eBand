@@ -14,9 +14,9 @@ use DateTime;
 class PreviewListas extends Component
 {
 
-    public $displayingPreviewListas= false;
+    public $displayingPreviewListas = false;
     public $id;
-    public $floatButon=false;
+    public $floatButon = false;
 
     public $showingModal = false;
 
@@ -26,11 +26,11 @@ class PreviewListas extends Component
 
     public $detallesLista = [
         'actuacion' => [],
-        'usuarios'=>[],
-        'lista'=>[],
-        'totalFilas'=>[],
-        'cochesCount'=>[],
-        'antelacion'=>[],
+        'usuarios' => [],
+        'lista' => [],
+        'totalFilas' => [],
+        'cochesCount' => [],
+        'antelacion' => [],
     ];
 
     public function mount($id)
@@ -38,11 +38,13 @@ class PreviewListas extends Component
         $this->id = $id;
     }
 
-    public function showModal(){
+    public function showModal()
+    {
         $this->showingModal = true;
     }
 
-    public function hideModal(){
+    public function hideModal()
+    {
         $this->showingModal = false;
     }
 
@@ -54,18 +56,23 @@ class PreviewListas extends Component
     public function render()
     {
         $actuacionId = $this->id;
-        
+
         // Obtener la actuación y la lista relacionada
         $actuacion = Actuacion::findOrFail($actuacionId);
         $lista = $actuacion->lista;
-    
-        if ($lista && $lista->users && $lista->users->contains(Auth::user()->id)
-            && !$lista->users()->where('users.id', (Auth::user()->id))->first()->pivot->disponible) {
-                $usuarioDisponible = false;
+
+        if (
+            $lista && $lista->users && $lista->users->contains(Auth::user()->id)
+            && !$lista->users()->where('users.id', (Auth::user()->id))->first()->pivot->disponible
+        ) {
+            $usuarioDisponible = false;
         }
 
         // Obtener todos los usuarios
-        $usuarios = User::where('activo', 1)->get();
+        $usuarios = User::where('activo', 1)
+            ->whereDoesntHave('hijos') // no es padre
+            ->get();
+
 
         // Marcar los usuarios seleccionados y con coche
         foreach ($usuarios as $usuario) {
@@ -83,14 +90,13 @@ class PreviewListas extends Component
                 if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->coche) {
                     $usuario->coche = true;
                 }
-                
             }
         }
-        
+
         // Verificar si la lista está mostrándose y si hay usuarios disponibles
         return view('livewire.preview-listas', compact('actuacion', 'usuarios', 'lista'));
     }
-    
+
     public function getUsuariosDisponibles($listaId)
     {
         return ListasUser::where('listas_id', $listaId)
@@ -99,6 +105,5 @@ class PreviewListas extends Component
                 $query->with('instrument');
             }])
             ->get();
-    }    
-    
+    }
 }

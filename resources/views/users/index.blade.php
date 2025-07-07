@@ -143,6 +143,18 @@
     <footer class="fixed bottom-0 left-0 z-20 w-full bg-white border-t border-gray-300 shadow dark:bg-gray-800 dark:border-gray-600">
         <div class="flex justify-around items-center px-6 py-3">
             
+            <a href="{{ route('users.index') }}"
+                class="flex flex-col items-center text-gray-700 hover:text-yellow-600 dark:text-gray-300 dark:hover:text-yellow-400 transition">
+                <svg width="32px" height="32px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M618.666667 490.666667H405.333333L149.333333 192h725.333334z" fill="#F57C00"></path><path d="M618.666667 810.666667l-213.333334 128V490.666667h213.333334zM885.333333 192h-746.666666C121.6 192 106.666667 177.066667 106.666667 160S121.6 128 138.666667 128h746.666666c17.066667 0 32 14.933333 32 32S902.4 192 885.333333 192z" fill="#FF9800"></path><path d="M810.666667 810.666667m-213.333334 0a213.333333 213.333333 0 1 0 426.666667 0 213.333333 213.333333 0 1 0-426.666667 0Z" fill="#F44336"></path><path d="M682.666667 768h256v85.333333H682.666667z" fill="#FFFFFF"></path></g></svg>
+                <span class="text-xs mt-1 font-bold">{{ __('Borrar Filtros') }}</span>
+            </a>
+
+            <a href="{{ route('users.index', ['padres' => 1]) }}"
+                class="flex flex-col items-center text-gray-700 hover:text-yellow-600 dark:text-gray-300 dark:hover:text-yellow-400 transition">
+                <svg height="32px" width="32px" version="1.1" id="_x36_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#646363;" d="M468.125,128.73C304.284,99.474,234.069,0,234.069,0S163.847,99.474,0.013,128.73 c0,64.367-5.858,277.944,234.056,383.27C473.976,406.675,468.125,193.098,468.125,128.73z"></path> <path style="fill:#EAEEBE;" d="M234.069,466.88C63.977,384.073,43.61,240.378,41.255,161.786 c95.349-23.792,158.067-69.25,192.814-101.558c34.747,32.308,97.458,77.766,192.807,101.558 C424.528,240.378,404.155,384.073,234.069,466.88z"></path> <path style="fill:#F0C57B;" d="M410.284,169.867c-1.813,70.95-19.134,203.716-176.215,279.583 c-29.05-14.015-53.306-29.989-73.582-47.191c-27.411-23.173-47.513-48.568-62.293-74.285 c-33.346-58.164-39.32-118.025-40.346-158.106c88.156-21.531,145.384-63.78,176.221-92.92 c15.328,14.483,37.185,32.21,66.118,49.035c26.16,15.183,58.132,29.637,96.284,40.256 C400.981,167.525,405.6,168.725,410.284,169.867z"></path> <g> <path style="fill:#716363;" d="M234.069,76.947c-30.837,29.14-88.066,71.389-176.221,92.92 c0.613,23.74,3.007,54.442,11.742,87.595h164.48V76.947z"></path> <path style="opacity:0.26;fill:#F1891A;" d="M396.472,166.238c-38.152-10.618-70.124-25.073-96.284-40.256 c-28.934-16.825-50.79-34.552-66.118-49.035v180.515h164.506c8.748-33.153,11.103-63.841,11.709-87.595 C405.6,168.725,400.981,167.525,396.472,166.238z"></path> <path style="opacity:0.26;fill:#F1891A;" d="M69.589,257.462c6.012,22.824,15.011,46.8,28.604,70.512 c14.78,25.718,34.882,51.113,62.293,74.285c20.276,17.202,44.532,33.176,73.582,47.191V257.462H69.589z"></path> <path style="fill:#716363;" d="M234.069,449.449c104.49-50.468,147.133-126.108,164.506-191.988H234.069V449.449z"></path> </g> <path style="opacity:0.08;fill:#231815;" d="M234.069,0c0,0,70.215,99.474,234.056,128.73c0,64.367,5.851,277.944-234.056,383.27V0 z"></path> </g> </g></svg>
+                <span class="text-xs mt-1 font-bold">{{ __('Mostrar padres') }}</span>
+            </a>
+
             <!-- Botón Mostrar Forasters -->
             <button type="button" id="mostrarForasters"
                 class="flex flex-col items-center text-gray-700 hover:text-yellow-600 dark:text-gray-300 dark:hover:text-yellow-400 transition"
@@ -187,6 +199,9 @@
                 boton.textContent = '{{__('Mostrar forasters')}}';
             }
         }
+
+
+
 
     </script>
 </x-app-layout>

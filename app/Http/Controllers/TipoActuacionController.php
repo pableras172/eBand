@@ -18,6 +18,8 @@ class TipoActuacionController extends Controller
      */
     public function index()
     {
+        $this->authorize('admin_access');
+
         $tipoactuacions = Tipoactuacion::all();
         return view('tipoactuacion.show-tipos', compact('tipoactuacions'));
     }
@@ -27,6 +29,8 @@ class TipoActuacionController extends Controller
      */
     public function create()
     {
+        $this->authorize('admin_access');
+
         return view('tipoactuacion.create-tipo');
     }
 
@@ -35,14 +39,20 @@ class TipoActuacionController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('admin_access');
+
         $data = request()->validate([
             'name' => 'required|max:100|unique:tipoactuacions,nombre',
-            'icon' => 'required|image'          
+            'icon' => 'required|image'   ,  
+            'tipoactuacion' => 'nullable|string|in:ensayo,concierto', // Validación del select    
 
         ]);
        
         $tipoa = new Tipoactuacion();
         $tipoa->nombre=$request->name;
+        $tipoa->tipoensayo = $request->tipoactuacion === 'ensayo';
+        $tipoa->tipoconcierto = $request->tipoactuacion === 'concierto';
+
         $tipoa->icon=$this->saveFile($request);
 
         $tipoa->save();       
@@ -66,7 +76,7 @@ class TipoActuacionController extends Controller
      */
     public function edit(Tipoactuacion $tipoActuacion)
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $this->authorize('admin_access');
         return view('tipoactuacion.edit-tipoactuacion', compact('tipoActuacion'));
     }
 
@@ -75,6 +85,8 @@ class TipoActuacionController extends Controller
      */
     public function update(Request $request, Tipoactuacion $tipoactuacion)
     {
+        $this->authorize('admin_access');
+    
         // Validar los datos del formulario
         $request->validate([
             'nombre' => [
@@ -82,9 +94,9 @@ class TipoActuacionController extends Controller
                 'max:100',
                 Rule::unique('tipoactuacions')->ignore($tipoactuacion->id),
             ],
-            'icon' => 'required|image',    
+            'icon' => 'nullable|image|max:2048', 
+            'tipoactuacion' => 'nullable|string|in:ensayo,concierto', // Validación del select
         ]);
-        
     
         // Actualizar el nombre del tipo de actuación
         $tipoactuacion->nombre = $request->nombre;
@@ -95,19 +107,25 @@ class TipoActuacionController extends Controller
             $tipoactuacion->icon = $imagePath;
         }
     
+        // Ajustar los valores de tipoensayo y tipoconcierto según la opción seleccionada
+        $tipoactuacion->tipoensayo = $request->tipoactuacion === 'ensayo';
+        $tipoactuacion->tipoconcierto = $request->tipoactuacion === 'concierto';
+    
         // Guardar los cambios en la base de datos
         $tipoactuacion->save();
     
         // Redireccionar a la página de detalles del tipo de actuación actualizado
         return redirect()->route('tipoactuacion.index')
-                         ->with('success', 'Tipo de actuación creada.');
+                         ->with('success', 'Tipo de actuación actualizada.');
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Tipoactuacion $tipoactuacion)
     {
+        $this->authorize('admin_access');
         // Elimina el instrumento de la base de datos
         if($tipoactuacion->delete()){
             return redirect()->route('tipoactuacion.index', ['success' => 'Se ha eliminado el tipo de actuación']);

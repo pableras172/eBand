@@ -45,10 +45,13 @@ class ListaController extends Controller
         }
 
         $usuarios = User::where('activo', 1)
-        ->join('instruments as i', 'users.instrument_id', '=', 'i.id')
-        ->orderBy('i.orden')
-        ->select('users.*', 'i.orden as instrument_order')
-        ->get();
+            ->whereDoesntHave('hijos') // excluye padres
+            ->join('instruments as i', 'users.instrument_id', '=', 'i.id')
+            ->orderBy('i.orden')
+            ->select('users.*', 'i.orden as instrument_order')
+            ->get();
+
+
 
         // Marcar los usuarios seleccionados y con coche
         foreach ($usuarios as $usuario) {

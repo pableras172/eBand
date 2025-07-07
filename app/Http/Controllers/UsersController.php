@@ -15,23 +15,26 @@ use Ramsey\Uuid\Uuid;
 class UsersController extends Controller
 {
 
-   public function index(Request $request)
+    public function index(Request $request)
     {
-        //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->authorize('admin_access');
 
         $instrument_id = $request->input('instrument_id');
+        $soloPadres = $request->boolean('padres');
 
-        $usersQuery = User::with('roles')
-            ->orderBy('name', 'asc');
+        $usersQuery = User::with('roles')->orderBy('name', 'asc');
 
-        // Filtrar por instrumento si se proporciona un instrument_id
+        // Filtrar por instrumento si aplica
         if ($instrument_id) {
-            $users = $usersQuery->where('instrument_id', $instrument_id);
-            $users = $usersQuery->paginate(100);
-        }else{
-            $users = $usersQuery->paginate(10);
-        }       
+            $usersQuery->where('instrument_id', $instrument_id);
+        }
+
+        // Filtrar solo usuarios que tienen hijos (padres)
+        if ($soloPadres) {
+            $usersQuery->whereHas('hijos');
+        }
+
+        $users = $usersQuery->paginate(10);
 
         $instruments = Instrument::select('id', 'name', 'icon')
             ->withCount('users')
@@ -42,15 +45,18 @@ class UsersController extends Controller
     }
 
 
+
     public function create()
     {
-       //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-       $this->authorize('admin_access');
+        //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $this->authorize('admin_access');
 
         $roles = Role::whereNotIn('title', ['SuperAdmin'])->pluck('title', 'id');
         $instruments = Instrument::all();
 
-        return view('users.create', compact('roles'), compact('instruments'));
+        $todosLosUsuarios = User::orderBy('name')->get();
+
+        return view('users.create', compact('roles', 'instruments', 'todosLosUsuarios'));
     }
 
     public function store(StoreUserRequest $request)
@@ -58,15 +64,25 @@ class UsersController extends Controller
         $this->authorize('admin_access');
         // Crear el usuario con los datos validados del formulario
         $user = User::create($request->validated());
-    
+
         // Si la creación del usuario ha sido exitosa
         if ($user) {
+            // Asignar hijos si se han seleccionado
+            if ($request->has('hijos')) {
+                foreach ($request->input('hijos') as $hijoId) {
+                    $hijo = User::find($hijoId);
+                    if ($hijo) {
+                        $hijo->parent_id = $user->id;
+                        $hijo->save();
+                    }
+                }
+            }
             // Actualizar el campo email_verified_at con la fecha y hora actual
             $user->update(['email_verified_at' => now()]);
-            
+
             // Sincronizar los roles del usuario
             $user->roles()->sync($request->input('roles', []));
-    
+
             // Redireccionar al índice de usuarios con un mensaje de éxito
             return redirect()->route('users.index', ['success' => true]);
         } else {
@@ -74,7 +90,7 @@ class UsersController extends Controller
             return redirect()->back()->withErrors(['message' => 'Error al crear el usuario']);
         }
     }
-    
+
 
     public function show(User $user)
     {
@@ -90,32 +106,48 @@ class UsersController extends Controller
         $this->authorize('admin_access');
 
         $roles = Role::whereNotIn('title', ['SuperAdmin'])->pluck('title', 'id');
+        $todosLosUsuarios = User::orderBy('name')->get();
 
-        $user->load('roles');       
+        $user->load(['roles', 'hijos']);
 
         $instruments = Instrument::all();
 
-        return view('users.create', compact('user', 'roles', 'instruments'));
+        return view('users.create', compact('user', 'roles', 'instruments', 'todosLosUsuarios'));
     }
 
     public function update(UpdateUserRequest $request, User $user)
     {
         $this->authorize('admin_access');
 
-        if($request->activo){
-            $user->activo=1;
-        }else{
-            $user->activo=0;
+        if ($request->activo) {
+            $user->activo = 1;
+        } else {
+            $user->activo = 0;
         }
 
-        if($request->forastero){
-            $user->forastero=1;
-        }else{
-            $user->forastero=0;
+        if ($request->forastero) {
+            $user->forastero = 1;
+        } else {
+            $user->forastero = 0;
+        }
+
+        foreach ($user->hijos as $hijoActual) {
+            $hijoActual->parent_id = null;
+            $hijoActual->save();
         }
 
         $user->update($request->validated());
         $user->roles()->sync($request->input('roles', []));
+
+        if ($request->has('hijos')) {
+            foreach ($request->input('hijos') as $hijoId) {
+                $hijo = User::find($hijoId);
+                if ($hijo) {
+                    $hijo->parent_id = $user->id;
+                    $hijo->save();
+                }
+            }
+        }
 
         return redirect()->route('users.index');
     }

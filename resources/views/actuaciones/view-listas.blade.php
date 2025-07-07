@@ -89,7 +89,7 @@
     <div class="p-2">
         @foreach ($actuacionesPorMes as $mes => $actuacionesDelMes)
            
-            
+            <x-ads/>
             <div class="w-full bg-white border-b border-gray-300 p-2">
                 <h2
                     class="mb-1 mt-2 text-2xl font-extrabold text-gray-900 dark:text-white md:text-2xl lg:text-2xl text-center">

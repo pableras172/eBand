@@ -44,12 +44,18 @@ class PaymentIndex extends Component
     {
         $this->user = $user ?: Auth::user();
 
-        if (!Auth::user()->hasRole('Admin') && $this->user->id !== Auth::id()) {
+        $authUser = Auth::user();
+
+        $esPropio = $this->user->id === $authUser->id;
+        $esPadreDelUser = $authUser->hijos->contains('id', $this->user->id);
+
+        if (!$authUser->hasRole('Admin') && !$esPropio && !$esPadreDelUser) {
             abort(403, __('Sorry! You are not authorized to perform this action.'));
         }
 
         $this->authorize('viewAny', [Payment::class, $this->user]);
     }
+
 
 
 
@@ -69,7 +75,7 @@ class PaymentIndex extends Component
 
     public function delete(Payment $payment)
     {
-        $this->authorize('delete', $user,$payment);            
+        $this->authorize('delete', $user, $payment);
         $payment->delete();
 
         $this->confirmingDeletion = false;
@@ -94,32 +100,31 @@ class PaymentIndex extends Component
 
     public function getRowsQueryProperty()
     {
-        if($this->user!=null && $this->user->id!=null){
+        if ($this->user != null && $this->user->id != null) {
             return Payment::query()
-            ->join('users', 'payment.users_id', '=', 'users.id')
-            ->with('user')
-            ->where('payment.users_id', $this->user->id)
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->where(function($query) {
-                $query->where('users.name', 'like', "%{$this->search}%")
-                      ->orWhere('payment.descripcion', 'like', "%{$this->search}%");
-            })
-            ->select('payment.*');
-        }else{
+                ->join('users', 'payment.users_id', '=', 'users.id')
+                ->with('user')
+                ->where('payment.users_id', $this->user->id)
+                ->orderBy($this->sortField, $this->sortDirection)
+                ->where(function ($query) {
+                    $query->where('users.name', 'like', "%{$this->search}%")
+                        ->orWhere('payment.descripcion', 'like', "%{$this->search}%");
+                })
+                ->select('payment.*');
+        } else {
             return Payment::query()
-            ->join('users', 'payment.users_id', '=', 'users.id')
-            ->with('user')
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->where(function($query) {
-                $query->where('users.name', 'like', "%{$this->search}%")
-                      ->orWhere('payment.descripcion', 'like', "%{$this->search}%");
-            })
-            ->select('payment.*');
+                ->join('users', 'payment.users_id', '=', 'users.id')
+                ->with('user')
+                ->orderBy($this->sortField, $this->sortDirection)
+                ->where(function ($query) {
+                    $query->where('users.name', 'like', "%{$this->search}%")
+                        ->orWhere('payment.descripcion', 'like', "%{$this->search}%");
+                })
+                ->select('payment.*');
         }
-        
     }
-    
-    
+
+
 
     public function render()
     {

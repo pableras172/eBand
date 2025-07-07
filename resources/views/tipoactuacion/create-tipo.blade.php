@@ -30,6 +30,18 @@
                     <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                 @enderror
             </div>
+
+            <!-- Tipo Ensayo -->
+            <div>
+                <label for="tipoactuacion" class="block text-sm font-medium text-gray-700 mb-1">{{__('Tipus de actuacio')}}</label>
+                <select name="tipoactuacion" id="tipoactuacion" class="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 mb-2">
+                    <option value="" disabled selected>Selecciona un tipo</option>
+                    <option value="ensayo">{{__('Es de tipo de ensayo')}}</option>
+                    <option value="concierto">{{__('Es de tipo de concierto')}}</option>
+                </select>
+               
+                <p class="text-xs text-gray-500 mt-1">ℹ️{{__('ayuda_tipos')}}</p>
+            </div>
     
             <!-- Botones -->
             <div class="flex items-center justify-between pt-4">
@@ -44,5 +56,6 @@
             </div>
         </form>
     </div>
+
     
 </x-app-layout>

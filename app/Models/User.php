@@ -18,15 +18,26 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasProfilePhoto;
     use HasTeams;
     use Notifiable;
-    use TwoFactorAuthenticatable;   
-    
+    use TwoFactorAuthenticatable;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password','instrument_id','telefono','porcentaje','forastero','observaciones','fechaAlta','activo','uuid','email_verified_at'
+        'name',
+        'email',
+        'password',
+        'instrument_id',
+        'telefono',
+        'porcentaje',
+        'forastero',
+        'observaciones',
+        'fechaAlta',
+        'activo',
+        'uuid',
+        'email_verified_at'
     ];
 
     /**
@@ -65,7 +76,7 @@ class User extends Authenticatable implements MustVerifyEmail
         self::created(function (User $user) {
             if (!$user->roles()->get()->contains(2)) {
                 $user->roles()->attach(2);
-           }           
+            }
         });
     }
 
@@ -81,14 +92,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function listas()
     {
-        return $this->belongsToMany(Listas::class,'listas_user','user_id','listas_id')
-            ->withPivot('coche', 'pagada', 'cuentas','disponible'); // También puedes incluir timestamps si los tienes en la tabla pivot
+        return $this->belongsToMany(Listas::class, 'listas_user', 'user_id', 'listas_id')
+            ->withPivot('coche', 'pagada', 'cuentas', 'disponible'); // También puedes incluir timestamps si los tienes en la tabla pivot
     }
 
     public function hasRole($role)
     {
-        
-        return $this->roles()->where('title',$role)->exists();
+
+        return $this->roles()->where('title', $role)->exists();
     }
 
 
@@ -106,6 +117,16 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(Comment::class, 'user_id');
     }
-    
+
+
+    public function hijos()
+    {
+        return $this->hasMany(User::class, 'parent_id');
+    }
+
+    public function padre()
+    {
+        return $this->belongsTo(User::class, 'parent_id');
+    }
 
 }

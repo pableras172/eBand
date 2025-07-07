@@ -38,6 +38,8 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\AuthGates::class,
             \App\Http\Middleware\SetLocaleFromCookie::class,
+            \App\Http\Middleware\EstablecerUsuarioActivo::class,
+            
         ],
 
         'api' => [
@@ -67,5 +69,6 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'usuario.activo' => \App\Http\Middleware\EstablecerUsuarioActivo::class,
     ];
 }
