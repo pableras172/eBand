@@ -24,6 +24,7 @@ use App\Livewire\Comments\CommentIndex;
 use App\Livewire\Comments\CommentCreate;
 use App\Livewire\Comments\CommentEdit;
 use App\Jobs\SendDailyCommentsNotification;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,9 +93,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/actuacion/createtocontract/{contratos}', [ActuacionController::class, 'createtocontract'])->name('actuacion.createtocontract');
 
         Route::get('/actuaciones/{user}/{year}', [ActuacionController::class, 'getListadoActuacionesUsuarioAnyo'])
-        ->middleware('usuario.activo')
-        ->name('actuaciones.usuario.anyo');
-        
+            ->middleware('usuario.activo')
+            ->name('actuaciones.usuario.anyo');
+
         Route::get('/actuaciones/{user}/{year}/{type}', [ActuacionController::class, 'getListadoActuacionesUsuarioAndTipo'])->name('actuaciones.usuario.listatipo');
         Route::get('/actuaciones/{user}/{year}/p/{poblacion}', [ActuacionController::class, 'getActuacionesUsuarioPorPoblacionAnyo'])->name('actuaciones.usuario.poblacion');
 
@@ -142,6 +143,34 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         //Route::get('/paymentresumes/create',PaymentresumeCreate::class)->name('paymentresumes.create');
         //Route::get('/paymentresumes/{paymetresume}',PaymentresumeEdit::class)->name('paymentresumes.edit');
 
+        Route::post('/checkout', function (Request $request) {
+            return $request->user()->checkout(
+                [['price' => 'price_1RiBXlR7WzqUtYK28YCdnJ2q', 'quantity' => 1]],
+                [
+                    'mode' => 'subscription',
+                    'success_url' => route('stripe.success'),
+                    'cancel_url' => route('stripe.cancel'),
+                ]
+            );
+        })->name('checkout');
+
+        Route::post('/donation', function (Request $request) {
+            return $request->user()->checkout(
+                [['price' => 'price_1RitydR7WzqUtYK2JqlkgfPN', 'quantity' => 1]],
+                [
+                    'mode' => 'payment',
+                    'success_url' => route('stripe.success'),
+                    'cancel_url' => route('stripe.cancel'),
+                ]
+            );
+        })->name('donation');
+
+        Route::view('/stripe/success', 'stripe.success')->name('stripe.success');
+        Route::view('/stripe/cancel', 'stripe.cancel')->name('stripe.cancel');
+
+        Route::get('/billing-portal', function (Request $request) {
+            return $request->user()->redirectToBillingPortal(route('dashboard'));
+        });
     }
 );
 

@@ -243,18 +243,22 @@ use App\Helpers\ConfigHelper;
         @endif
     </x-slot>
 
+    @php
+        $limiteAntelacion = ConfigHelper::getConfigValue('diasantelacion') ?? 3;
+    @endphp
 
     @if ($usuarioDisponible)
         <div class="flex justify-center mt-4 mb-4">
             <a id="btnodisponible" href="" data-lista-id="{{ $lista->id }}"
                 data-usuario-id="{{ Auth::user()->id }}" data-disponible="0"
                 data-antelacion="{{ $antelacion->days }}" onclick="gestionarDisponibilidad(event,this)"
+                data-limite-antelacion="{{ $limiteAntelacion }}"
                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-red-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition"
                 aria-label="Comunicar no disponible">
                 {{ __('Comunicar no disponible') }}
             </a>
         </div>
-        @if ($antelacion->days <= 2)
+        @if ($antelacion->days <= $limiteAntelacion)
             <div class="flex justify-center mt-4 mb-4">
                 {{ __('No se puede cambiar la disponibilidad con pocos dias de antelación.') }}
             </div>
@@ -263,7 +267,8 @@ use App\Helpers\ConfigHelper;
         <div class="flex justify-center mt-2 mb-2">
             <a id="btnodisponible" href="" data-lista-id="{{ $lista->id }}"
                 data-usuario-id="{{ Auth::user()->id }}" data-disponible="1"
-                onclick="gestionarDisponibilidad(event,this)"
+                data-antelacion="{{ $antelacion->days }}" onclick="gestionarDisponibilidad(event,this)"
+                data-limite-antelacion="{{ $limiteAntelacion }}"
                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-gray-900 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition"
                 aria-label="Comunicar no disponible">
                 {{ __('Comunicar disponible') }}
@@ -736,18 +741,25 @@ use App\Helpers\ConfigHelper;
 
             }
 
-            function gestionarDisponibilidad(evemt, componente) {
+            function gestionarDisponibilidad(event, componente) {
 
                 event.preventDefault();
 
+                componente.disabled = true;
+                const originalText = componente.innerHTML;
+                componente.innerHTML = 'Cambiando disponibilidad...';
+                
                 var listaId = componente.getAttribute('data-lista-id');
                 var usuarioId = componente.getAttribute('data-usuario-id');
                 var disponible = componente.getAttribute('data-disponible');
                 var antelacion = parseInt(componente.getAttribute('data-antelacion'));
+                var limiteAntelacion = parseInt(componente.getAttribute('data-limite-antelacion') ?? 3);
 
                 // Verificar si se puede cambiar la disponibilidad
-                if (disponible == 0 && antelacion <= 2) {
+                if (disponible == 0 && antelacion <= limiteAntelacion) {
                     alert('No se puede cambiar la disponibilidad con pocos días de antelación.');
+                    componente.disabled = false;
+                    componente.innerHTML = originalText;
                     return;
                 }
 
@@ -768,7 +780,8 @@ use App\Helpers\ConfigHelper;
                     error: function(xhr, status, error) {
                         let message = xhr.responseJSON?.message || 'Error al comunicar disponibilidad.';
                         showToast(message);
-                        //showToast(message);
+                        componente.disabled = false;
+                        componente.innerHTML = originalText;
                     }
                 });
             }

@@ -11,6 +11,25 @@ use App\Models\Tipoactuacion;
 class Actuacion extends Model
 {
     use HasFactory;
+    protected $fillable = [
+    'fechaActuacion',
+    'descripcion',
+    'tipoactuacions_id',
+    'coches',
+    'preciocoche',
+    'musicos',
+    'preciomusico',
+    'totalcoches',
+    'totalmusicos',
+    'totalactuacion',
+    'contratos_id',
+    'pagado',
+    'aplicaporcentaje',
+    'noaplicapago',
+    'observaciones',
+    'porcentajepersonal',
+];
+
 
     public function lista()
     {

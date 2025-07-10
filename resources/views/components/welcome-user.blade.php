@@ -1,5 +1,5 @@
 <div class="bg-gray-100 min-h-screen flex flex-col items-center">
-    <div class="w-full max-w-2xl bg-white p-2 rounded-lg shadow-md text-center mt-1">
+    <div class="w-full  bg-white p-2 rounded-lg shadow-md text-center mt-1">
         {{-- Avatar del usuario --}}
         <div class="relative w-20 h-20 mx-auto mb-3">
             {{-- Avatar del usuario --}}
@@ -82,7 +82,7 @@
         </a>
     </div>
 
-    <div class="w-full max-w-md mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
+    <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         @include('components.carousel-mensajes')
     </div>
     @php
@@ -90,16 +90,18 @@
         $esPadre = $user->hijos()->exists();
     @endphp
 
-    <div class="w-full max-w-md mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
+    <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         @if ($esPadre)
             @include('components.proxima-actuacion-padres')
         @else
             @include('components.proxima-actuacion')
         @endif
     </div>
-    <div class="w-full max-w-md mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
+    <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         <x-animated-estadisticas />
     </div>
+    
+    <x-subscription-info />
 
 </div>
 

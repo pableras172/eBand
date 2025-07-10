@@ -23,12 +23,7 @@ class UpdateForm extends Form
                     $this->configuration
                 ),
             ],
-            'value' => [
-                'required',
-                Rule::unique('configuration', 'value')->ignore(
-                    $this->configuration
-                ),
-            ],
+            'value' => ['required'],
         ];
     }
 

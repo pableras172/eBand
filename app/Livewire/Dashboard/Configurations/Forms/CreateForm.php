@@ -11,7 +11,7 @@ class CreateForm extends Form
     #[Rule('required|unique:configuration,param')]
     public $param = '';
 
-    #[Rule('required|unique:configuration,value')]
+    #[Rule('required')]
     public $value = '';
 
     public function save()

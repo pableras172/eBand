@@ -251,6 +251,7 @@
 
 
     </div>
+    <x-subscription-info />
     <script>
         document.getElementById('yearSelect').addEventListener('change', function() {
             var year = this.value;
