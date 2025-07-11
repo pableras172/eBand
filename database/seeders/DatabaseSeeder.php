@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             //PermissionsTableSeeder::class,
             //RolesTableSeeder::class,
             //PermissionRoleTableSeeder::class,
-            InstrumentSeeder::class,
+            //InstrumentSeeder::class,
             UsersTableSeeder::class,
             RoleUserTableSeeder::class,
             TipoactuacionSeeder::class,
