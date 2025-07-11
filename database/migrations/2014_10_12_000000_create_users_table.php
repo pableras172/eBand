@@ -26,7 +26,7 @@ return new class extends Migration
             $table->text('observaciones')->nullable();
             $table->date('fechaAlta')->nullable();
             $table->boolean('activo')->default(true);      
-            $table->string('uuid', 100);
+            $table->string('uuid', 100)->nullable();
             $table->foreignId('instrument_id')->nullable()->constrained();
             $table->timestamps();
         });

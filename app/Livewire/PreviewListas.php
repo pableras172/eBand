@@ -70,6 +70,7 @@ class PreviewListas extends Component
 
         // Obtener todos los usuarios
         $usuarios = User::where('activo', 1)
+            ->whereNotNull('instrument_id') 
             ->whereDoesntHave('hijos') // no es padre
             ->get();
 

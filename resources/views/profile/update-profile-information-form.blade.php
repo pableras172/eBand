@@ -91,7 +91,7 @@
         <div class="col-span-6 sm:col-span-4">
             <x-label for="instrument" value="{{ __('Instrument') }}" />
             <select id="instrument" name="instrument" wire:model="state.instrument_id" class="mt-1 block w-full"
-                required>
+                >
                 <option value="">{{ __('Selecciona Instrument') }}</option>
 
                 @foreach ($state['instruments'] as $instrument)

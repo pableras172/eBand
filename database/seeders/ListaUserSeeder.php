@@ -13,9 +13,10 @@ class ListaUserSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = \Faker\Factory::create();
         // Obtener el número total de usuarios
         $numUsuarios = User::count();
-
+        $listas = \DB::table('listas')->pluck('id')->toArray();
         // Crear al menos 10 listas
         for ($i = 1; $i <= 10; $i++) {
             // Crear una lista vacía para esta iteración
@@ -27,7 +28,7 @@ class ListaUserSeeder extends Seeder
 
                 // Agregar el usuario a la lista actual
                 $lista[] = [
-                    'lista_id'    => $i, // Asignar el ID de lista actual
+                    'listas_id'    => $faker->randomElement($listas), // Asignar el ID de lista actual
                     'user_id'     => $usuarioId, // Asignar el ID del usuario aleatorio
                     'coche'       => rand(0, 1),
                     'pagada'      => rand(0, 1),

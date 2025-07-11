@@ -44,12 +44,13 @@ class ListaController extends Controller
                 $usuarioDisponible = false;
         }
 
-        $usuarios = User::where('activo', 1)
-            ->whereDoesntHave('hijos') // excluye padres
-            ->join('instruments as i', 'users.instrument_id', '=', 'i.id')
-            ->orderBy('i.orden')
-            ->select('users.*', 'i.orden as instrument_order')
-            ->get();
+       $usuarios = User::where('activo', 1)
+        ->whereNotNull('instrument_id') // excluir usuarios sin instrumento asignado
+        ->whereDoesntHave('hijos') // excluir padres
+        ->join('instruments as i', 'users.instrument_id', '=', 'i.id')
+        ->orderBy('i.orden')
+        ->select('users.*', 'i.orden as instrument_order')
+        ->get();
 
 
 

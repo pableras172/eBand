@@ -286,6 +286,7 @@ use App\Helpers\ConfigHelper;
                             <h2 class="px-3 py-2 font-medium flex-grow">
                                 {{ $usuariosDelInstrumento->first()->instrument->name }}
                             </h2>
+                            
                             @can('admin')
                                 <button type="button" id="f_{{ $usuariosDelInstrumento->first()->instrument->name }}"
                                     class="ml-3 mr-3 bg-fondobotonnaranja text-white p-2 rounded leading-none flex items-center justify-center"
