@@ -8,7 +8,7 @@ use App\Models\Actuacion;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 
-class CommentsTableSeeder extends Seeder
+class CommentSeeder extends Seeder
 {
     public function run(): void
     {
