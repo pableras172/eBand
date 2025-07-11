@@ -18,13 +18,14 @@ class ActuacionSeeder extends Seeder
         $actuaciones = [];
         $faker = \Faker\Factory::create();
         $contratoIds = \DB::table('contratos')->pluck('id')->toArray(); // o Contrato::pluck('id')->toArray();
+        $tipoActuacion = \DB::table('tipoactuacions')->pluck('id')->toArray(); // o Contrato::pluck('id')->toArray();
         // Crea 10 actuaciones ficticias
         for ($i = 0; $i < 30; $i++) {
             $fechaActuacion = $faker->dateTimeBetween('-1 year', '+1 year');
             $actuaciones[] = [
                 'fechaActuacion' => $fechaActuacion,
                 'descripcion' => $faker->sentence(6),
-                'tipoactuacions_id' => $faker->numberBetween(1, 8), // Suponiendo que existen 3 tipos de actuaciones en la tabla "tipo_actuaciones"
+                'tipoactuacions_id' => $faker->randomElement($tipoActuacion), // Suponiendo que existen 3 tipos de actuaciones en la tabla "tipo_actuaciones"
                 'coches' => $faker->numberBetween(0, 10),
                 'preciocoche' => $faker->randomFloat(2, 10, 100),
                 'musicos' => $faker->numberBetween(1, 20),

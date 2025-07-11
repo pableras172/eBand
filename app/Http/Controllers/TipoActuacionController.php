@@ -21,6 +21,7 @@ class TipoActuacionController extends Controller
         $this->authorize('admin_access');
 
         $tipoactuacions = Tipoactuacion::all();
+        dd($tipoactuacions);
         return view('tipoactuacion.show-tipos', compact('tipoactuacions'));
     }
 
