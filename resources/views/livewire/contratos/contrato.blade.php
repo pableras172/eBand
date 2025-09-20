@@ -69,7 +69,9 @@
                 <label for="anyo" class="block text-sm font-medium text-gray-700">{{ __('Any') }}</label>
                 <input type="number" id="anyo" name="anyo"
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    value="{{ isset($contrato) ? $contrato->anyo : old('anyo') }}">
+                    value="{{ old('anyo', isset($contrato) ? $contrato->anyo : date('Y')) }}" min="1900"
+                    max="2100" required>
+
             </div>
             <div class="mb-4">
                 <label for="dnicontacto"

@@ -29,6 +29,7 @@ class CreateNewUser implements CreatesNewUsers
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],            
             'password' => $this->passwordRules(),
             'telefono' => ['required', 'numeric'],
+            'es_padre' => ['nullable', 'boolean'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
             'g-recaptcha-response' => 'required|captcha'            
         ])->validate();
@@ -41,6 +42,7 @@ class CreateNewUser implements CreatesNewUsers
                 'activo' => false,
                 'fechaAlta' => now(),
                 'instrument_id' => $input['instrument_id'],
+                'es_padre' => !empty($input['es_padre']) ? 1 : 0,   // guardar valor
                 'telefono'=>$input['telefono'],
                 'uuid'=>Uuid::uuid4()->toString(),
             ]), function (User $user) {
