@@ -5,11 +5,7 @@
         </h2>
     </x-slot>
 
-    <x-ui.toast on="saved"> Suggestion saved successfully. </x-ui.toast>
-
-    <div class="w-full text-gray-500 text-lg font-semibold py-4 uppercase">
-        <h1>Edit {{ __('crud.suggestions.itemTitle') }}</h1>
-    </div>
+    <x-ui.toast on="saved">{{ __('crud.suggestions.toast.saved') }}</x-ui.toast>
 
     <div class="overflow-hidden border rounded-lg bg-white">
         <form class="w-full mb-0" wire:submit.prevent="save">
@@ -56,7 +52,7 @@
                         <!-- mostrar quién será el creador (reactivo) -->
                         <div class="mt-1 text-sm text-gray-700 dark:text-gray-300">
                             {{ __('crud.suggestions.created_by') ?? 'Creado por' }}:
-                            {{ $form->user->name }}
+                            {{ $form->suggestion?->user?->name ?? '-' }}
                         </div>
 
                         <x-ui.input.error for="form.users_id" />
@@ -78,12 +74,12 @@
                 </div>
             </div>
 
-            <div class="flex justify-between mt-4 border-t border-gray-50 p-4">
-                <div>
+            <div class="flex justify-center mt-4 border-t border-gray-50 p-4">
+                <div class="flex items-center space-x-3">
                     <!-- Other buttons here -->
-                </div>
-                <div>
-                    <x-ui.button type="submit">Save</x-ui.button>
+                    <x-ui.button type="submit">
+                        {{ __('Guardar') }}
+                    </x-ui.button>
                 </div>
             </div>
         </form>
