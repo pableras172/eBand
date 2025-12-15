@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Instrument;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\Log;
 
 class UsersController extends Controller
 {
@@ -164,20 +165,23 @@ class UsersController extends Controller
 
     public function getuuid(User $user)
     {
-        // Verificar si el usuario ya tiene un UUID
-        if (!$user->uuid) {
-            // Generar un nuevo UUID
-            $uuid = Uuid::uuid4()->toString();
+        try {
+            if (!$user->uuid) {
+                $uuid = Uuid::uuid4()->toString();
+                $user->uuid = $uuid;
+                $user->save();
+            } else {
+                $uuid = $user->uuid;
+            }
 
-            // Asignar el UUID al usuario y guardarlo en la base de datos
-            $user->uuid = $uuid;
-            $user->save();
-        } else {
-            // El usuario ya tiene un UUID, simplemente obtenerlo
-            $uuid = $user->uuid;
+            return response()->json(['uuid' => $uuid]);
+        } catch (\Throwable $e) {
+            Log::error('Error generando/obteniendo UUID de usuario', [
+                'user_id' => $user->id ?? null,
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json(['error' => 'Error al obtener UUID'], 500);
         }
-
-        // Devolver el UUID como respuesta en formato JSON
-        return response()->json(['uuid' => $uuid]);
     }
 }

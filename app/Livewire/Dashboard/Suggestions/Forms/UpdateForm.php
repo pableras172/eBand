@@ -5,6 +5,7 @@ namespace App\Livewire\Dashboard\Suggestions\Forms;
 use Livewire\Form;
 use App\Models\Suggestion;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class UpdateForm extends Form
 {
@@ -30,6 +31,7 @@ class UpdateForm extends Form
             'texto' => ['required', 'string'],
             'observaciones' => ['nullable', 'string'],
             'users_id' => ['nullable'],
+            'anonimo' => ['boolean'],
         ];
     }
 
@@ -42,13 +44,23 @@ class UpdateForm extends Form
         $this->texto = $suggestion->texto;
         $this->observaciones = $suggestion->observaciones;
         $this->users_id = $suggestion->users_id;
-        $this->anonimo = $suggestion->anonimo;
+        $this->anonimo = (bool) $suggestion->anonimo;
     }
 
     public function save()
     {
-        $this->validate();
+        try {
+            $this->validate();
 
-        $this->suggestion->update($this->except(['suggestion']));
+            $this->suggestion->update($this->except(['suggestion']));
+        } catch (\Throwable $e) {
+            Log::error('Error al guardar sugerencia', [
+                'suggestion_id' => $this->suggestion->id ?? null,
+                'data' => $this->except(['suggestion']),
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e; // re-lanzar para que Livewire muestre errores de validación/servidor
+        }
     }
 }
