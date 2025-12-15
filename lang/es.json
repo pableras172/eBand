@@ -964,7 +964,24 @@
     "Donativo único (mín. 10€)": "Donativo único (mín. 10€)",
     "acceso completo para siempre mientras la app esté activa.": "acceso completo para siempre mientras la app esté activa.",
     "Suscribirme por 5€": "Suscribirme por 5€",
-    "Hacer donativo de 10€ o más": "Hacer donativo de 10€ o más"
+    "Hacer donativo de 10€ o más": "Hacer donativo de 10€ o más",
 
+    "crud.suggestions.collectionTitle": "Sugerencias",
+    "crud.suggestions.itemTitle": "Sugerencia",
+    "crud.suggestions.deleted": "Sugerencia eliminada correctamente",
+    "crud.suggestions.inputs.fechacreacion.label": "Fecha de creación",
+    "crud.suggestions.inputs.titulo.label": "Título",
+    "crud.suggestions.inputs.titulo.placeholder": "Título de la sugerencia",
+    "crud.suggestions.inputs.texto.label": "Texto",
+    "crud.suggestions.inputs.texto.placeholder": "Describe tu sugerencia",
+    "crud.suggestions.inputs.observaciones.label": "Observaciones (admin)",
+    "crud.suggestions.inputs.observaciones.placeholder": "Observaciones internas",
 
+    "crud.suggestions.inputs.iduser.label": "Usuario",
+    "crud.suggestions.created_by": "Creado por",
+    "crud.suggestions.anonymous": "Anónimo",
+    "actions.save": "Guardar",
+    "messages.suggestion_saved": "Sugerencia enviada correctamente",
+    "Guest": "Invitado",
+    "crud.suggestions.create": "Crear sugerencia"
 }

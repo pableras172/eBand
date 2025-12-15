@@ -963,5 +963,27 @@
     "Donativo único (mín. 10€)": "Donatiu únic (mín. 10€)",
     "acceso completo para siempre mientras la app esté activa.": "accés complet per sempre mentre l'app estiga activa.",
     "Suscribirme por 5€": "Subscriure'm per 5€",
-    "Hacer donativo de 10€ o más": "Fer un donatiu de 10€ o més"
+    "Hacer donativo de 10€ o más": "Fer un donatiu de 10€ o més",
+
+        "crud.suggestions.collectionTitle": "Suggeriments",
+        "crud.suggestions.itemTitle": "Suggeriment",
+        "crud.suggestions.deleted": "Suggeriment eliminat correctament",
+        "crud.suggestions.inputs.fechacreacion.label": "Data de creació",
+        "crud.suggestions.inputs.titulo.label": "Títol",
+        "crud.suggestions.inputs.titulo.placeholder": "Títol del suggeriment",
+        "crud.suggestions.inputs.texto.label": "Text",
+        "crud.suggestions.inputs.texto.placeholder": "Descriu el teu suggeriment",
+        "crud.suggestions.inputs.observaciones.label": "Observacions (admin)",
+        "crud.suggestions.inputs.observaciones.placeholder": "Observacions internes",       
+
+           
+            "crud.suggestions.inputs.iduser.label": "Usuari",
+            "crud.suggestions.created_by": "Creat per",
+            "crud.suggestions.anonymous": "Anònim",
+            "actions.save": "Desar",
+            "messages.suggestion_saved": "Suggeriment enviat correctament",
+            "Guest": "Visitant",
+            "crud.suggestions.create": "Crear sugerencia"
+        
+
 }

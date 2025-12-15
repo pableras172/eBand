@@ -11,6 +11,8 @@ use App\Policies\UserPolicy;
 use App\Policies\TipoActuacionPolicy;
 use App\Models\User;
 use App\Models\Tipoactuacion;
+use App\Models\Suggestion;
+use App\Policies\SuggestionPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         User::class => UserPolicy::class,
         Tipoactuacion::class => TipoActuacionPolicy::class,
+        Suggestion::class => SuggestionPolicy::class,
 
     ];
     /**

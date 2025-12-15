@@ -54,6 +54,11 @@
                                     {{__('Els meus pagaments')}}
                                 </x-nav-link>
                             </div>
+                                <div class="w-60 px-4  m-2">                               
+                                    <x-nav-link href="{{ route('suggestions.index') }}" :active="request()->routeIs('suggestions.index')">
+                                        {{ __('Mis sugerencias') }}
+                                    </x-nav-link>
+                                </div>
                         </x-slot>
                     </x-dropdown>
                 </div>
@@ -106,6 +111,12 @@
                                 <div class="w-60 px-4 m-2">                               
                                     <x-nav-link href="{{ route('paymentresumes.index') }}" :active="request()->routeIs('paymentresumes.index')">
                                         {{ __('Resums comptes') }}
+                                    </x-nav-link>
+                                </div>
+
+                                <div class="w-60 px-4 m-2">                               
+                                    <x-nav-link href="{{ route('suggestions.index') }}" :active="request()->routeIs('suggestions.index')">
+                                        {{ __('Sugerencias') }}
                                     </x-nav-link>
                                 </div>
 
@@ -359,6 +370,10 @@
                     {{ __('Calendari') }}
                 </x-responsive-nav-link>
 
+                <x-responsive-nav-link href="{{ route('suggestions.index') }}" :active="request()->routeIs('suggestions.index')">
+                    {{ __('Sugerencias') }}
+                </x-responsive-nav-link>
+
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                     <x-responsive-nav-link href="{{ route('api-tokens.index') }}" :active="request()->routeIs('api-tokens.index')">
                         {{ __('API Tokens') }}
@@ -385,6 +400,7 @@
                         {{ __('Comentaris') }}
                     </x-responsive-nav-link>  
                     @endif
+                   
                     
                 @endcan
 

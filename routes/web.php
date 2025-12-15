@@ -23,7 +23,11 @@ use App\Livewire\Paymentresume\PaymentresumeEdit;
 use App\Livewire\Comments\CommentIndex;
 use App\Livewire\Comments\CommentCreate;
 use App\Livewire\Comments\CommentEdit;
+use App\Livewire\Suggestions\SuggestionIndex;
+use App\Livewire\Suggestions\SuggestionCreate;
+use App\Livewire\Suggestions\SuggestionEdit;
 use App\Jobs\SendDailyCommentsNotification;
+
 use Illuminate\Http\Request;
 
 /*
@@ -64,6 +68,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('/comments', CommentIndex::class)->name('comments.index');
     Route::get('/comments/create', CommentCreate::class)->name('comments.create');
     Route::get('/comments/{comment}', CommentEdit::class)->name('comments.edit');
+
+    Route::get('/suggestions', SuggestionIndex::class)->name('suggestions.index');
+    Route::get('/suggestions/create', SuggestionCreate::class)->name('suggestions.create');
+    Route::get('/suggestions/{suggestion}', SuggestionEdit::class)->name('suggestions.edit');
 
     Route::get('/run-job', function () {
         dispatch(new SendDailyCommentsNotification());
@@ -170,9 +178,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
         Route::get('/billing-portal', function (Request $request) {
             return $request->user()->redirectToBillingPortal(route('dashboard'));
-        });
+        });      
     }
 );
+
 
 /*
 Route::group(['middleware' => 'auth'], 
