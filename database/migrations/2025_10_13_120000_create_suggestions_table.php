@@ -17,10 +17,14 @@ return new class extends Migration
             $table->string('titulo');
             $table->text('texto');
             $table->text('observaciones')->nullable();
-            $table->unsignedBigInteger('iduser')->nullable()->index();
-            $table->foreign('users_id')->references('id')->on('users')->onDelete('set null');
+
+            $table->unsignedBigInteger('users_id')->nullable()->index();
+            $table->foreign('users_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
+
             $table->boolean('anonimo')->default(false);
-            //añade created_at y updated_at
             $table->timestamps();
         });
     }

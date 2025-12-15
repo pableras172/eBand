@@ -15,7 +15,6 @@
         ->with('contrato')
         ->get();
 
-    //dd($actuacion);
 
 @endphp
 <div>

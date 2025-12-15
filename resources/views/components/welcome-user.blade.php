@@ -87,7 +87,7 @@
     </div>
     @php
         $user = Auth::user();
-        $esPadre = $user->hijos()->exists();
+        $esPadre = Auth::user()?->hijos()->exists() ?? false;
     @endphp
 
     <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">

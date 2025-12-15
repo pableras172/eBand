@@ -134,7 +134,7 @@ class User extends Authenticatable implements MustVerifyEmail
     //añade la relacion a suggestions
     public function suggestions()
     {
-        return $this->hasMany(Suggestion::class, 'iduser'); 
+        return $this->hasMany(Suggestion::class, 'users_id'); 
     }
 
 }
