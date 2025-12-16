@@ -119,4 +119,28 @@ class ContratosController extends Controller
         return view('contratos.index', compact('contratos'));
     }
 
+    public function duplicate(Contratos $contrato)
+    {
+        $nuevoContrato = $contrato->replicate();
+        $nuevoContrato->descripcion = $contrato->descripcion . ' (Copia)';
+        //anyo, fechainicio, fechafin se incrementaran en un año
+        $nuevoContrato->anyo = $contrato->anyo + 1;
+        $nuevoContrato->fechainicio = date('Y-m-d', strtotime($contrato->fechainicio . ' +1 year'));
+        $nuevoContrato->fechafin = date('Y-m-d', strtotime($contrato->fechafin . ' +1 year'));
+        $nuevoContrato->save();
+
+        //Lo siguiente seria recuperar las actuaciones del contrato original y duplicarlas
+        foreach ($contrato->actuaciones as $actuacion) {
+            $nuevaActuacion = $actuacion->replicate();
+            $nuevaActuacion->contratos_id = $nuevoContrato->id;
+            //Incrementar la fecha de la actuacion en un año
+            $nuevaActuacion->fechaActuacion = date('Y-m-d', strtotime($actuacion->fechaActuacion . ' +1 year'));
+            $nuevaActuacion->pagado = false; //marcar como no pagado
+            $nuevaActuacion->save();
+        }
+
+        return redirect()->route('contratos.index')
+            ->with('duplicatesuccess', 'Contrato duplicado correctamente.');
+    }
+
 }

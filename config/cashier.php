@@ -4,7 +4,6 @@ use Laravel\Cashier\Console\WebhookCommand;
 use Laravel\Cashier\Invoices\DompdfInvoiceRenderer;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Stripe Keys
@@ -124,4 +123,12 @@ return [
 
     'logger' => env('CASHIER_LOGGER'),
 
+    // Stripe price ID (default). Úsalo desde env: CASHIER_PRICE=price_XXXX
+    'price' => env('CASHIER_PRICE'),
+
+    // Opcional: varios planes/precios. Úsalos con envs como CASHIER_PRICE_BASIC, CASHIER_PRICE_PREMIUM
+    'prices' => [
+        'suscription' => env('CASHIER_PRICE_SUSCRIPTION'),
+        'donation' => env('CASHIER_PRICE_DONATION'),        
+    ],
 ];

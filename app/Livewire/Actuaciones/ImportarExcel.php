@@ -50,12 +50,69 @@ class ImportarExcel extends Component
                 $excelFecha = $fila['fechaactuacion'] ?? null;
                 $fechaActuacion = null;
 
-                if (is_numeric($excelFecha)) {
+                // Log de entrada de fecha
+                Log::debug('ImportarExcel: parsing fechaactuacion', [
+                    'row' => $index + 2,
+                    'raw' => $excelFecha,
+                    'type' => gettype($excelFecha),
+                ]);
+
+                if ($excelFecha instanceof \DateTimeInterface) {
+                    $fechaActuacion = $excelFecha->format('Y-m-d');
+                    Log::debug('ImportarExcel: detectado DateTimeInterface', [
+                        'row' => $index + 2,
+                        'parsed' => $fechaActuacion,
+                    ]);
+                } elseif (is_numeric($excelFecha)) {
                     $fechaActuacion = Date::excelToDateTimeObject($excelFecha)->format('Y-m-d');
-                } elseif (!empty($excelFecha)) {
-                    $fechaActuacion = \Carbon\Carbon::parse($excelFecha)->format('Y-m-d');
+                    Log::debug('ImportarExcel: detectado serial Excel numérico', [
+                        'row' => $index + 2,
+                        'serial' => $excelFecha,
+                        'parsed' => $fechaActuacion,
+                    ]);
+                } elseif (is_string($excelFecha) && trim($excelFecha) !== '') {
+                    $raw = trim($excelFecha);
+                    $formatos = [
+                        'd/m/Y H:i:s',
+                        'd/m/Y H:i',
+                        'd/m/Y',
+                        'd-m-Y H:i:s',
+                        'd-m-Y H:i',
+                        'd-m-Y',
+                        'Y-m-d H:i:s',
+                        'Y-m-d H:i',
+                        'Y-m-d',
+                        'm/d/Y H:i:s',
+                        'm/d/Y H:i',
+                        'm/d/Y',
+                        'm-d-Y H:i:s',
+                        'm-d-Y H:i',
+                        'm-d-Y',
+                    ];
+
+                    foreach ($formatos as $fmt) {
+                        try {
+                            $c = \Carbon\Carbon::createFromFormat($fmt, $raw);
+                            if ($c !== false) {
+                                $fechaActuacion = $c->format('Y-m-d');
+                                Log::debug('ImportarExcel: parse OK', [
+                                    'row' => $index + 2,
+                                    'format' => $fmt,
+                                    'parsed' => $fechaActuacion,
+                                ]);
+                                break;
+                            }
+                        } catch (\Throwable $e) {
+                            // Intento fallido, seguimos con el siguiente formato
+                            continue;
+                        }
+                    }
+
+                    if (!$fechaActuacion) {
+                        throw new \Exception("Fecha no válida '{$raw}'. Formatos probados: " . implode(', ', $formatos));
+                    }
                 } else {
-                    throw new \Exception('Fecha no válida');
+                    throw new \Exception('Fecha no válida (vacía o tipo no soportado)');
                 }
 
                 $tipoNombre = $fila['tipoactuacions_id'] ?? null;
@@ -83,6 +140,11 @@ class ImportarExcel extends Component
                     'porcentajepersonal' => $fila['porcentajepersonal'] ?? null,
                 ]);
             } catch (\Exception $e) {
+                Log::warning('ImportarExcel: error en fila', [
+                    'row' => $index + 2,
+                    'fechaactuacion_raw' => $fila['fechaactuacion'] ?? null,
+                    'message' => $e->getMessage(),
+                ]);
                 $this->errores[] = "Fila " . ($index + 2) . ": " . $e->getMessage();
             }
         }

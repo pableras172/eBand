@@ -154,16 +154,16 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         //Route::get('/paymentresumes/{paymetresume}',PaymentresumeEdit::class)->name('paymentresumes.edit');
 
         Route::post('/checkout', function (Request $request) {
-            $subscriptionPrice = config('cashier.prices.suscription'); // definido en config/cashier.php ('price' => env('CASHIER_PRICE'))
-            return $request->user()->checkout(
-                [['price' => $subscriptionPrice, 'quantity' => 1]],
-                [
-                    'mode' => 'subscription',
+            $price = config('cashier.prices.suscription');
+
+            return $request->user()
+                ->newSubscription('default', $price)
+                ->checkout([
                     'success_url' => route('stripe.success'),
                     'cancel_url' => route('stripe.cancel'),
-                ]
-            );
+                ]);
         })->name('checkout');
+
 
         Route::post('/donation', function (Request $request) {
             $donationPrice = config('cashier.prices.donation') ?? config('cashier.price'); // fallback si no hay precio específico
