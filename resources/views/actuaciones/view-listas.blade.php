@@ -133,10 +133,62 @@
             <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700">
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                 @foreach ($actuacionesDelMes->sortBy('fechaActuacion') as $actuacion)
+                    @php
+                        $cardBorderClass = 'border border-transparent';
+                        $estaEnLista = false;
+                        $noDisponible = false;
+                        $pivot = null;
+
+                        if (auth()->check()) {
+                            try {
+                                $listaId = $actuacion->lista_id ?? (optional($actuacion->lista)->id ?? null);
+
+                                if ($listaId) {
+                                    $pivot = \Illuminate\Support\Facades\DB::table('listas_user')
+                                        ->where('listas_id', $listaId)
+                                        ->where('user_id', auth()->id())
+                                        ->first();
+
+                                    if ($pivot) {
+                                        $estaEnLista = true;
+
+                                        if (isset($pivot->disponible)) {
+                                            $noDisponible = (int) $pivot->disponible === 0;
+                                        } elseif (isset($pivot->asiste)) {
+                                            $noDisponible = (int) $pivot->asiste === 0;
+                                        } elseif (isset($pivot->estado)) {
+                                            $estado = strtolower((string) $pivot->estado);
+                                            $noDisponible = in_array(
+                                                $estado,
+                                                ['no', '0', 'nd', 'ausente', 'no_disponible', 'no disponible'],
+                                                true,
+                                            );
+                                        }
+
+                                        $cardBorderClass = $noDisponible
+                                            ? 'border-2 border-red-500'
+                                            : 'border-2 border-green-500';
+                                    }
+                                }
+                            } catch (\Throwable $e) {
+                                \Illuminate\Support\Facades\Log::error(
+                                    'Error comprobando pertenencia/estado en lista (view-listas)',
+                                    [
+                                        'actuacion_id' => $actuacion->id ?? null,
+                                        'user_id' => auth()->id(),
+                                        'message' => $e->getMessage(),
+                                    ],
+                                );
+                            }
+                        }
+                    @endphp
+
                     <div
-                        class="relative flex flex-col shadow-md rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 max-w-sm">
+                        class="relative flex flex-col shadow-md rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 max-w-sm {{ $cardBorderClass }}">
                         <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}"
                             class="z-20 absolute h-full w-full top-0 left-0">&nbsp;</a>
+
+
                         <div class="h-auto overflow-hidden">
                             <div class="h-40 overflow-hidden relative">
                                 <img src="{{ asset('storage/imagenes/tipoactuacion/' . $actuacion->tipoactuacion->icon) }}"
@@ -145,8 +197,25 @@
                         </div>
                         <div class="bg-white py-4 px-3">
                             <h3 class="text-l mb-2 font-medium">{{ $actuacion->descripcion }}</h3>
-                            <h2 class="text-l mb-2 font-medium" style="color: darkgray;">
-                                {{ $actuacion->contrato->descripcion }}</h2>
+
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-l mb-2 font-medium" style="color: darkgray;">
+                                    {{ $actuacion->contrato->descripcion }}
+                                </h2>
+
+                                @if ($estaEnLista)
+                                    <div class="flex items-center ml-2">
+                                        @if ($noDisponible)
+                                            {{-- No disponible --}}
+                                            <x-disponible w="24" h="24" />
+                                        @else
+                                            {{-- Está en la lista --}}
+                                            <x-verificado w="24" h="24" />
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
+
                             <hr class="p-2">
                             <div class="flex items-center mb-2">
                                 <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
@@ -252,26 +321,7 @@
                                             <a class="enviarNotificacion text-orange-600 hover:text-blue-500"
                                                 href="#" alt="Notificar" data-actuacion-id="{{ $actuacion->id }}"
                                                 data-actuacion-inf="{{ $actuacion->descripcion }}">
-                                                <svg width="32px" height="32px" viewBox="0 0 24 24" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                                                        stroke-linejoin="round"></g>
-                                                    <g id="SVGRepo_iconCarrier">
-                                                        <path
-                                                            d="M12.0196 2.91016C8.7096 2.91016 6.0196 5.60016 6.0196 8.91016V11.8002C6.0196 12.4102 5.7596 13.3402 5.4496 13.8602L4.2996 15.7702C3.5896 16.9502 4.0796 18.2602 5.3796 18.7002C9.6896 20.1402 14.3396 20.1402 18.6496 18.7002C19.8596 18.3002 20.3896 16.8702 19.7296 15.7702L18.5796 13.8602C18.2796 13.3402 18.0196 12.4102 18.0196 11.8002V8.91016C18.0196 5.61016 15.3196 2.91016 12.0196 2.91016Z"
-                                                            stroke="#eba937" stroke-width="1.5" stroke-miterlimit="10"
-                                                            stroke-linecap="round"></path>
-                                                        <path
-                                                            d="M13.8699 3.19994C13.5599 3.10994 13.2399 3.03994 12.9099 2.99994C11.9499 2.87994 11.0299 2.94994 10.1699 3.19994C10.4599 2.45994 11.1799 1.93994 12.0199 1.93994C12.8599 1.93994 13.5799 2.45994 13.8699 3.19994Z"
-                                                            stroke="#eba937" stroke-width="1.5" stroke-miterlimit="10"
-                                                            stroke-linecap="round" stroke-linejoin="round"></path>
-                                                        <path opacity="0.4"
-                                                            d="M15.0195 19.0601C15.0195 20.7101 13.6695 22.0601 12.0195 22.0601C11.1995 22.0601 10.4395 21.7201 9.89953 21.1801C9.35953 20.6401 9.01953 19.8801 9.01953 19.0601"
-                                                            stroke="#eba937" stroke-width="1.5" stroke-miterlimit="10">
-                                                        </path>
-                                                    </g>
-                                                </svg>
+                                                <x-aviso w="32" h="32" />
                                             </a>
                                         @endif
                                     @endcan
@@ -284,7 +334,7 @@
         @endforeach
     </div>
     <x-subscription-info />
-    
+
     @can('admin')
         <script>
             var botonesNotificacion = document.querySelectorAll('.enviarNotificacion');

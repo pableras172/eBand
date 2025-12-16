@@ -49,6 +49,8 @@ use Illuminate\Http\Request;
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'can:admin'])->group(function () {
     Route::resource('contratos', ListadoContratos::class);
     Route::get('/contratos/year/{year}', [ListadoContratos::class, 'contratosPorAnyo'])->name('contratos.anyo');
+    //Nueva ruta para duplicar contrato
+    Route::get('/contratos/duplicate/{contrato}', [ContratosController::class, 'duplicate'])->name('contratos.duplicate');
 
     Route::resource('instrument', InstrumentClass::class);
     Route::post('/update-order', [InstrumentClass::class, 'updateOrder'])->name('instrument.updateOrder');
