@@ -86,6 +86,21 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->group(
     function () {
 
+        //Notificaciones
+        Route::middleware('auth')->get('/notificaciones', function () {
+            return view('notifications.index', [
+                'notifications' => auth()->user()->notifications()->latest()->paginate(20),
+            ]);
+        })->name('notifications.index');
+
+        Route::post('/notificaciones/{id}/leer', function ($id) {
+            $notification = auth()->user()->notifications()->findOrFail($id);
+            $notification->markAsRead();
+
+            return back();
+        })->name('notifications.read');
+
+
         Route::get('/', function () {
             return view('dashboard');
         })->name('dashboard');
@@ -182,7 +197,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
         Route::get('/billing-portal', function (Request $request) {
             return $request->user()->redirectToBillingPortal(route('dashboard'));
-        });      
+        });
     }
 );
 

@@ -6,6 +6,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Laravel\Cashier\Events\WebhookReceived;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class HandleCheckoutCompleted
 {
@@ -22,22 +23,44 @@ class HandleCheckoutCompleted
      */
     public function handle(WebhookReceived $event)
     {
-        if ($event->payload['type'] !== 'checkout.session.completed') {
+        Log::info('[Webhook] Received event', [
+            'type' => $event->payload['type'] ?? null,
+        ]);
+
+        if (($event->payload['type'] ?? null) !== 'checkout.session.completed') {
+            Log::info('[Webhook] Ignored: not checkout.session.completed');
             return;
         }
 
-        $session = $event->payload['data']['object'];
+        $session = $event->payload['data']['object'] ?? [];
+        Log::info('[Webhook] checkout.session.completed payload', [
+            'mode' => $session['mode'] ?? null,
+            'customer' => $session['customer'] ?? null,
+            'id' => $session['id'] ?? null,
+        ]);
 
-        // Solo pagos únicos (donaciones)
-        if ($session['mode'] !== 'payment') {
+        if (($session['mode'] ?? null) !== 'payment') {
+            Log::info('[Webhook] Ignored: mode is not payment', ['mode' => $session['mode'] ?? null]);
             return;
         }
 
-        $user = User::where('stripe_id', $session['customer'])->first();
-        if (!$user) return;
+        $customerId = $session['customer'] ?? null;
+        if (!$customerId) {
+            Log::warning('[Webhook] Missing customer in session');
+            return;
+        }
 
-        // Persistencia en MySQL
+        Log::info('[Webhook] Looking up user by stripe_id', ['customer' => $customerId]);
+        $user = User::where('stripe_id', $customerId)->first();
+
+        if (!$user) {
+            Log::warning('[Webhook] No user found for stripe_id', ['customer' => $customerId]);
+            return;
+        }
+
+        Log::info('[Webhook] Granting lifetime_access', ['user_id' => $user->id]);
         $user->lifetime_access = true;
         $user->save();
+        Log::info('[Webhook] lifetime_access saved', ['user_id' => $user->id, 'lifetime_access' => $user->lifetime_access]);
     }
 }
