@@ -3,29 +3,32 @@
 
 <head>
 
-            <!-- Open Graph (Facebook y WhatsApp) -->
-    <meta property="og:title" content="{{ config('app.name', 'Laravel') }} - {{config('app.banda', '')}}" />
-    <meta property="og:description" content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
+    <!-- Open Graph (Facebook y WhatsApp) -->
+    <meta property="og:title" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
+    <meta property="og:description"
+        content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
     <meta property="og:image" content="{{ url('/imagenes/logo.png') }}" />
     <meta property="og:url" content="{{ url('/') }}" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="{{ config('app.name', 'Laravel') }} - {{config('app.banda', '')}}" />
+    <meta property="og:site_name" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{{ config('app.name', 'Laravel') }} - {{config('app.banda', '')}}" />
-    <meta name="twitter:description" content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
+    <meta name="twitter:title" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
+    <meta name="twitter:description"
+        content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
     <meta name="twitter:image" content="{{ url('/imagenes/icons/favicon/logoSmall_192.png') }}" />
 
-    <meta name="title" content="{{ config('app.name', 'Laravel') }} - {{config('app.banda', '')}}" />
-    <meta name="description" content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
+    <meta name="title" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
+    <meta name="description"
+        content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
     <link rel="icon" href="{{ url('/imagenes/icons/favicon/logoSmall_192.png') }}" type="image/png">
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }} - {{config('app.banda', '')}}</title>
+    <title>{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -34,15 +37,25 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <!--link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet"-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"  crossorigin="anonymous"> <!-- integrity="sha384-DyZ88mC6Up2uqS4h/KvnQZK1ZoxSDeVUPZ3h5jC4Q4hzsj4Z8cdVf4QlScYOu4i0" -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        crossorigin="anonymous">
+    <!-- integrity="sha384-DyZ88mC6Up2uqS4h/KvnQZK1ZoxSDeVUPZ3h5jC4Q4hzsj4Z8cdVf4QlScYOu4i0" -->
 
     <link rel="manifest" href="manifest.json">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
 
-    <link  rel="stylesheet"  href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
+
+     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
+     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
 
 
     <link rel="apple-touch-icon" href="/imagenes/icons/ios/192.png">
@@ -62,7 +75,7 @@
         var userId = {{ Auth::user()->id }};
         var appId = "{{ config('services.onesignal.app_id') }}";
         $.ajax({
-            url: '/usersuuid/' +  userId,
+            url: '/usersuuid/' + userId,
             type: 'GET',
             dataType: 'json',
             success: function(response) {
@@ -89,33 +102,31 @@
                 // Manejo de errores
                 console.error('Error al obtener el UUID del usuario:', error);
             }
-        });          
-        
-        function showToast(response){
+        });
+
+        function showToast(response) {
             var type = response.alert_type;
-            toastr.options.positionClass='toast-top-full-width';
-            toastr.options.progressBar=true;
+            toastr.options.positionClass = 'toast-top-full-width';
+            toastr.options.progressBar = true;
             toastr.options.timeOut = 5000;
             switch (type) {
                 case 'info':
-                    toastr.info(response.message);                   
+                    toastr.info(response.message);
                     break;
                 case 'success':
-                   toastr.success(response.message);                    
+                    toastr.success(response.message);
                     break;
                 case 'warning':
-                    toastr.warning(response.message);                    
+                    toastr.warning(response.message);
                     break;
                 case 'error':
-                    toastr.error(response.message);        
+                    toastr.error(response.message);
                     break;
             }
 
         }
-
-
     </script>
-       
+
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -143,7 +154,7 @@
         <!-- Page Content -->
         <main>
             {{ $slot }}
-        </main>        
+        </main>
     </div>
 
     @stack('modals')

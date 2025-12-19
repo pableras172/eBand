@@ -100,7 +100,17 @@
     <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         <x-animated-estadisticas />
     </div>
-    
+    <div class="w-full mx-auto bg-white shadow-l rounded-lg p-2 mt-1 mb-1">
+        <div class="flex items-center gap-3 mb-2">
+            <x-lottie style="width: 100px; height: 100px;" path="{{ asset('storage/location.json') }}"
+                        loop="true" autoplay="true" />
+            <h3 class="text-lg font-semibold text-gray-800 mb-0">{{ __('Mapa de Actuaciones') }}</h3>
+        </div>
+        <div class="relative w-full min-h-[300px] rounded-md overflow-hidden">
+            <livewire:location-map :height="300" />         
+        </div>
+    </div>
+
     <x-subscription-info />
 
 </div>
@@ -142,3 +152,13 @@
         </div>
     </div>
 </footer>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const res = await fetch('/api/ubicaciones-contratos');
+    const data = await res.json();
+
+    if (window.MapComponent) {
+        window.MapComponent.setMunicipios(data);
+    }
+});
+</script>

@@ -45,6 +45,57 @@ class ActuacionController extends Controller
         return view('actuaciones.view-listas', compact('actuacionesPorMes', 'tiposActuacion', 'poblaciones'));
     }
 
+    public function ubicacionesContratos()
+    {
+        //comprobar usuario logueado
+        abort_if(!auth()->check(), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+
+
+        $hoy = now()->startOfDay();
+        $limite = now()->addMonths(6);
+
+        $query = Actuacion::with('contrato', 'tipoactuacion')
+            ->whereBetween('fechaActuacion', [$hoy, $limite])
+            ->whereHas('contrato', function ($q) {
+                $q->whereNotNull('latitude')
+                    ->whereNotNull('longitude');
+            })
+            ->whereIn('id', function ($sub) use ($hoy, $limite) {
+                $sub->selectRaw('MIN(id)')
+                    ->from('actuacions as a2')
+                    ->whereColumn('a2.contratos_id', 'actuacions.contratos_id')
+                    ->whereBetween('a2.fechaActuacion', [$hoy, $limite]);
+            });
+        $actuaciones = $query->get();
+
+        return response()->json(
+            $actuaciones->map(fn($a) => [
+                'nombre' => $a->contrato->poblacion,
+                'coords' => [
+                    (float) $a->contrato->latitude,
+                    (float) $a->contrato->longitude,
+                ],
+                'texto' => sprintf(
+                    '<div class="text-sm">
+                        <a href="%s" class="text-indigo-600 hover:underline">
+                            <strong>%s</strong><br>
+                            %s<br>
+                            <span class="text-gray-600">%s · %s</span>
+                        </a>
+                    </div>',
+                    route('listas.actuacion', ['actuacion_id' => $a->id]),
+                    e(\Carbon\Carbon::parse($a->fechaActuacion)->format('d/m/Y')),
+                    e($a->descripcion),
+                    e(optional($a->tipoactuacion)->nombre),
+                    e($a->contrato->poblacion)
+                ),
+
+
+            ])
+        );
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -521,7 +572,7 @@ class ActuacionController extends Controller
         $auth = Auth::user();
 
         if ($user->id !== $auth->id && !$auth->hijos->contains('id', $user->id)) {
-                abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+            abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         }
 
         $actuaciones = $user->listas()
@@ -580,7 +631,7 @@ class ActuacionController extends Controller
         $auth = Auth::user();
 
         if ($user->id !== $auth->id && !$auth->hijos->contains('id', $user->id)) {
-                abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+            abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         }
 
         // Obtener actuaciones por población y fecha de actuación
@@ -650,7 +701,7 @@ class ActuacionController extends Controller
         $auth = Auth::user();
 
         if ($user->id !== $auth->id && !$auth->hijos->contains('id', $user->id)) {
-                abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+            abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         }
 
         $actuaciones = $user->listas()
@@ -820,16 +871,16 @@ class ActuacionController extends Controller
 
     public function getListadoActuacionesUsuarioAnyoTipo(User $user, $year, $tipo)
     {
-        
+
         if ($user->id != Auth::user()->id && !Auth::user()->hijos->contains($user->id)) {
             abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         }
-    
+
         // Determinar la columna a filtrar en función del tipo recibido
         $tipoColumna = ($tipo === 'ensayo') ? 'tipoensayo' : 'tipoconcierto';
         $tipoLabelUser = ($tipo === 'ensayo') ? __('Asistencia Ensayos') : __('Asistencia Conciertos');
         $tipoLabeTotales = ($tipo === 'ensayo') ? __('Total Ensayos') : __('Total Conciertos');
-    
+
         // Primera consulta: Cuenta actuaciones por tipo para el usuario
         $query1 = DB::table('listas')
             ->join('listas_user', 'listas.id', '=', 'listas_user.listas_id')
@@ -840,32 +891,32 @@ class ActuacionController extends Controller
             ->whereYear('actuacions.fechaActuacion', $year)
             ->where("tipoactuacions.$tipoColumna", true)
             ->groupBy('tipoactuacions.nombre')
-            ->select(DB::raw("'".$tipoLabelUser."' AS tipo"), DB::raw('COUNT(*) as total_tipo'));
-    
+            ->select(DB::raw("'" . $tipoLabelUser . "' AS tipo"), DB::raw('COUNT(*) as total_tipo'));
+
         // Segunda consulta: Cuenta total de actuaciones para ese tipo
         $query2 = DB::table('actuacions')
             ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
             ->where("tipoactuacions.$tipoColumna", true)
             ->whereYear('actuacions.fechaActuacion', $year)
-            ->select(DB::raw("'".$tipoLabeTotales."' AS tipo"), DB::raw('COUNT(*) as total_tipo'));
-    
+            ->select(DB::raw("'" . $tipoLabeTotales . "' AS tipo"), DB::raw('COUNT(*) as total_tipo'));
+
         // Unir ambas consultas con UNION
         $actuacionesGrph = $query1->union($query2)->orderByDesc('total_tipo')->get();
-    
+
         // Calcular porcentajes y preparar datos para la gráfica
         if ($actuacionesGrph->isNotEmpty()) {
             $totalGeneral = $actuacionesGrph->where('tipo', $tipoLabeTotales)->pluck('total_tipo')->first() ?? 0;
-            
+
             // Evitar división por 0
             if ($totalGeneral == 0) {
                 $totalGeneral = 1;
             }
-    
+
             $actuacionesGrph = $actuacionesGrph->map(function ($item) use ($totalGeneral) {
                 $item->porcentaje = round(($item->total_tipo / $totalGeneral) * 100, 1);
                 return $item;
             });
-    
+
             $labels = $actuacionesGrph->pluck('tipo')->toArray();
             $data = $actuacionesGrph->pluck('total_tipo')->toArray();
             $percentages = $actuacionesGrph->pluck('porcentaje')->toArray();
@@ -874,7 +925,7 @@ class ActuacionController extends Controller
             $data = [0];
             $percentages = [0];
         }
-    
+
         // Retornar los datos como JSON para la gráfica
         return response()->json([
             'labels' => $labels,
@@ -882,6 +933,4 @@ class ActuacionController extends Controller
             'percentages' => $percentages,
         ]);
     }
-    
-
 }

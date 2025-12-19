@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="container mx-auto py-10 px-4 sm:px-0">
+    <div class="mx-auto py-2 bg-white px-4 sm:px-0">
 
         @if (session('error'))
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -23,10 +23,24 @@
             @endif
             <div class="mb-4">
                 <label for="poblacion" class="block text-sm font-medium text-gray-700">{{ __('Población') }}</label>
-                <input type="text" id="poblacion" name="poblacion"
-                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    value="{{ isset($contrato) ? $contrato->poblacion : old('poblacion') }}" required>
+                <input type="text" id="poblacion" name="poblacion" placeholder="Escribe un municipio"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    value="{{ isset($contrato) ? $contrato->poblacion : old('poblacion') }}" required />
+                <div id="municipio-suggestions" class="relative z-50 bg-white border rounded-md shadow mt-1 hidden">
+                </div>
+
+                <input type="hidden" id="latitude" name="latitude"
+                value="{{ isset($contrato) ? $contrato->latitude : old('latitude') }}" >
+                <input type="hidden" id="longitude" name="longitude"
+                value="{{ isset($contrato) ? $contrato->longitude : old('longitude') }}" >
+
+
             </div>
+
+            <div class="mb-6">
+                <livewire:location-map :height="150" />
+            </div>
+
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label for="fechainicio"
@@ -153,5 +167,84 @@
             </a>
         </div>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('poblacion');
+            const box = document.getElementById('municipio-suggestions');
+            const latInput = document.getElementById('latitude');
+            const lngInput = document.getElementById('longitude');            
+            const descripcion = document.getElementById('descripcion');            
 
+            //Si latitud y longitud tienen valor, actualizar el mapa al cargar la página
+            const latValue = latInput.value;
+            const lngValue = lngInput.value;
+
+            if (latValue && lngValue) {
+                if (window.MapComponent) {
+                    window.MapComponent.setMunicipios([{
+                        nombre: input.value,
+                        coords: [parseFloat(latValue), parseFloat(lngValue)],
+                        texto: descripcion.value
+                    }]);
+                }
+            }
+
+            let debounce;
+
+            input.addEventListener('input', () => {
+                clearTimeout(debounce);
+                const q = input.value.trim();
+
+                if (q.length < 3) {
+                    box.classList.add('hidden');
+                    box.innerHTML = '';
+                    return;
+                }
+
+                debounce = setTimeout(async () => {
+                    const url =
+                        `https://nominatim.openstreetmap.org/search?format=json&countrycodes=es&limit=5&q=${encodeURIComponent(q)}`;
+                    const res = await fetch(url);
+                    const data = await res.json();
+
+                    box.innerHTML = '';
+                    if (!data.length) {
+                        box.classList.add('hidden');
+                        return;
+                    }
+
+                    data.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className =
+                            'px-3 py-2 hover:bg-indigo-100 cursor-pointer text-sm';
+                        div.textContent = item.display_name;
+
+                        div.addEventListener('click', () => {
+                            input.value = item.name;
+                            latInput.value = item.lat;
+                            lngInput.value = item.lon;
+
+                            // Actualizar mapa usando TU API
+                            if (window.MapComponent) {
+                                window.MapComponent.setMunicipios([{
+                                    nombre: item.display_name,
+                                    coords: [parseFloat(item.lat),
+                                        parseFloat(item.lon)
+                                    ],
+                                    texto: item.display_name
+                                }]);
+                            }
+
+                            box.innerHTML = '';
+                            box.classList.add('hidden');
+                        });
+
+                        box.appendChild(div);
+                    });
+
+                    box.classList.remove('hidden');
+                }, 400);
+            });
+        });
+    </script>
 </x-app-layout>

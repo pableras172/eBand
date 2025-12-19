@@ -136,6 +136,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::post('/notificaractuacion', [ActuacionController::class, 'notificarActuacion']);
 
         Route::resource('actuacion', ActuacionController::class);
+        Route::get('/api/ubicaciones-contratos', [ActuacionController::class, 'ubicacionesContratos']);
+
 
         //Route::resource('contratos',ListadoContratos::class);        
         //Route::get('/contratos/year/{year}',[ListadoContratos::class,'contratosPorAnyo'])->name('contratos.anyo');        

@@ -35,6 +35,18 @@ class UpdateForm extends Form
         ];
     }
 
+    public function validationAttributes(): array
+    {
+        return [
+            'fechacreacion' => __('crud.suggestions.inputs.fechacreacion.label'),
+            'titulo' => __('crud.suggestions.inputs.titulo.label'),
+            'texto' => __('crud.suggestions.inputs.texto.label'),
+            'observaciones' => __('crud.suggestions.inputs.observaciones.label'),
+            'users_id' => __('crud.suggestions.inputs.users_id.label'),
+            'anonimo' => __('crud.suggestions.anonymous'),
+        ];
+    }
+
     public function setSuggestion(Suggestion $suggestion)
     {
         $this->suggestion = $suggestion;

@@ -218,6 +218,17 @@ use App\Helpers\ConfigHelper;
 
         <hr>
         <p class="text-center mt-2 mb-2">{{ $actuacion->observaciones }}</p>
+        <div class="mb-6">
+              <input type="hidden" id="latitude" name="latitude"
+                value="{{  $actuacion->contrato->latitude }}" >
+                <input type="hidden" id="longitude" name="longitude"
+                value="{{  $actuacion->contrato->longitude }}" >
+                <input type="hidden" id="poblacion" name="poblacion"
+                value="{{  $actuacion->contrato->poblacion }}" >    
+                <input type="hidden" id="descripcion" name="descripcion"
+                value="{{  $actuacion->descripcion }}" >
+                <livewire:location-map :height="150" />
+            </div>
         @if ($actuacion->calendar)
             <hr>
             <div data-lista-id="{{ $actuacion->id }}" class="flex justify-center items-center mt-2">
@@ -968,6 +979,27 @@ use App\Helpers\ConfigHelper;
             }
         </script>
 
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('poblacion');            
+            const latInput = document.getElementById('latitude');
+            const lngInput = document.getElementById('longitude');            
+            const descripcion = document.getElementById('descripcion');            
 
+            //Si latitud y longitud tienen valor, actualizar el mapa al cargar la página
+            const latValue = latInput.value;
+            const lngValue = lngInput.value;
+
+            if (latValue && lngValue) {
+                if (window.MapComponent) {
+                    window.MapComponent.setMunicipios([{
+                        nombre: input.value,
+                        coords: [parseFloat(latValue), parseFloat(lngValue)],
+                        texto: descripcion.value
+                    }]);
+                }
+            }            
+        });
+    </script>
 
 </x-app-layout>

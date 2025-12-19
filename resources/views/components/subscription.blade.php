@@ -33,7 +33,7 @@
 
 @else
     {{-- Contenido --}}
-    <div class="flex-1 max-w-xl text-center">
+    <div class="w-full rounded-xl border flex-1 text-center">
         <h3 class="text-gray-800 font-semibold text-base mb-2">
             {{ __('¿Quieres apoyar el desarrollo y mantenimiento de la app?') }}
         </h3>

@@ -9,6 +9,14 @@ class Contratos extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+    'latitude',
+    'longitude',
+    'poblacion',
+    'descripcion', 
+    'observacions',
+];
+
     public function actuaciones()
     {
         return $this->hasMany('App\Models\Actuacion');

@@ -15,19 +15,19 @@ use Carbon\Carbon;
 class ListadoContratos extends Component
 {
 
-public function index($year = null)
-{
-    if ($year === null) {
-        $year = Carbon::now()->year;
+    public function index($year = null)
+    {
+        if ($year === null) {
+            $year = Carbon::now()->year;
+        }
+
+        $contratos = Contratos::whereYear('fechainicio', '<=', $year) // empezó antes o ese año
+            ->whereYear('fechafin', '>=', $year)   // termina ese año o después
+            ->orderBy('fechainicio', 'asc')
+            ->paginate(10);
+
+        return view('livewire.contratos.index', compact('contratos', 'year'));
     }
-
-    $contratos = Contratos::whereYear('fechainicio', '<=', $year) // empezó antes o ese año
-        ->whereYear('fechafin', '>=', $year)   // termina ese año o después
-        ->orderBy('fechainicio', 'asc')
-        ->paginate(10);
-
-    return view('livewire.contratos.index', compact('contratos', 'year'));
-}
 
 
 
@@ -38,9 +38,9 @@ public function index($year = null)
         }
 
         $contratos = Contratos::whereYear('fechainicio', '<=', $year) // empezó antes o ese año
-        ->whereYear('fechafin', '>=', $year)   // termina ese año o después
-        ->orderBy('fechainicio', 'asc')
-        ->paginate(10);
+            ->whereYear('fechafin', '>=', $year)   // termina ese año o después
+            ->orderBy('fechainicio', 'asc')
+            ->paginate(10);
 
         return view('livewire.contratos.index', compact('contratos', 'year'));
     }
@@ -70,6 +70,8 @@ public function index($year = null)
             'anyo' => 'nullable|integer|min:1900|max:' . date('Y'),
             'dnicontacto' => 'nullable|string|max:20',
             'observacions' => 'nullable|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
 
@@ -85,13 +87,13 @@ public function index($year = null)
         $contrato->anyo = $request->anyo;
         $contrato->dnicontacto = $request->dnicontacto;
         $contrato->observacions = $request->observacions;
+        $contrato->latitude = $request->latitude;
+        $contrato->longitude = $request->longitude;
 
         $contrato->save();
 
-
-
         return redirect()->route('contratos.index')
-            ->with('success', 'Contrato creado correctamente.');
+            ->with('success', __('Contrato creado correctamente.'));
     }
 
 
@@ -133,6 +135,8 @@ public function index($year = null)
             'anyo' => 'nullable|integer|min:1900|max:' . date('Y'),
             'dnicontacto' => 'nullable|string|max:20',
             'observacions' => 'nullable|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
         // Establecer cada campo del contrato con los valores del request
@@ -146,13 +150,15 @@ public function index($year = null)
         $contrato->anyo = $request->anyo;
         $contrato->dnicontacto = $request->dnicontacto;
         $contrato->observacions = $request->observacions;
+                $contrato->latitude = $request->latitude;
+        $contrato->longitude = $request->longitude;
 
         // Guardar los cambios en el contrato
         $contrato->save();
 
         // Redireccionar con mensaje de éxito
         return redirect()->route('contratos.index')
-            ->with('success', 'Contrato actualizado correctamente.');
+            ->with('success', __('Contrato actualizado correctamente.'));
     }
 
 
@@ -168,10 +174,10 @@ public function index($year = null)
                 $contrato->delete();
             }
         } catch (\Illuminate\Database\QueryException $exception) {
-            return redirect()->back()->with('error', 'No se ha podido eliminar el contrato.');
+            return redirect()->back()->with('error', __('No se ha podido eliminar el contrato.'));
         }
 
         return redirect()->route('contratos.index')
-            ->with('deletesuccess', 'Contrato eliminado correctamente.');
+            ->with('deletesuccess', __('Contrato eliminado correctamente.'));
     }
 }
