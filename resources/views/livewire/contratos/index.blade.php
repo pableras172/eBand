@@ -68,19 +68,22 @@
                                         {{ __('Contacte') }}
                                     </th>
                                     <th scope="col"
-                                        class="px-2 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-2 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                                         {{ __('Accions') }}
                                     </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach ($contratos as $contrato)
-                                    <tr>
+                                    <tr class="hover:bg-gray-50 cursor-pointer"
+                                        data-url="{{ route('contratos.edit', $contrato->id) }}">
                                         <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900">
                                             {{ $contrato->poblacion }}
                                         </td>
                                         <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900  md:table-cell">
-                                            {{ $contrato->descripcion }}
+                                            <span class="block max-w-[5rem] truncate break-words md:max-w-none md:whitespace-normal">
+                                                {{ $contrato->descripcion }}
+                                            </span>
                                         </td>
                                         <td
                                             class="px-2 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
@@ -94,7 +97,7 @@
                                             class="px-2 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                                             {{ $contrato->contacto }}
                                         </td>
-                                        <td class="px-2 py-2 whitespace-nowrap text-sm font-medium">
+                                        <td class="px-2 py-2 whitespace-nowrap text-sm font-medium hidden md:table-cell">
                                             <div class="flex justify-center items-center space-x-2">
                                                 <a href="{{ route('contratos.edit', $contrato->id) }}" class="">
                                                     <x-editar w="24" h="24" />
@@ -136,7 +139,16 @@
                     setTimeout(() => el.classList.add('hidden'), fadeDurationMs); // oculta tras el fade
                 }, 4000); // espera visible antes de empezar el fade
             });
+
+            document.querySelectorAll('tbody tr[data-url]').forEach(row => {
+                row.addEventListener('click', (e) => {
+                    if (e.target.closest('a, button')) return;
+                    window.location.href = row.dataset.url;
+                });
+            });
         });
+
+
     </script>
 
     <footer

@@ -119,6 +119,15 @@
         class="fixed bottom-0 left-0 z-20 w-full bg-white border-t border-gray-300 shadow-t-md dark:bg-gray-800 dark:border-gray-600">
         <div class="flex justify-around items-center space-x-4 py-3">
             @if (isset($contrato))
+             <a href="{{ route('actuacion.createtocontract', $contrato->id) }}"
+                                                    class="flex flex-col items-center text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition">
+                                                    <x-calendario w="32" h="32" />
+                                                    <span class="text-xs mt-1 font-bold">{{ __('Actuacions') }}</span>
+                                                </a>
+                                                <a class = "flex flex-col items-center text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition" href="{{ route('contratos.duplicate', $contrato->id) }}">
+                                                    <x-duplicar w="32" h="32" />
+                                                    <span class="text-xs mt-1 font-bold">{{ __('Duplicar') }}</span>
+                                                </a>
                 <!-- Botón Eliminar Contrato -->
                 <form action="{{ route('contratos.destroy', $contrato) }}" method="post"
                     onsubmit="return confirm('¿Estás seguro de que deseas eliminar este contrato? Se eliminarán las actuaciones y las listas relacionadas.')">

@@ -9,7 +9,7 @@
 @endphp
 
 @if (ConfigHelper::getConfigValue('enablestripe') === 'true')
-<div class="flex flex-col md:flex-row items-center justify-center bg-white border text-center rounded-lg shadow p-6 mb-4 gap-2">
+<div class="flex flex-col md:flex-row items-center justify-center bg-white text-center rounded-lg p-4 mb-2 gap-2">
 
     {{-- Icono --}}
     <div class="flex justify-center md:justify-start w-full md:w-auto">
@@ -33,7 +33,7 @@
 
 @else
     {{-- Contenido --}}
-    <div class="w-full rounded-xl border flex-1 text-center">
+    <div class="w-full mx-auto rounded-xl flex-1 text-center">
         <h3 class="text-gray-800 font-semibold text-base mb-2">
             {{ __('¿Quieres apoyar el desarrollo y mantenimiento de la app?') }}
         </h3>

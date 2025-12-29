@@ -2,7 +2,7 @@
     $subscription = Auth::user()->subscription();
 @endphp
 
-<div class="bg-white p-4 rounded-lg shadow text-sm text-center text-gray-700">
+<div class="w-full mx-auto bg-white p-2 rounded-lg shadow text-sm text-center text-gray-700">
     @if ($subscription && $subscription->valid())
         <p class="font-semibold text-green-600 mb-2">✅ Suscripción activa</p>
         <p><strong>Inicio:</strong> {{ $subscription->created_at->format('d/m/Y') }}</p>

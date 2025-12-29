@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class InstrumentClass extends Component
@@ -106,6 +107,7 @@ class InstrumentClass extends Component
     public function updateOrder(Request $request)
     {
         $ordenes = $request->input('ordenes');
+        Log::info('Actualizando orden de instrumentos', ['ordenes' => $ordenes]);
 
         foreach ($ordenes as $orden) {
             \App\Models\Instrument::where('id', $orden['id'])->update(['orden' => $orden['orden']]);

@@ -255,7 +255,7 @@ use App\Helpers\ConfigHelper;
     </x-slot>
 
     @php
-        $limiteAntelacion = ConfigHelper::getConfigValue('diasantelacion') ?? 1;
+        $limiteAntelacion = ConfigHelper::getConfigValue('diasantelacion') ?? 5;
     @endphp
 
     @if ($usuarioDisponible)
