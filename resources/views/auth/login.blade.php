@@ -11,9 +11,12 @@
                 {{ session('status') }}
             </div>
         @endif
-        <div class="text-center mt-4 mb-4">
-            <p class="mt-1 text-sm text-gray-200">{{ __('Bienvenido') }}</p>
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('register') }}">
+        <div class="flex flex-col items-center justify-center gap-2 mt-4 mb-4">
+            <a href="/" class="inline-flex items-center">
+                <img style="width: 200px;" src="{{ URL::to('/') }}/imagenes/logo.png" alt="Logo" />
+            </a>
+            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                href="{{ route('register') }}">
                 {{ __('Nuevo usuario?') }}
             </a>
         </div>
@@ -22,12 +25,14 @@
 
             <div>
                 <x-label for="email" value="{{ __('auth.email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
+                    required autofocus autocomplete="username" />
             </div>
 
             <div class="mt-4">
                 <x-label for="password" value="{{ __('auth.contrase') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
+                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required
+                    autocomplete="current-password" />
             </div>
 
             <div class="block mt-4">
@@ -39,15 +44,16 @@
 
             <div class="flex items-center justify-center mt-4">
                 @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
+                    <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                        href="{{ route('password.request') }}">
                         {{ __('auth.olvidado') }}
                     </a>
-                @endif                
+                @endif
                 <x-button class="ms-4">
                     {{ __('Log in') }}
                 </x-button>
             </div>
         </form>
-        
-    </x-authentication-card>  
+
+    </x-authentication-card>
 </x-guest-layout>

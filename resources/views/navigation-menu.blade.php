@@ -251,6 +251,7 @@
                             @endif
                              
                             @auth
+                                {{-- 
                                 <a href="{{ route('notifications.index') }}" class="relative inline-block">
                                     🔔
 
@@ -270,6 +271,7 @@
                                         </span>
                                     @endif
                                 </a>
+                                --}}
                              @endauth
                         </x-slot>
 

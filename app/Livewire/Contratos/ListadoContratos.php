@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ListadoContratos extends Component
 {
@@ -59,6 +60,8 @@ class ListadoContratos extends Component
      */
     public function store(Request $request)
     {
+
+        //dd($request->all());
         $request->validate([
             'poblacion' => 'required|string|max:255',
             'fechainicio' => 'required|date',
@@ -67,7 +70,7 @@ class ListadoContratos extends Component
             'contacto' => 'nullable|string|max:255',
             'telefono' => 'nullable|string|max:20',
             'correo' => 'nullable|email|max:255',
-            'anyo' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'anyo' => 'nullable|integer|min:1900|max:' . date('Y')+5,
             'dnicontacto' => 'nullable|string|max:20',
             'observacions' => 'nullable|string',
             'latitude' => 'nullable|numeric',
@@ -75,23 +78,30 @@ class ListadoContratos extends Component
         ]);
 
 
+        try {
 
-        $contrato = new Contratos();
-        $contrato->poblacion = $request->poblacion;
-        $contrato->fechainicio = $request->fechainicio;
-        $contrato->fechafin = $request->fechafin;
-        $contrato->descripcion = $request->descripcion;
-        $contrato->contacto = $request->contacto;
-        $contrato->telefono = $request->telefono;
-        $contrato->correo = $request->correo;
-        $contrato->anyo = $request->anyo;
-        $contrato->dnicontacto = $request->dnicontacto;
-        $contrato->observacions = $request->observacions;
-        $contrato->latitude = $request->latitude;
-        $contrato->longitude = $request->longitude;
 
-        $contrato->save();
+            $contrato = new Contratos();
+            $contrato->poblacion = $request->poblacion;
+            $contrato->fechainicio = $request->fechainicio;
+            $contrato->fechafin = $request->fechafin;
+            $contrato->descripcion = $request->descripcion;
+            $contrato->contacto = $request->contacto;
+            $contrato->telefono = $request->telefono;
+            $contrato->correo = $request->correo;
+            $contrato->anyo = $request->anyo;
+            $contrato->dnicontacto = $request->dnicontacto;
+            $contrato->observacions = $request->observacions;
+            $contrato->latitude = $request->latitude;
+            $contrato->longitude = $request->longitude;
 
+            $contrato->save();
+        } catch (\Throwable $e) {
+            Log::error('Error al guardar contrato', [
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
         return redirect()->route('contratos.index')
             ->with('success', __('Contrato creado correctamente.'));
     }
@@ -132,13 +142,16 @@ class ListadoContratos extends Component
             'contacto' => 'nullable|string|max:255',
             'telefono' => 'nullable|string|max:20',
             'correo' => 'nullable|email|max:255',
-            'anyo' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'anyo' => 'nullable|integer|min:1900|max:' . date('Y')+5,
             'dnicontacto' => 'nullable|string|max:20',
             'observacions' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
         ]);
 
+        try {
+           
+        
         // Establecer cada campo del contrato con los valores del request
         $contrato->poblacion = $request->poblacion;
         $contrato->fechainicio = $request->fechainicio;
@@ -150,11 +163,19 @@ class ListadoContratos extends Component
         $contrato->anyo = $request->anyo;
         $contrato->dnicontacto = $request->dnicontacto;
         $contrato->observacions = $request->observacions;
-                $contrato->latitude = $request->latitude;
+        $contrato->latitude = $request->latitude;
         $contrato->longitude = $request->longitude;
 
         // Guardar los cambios en el contrato
         $contrato->save();
+
+        } catch (\Throwable $e) {
+            Log::error('Error al encontrar contrato para actualizar', [
+                'contrato_id' => $contrato->id ?? null,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
 
         // Redireccionar con mensaje de éxito
         return redirect()->route('contratos.index')
