@@ -134,7 +134,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url('{{ URL::to('/') }}/fondo_eband_head.jpg');
+            background-image: url('{{ URL::to('/') }}/partitura.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -173,8 +173,9 @@
             animation: fadeInUp 1s ease-out;
         }
 
-        .hero-emoji {
-            font-size: 5rem;
+        .hero-logo {
+            width: 150px;
+            height: 150px;
             margin-bottom: 1rem;
             animation: bounce 2s infinite;
         }
@@ -360,6 +361,66 @@
             line-height: 1.5;
         }
 
+        /* Gallery Section */
+        .gallery {
+            padding: 5rem 5%;
+            background: #f8f9fa;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .gallery-image-container {
+            width: 100%;
+            padding-bottom: 100%; /* Aspect ratio 1:1 for square */
+            position: relative;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .gallery-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-caption {
+            padding: 1.5rem;
+        }
+
+        .gallery-caption h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #667eea;
+        }
+
+        .gallery-caption p {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
         /* CTA Section */
         .cta {
             padding: 5rem 5%;
@@ -543,6 +604,10 @@
             .music-note {
                 font-size: 1.5rem !important;
             }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -572,7 +637,7 @@
         <div class="music-note note-5">♯</div>
 
         <div class="hero-content">
-            <div class="hero-emoji">🎵</div>
+            <img src="{{ URL::to('/') }}/logo_e_band.png" alt="eBand Logo" class="hero-logo">
             <h1>Gestiona tu banda de música</h1>
             <p>La plataforma completa para organizar actuaciones, pagos, repertorio y mucho más</p>
             <a href="{{ route('register') }}" class="btn-cta">Comienza gratis</a>
@@ -616,7 +681,14 @@
                 <h3>Aplicación Móvil</h3>
                 <p>Accede desde cualquier dispositivo. Instala la PWA en tu móvil y consulta información offline.</p>
             </div>
-        </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <h3>Multiidioma</h3>
+                <p>Interfaz disponible en varios idiomas. Cambia el idioma según las preferencias de tu banda para una experiencia personalizada.</p>
+            </div>
+
+            
     </section>
 
     <!-- Benefits Section -->
@@ -670,6 +742,74 @@
                 <div class="benefit-text">
                     <h4>Comunicación fluida</h4>
                     <p>Sistema de notificaciones y comentarios para mantener a todos informados.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery">
+        <h2 class="section-title">Ve eBand en acción</h2>
+        <p class="section-subtitle">Descubre la interfaz intuitiva y las funcionalidades de nuestra plataforma</p>
+
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <div class="gallery-image-container">
+                    <img src="{{ URL::to('/') }}/galeria/tablero_resumen.png" alt="Tablero de resumen" class="gallery-image">
+                </div>
+                <div class="gallery-caption">
+                    <h4>Tablero Principal</h4>
+                    <p>Vista general con todas las métricas importantes de tu banda en un solo lugar.</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="gallery-image-container">
+                    <img src="{{ URL::to('/') }}/galeria/calendario.png" alt="Calendario de actuaciones" class="gallery-image">
+                </div>
+                <div class="gallery-caption">
+                    <h4>Calendario de Actuaciones</h4>
+                    <p>Visualiza y organiza todas tus actuaciones de forma clara y ordenada.</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="gallery-image-container">
+                    <img src="{{ URL::to('/') }}/galeria/detalle_actuacion.png" alt="Detalle de actuación" class="gallery-image">
+                </div>
+                <div class="gallery-caption">
+                    <h4>Detalle de Actuación</h4>
+                    <p>Información completa de cada evento: lugar, fecha, asistencias y pagos.</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="gallery-image-container">
+                    <img src="{{ URL::to('/') }}/galeria/resumen_actuaciones.png" alt="Resumen de actuaciones" class="gallery-image">
+                </div>
+                <div class="gallery-caption">
+                    <h4>Resumen de Actuaciones</h4>
+                    <p>Listado completo con filtros y estadísticas de todas tus actuaciones.</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="gallery-image-container">
+                    <img src="{{ URL::to('/') }}/galeria/personalizar_actuaciones.png" alt="Personalizar actuaciones" class="gallery-image">
+                </div>
+                <div class="gallery-caption">
+                    <h4>Configuración Flexible</h4>
+                    <p>Personaliza campos y opciones según las necesidades de tu banda.</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="gallery-image-container">
+                    <img src="{{ URL::to('/') }}/galeria/personalizacion_instrumentos.png" alt="Personalización de instrumentos" class="gallery-image">
+                </div>
+                <div class="gallery-caption">
+                    <h4>Gestión de Instrumentos</h4>
+                    <p>Define y asigna instrumentos personalizados para cada miembro.</p>
                 </div>
             </div>
         </div>
