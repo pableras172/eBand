@@ -32,6 +32,7 @@ class ActuacionController extends Controller
     {
         $actuaciones = Actuacion::with('contrato', 'lista', 'tipoactuacion')
             ->whereDate('fechaActuacion', '>=', now()->toDateString())
+            ->where('visible', 1)
             ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
             ->get();
 
@@ -161,7 +162,8 @@ class ActuacionController extends Controller
             $actuacion->noaplicapago = $request->noaplicapago;
             $actuacion->observaciones = $request->observaciones;
             $actuacion->porcentajepersonal = $request->porcentajepersonal;
-
+            $actuacion->visible = $request->visible ?? true; // Establecer el valor predeterminado de visible en true
+            $actuacion->oficial = $request->oficial ?? true; // Establecer el valor predeterminado de oficial en true
             // Guardar la actuación en la base de datos
             $actuacion->save();
 
@@ -409,6 +411,8 @@ class ActuacionController extends Controller
         $actuacion->noaplicapago = $request->noaplicapago;
         $actuacion->observaciones = $request->observaciones;
         $actuacion->porcentajepersonal = $request->porcentajepersonal;
+        $actuacion->visible = $request->visible ?? true;
+        $actuacion->oficial = $request->oficial ?? true;
 
         $actuacion->calendar = $this->generateICSFile($actuacion);
 
@@ -422,7 +426,7 @@ class ActuacionController extends Controller
 
         $contrato = Contratos::find($request->contratos_id);
         $tipoActuacion = Tipoactuacion::all();
-        return view('livewire.contratos.actuacions', compact('actuaciones', 'tipoActuacion', 'contrato'));
+        return view('livewire.contratos.actuacions', compact('actuaciones', 'tipoActuacion', 'contrato','actuacion'));
     }
 
     /**
@@ -932,5 +936,44 @@ class ActuacionController extends Controller
             'data' => $data,
             'percentages' => $percentages,
         ]);
+    }
+
+    /**
+     * Filtra las actuaciones por fecha en el calendario principal
+     */
+    public function getActuacionesPorFecha(Request $request)
+    {
+        $fecha = $request->input('fecha');
+        
+        // Validar que la fecha no sea nula y esté dentro del rango permitido
+        if (!$fecha) {
+            return redirect()->route('actuacion.index');
+        }
+
+        $fechaSeleccionada = Carbon::parse($fecha);
+        $fechaMinima = now()->subMonths(3);
+        $fechaMaxima = now();
+
+        // Validar que la fecha esté en el rango permitido
+        if ($fechaSeleccionada->lt($fechaMinima) || $fechaSeleccionada->gt($fechaMaxima)) {
+            return redirect()->route('actuacion.index');
+        }
+
+        $actuaciones = Actuacion::with('contrato', 'lista', 'tipoactuacion')
+            ->whereDate('fechaActuacion', '>=', $fecha)
+            ->where('visible', 1)
+            ->orderBy('fechaActuacion', 'asc')
+            ->get();
+
+        $tiposActuacion = $actuaciones->pluck('tipoactuacion')->unique();
+        $poblaciones = $actuaciones->pluck('contrato.poblacion')->unique();
+
+        $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
+            return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
+        });
+
+        $filtroFecha = $fecha;
+
+        return view('actuaciones.view-listas', compact('actuacionesPorMes', 'tiposActuacion', 'poblaciones', 'filtroFecha'));
     }
 }

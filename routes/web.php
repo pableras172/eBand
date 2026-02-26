@@ -129,7 +129,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/descargarCalendario/{actuacionId}', [ActuacionController::class, 'descargarCalendario']);
 
         Route::get('/actuaciones-tipo/{tipoactuacion}', [ActuacionController::class, 'getActuacionesPorTipo'])->name('actuaciones-tipo');
-        Route::get('/actuaciones-fecha/{fechaactuacion}', [ActuacionController::class, 'getActuacionesPorFecha'])->name('actuaciones-fecha');
+        Route::get('/actuaciones-fecha', [ActuacionController::class, 'getActuacionesPorFecha'])->name('actuaciones-fecha');
         Route::get('/actuaciones-poblacion/{poblacion}', [ActuacionController::class, 'getActuacionesPorPoblacion'])->name('actuaciones-poblacion');
 
         Route::post('/notificaractuacionlista', [ActuacionController::class, 'notificarActuacionLista']);
@@ -200,6 +200,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/billing-portal', function (Request $request) {
             return $request->user()->redirectToBillingPortal(route('dashboard'));
         });
+
+        Route::get('/calculadora', function () {
+            return redirect('/testmont_v2_mobile.php');
+        })->name('calculadora');
     }
 );
 

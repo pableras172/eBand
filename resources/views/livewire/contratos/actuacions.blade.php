@@ -24,13 +24,23 @@
             @if (isset($actuacion))
                 @method('PUT')
             @endif
-
-            <div class="mb-4">
-                <label for="fechaActuacion" class="block text-sm font-medium text-gray-700">{{__('Data actuacio')}}</label>
-                <input type="date" id="fechaActuacion" name="fechaActuacion" required
-                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    @if (isset($actuacion)) value="{{ $actuacion->fechaActuacion }}" @endif>
+            
+           <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="mb-4">
+                    <label for="fechaActuacion" class="block text-sm font-medium text-gray-700">{{__('Data actuacio')}}</label>
+                    <input type="date" id="fechaActuacion" name="fechaActuacion" required
+                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        @if (isset($actuacion)) value="{{ $actuacion->fechaActuacion }}" @endif>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input type="hidden" name="oficial" value="0">
+                    <input type="checkbox" id="oficial" name="oficial" value="1"
+                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        {{ (isset($actuacion) && $actuacion->oficial) ? 'checked' : '' }}>
+                    <label for="oficial" class="text-sm font-medium text-gray-700">{{__('Acte Oficial')}}</label>
+                </div>
             </div>
+
             <div class="mb-4">
                 <label for="descripcion" class="block text-sm font-medium text-gray-700">{{__('Descripció')}}</label>
                 <textarea id="descripcion" name="descripcion" rows="3" required
@@ -88,7 +98,7 @@
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">{{ isset($actuacion) ? $actuacion->observaciones : '' }}</textarea>
             </div>
 
-            <div class="mb-4 flex items-center space-x-4">
+            <div class="grid grid-cols-2 gap-4 mb-4">
                 <div class="flex items-center space-x-2">
                     <input type="hidden" name="pagado" value="0">
                     <input type="checkbox" id="pagado" name="pagado" value="1"
@@ -111,9 +121,18 @@
                         class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                         {{ (isset($actuacion) && $actuacion->noaplicapago) ? 'checked' : '' }}>
                     <label for="noaplicapago" class="text-sm font-medium text-gray-700">{{__('No aplica en los pagos')}}</label>
-                </div>                
-
+                </div> 
+                
+                <div class="flex items-center space-x-2">
+                    <input type="hidden" name="visible" value="0">
+                    <input type="checkbox" id="visible" name="visible" value="1"
+                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        {{ (isset($actuacion) && $actuacion->visible) ? 'checked' : '' }}>
+                    <label for="visible" class="text-sm font-medium text-gray-700">{{__('Visible')}}</label>
+                </div>
             </div>
+
+
             <div class="grid grid-cols-2">
                 <div class="mb-4">
                     <label for="porcentajepersonal" class="block text-sm font-medium text-gray-700">{{__('Porcentaje personalizado')}}</label>

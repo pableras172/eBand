@@ -75,7 +75,7 @@ class PaymentIndex extends Component
 
     public function delete(Payment $payment)
     {
-        $this->authorize('delete', $user, $payment);
+        $this->authorize('delete', $payment);
         $payment->delete();
 
         $this->confirmingDeletion = false;

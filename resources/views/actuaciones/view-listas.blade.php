@@ -11,6 +11,60 @@
     </x-slot>
 
     <div class="bg-white border border-gray-200 divide-y divide-gray-200  m-2">
+        <details class="p-2 group" @isset($filtroFecha) open @else close @endisset>
+            <summary class="flex items-center justify-between cursor-pointer">
+                <h5 class="text-lg font-medium text-gray-900">
+                    {{ __('Filtrar per data') }}: @isset($filtroFecha)
+                        {{ $filtroFecha }}
+                    @endisset
+                </h5>
+
+                @isset($filtroFecha)
+                    <a href="{{ route('actuacion.index') }}">
+                        <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path
+                                    d="M15 15L21 21M21 15L15 21M10 21V14.6627C10 14.4182 10 14.2959 9.97237 14.1808C9.94787 14.0787 9.90747 13.9812 9.85264 13.8917C9.7908 13.7908 9.70432 13.7043 9.53137 13.5314L3.46863 7.46863C3.29568 7.29568 3.2092 7.2092 3.14736 7.10828C3.09253 7.01881 3.05213 6.92127 3.02763 6.81923C3 6.70414 3 6.58185 3 6.33726V4.6C3 4.03995 3 3.75992 3.10899 3.54601C3.20487 3.35785 3.35785 3.20487 3.54601 3.10899C3.75992 3 4.03995 3 4.6 3H19.4C19.9601 3 20.2401 3 20.454 3.10899C20.6422 3.20487 20.7951 3.35785 20.891 3.54601C21 3.75992 21 4.03995 21 4.6V6.33726C21 6.58185 21 6.70414 20.9724 6.81923C20.9479 6.92127 20.9075 7.01881 20.8526 7.10828C20.7908 7.2092 20.7043 7.29568 20.5314 7.46863L17 11"
+                                    stroke="#b2843e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                    </a>
+                @else
+                    <span class="relative flex-shrink-0 ml-1.5 w-5 h-5">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="absolute inset-0 w-5 h-5 opacity-100 group-open:opacity-0" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="absolute inset-0 w-5 h-5 opacity-0 group-open:opacity-100" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </span>
+                @endisset
+            </summary>
+            <div class="mt-2">
+                <p class="text-sm text-gray-600 mb-3">
+                    {{__('Pots veure actuacions dels últims 3 mesos. Selecciona una data per veure totes les actuacions des d\'eixe dia fins avui.')}}
+                </p>
+                <form action="{{ route('actuaciones-fecha') }}" method="GET" class="flex items-center gap-2">
+                    <label for="fecha" class="text-sm font-medium text-gray-700">{{__('Selecciona data')}}</label>
+                    <input type="date" id="fecha" name="fecha" 
+                        class="border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                        min="{{ now()->subMonths(3)->format('Y-m-d') }}"
+                        max="{{ now()->format('Y-m-d') }}"
+                        value="{{ $filtroFecha ?? '' }}"
+                        onchange="this.form.submit()">
+                </form>
+            </div>
+        </details>
         <details class="p-2 group" @isset($filtrotipo) open @else close @endisset>
             <summary class="flex items-center justify-between cursor-pointer">
                 <h5 class="text-lg font-medium text-gray-900">
@@ -134,7 +188,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                 @foreach ($actuacionesDelMes->sortBy('fechaActuacion') as $actuacion)
                     @php
-                        $cardBorderClass = 'border border-transparent';
+                        $cardBorderClass = $actuacion->oficial == 1 ? 'border-2 border-orange-500' : 'border border-transparent';
                         $estaEnLista = false;
                         $noDisponible = false;
                         $pivot = null;
@@ -196,6 +250,11 @@
                             </div>
                         </div>
                         <div class="bg-white py-4 px-3">
+                            @if ($actuacion->oficial == 1)
+                                <div class="absolute top-2 right-2  font-bold px-2 py-1 rounded" title="{{__('Acte Oficial')}}">
+                                    <x-oficial w="24" h="24" />
+                                </div>
+                            @endif
                             <h3 class="text-l mb-2 font-medium">{{ $actuacion->descripcion }}</h3>
 
                             <div class="flex items-center justify-between">
@@ -203,17 +262,19 @@
                                     {{ $actuacion->contrato->descripcion }}
                                 </h2>
 
-                                @if ($estaEnLista)
-                                    <div class="flex items-center ml-2">
-                                        @if ($noDisponible)
-                                            {{-- No disponible --}}
-                                            <x-disponible w="24" h="24" />
-                                        @else
-                                            {{-- Está en la lista --}}
-                                            <x-verificado w="24" h="24" />
-                                        @endif
-                                    </div>
-                                @endif
+                                <div class="flex items-center gap-1">
+                                    @if ($estaEnLista)
+                                        <div class="flex items-center">
+                                            @if ($noDisponible)
+                                                {{-- No disponible --}}
+                                                <x-disponible w="24" h="24" />
+                                            @else
+                                                {{-- Está en la lista --}}
+                                                <x-verificado w="24" h="24" />
+                                            @endif
+                                        </div>
+                                    @endif                                    
+                                </div>
                             </div>
 
                             <hr class="p-2">
@@ -323,7 +384,12 @@
                                                 data-actuacion-inf="{{ $actuacion->descripcion }}">
                                                 <x-aviso w="32" h="32" />
                                             </a>
+                                            
                                         @endif
+                                        <a class="text-gray-600 hover:text-blue-500"
+                                            href="{{ route('actuacion.edit', ['actuacion' => $actuacion]) }}" alt="Editar">
+                                            <x-adminact w="28" h="28" />
+                                        </a>
                                     @endcan
                                 </div>
                             </div>

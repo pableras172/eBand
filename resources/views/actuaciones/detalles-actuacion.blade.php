@@ -6,10 +6,17 @@ use App\Helpers\ConfigHelper;
 
 
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ $actuacion->descripcion }}
-        </h2>
-
+        <div class="flex items-center gap-2">
+            @if ($actuacion->oficial == 1)
+                <div title="{{__('Acte Oficial')}}">
+                    <x-oficial w="24" h="24" />
+                </div>
+            @endif
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ $actuacion->descripcion }}
+            </h2>
+        </div>
+        <hr class="mt-2 mb-2">
 
         <style>
             .scrollbar  -w-2::-webkit-scrollbar {
@@ -92,6 +99,7 @@ use App\Helpers\ConfigHelper;
             </p>
 
         </div>
+        <hr class="mt-2 mb-2">
         <div class="flex items-center justify-between mt-2 mb-4 text-gray-500 w-full">
             <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 64 64"
