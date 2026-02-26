@@ -118,7 +118,6 @@
         .hero {
             margin-top: 80px;
             min-height: 90vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -128,10 +127,37 @@
             padding: 2rem 5%;
         }
 
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('{{ URL::to('/') }}/fondo_eband_head.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(3px);
+            z-index: 1;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%);
+            z-index: 2;
+        }
+
         .hero-content {
             max-width: 1200px;
             text-align: center;
             z-index: 10;
+            position: relative;
         }
 
         .hero h1 {
@@ -177,9 +203,10 @@
         .music-note {
             position: absolute;
             font-size: 2.5rem;
-            opacity: 0.1;
+            opacity: 0.15;
             animation: float 20s infinite ease-in-out;
             color: white;
+            z-index: 3;
         }
 
         @keyframes float {
