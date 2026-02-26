@@ -13,18 +13,18 @@
     <meta property="og:url" content="{{ url('/') }}">
     <meta property="og:title" content="eBand - Sistema de Gestión para Bandas de Música">
     <meta property="og:description" content="La plataforma completa para organizar actuaciones, pagos, repertorio y mucho más. Gestiona tu banda de música de forma profesional.">
-    <meta property="og:image" content="{{ URL::to('/') }}/imagenes/logo.png">
+    <meta property="og:image" content="{{ URL::to('/') }}/logo_e_band.png">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ url('/') }}">
     <meta property="twitter:title" content="eBand - Sistema de Gestión para Bandas de Música">
     <meta property="twitter:description" content="La plataforma completa para organizar actuaciones, pagos, repertorio y mucho más. Gestiona tu banda de música de forma profesional.">
-    <meta property="twitter:image" content="{{ URL::to('/') }}/imagenes/logo.png">
+    <meta property="twitter:image" content="{{ URL::to('/') }}/logo_e_band.png">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ URL::to('/') }}/imagenes/logo.png">
-    <link rel="apple-touch-icon" href="{{ URL::to('/') }}/imagenes/logo.png">
+    <link rel="icon" type="image/png" href="{{ URL::to('/') }}/logo_e_band.png">
+    <link rel="apple-touch-icon" href="{{ URL::to('/') }}/logo_e_band.png">
     
     <title>eBand - Sistema de Gestión para Bandas de Música | Gestiona tu banda profesionalmente</title>
     <style>
@@ -291,6 +291,40 @@
         .benefits {
             padding: 5rem 5%;
             background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .benefits::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background-image: url('{{ URL::to('/') }}/ensayo.jpg');
+            background-size: cover;
+            background-position: center left;
+            filter: blur(2px);
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        .benefits::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.7) 30%, rgba(255, 255, 255, 0) 100%);
+            z-index: 2;
+        }
+
+        .benefits .section-title,
+        .benefits .section-subtitle {
+            position: relative;
+            z-index: 3;
         }
 
         .benefits-content {
@@ -299,6 +333,8 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
+            position: relative;
+            z-index: 3;
         }
 
         .benefit-item {
@@ -514,7 +550,7 @@
     <!-- Header -->
     <header class="header">
         <div class="logo-section">
-            <img class="logo" src="{{ URL::to('/') }}/imagenes/logo.png" alt="eBand Logo" />
+            <img class="logo" src="{{ URL::to('/') }}/logo_e_band.png" alt="eBand Logo" />
             <span class="logo-text">eBand</span>
         </div>
         <nav class="nav-buttons">
