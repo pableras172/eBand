@@ -1,86 +1,248 @@
- <h1>Proyecto de Gestión de Bandas de Música</h1>
-    <p>Este es un proyecto desarrollado en Laravel 11 con Fortify para la autenticación, y cuenta con una PWA optimizada para la instalación en Windows, Android y Apple.</p>
+ # 🎵 eBand - Sistema de Gestión para Bandas de Música
 
-    <h2>Características principales</h2>
-    <ul>
-        <li><strong>Gestión de usuarios</strong> con Fortify, sobrescribiendo los métodos de verificación de email y restablecimiento de contraseña.</li>
-        <li><strong>PWA (Progressive Web App)</strong> con un <code>manifest.json</code> dinámico generado por <code>ManifestService</code>.</li>
-        <li><strong>Sistema de autenticación</strong> seguro con Laravel Fortify.</li>
-        <li><strong>Interfaz moderna y responsiva</strong> para la administración y gestión de bandas de música.</li>
-    </ul>
+Plataforma web completa desarrollada en **Laravel 11** para la gestión integral de bandas de música, incluyendo actuaciones, contratos, pagos, repertorio y miembros.
 
-    <h2>Instalación</h2>
-    <h3>Requisitos</h3>
-    <ul>
-        <li>PHP 8.1 o superior</li>
-        <li>Composer</li>
-        <li>Node.js y npm</li>
-        <li>MySQL o PostgreSQL</li>
-    </ul>
-    
-    <h3>Pasos para instalar</h3>
-    <ol>
-        <li>Clona el repositorio:<br>
-            <code>git clone https://github.com/pableras172/eband.git</code><br>
-            <code>cd proyecto-bandas</code>
-        </li>
-        <li>Instala las dependencias de Laravel:<br>
-            <code>composer install</code>
-        </li>
-        <li>Instala las dependencias de JavaScript:<br>
-            <code>npm install</code>
-        </li>
-        <li>Copia el archivo de entorno y configúralo:<br>
-            <code>cp .env.example .env</code><br>
-            Configura la base de datos en el archivo <code>.env</code>
-        </li>
-        <li>Genera la clave de la aplicación:<br>
-            <code>php artisan key:generate</code>
-        </li>
-        <li>Ejecuta las migraciones y seedea la base de datos:<br>
-            <code>php artisan migrate --seed</code>
-        </li>
-        <li>Inicia el servidor de desarrollo:<br>
-            <code>php artisan serve</code>
-        </li>
-    </ol>
+## ✨ Características principales
 
-    <h2>Configuración de la PWA</h2>
-    <p>La aplicación incluye un <code>manifest.json</code> dinámico que se genera a través de <code>ManifestService</code>. Para asegurarse de que funcione correctamente:</p>
-    <ul>
-        <li>Configura la URL base en <code>.env</code></li>
-        <li>Asegúrate de que los archivos de iconos estén en la carpeta <code>public/icons</code></li>
-    </ul>
+### 🎭 Gestión de Actuaciones
+- Calendario interactivo de actuaciones
+- Filtrado por fecha (hasta 3 meses atrás)
+- Marcado de actos oficiales con indicadores visuales
+- Control de visibilidad de actuaciones
+- Edición rápida desde el calendario (admin)
 
-    <h2>Personalización de correos</h2>
-    <p>Los correos de verificación y restablecimiento de contraseña han sido sobrescritos en Fortify. Para modificar las plantillas, revisa:</p>
-    <ul>
-        <li><code>app/Mail/VerifyEmail.php</code></li>
-        <li><code>app/Mail/ResetPassword.php</code></li>
-    </ul>
+### 👥 Gestión de Usuarios
+- Autenticación segura con **Laravel Fortify**
+- Verificación de email personalizada
+- Restablecimiento de contraseña personalizado
+- Sistema de roles y permisos
 
-    <h2>Despliegue</h2>
-    <p>Para desplegar la aplicación en producción:</p>
-    <ol>
-        <li>Ejecuta las migraciones:<br>
-            <code>php artisan migrate --force</code>
-        </li>
-        <li>Compila los assets:<br>
-            <code>npm run build</code>
-        </li>
-        <li>Configura el almacenamiento enlazado:<br>
-            <code>php artisan storage:link</code>
-        </li>
-        <li>Configura correctamente la caché de configuración:<br>
-            <code>php artisan config:cache</code>
-        </li>
-    </ol>
+### 💰 Sistema de Pagos
+- Gestión de pagos por actuación
+- Control de aplicación de porcentajes
+- Excepciones de pago configurables
+- Tracking detallado de transacciones
 
-<h2>Licencia</h2>
-<p>Este proyecto es de propiedad exclusiva del desarrollador. No está permitido modificarlo ni distribuirlo sin autorización expresa.</p>
+### 📱 Progressive Web App (PWA)
+- Instalable en Windows, Android y iOS
+- `manifest.json` dinámico generado por `ManifestService`
+- Funcionalidad offline
+- Optimizada para dispositivos móviles
 
+### 🎨 Interfaz Moderna
+- Diseño responsive con **Tailwind CSS**
+- Componentes interactivos con **Livewire**
+- Páginas de error personalizadas (403, 404, 500, 503)
+- Animaciones y efectos visuales
+- Tema musical coherente
 
-    <hr>
-    <p><strong>Desarrollado por pableras172</strong></p>
+## 📋 Requisitos del sistema
+
+- **PHP** 8.1 o superior
+- **Composer** 2.x
+- **Node.js** 16.x o superior
+- **npm** o **yarn**
+- **MySQL** 8.0 o **PostgreSQL** 13+
+- **Extensiones PHP**: BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML
+
+## 🚀 Instalación
+
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/pableras172/eband.git
+cd eband
+```
+
+### 2. Instalar dependencias
+```bash
+# Dependencias PHP
+composer install
+
+# Dependencias JavaScript
+npm install
+```
+
+### 3. Configurar entorno
+```bash
+# Copiar archivo de configuración
+cp .env.example .env
+
+# Generar clave de aplicación
+php artisan key:generate
+```
+
+Edita el archivo `.env` y configura:
+- Conexión a base de datos
+- Configuración de correo
+- URL de la aplicación
+- Otras variables específicas
+
+### 4. Preparar base de datos
+```bash
+# Ejecutar migraciones
+php artisan migrate
+
+# (Opcional) Poblar con datos de prueba
+php artisan db:seed
+```
+
+### 5. Configurar storage
+```bash
+# Crear enlace simbólico
+php artisan storage:link
+
+# Establecer permisos
+chmod -R 775 storage bootstrap/cache
+```
+
+### 6. Compilar assets
+```bash
+# Desarrollo
+npm run dev
+
+# Producción
+npm run build
+```
+
+### 7. Iniciar servidor de desarrollo
+```bash
+php artisan serve
+```
+
+La aplicación estará disponible en `http://localhost:8000`
+
+## 🔧 Configuración adicional
+
+### PWA
+Asegúrate de que los iconos de la PWA estén en `public/icons/` con los siguientes tamaños:
+- 72x72
+- 96x96
+- 128x128
+- 144x144
+- 152x152
+- 192x192
+- 384x384
+- 512x512
+
+### Correos personalizados
+Las plantillas de correo se encuentran en:
+- `app/Mail/VerifyEmail.php` - Verificación de email
+- `app/Mail/ResetPassword.php` - Restablecimiento de contraseña
+- `resources/views/mail/` - Vistas de correo
+
+## 📦 Despliegue en producción
+
+### 1. Activar modo mantenimiento
+```bash
+php artisan down
+```
+
+### 2. Actualizar código
+```bash
+git pull origin main
+composer install --optimize-autoloader --no-dev
+npm install
+npm run build
+```
+
+### 3. Ejecutar migraciones
+```bash
+php artisan migrate --force
+```
+
+### 4. Limpiar y optimizar cachés
+```bash
+# Limpiar cachés
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# Optimizar para producción
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Optimizar autoloader
+composer dump-autoload --optimize
+```
+
+### 5. Configurar permisos
+```bash
+chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+```
+
+### 6. Reiniciar servicios (opcional)
+```bash
+# Si usas queues
+php artisan queue:restart
+
+# Si usas PHP-FPM
+sudo systemctl restart php8.2-fpm
+```
+
+### 7. Desactivar modo mantenimiento
+```bash
+php artisan up
+```
+
+## 🗂️ Estructura del proyecto
+
+```
+eband/
+├── app/
+│   ├── Http/Controllers/    # Controladores
+│   ├── Livewire/            # Componentes Livewire
+│   ├── Models/              # Modelos Eloquent
+│   ├── Services/            # Lógica de negocio
+│   └── Policies/            # Políticas de autorización
+├── database/
+│   ├── migrations/          # Migraciones de BD
+│   └── seeders/            # Seeders
+├── resources/
+│   ├── views/              # Vistas Blade
+│   ├── js/                 # JavaScript/Vue
+│   └── css/                # Estilos
+├── routes/
+│   ├── web.php             # Rutas web
+│   └── api.php             # Rutas API
+└── public/                 # Assets públicos
+```
+
+## 🛠️ Tecnologías utilizadas
+
+- **Backend**: Laravel 11
+- **Frontend**: Livewire, Tailwind CSS, Vite
+- **Base de datos**: MySQL
+- **Autenticación**: Laravel Fortify
+- **Otros**: Carbon, DomPDF, Maatwebsite Excel
+
+## 📝 Características recientes
+
+### v2.1.0 (Febrero 2026)
+- ✅ Campo `visible` para ocultar actuaciones del calendario
+- ✅ Campo `oficial` para marcar actos oficiales
+- ✅ Filtro de fecha para consultar actuaciones pasadas (3 meses)
+- ✅ Indicadores visuales para actos oficiales (borde naranja + badge)
+- ✅ Botón de edición rápida para administradores
+- ✅ Páginas de error rediseñadas (403, 404, 500, 503)
+- ✅ Mejoras en la interfaz de usuario
+
+## 🤝 Contribución
+
+Este proyecto es de uso interno. Para sugerencias o reportes de errores, contacta con el desarrollador.
+
+## 📄 Licencia
+
+Este proyecto es de propiedad exclusiva del desarrollador. No está permitido modificarlo ni distribuirlo sin autorización expresa.
+
+## 👨‍💻 Desarrollador
+
+**Pablo Eras** ([@pableras172](https://github.com/pableras172))
+
+---
+
+*Última actualización: Febrero 2026*
 
 
