@@ -12,7 +12,7 @@ class ManifestService
             'name' => 'eBand - Gestiona la banda',
             'short_name' => 'eBand',
             'description' => 'Facilita la Gestió de Bandes amb eBand',
-            'start_url' => '/dashboard',
+            'start_url' => '/login',
             'display' => 'standalone',
             'background_color' => '#ffffff',
             'theme_color' => '#9f7639ff',
