@@ -134,7 +134,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url('{{ URL::to('/') }}/partitura.jpg');
+            background-image: url('{{ URL::to('/') }}/fondo_eband_head.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -427,17 +427,39 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('{{ URL::to('/') }}/partitura.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(3px);
+            opacity: 0.2;
+            z-index: 1;
         }
 
         .cta h2 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
         }
 
         .cta p {
             font-size: 1.3rem;
             margin-bottom: 2rem;
             opacity: 0.95;
+            position: relative;
+            z-index: 2;
         }
 
         .btn-cta {
@@ -452,6 +474,8 @@
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
+            position: relative;
+            z-index: 2;
         }
 
         .btn-cta:hover {
