@@ -3,168 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mantenimiento en progreso</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Mantenimiento en progreso 🎵</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #034460;
-            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
             text-align: center;
-            padding: 5%;
-            font-family: 'Arial', sans-serif;
+            z-index: 10;
+            max-width: 700px;
+            padding: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .logo {
-            width: 75px;
-            margin-bottom: 20px;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite;
         }
 
-        /* Animación de batuta */
-        .baton {
-            transform-origin: bottom center;
-            animation: wave 2s ease-in-out infinite;
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
-        @keyframes wave {
-            0% { transform: rotate(-20deg); }
-            50% { transform: rotate(20deg); }
-            100% { transform: rotate(-20deg); }
+        .emoji {
+            font-size: 6rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        .arm-left {
-            transform-origin: top center;
-            animation: armLeft 2s ease-in-out infinite;
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
         }
 
-        @keyframes armLeft {
-            0% { transform: rotate(-15deg); }
-            50% { transform: rotate(15deg); }
-            100% { transform: rotate(-15deg); }
+        h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
         }
 
-        .arm-right {
-            transform-origin: top center;
-            animation: armRight 2s ease-in-out infinite;
-            animation-delay: 1s;
+        .subtitle {
+            color: #fff;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
         }
 
-        @keyframes armRight {
-            0% { transform: rotate(15deg); }
-            50% { transform: rotate(-15deg); }
-            100% { transform: rotate(15deg); }
+        .message {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Estilo para el carrusel */
-        .carousel-item {
-            height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            font-size: 1.4em;
+        .quote-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.2rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            border-left: 4px solid #fff;
             font-style: italic;
-            padding: 20px;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        .carousel-item.active {
-            opacity: 1;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .quote-author {
-            margin-top: 10px;
-            font-size: 1em;
-            color: #FFD700;
-            font-weight: bold;
+            margin-top: 0.8rem;
+            font-size: 0.9rem;
+            color: #fff;
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        /* Notas musicales flotantes */
+        .music-note {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0.15;
+            animation: float 16s infinite ease-in-out;
+            color: #fff;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-30px) rotate(6deg);
+            }
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+            75% {
+                transform: translateY(-18px) rotate(-6deg);
+            }
+        }
+
+        .note-1 { top: 10%; left: 12%; animation-delay: 0s; font-size: 3rem; }
+        .note-2 { top: 25%; right: 18%; animation-delay: 2s; font-size: 2rem; }
+        .note-3 { top: 55%; left: 15%; animation-delay: 4s; font-size: 2.5rem; }
+        .note-4 { bottom: 15%; right: 20%; animation-delay: 6s; font-size: 3rem; }
+        .note-5 { top: 38%; left: 8%; animation-delay: 8s; font-size: 2rem; }
+        .note-6 { bottom: 30%; left: 25%; animation-delay: 10s; font-size: 2.5rem; }
+        .note-7 { top: 18%; right: 30%; animation-delay: 12s; font-size: 2rem; }
+        .note-8 { bottom: 22%; right: 12%; animation-delay: 14s; font-size: 2.5rem; }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            .emoji {
+                font-size: 4.5rem;
+            }
+            .message {
+                font-size: 1rem;
+                padding: 1.2rem;
+            }
+            .music-note {
+                font-size: 1.5rem !important;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="d-flex flex-column justify-content-center align-items-center">
-        <!-- Logo de la app -->
-        <img class="logo" src="{{ URL::to('/') }}/imagenes/logo.png" alt="Logo de la app" />
+    <!-- Notas musicales de fondo -->
+    <div class="music-note note-1">♪</div>
+    <div class="music-note note-2">♫</div>
+    <div class="music-note note-3">♬</div>
+    <div class="music-note note-4">♭</div>
+    <div class="music-note note-5">♯</div>
+    <div class="music-note note-6">♪</div>
+    <div class="music-note note-7">♫</div>
+    <div class="music-note note-8">♬</div>
 
-        <!-- SVG animado del director de orquesta -->
-        <div class="mb-4">
-            <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <!-- Cabeza -->
-                <circle cx="100" cy="60" r="20" fill="#FFD700"/>
-                
-                <!-- Cuerpo -->
-                <rect x="90" y="80" width="20" height="60" fill="#FFD700"/>
-
-                <!-- Brazos -->
-                <rect x="70" y="85" width="10" height="60" fill="#FFA500" class="arm-left"/>
-                <rect x="120" y="85" width="10" height="60" fill="#FFA500" class="arm-right"/>
-
-                <!-- Batuta en la mano derecha -->
-                <line x1="125" y1="140" x2="150" y2="110" stroke="#fff" stroke-width="3" class="baton"/>
-
-                <!-- Nota musical -->
-                <path d="M 160 120 C 165 110 180 110 185 120 C 190 130 175 140 170 130 Z" fill="#FFD700"/>
-                <circle cx="160" cy="120" r="5" fill="#FFD700"/>
-                <line x1="160" y1="115" x2="160" y2="100" stroke="#FFD700" stroke-width="3"/>
-            </svg>
+    <div class="container">
+        <img class="logo" src="{{ URL::to('/') }}/imagenes/logo.png" alt="Logo" />
+        
+        <div class="emoji">🎵</div>
+        
+        <h1>¡Estamos afinando instrumentos!</h1>
+        <div class="subtitle">Mantenimiento en progreso...</div>
+        
+        <div class="message">
+            <p style="margin-bottom: 0.8rem;">🎼 <strong>Estamos mejorando la plataforma para ti</strong></p>
+            <p>Nuestro equipo está realizando tareas de mantenimiento para ofrecerte una mejor experiencia. Volveremos muy pronto con novedades y mejoras. ¡Gracias por tu paciencia y comprensión!</p>
         </div>
 
-        <h1 class="mb-4">¡Estamos en mantenimiento!</h1>
-        <p class="mb-3">Estamos afinando nuestra plataforma para ofrecerte una mejor experiencia. 🎶</p>
-        <p>Volveremos en breve. ¡Gracias por tu paciencia! 😊</p>
-
-        <!-- Carrusel de citas célebres -->
-        <div id="quoteCarousel" class="carousel slide mt-5" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <div class="w-100">
-                        <p>"La música es el lenguaje universal de la humanidad."</p>
-                        <div class="quote-author">— Henry Wadsworth Longfellow</div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="w-100">
-                        <p>"La música es el arte más directo, entra por el oído y va al corazón."</p>
-                        <div class="quote-author">— Magdalena Martínez</div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="w-100">
-                        <p>"La música puede cambiar el mundo porque puede cambiar a las personas."</p>
-                        <div class="quote-author">— Bono</div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="w-100">
-                        <p>"La música es el vínculo que une la vida del espíritu con la vida de los sentidos."</p>
-                        <div class="quote-author">— Beethoven</div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="w-100">
-                        <p>"Sin música, la vida sería un error."</p>
-                        <div class="quote-author">— Friedrich Nietzsche</div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="w-100">
-                        <p>"La música compone los ánimos descompuestos y alivia los trabajos que nacen del espíritu."</p>
-                        <div class="quote-author">— Miguel de Cervantes</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Controles del carrusel -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#quoteCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#quoteCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            </button>
+        <div class="quote-box">
+            <p>"La música es el lenguaje universal de la humanidad."</p>
+            <div class="quote-author">— Henry Wadsworth Longfellow</div>
         </div>
     </div>
-
-    <!-- JavaScript de Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
