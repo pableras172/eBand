@@ -19,7 +19,8 @@
                 <div class="w-full">
                     <x-ui.label for="users_id">{{ __('Nom') }}</x-ui.label>
                     <x-ui.input.select wire:model="form.users_id" name="users_id" id="users_id" class="w-full" wire:change="consultarActuaciones(this.value)">
-                        <option value="0" selected>Todos los usuarios</option>
+                        <option value="-1" selected>{{ __('Selecciona un usuario') }}</option>
+                        <option value="0" selected>{{__('Todos los usuarios')}}</option>
                         @foreach ($users as $value => $label)
                         <option value="{{ $value }}">{{ $label }}</option>
                         @endforeach

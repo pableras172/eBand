@@ -51,16 +51,22 @@ class PaymentCreate extends Component
 
     public function consultarActuaciones()
     {
+        if($this->form['users_id'] == -1){
+            return;
+        }
+
         if (!empty($this->form['fechaInicio']) && !empty($this->form['fechaFin'])) {
             if ($this->form['users_id'] == '0') { // Todos los usuarios
                 $this->actuaciones = Actuacion::whereBetween('fechaActuacion', [$this->form['fechaInicio'], $this->form['fechaFin']])
+                    ->where('actuacions.noaplicapago', 0) 
                     ->orderBy('fechaActuacion', 'asc')
                     ->get();
             } else { // Actuaciones del usuario seleccionado
                 $this->actuaciones = Actuacion::join('listas', 'actuacions.id', '=', 'listas.actuacions_id')
                     ->join('listas_user', 'listas.id', '=', 'listas_user.listas_id')
                     ->where('listas_user.user_id', $this->form['users_id'])
-                    ->where('listas_user.disponible', 1)                    
+                    ->where('listas_user.disponible', 1)   
+                    ->where('actuacions.noaplicapago', 0) 
                     ->whereBetween('actuacions.fechaActuacion', [$this->form['fechaInicio'], $this->form['fechaFin']])
                     ->orderBy('actuacions.fechaActuacion', 'asc')
                     ->select('actuacions.*') // Asegúrate de seleccionar solo las columnas de actuacions
