@@ -7,6 +7,9 @@ use Livewire\Component;
 use App\Models\Paymentresume;
 use Illuminate\Support\Collection;
 use App\Livewire\Dashboard\Paymentresumes\Forms\UpdateForm;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PaymentresumeDetail;
 
 class PaymentresumeEdit extends Component
 {
@@ -43,7 +46,25 @@ class PaymentresumeEdit extends Component
 
     public function print()
     {
-        // Redireccionar a la ruta que genera el PDF
-        return redirect()->route('pdf.paymentresume', ['paymentresume' => $this->paymetresume]);
+        try {
+            $currentUser = Auth::user();
+            
+            // Verificar que el usuario tenga email
+            if (!$currentUser || !$currentUser->email) {
+                $this->dispatch('email-error');
+                return;
+            }
+
+            // Recargar el paymentresume con los pagos relacionados
+            $paymentresume = Paymentresume::with('payments.user')->find($this->paymetresume->id);
+
+            // Enviar email al usuario logueado
+            Mail::to($currentUser->email)->send(new PaymentresumeDetail($paymentresume));
+
+            $this->dispatch('email-sent');
+        } catch (\Exception $e) {
+            \Log::error('Error sending paymentresume email: ' . $e->getMessage());
+            $this->dispatch('email-error');
+        }
     }
 }

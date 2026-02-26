@@ -8,6 +8,8 @@ use App\Models\Payment;
 use Illuminate\Support\Collection;
 use App\Livewire\Dashboard\Payments\Forms\UpdateForm;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PaymentDetail;
 
 class PaymentEdit extends Component
 {
@@ -64,7 +66,32 @@ class PaymentEdit extends Component
 
     public function print()
     {
-        // Lógica para imprimir
+        $this->authorize('view', $this->payment);
+
+        try {
+            // Verificar que el usuario del pago tenga email
+            if (!$this->payment->user || !$this->payment->user->email) {
+                $this->dispatch('email-error');
+                return;
+            }
+
+            // Recargar el payment con la relación user para asegurarnos
+            $payment = Payment::with('user')->find($this->payment->id);
+
+            // Enviar email al usuario del pago
+            Mail::to($payment->user->email)->send(new PaymentDetail($payment));
+
+            // Si el usuario logueado es diferente, enviar copia
+            $currentUser = Auth::user();
+            if ($currentUser->id !== $payment->user->id && $currentUser->email) {
+                Mail::to($currentUser->email)->send(new PaymentDetail($payment));
+            }
+
+            $this->dispatch('email-sent');
+        } catch (\Exception $e) {
+            \Log::error('Error sending payment email: ' . $e->getMessage());
+            $this->dispatch('email-error');
+        }
     }
 
     public function confirm()

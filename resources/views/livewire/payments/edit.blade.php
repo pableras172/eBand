@@ -49,6 +49,8 @@
     <x-ui.toast timeout=5000 on="confirmed">{{__('Se ha confirmado el pago')}}</x-ui.toast>
     <x-ui.toast timeout=5000 on="notconfirmed">{{__('El pago se ha marcado como pendiente')}}</x-ui.toast>
     <x-ui.toast timeout=5000 color="red" on="errorobservaciones">{{__('No has indicado observaciones')}}</x-ui.toast>
+    <x-ui.toast timeout=5000 on="email-sent">{{__('Email enviado correctamente')}}</x-ui.toast>
+    <x-ui.toast timeout=5000 color="red" on="email-error">{{__('Error al enviar el email')}}</x-ui.toast>
 
     <div class="overflow-hidden border rounded-lg bg-white">    
         
@@ -129,7 +131,7 @@
         </form>
         <div class="flex justify-center mt-1 border-t border-gray-50 p-2 space-x-4">               
             <x-ui.button type="button" class="bg-yellow-600 hover:bg-yellow-700" wire:click="print">
-                {{ __('Imprmir') }}
+                {{ __('Enviar Email') }}
             </x-ui.button>
             @if (!$pendiente)
             <x-ui.button type="button" class="bg-lime-700 hover:bg-lime-800" wire:click="confirm">
