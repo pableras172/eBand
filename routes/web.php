@@ -14,6 +14,7 @@ use App\Http\Controllers\ListaController;
 use App\Http\Controllers\ListasUsersController;
 use App\Http\Controllers\TipoActuacionController;
 use App\Http\Controllers\PDFController;
+use App\Http\Controllers\ContactController;
 use App\Livewire\Payment\PaymentIndex;
 use App\Livewire\Payment\PaymentCreate;
 use App\Livewire\Payment\PaymentEdit;
@@ -41,9 +42,16 @@ use Illuminate\Http\Request;
 |
 */
 
-/*Route::get('/', function () {
+// Ruta pública para la página de bienvenida
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
     return view('welcome');
-});*/
+})->name('welcome');
+
+// Ruta pública para el formulario de contacto
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'can:admin'])->group(function () {
@@ -101,7 +109,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         })->name('notifications.read');
 
 
-        Route::get('/', function () {
+        Route::get('/dashboard', function () {
             return view('dashboard');
         })->name('dashboard');
 
