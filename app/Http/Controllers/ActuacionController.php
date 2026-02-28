@@ -892,6 +892,7 @@ class ActuacionController extends Controller
             ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
             ->where('listas_user.user_id', $user->id)
             ->where('listas_user.disponible', 1)
+            ->where('actuacions.fechaActuacion', '<=', now()->toDateString())
             ->whereYear('actuacions.fechaActuacion', $year)
             ->where("tipoactuacions.$tipoColumna", true)
             ->groupBy('tipoactuacions.nombre')
