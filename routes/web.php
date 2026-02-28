@@ -79,10 +79,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('/comments/create', CommentCreate::class)->name('comments.create');
     Route::get('/comments/{comment}', CommentEdit::class)->name('comments.edit');
 
-    Route::get('/suggestions', SuggestionIndex::class)->name('suggestions.index');
-    Route::get('/suggestions/create', SuggestionCreate::class)->name('suggestions.create');
-    Route::get('/suggestions/{suggestion}', SuggestionEdit::class)->name('suggestions.edit');
-
     Route::get('/run-job', function () {
         dispatch(new SendDailyCommentsNotification());
         session()->flash('success', 'El Job se ha ejecutado correctamente.');
@@ -93,6 +89,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->group(
     function () {
+
+        // Suggestions - available for all authenticated users
+        Route::get('/suggestions', SuggestionIndex::class)->name('suggestions.index');
+        Route::get('/suggestions/create', SuggestionCreate::class)->name('suggestions.create');
+        Route::get('/suggestions/{suggestion}', SuggestionEdit::class)->name('suggestions.edit');
 
         //Notificaciones
         Route::middleware('auth')->get('/notificaciones', function () {

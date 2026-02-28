@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 
 class StoreUserRequest extends FormRequest
@@ -43,5 +44,14 @@ public function withValidator($validator)
     public function authorize()
     {
         return Gate::allows('user_access');
+    }
+
+    protected function prepareForValidation()
+    {
+        if ($this->filled('password')) {
+            $this->merge([
+                'password' => Hash::make($this->password),
+            ]);
+        }
     }
 }

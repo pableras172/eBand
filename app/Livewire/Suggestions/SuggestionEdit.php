@@ -15,7 +15,7 @@ class SuggestionEdit extends Component
 
     public function mount(Suggestion $suggestion)
     {
-        $this->authorize('view-any', Suggestion::class);
+        $this->authorize('view', $suggestion);
 
         $this->suggestion = $suggestion;
 

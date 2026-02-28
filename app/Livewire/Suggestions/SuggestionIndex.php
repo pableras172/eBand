@@ -52,28 +52,16 @@ class SuggestionIndex extends Component
         $this->sortField = $field;
     }
 
-    public function getRowsProperty()
-    {
-        return $this->rowsQuery->paginate(5);
-    }
-
-    public function getRowsQueryProperty()
-    {
-        return Suggestion::query()
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->where('titulo', 'like', "%{$this->search}%");
-    }
-
     public function render()
     {
         $query = Suggestion::query();
 
         // If current user is not admin, limit to user's own suggestions
         if (! Gate::allows('admin')) {
-            $query->where('iduser', auth()->id());
+            $query->where('users_id', auth()->id());
         }
 
-        // apply search / sorting if existent in your component
+        // Apply search
         if (! empty($this->search)) {
             $query->where(function ($q) {
                 $q->where('titulo', 'like', '%'.$this->search.'%')
@@ -81,10 +69,10 @@ class SuggestionIndex extends Component
             });
         }
 
-        // default sorting handling (adjust field names if needed)
+        // Apply sorting
         $suggestions = $query
-            ->orderBy($this->sortBy ?? 'fechacreacion', $this->sortDirection ?? 'desc')
-            ->paginate($this->perPage ?? 10);
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(10);
 
         return view('livewire.suggestions.index', compact('suggestions'));
     }

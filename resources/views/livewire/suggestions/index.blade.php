@@ -1,4 +1,4 @@
-<div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8 space-y-4">
+<div class="max-w-7xl mx-auto py-2 sm:px-6 lg:px-8 space-y-4">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('crud.suggestions.collectionTitle') }}
@@ -32,46 +32,67 @@
     <x-ui.container.table>
         <x-ui.table>
             <x-slot name="head">
-                <x-ui.table.header for-crud
+                <x-ui.table.header for-crud class="w-1/6"
                     wire:click="sortBy('fechacreacion')">{{ __('crud.suggestions.inputs.fechacreacion.label') }}</x-ui.table.header>
-                <x-ui.table.header for-crud
+                <x-ui.table.header for-crud class="w-2/5"
                     wire:click="sortBy('titulo')">{{ __('crud.suggestions.inputs.titulo.label') }}</x-ui.table.header>
-
-                <x-ui.table.header for-crud
-                    wire:click="sortBy('iduser')">{{ __('crud.suggestions.inputs.iduser.label') }}</x-ui.table.header>
-                <x-ui.table.action-header>Actions</x-ui.table.action-header>
+                <x-ui.table.header for-crud class="w-1/4"
+                    wire:click="sortBy('users_id')">{{ __('crud.suggestions.inputs.iduser.label') }}</x-ui.table.header>
             </x-slot>
 
             <x-slot name="body">
                 @forelse ($suggestions as $suggestion)
-                    <x-ui.table.row wire:loading.class.delay="opacity-75">
-                        <x-ui.table.column
-                            for-crud>{{ $suggestion->fechacreacion ? \Carbon\Carbon::parse($suggestion->fechacreacion)->format('d/m/Y') : '' }}</x-ui.table.column>
-                        <x-ui.table.column for-crud>{{ $suggestion->titulo }}</x-ui.table.column>
-
-                        <x-ui.table.column for-crud>
-                            @if($suggestion->anonimo==false)
-                                {{ $suggestion->user->name ?? $suggestion->user->email }}
-                            @else
-                                {{ __('crud.suggestions.anonymous') ?: 'Anónimo' }}
-                            @endif
+                    @can('view', $suggestion)
+                    <x-ui.table.row 
+                        wire:loading.class.delay="opacity-75"
+                        wire:navigate
+                        class="cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                        onclick="window.location.href='{{ route('suggestions.edit', $suggestion) }}'">
+                        
+                        <x-ui.table.column for-crud class="w-1/6">
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span class="text-sm">{{ $suggestion->fechacreacion ? \Carbon\Carbon::parse($suggestion->fechacreacion)->format('d/m/Y') : '' }}</span>
+                            </div>
                         </x-ui.table.column>
-                        <x-ui.table.action-column>
-                            @can('update', $suggestion)
-                                <div class="flex justify-center items-center space-x-2">
-                                    <x-ui.action wire:navigate
-                                        href="{{ route('suggestions.edit', $suggestion) }}"><x-editar w="18"
-                                            h="18" /></x-ui.action>
-                                    @endcan @can('delete', $suggestion)
-                                    <x-ui.action.danger wire:click="confirmDeletion({{ $suggestion->id }})"> <x-delete
-                                            w="18" h="18" /></x-ui.action.danger>
-                                </div>
-                            @endcan
-                        </x-ui.table.action-column>
+                        
+                        <x-ui.table.column for-crud class="w-2/5">
+                            <div class="flex items-start">
+                                <svg class="w-4 h-4 mr-2 mt-1 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                </svg>
+                                <span class="font-medium text-gray-900 dark:text-gray-100 line-clamp-2">{{ $suggestion->titulo }}</span>
+                            </div>
+                        </x-ui.table.column>
+
+                        <x-ui.table.column for-crud class="w-1/4">
+                            <div class="flex items-center">
+                                @if($suggestion->anonimo == false && $suggestion->user)
+                                    <svg class="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <span class="text-sm truncate">{{ $suggestion->user->name ?? $suggestion->user->email }}</span>
+                                @else
+                                    <svg class="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="text-sm italic text-gray-500">{{ __('crud.suggestions.anonymous') }}</span>
+                                @endif
+                            </div>
+                        </x-ui.table.column>
                     </x-ui.table.row>
+                    @endcan
                 @empty
                     <x-ui.table.row>
-                        <x-ui.table.column colspan="6">{{ __('crud.suggestions.collectionTitle') }}
+                        <x-ui.table.column colspan="3" class="text-center py-8">
+                            <div class="flex flex-col items-center justify-center text-gray-500">
+                                <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                </svg>
+                                <p class="text-sm">{{ __('No hi ha suggeriments') }}</p>
+                            </div>
                         </x-ui.table.column>
                     </x-ui.table.row>
                 @endforelse

@@ -1,4 +1,8 @@
 {
+    "Anterior":"Anterior",
+    "Següent":"Següent",
+    "Veure actuació":"Veure actuació",
+    "Anar al missatge":"Anar al missatge",
     "Are you sure":"Estas segur@?",
     "Esta semana":"Aquesta setmana",
     "Nos alegra tenerte de vuelta":"Ens alegra que estigues aci.",
@@ -980,10 +984,21 @@
             "crud.suggestions.inputs.iduser.label": "Usuari",
             "crud.suggestions.created_by": "Creat per",
             "crud.suggestions.anonymous": "Anònim",
+            "Comparteix la teva idea": "Comparteix la teva idea",
+            "Les teves suggerències ens ajuden a millorar": "Les teves suggerències ens ajuden a millorar",
+            "Enviar Suggeriment": "Enviar Suggeriment",
+            "Enviar com a anònim": "Enviar com a anònim",
+            "Mis sugerencias": "Els meus suggeriments",
+            "Editar Suggeriment": "Editar Suggeriment",
+            "Modifica el teu suggeriment": "Modifica el teu suggeriment",
+            "Nou sugeriment": "Nou suggeriment",
+            "No hi ha suggeriments": "No hi ha suggeriments",
+            "Tornar": "Tornar",
+            "Guardar": "Guardar",
             "actions.save": "Desar",
             "messages.suggestion_saved": "Suggeriment enviat correctament",
             "Guest": "Visitant",
-            "crud.suggestions.create": "Crear sugerencia"
+            "crud.suggestions.create": "Crear suggeriment"
         
 
 }

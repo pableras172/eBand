@@ -19,6 +19,9 @@ class SuggestionPolicy
         if (Gate::forUser($user)->allows('admin')) {
             return true;
         }
+        
+        // Explicitly return null to continue with other policy methods
+        return null;
     }
 
     public function viewAny(User $user)
@@ -30,7 +33,7 @@ class SuggestionPolicy
 
     public function view(User $user, Suggestion $suggestion)
     {
-        return $user->id === $suggestion->iduser;
+        return $user->id === $suggestion->users_id;
     }
 
     public function create(User $user)
@@ -40,11 +43,11 @@ class SuggestionPolicy
 
     public function update(User $user, Suggestion $suggestion)
     {
-        return $user->id === $suggestion->iduser;
+        return $user->id === $suggestion->users_id;
     }
 
     public function delete(User $user, Suggestion $suggestion)
     {
-        return $user->id === $suggestion->iduser;
+        return $user->id === $suggestion->users_id;
     }
 }

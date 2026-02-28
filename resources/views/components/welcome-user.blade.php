@@ -90,7 +90,12 @@
         $esPadre = Auth::user()?->hijos()->exists() ?? false;
     @endphp
 
-    <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
+    <div class="w-full mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1">
+        <div class="flex items-center justify-center gap-2 mb-3">
+            <x-agenda w="24" h="24" />
+            <h3 class="text-lg font-semibold text-gray-800">{{ __('Planning') }}</h3>
+        </div>
+        <hr class="mb-1">
         @if ($esPadre)
             @include('components.proxima-actuacion-padres')
         @else
