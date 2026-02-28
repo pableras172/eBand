@@ -13,9 +13,9 @@
             </h1>
             
         </div-->
-
+        
         <x-lottie style="width: 300px; height: 200px;" path="{{ asset('storage/login.json') }}" loop="true" autoplay="true" />
-
+        
         <!--<a href="/" class="mt-2">
             <img style="width: 200px;" src="{{ URL::to('/') }}/imagenes/logo.png" alt="Logo" />
         </a-->

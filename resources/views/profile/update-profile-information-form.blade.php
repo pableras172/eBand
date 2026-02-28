@@ -94,8 +94,8 @@
                 >
                 <option value="">{{ __('Selecciona Instrument') }}</option>
 
-                @foreach ($state['instruments'] as $instrument)
-                    <option value="{{ $instrument['id'] }}">{{ $instrument['name'] }}</option>
+                @foreach ($instruments as $instrument)
+                    <option value="{{ $instrument->id }}">{{ $instrument->name }}</option>
                 @endforeach
             </select>
             <x-input-error for="instrument_id" class="mt-2" />

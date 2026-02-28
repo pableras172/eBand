@@ -20,6 +20,13 @@ class UpdateProfileInformationForm extends Component
     public $state = [];
 
     /**
+     * Available instruments.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    public $instruments;
+
+    /**
      * The new avatar for the user.
      *
      * @var mixed
@@ -42,9 +49,10 @@ class UpdateProfileInformationForm extends Component
     {
         $user = Auth::user();
 
+        $this->instruments = Instrument::all();
+        
         $this->state = array_merge([
             'email' => $user->email,
-            'instruments'=>Instrument::all(),
         ], $user->withoutRelations()->toArray());
     }
 
