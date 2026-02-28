@@ -903,6 +903,7 @@ class ActuacionController extends Controller
             ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
             ->where("tipoactuacions.$tipoColumna", true)
             ->whereYear('actuacions.fechaActuacion', $year)
+             ->where('actuacions.fechaActuacion', '<=', now()->toDateString())
             ->select(DB::raw("'" . $tipoLabeTotales . "' AS tipo"), DB::raw('COUNT(*) as total_tipo'));
 
         // Unir ambas consultas con UNION
