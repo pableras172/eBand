@@ -146,7 +146,7 @@
             class="mt-2 flex justify-center items-center text-gray-600 text-sm font-medium hover:text-gray-800 transition">
             {{-- Icono de perfil (SVG) --}}
             <x-calendario w="24" h="24" />
-            {{ __('common.calendario') }}
+            {{ __('Calendari') }}
         </a>
     </div>
 

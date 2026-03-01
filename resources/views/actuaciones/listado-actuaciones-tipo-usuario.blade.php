@@ -254,7 +254,7 @@
                         <div class="flex items-center space-x-1.5 sm:space-x-2 flex-1 min-w-0">
                             <div class="bg-gradient-to-br from-blue-100 to-blue-200 p-1.5 sm:p-2 rounded-lg flex-shrink-0">
                                 @if(isset($iconos[$index]) && $iconos[$index])
-                                    <img class="w-4 h-4 sm:w-6 sm:h-6 object-contain" 
+                                    <img class="w-4 h-4 sm:w-6 sm:h-6 object-contain rounded-full" 
                                          src="{{ asset('storage/imagenes/tipoactuacion/' . $iconos[$index]) }}" 
                                          alt="{{ $label }}">
                                 @else

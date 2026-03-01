@@ -18,14 +18,14 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                 </svg>
                             </div>
-                            <span class="text-xs sm:text-sm font-medium text-gray-600">Ensayos</span>
+                            <span class="text-xs sm:text-sm font-medium text-gray-600">{{ __("Ensayos") }}</span>
                         </div>
                     </div>
                     
                     <div class="space-y-2 sm:space-y-3">
                         <div id="percentEnsayo" class="text-3xl sm:text-4xl font-bold text-gray-900">--%</div>
                         <div id="descriptionEnsayo" class="flex items-center flex-wrap gap-1 sm:gap-2 text-xs sm:text-sm">
-                            <span class="text-gray-600">Cargando datos...</span>
+                            <span class="text-gray-600">{{ __("Cargando datos...") }}</span>
                         </div>
                         <div class="mt-3 sm:mt-4 h-12 sm:h-16">
                             <canvas id="actuacionesChartEnsayo"></canvas>
@@ -44,14 +44,14 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                                 </svg>
                             </div>
-                            <span class="text-xs sm:text-sm font-medium text-gray-600">Conciertos</span>
+                            <span class="text-xs sm:text-sm font-medium text-gray-600">{{ __("Conciertos") }}</span>
                         </div>
                     </div>
                     
                     <div class="space-y-2 sm:space-y-3">
                         <div id="percentConcierto" class="text-3xl sm:text-4xl font-bold text-gray-900">--%</div>
                         <div id="descriptionConcierto" class="flex items-center flex-wrap gap-1 sm:gap-2 text-xs sm:text-sm">
-                            <span class="text-gray-600">Cargando datos...</span>
+                            <span class="text-gray-600">{{ __("Cargando datos...") }}</span>
                         </div>
                         <div class="mt-3 sm:mt-4 h-12 sm:h-16">
                             <canvas id="actuacionesChartConcierto"></canvas>

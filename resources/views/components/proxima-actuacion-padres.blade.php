@@ -129,7 +129,7 @@
                     @endphp
                     <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacionb->id]) }}">
                         <p class="text-m font-semibold text-gray-800 mt-2">
-                            {{ $fecha ? Carbon::parse($fecha)->format('d/m/Y') : 'Sin fecha' }} -
+                            {{ $fecha ? Carbon::parse($fecha)->format('d/m/Y') : __("Sin fecha") }} -
                             {{ $actuacionb->descripcion }} - {{ $actuacionb->contrato->poblacion }} ➡</p>
                     </a>
                 @endforeach
@@ -190,7 +190,7 @@
             class="mt-2 flex justify-center items-center text-gray-600 text-sm font-medium hover:text-gray-800 transition">
             {{-- Icono de perfil (SVG) --}}
             <x-calendario w="24" h="24" />
-            {{ __('common.calendario') }}
+            {{ __('Calendari') }}
         </a>
     </div>
 
