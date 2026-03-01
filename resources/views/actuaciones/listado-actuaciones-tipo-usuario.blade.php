@@ -218,6 +218,10 @@
                                             class="">{{ $actuacion->actuacion->descripcion }}</a>
                                     </p>
                                     <div class="flex items-center">
+                                        @if ($actuacion->oficial)
+                                            <x-oficial w="24" h="24" />
+                                        @endif
+
                                         @if (!$actuacion->pivot->disponible)
                                             <x-disponible w="24" h="24" />
                                         @endif
@@ -243,8 +247,37 @@
             </div>
         </div>
 
-        <div class="max-w-xl mx-auto mt-6 p-4 bg-white shadow-md rounded-lg">
-            <canvas id="actuacionesChart"></canvas>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6 px-2">
+            @foreach($labels as $index => $label)
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 p-4 sm:p-6 transition-all hover:shadow-xl">
+                    <div class="flex items-center justify-between mb-3 sm:mb-4">
+                        <div class="flex items-center space-x-1.5 sm:space-x-2 flex-1 min-w-0">
+                            <div class="bg-gradient-to-br from-blue-100 to-blue-200 p-1.5 sm:p-2 rounded-lg flex-shrink-0">
+                                @if(isset($iconos[$index]) && $iconos[$index])
+                                    <img class="w-4 h-4 sm:w-6 sm:h-6 object-contain" 
+                                         src="{{ asset('storage/imagenes/tipoactuacion/' . $iconos[$index]) }}" 
+                                         alt="{{ $label }}">
+                                @else
+                                    <svg class="w-4 h-4 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                                    </svg>
+                                @endif
+                            </div>
+                            <span class="text-xs sm:text-sm font-medium text-gray-600 truncate">{{ $label }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2 sm:space-y-3">
+                        <div class="text-3xl sm:text-4xl font-bold text-gray-900" id="count-{{ $index }}">{{ $data[$index] }}</div>
+                        <div class="flex items-center space-x-2 text-xs sm:text-sm">
+                            <span class="text-gray-600">{{ __('actuaciones') }}</span>
+                        </div>
+                        <div class="mt-3 sm:mt-4 h-12 sm:h-16">
+                            <canvas id="miniChart-{{ $index }}"></canvas>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
 
 
@@ -262,41 +295,68 @@
         const labels = @json($labels);
         const data = @json($data);
 
-        // Generar colores aleatorios para cada barra
-        const backgroundColors = labels.map(() => {
-            const r = Math.floor(Math.random() * 256);
-            const g = Math.floor(Math.random() * 256);
-            const b = Math.floor(Math.random() * 256);
-            return `rgba(${r}, ${g}, ${b}, 0.6)`;
-        });
+        // Generar colores para cada tipo
+        const colors = [
+            { bg: 'rgba(59, 130, 246, 0.3)', border: 'rgb(59, 130, 246)' },    // Blue
+            { bg: 'rgba(139, 92, 246, 0.3)', border: 'rgb(139, 92, 246)' },    // Purple
+            { bg: 'rgba(236, 72, 153, 0.3)', border: 'rgb(236, 72, 153)' },    // Pink
+            { bg: 'rgba(251, 146, 60, 0.3)', border: 'rgb(251, 146, 60)' },    // Orange
+            { bg: 'rgba(34, 197, 94, 0.3)', border: 'rgb(34, 197, 94)' },      // Green
+            { bg: 'rgba(234, 179, 8, 0.3)', border: 'rgb(234, 179, 8)' },      // Yellow
+            { bg: 'rgba(239, 68, 68, 0.3)', border: 'rgb(239, 68, 68)' },      // Red
+            { bg: 'rgba(20, 184, 166, 0.3)', border: 'rgb(20, 184, 166)' },    // Teal
+        ];
 
-        const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
+        // Crear mini gráficos para cada tipo
+        labels.forEach((label, index) => {
+            const canvas = document.getElementById(`miniChart-${index}`);
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                const color = colors[index % colors.length];
+                
+                // Crear datos simulados de tendencia (últimos 6 meses)
+                const trendData = Array(6).fill(0).map(() => Math.floor(Math.random() * (data[index] + 1)));
+                
+                // Gradient
+                const gradient = ctx.createLinearGradient(0, 0, 0, 60);
+                gradient.addColorStop(0, color.bg);
+                gradient.addColorStop(1, color.bg.replace('0.3', '0.0'));
 
-        // Configurar el gráfico
-        const ctx = document.getElementById('actuacionesChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Número de actuaciones',
-                    data: data,
-                    backgroundColor: backgroundColors,
-                    borderColor: borderColors,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top'
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['', '', '', '', '', ''],
+                        datasets: [{
+                            data: trendData,
+                            backgroundColor: gradient,
+                            borderColor: color.border,
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 4,
+                            pointHoverBackgroundColor: color.border,
+                        }]
                     },
-                    title: {
-                        display: true,
-                        text: 'Actuaciones por tipo en ' + document.getElementById('yearSelect').value
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            x: { display: false },
+                            y: { 
+                                display: false,
+                                beginAtZero: true
+                            }
+                        }
                     }
-                }
+                });
             }
         });
     </script>

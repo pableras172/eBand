@@ -732,6 +732,7 @@ class ActuacionController extends Controller
         $sql = '
                 select
                 tipoactuacions.nombre AS tipo,
+                tipoactuacions.icon AS icono,
                 COUNT(*) as total
                 from
                 `listas`
@@ -742,7 +743,8 @@ class ActuacionController extends Controller
                 `listas_user`.`user_id` =' . $user->id . '  
                 and year(`actuacions`.`fechaActuacion`) =' . $year . ' 
                 group by
-                `tipoactuacions`.`nombre`
+                `tipoactuacions`.`nombre`,
+                `tipoactuacions`.`icon`
                 order by
                 `total` desc';
 
@@ -752,13 +754,15 @@ class ActuacionController extends Controller
         if (!empty($actuacionesGrph)) {
             $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
             $data = collect($actuacionesGrph)->pluck('total')->toArray();
+            $iconos = collect($actuacionesGrph)->pluck('icono')->toArray();
         } else {
             $labels = ['Sin datos']; // Etiqueta predeterminada
             $data = [0]; // Valor predeterminado para la gráfica
+            $iconos = [null]; // Sin icono por defecto
         }
 
         // Puedes pasar $actuaciones a la vista para mostrar el listado
-        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones', 'year', 'user', 'tiposActuacion', 'poblaciones', 'labels', 'data'));
+        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones', 'year', 'user', 'tiposActuacion', 'poblaciones', 'labels', 'data', 'iconos'));
     }
 
 
