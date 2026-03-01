@@ -284,6 +284,7 @@
             </div>
         </div>
     </div>
+    <x-usermetrics :userId="$user->id" />
     <div style="height: 75px">
 
     </div>

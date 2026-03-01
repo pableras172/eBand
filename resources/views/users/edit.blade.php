@@ -62,4 +62,5 @@
             </div>
         </div>
     </div>
+    <x-usermetrics :userId="$usuario->id" />
 </x-app-layout>

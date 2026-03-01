@@ -1,10 +1,34 @@
 <x-action-section>
     <x-slot name="title">
-        {{ __('Sesiones de navegador') }}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-br from-cyan-500 to-blue-600 p-2.5 rounded-lg shadow-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ __('Sesiones de navegador') }}</h3>
+                    <div class="h-1 w-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mt-1"></div>
+                </div>
+            </div>
+        </div>
     </x-slot>
 
     <x-slot name="description">
-        {{ __('Administre y cierre sesión en sus sesiones activas en otros navegadores y dispositivos.') }}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 space-y-2">
+            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                {{ __('Administre y cierre sesión en sus sesiones activas en otros navegadores y dispositivos.') }}
+            </p>
+            <div class="flex items-start space-x-2 bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 rounded-lg p-3">
+                <svg class="w-5 h-5 text-cyan-600 dark:text-cyan-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-xs text-cyan-700 dark:text-cyan-300">
+                    {{ __('Controla on inicies sessió per mantenir el teu compte segur.') }}
+                </p>
+            </div>
+        </div>
     </x-slot>
 
     <x-slot name="content">

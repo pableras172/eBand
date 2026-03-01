@@ -158,4 +158,10 @@ class TipoActuacionController extends Controller
             }
         } 
     }
+
+    public function getTipos()
+    {
+        $tipos = Tipoactuacion::select('id', 'nombre')->orderBy('nombre')->get();
+        return response()->json($tipos);
+    }
 }

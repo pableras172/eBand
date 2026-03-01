@@ -29,7 +29,9 @@
 
                 <x-section-border />
             @endif
-
+            <div class="mt-10 sm:mt-0">
+                <x-profile-metrics />
+            </div>
             <div class="mt-10 sm:mt-0">
                 <x-notifications-button />
             </div>

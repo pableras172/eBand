@@ -982,4 +982,42 @@ class ActuacionController extends Controller
 
         return view('actuaciones.view-listas', compact('actuacionesPorMes', 'tiposActuacion', 'poblaciones', 'filtroFecha'));
     }
+
+    public function getUserStats(Request $request)
+    {
+        $userId = $request->input('user_id');
+        $year = $request->input('year');
+        $tipoId = $request->input('tipo_id');
+
+        $user = User::findOrFail($userId);
+        
+        // Determinar la fecha límite según el año
+        $endDate = ($year == date('Y')) 
+            ? Carbon::now() 
+            : Carbon::createFromDate($year, 12, 31)->endOfDay();
+
+        // Total de actuaciones del tipo seleccionado en el año
+        $totalActuaciones = Actuacion::whereYear('fechaActuacion', $year)
+            ->where('tipoactuacions_id', $tipoId)
+            ->where('fechaActuacion', '<=', $endDate)
+            ->count();
+
+        // Actuaciones en las que el usuario participó
+        $actuacionesUsuario = $user->listas()
+            ->join('actuacions', 'listas.actuacions_id', '=', 'actuacions.id')
+            ->whereYear('actuacions.fechaActuacion', $year)
+            ->where('actuacions.tipoactuacions_id', $tipoId)
+            ->where('actuacions.fechaActuacion', '<=', $endDate)
+            ->count();
+
+        $porcentaje = $totalActuaciones > 0 
+            ? round(($actuacionesUsuario / $totalActuaciones) * 100, 2) 
+            : 0;
+
+        return response()->json([
+            'total' => $totalActuaciones,
+            'usuario' => $actuacionesUsuario,
+            'porcentaje' => $porcentaje
+        ]);
+    }
 }

@@ -143,6 +143,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
         Route::post('/notificaractuacionlista', [ActuacionController::class, 'notificarActuacionLista']);
         Route::post('/notificaractuacion', [ActuacionController::class, 'notificarActuacion']);
+        
+        Route::get('/api/user-stats', [ActuacionController::class, 'getUserStats'])->name('user.stats');
+        Route::get('/api/tipoactuacions', [TipoActuacionController::class, 'getTipos'])->name('tipoactuacions.list');
 
         Route::resource('actuacion', ActuacionController::class);
         Route::get('/api/ubicaciones-contratos', [ActuacionController::class, 'ubicacionesContratos']);
