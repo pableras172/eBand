@@ -130,6 +130,11 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    /**
+     * Enable or disable the features page. This is used to show or hide the welcome page with the list of features. This is useful for production environments where you don't want to show the welcome page.
+     */
+    'enable_features_page' => env('ENABLE_FEATURES_PAGE', false),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver

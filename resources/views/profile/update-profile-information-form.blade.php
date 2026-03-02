@@ -1,30 +1,30 @@
 <x-form-section submit="updateProfileInformation">
     <x-slot name="title">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-            <div class="flex items-center space-x-3">
-                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-2.5 rounded-lg shadow-lg">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm -mx-4 sm:mx-0 px-7 sm:px-3">
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg shadow-lg flex-shrink-0">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                 </div>
-                <div>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ __('Informació del perfil') }}</h3>
-                    <div class="h-1 w-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mt-1"></div>
+                <div class="flex-1 min-w-0">
+                    <span class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">{{ __('Informació del perfil') }}</span>
+                    <div class="h-1 w-12 sm:w-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mt-1"></div>
                 </div>
             </div>
         </div>
     </x-slot>
 
     <x-slot name="description">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 space-y-2">
-            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm space-y-2 -mx-4 sm:mx-0 px-7 sm:px-3">
+            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                 {{ __('Actualice la información del perfil y la dirección de correo electrónico de su cuenta.') }}
             </p>
-            <div class="flex items-start space-x-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-start space-x-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-2 sm:p-2.5">
+                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p class="text-xs text-blue-700 dark:text-blue-300">
+                <p class="text-xs text-blue-700 dark:text-blue-300 leading-tight">
                     {{ __('Els canvis es guardaran automàticament quan faceu clic a Guardar.') }}
                 </p>
             </div>

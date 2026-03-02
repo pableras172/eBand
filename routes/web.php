@@ -44,9 +44,16 @@ use Illuminate\Http\Request;
 
 // Ruta pública para la página de bienvenida
 Route::get('/', function () {
+
     if (Auth::check()) {
         return redirect()->route('dashboard');
     }
+    
+    // Si enable_features_page no está activo, redirigir a login
+    if (!config('app.enable_features_page')) {
+        return redirect()->route('login');
+    }
+    
     return view('welcome');
 })->name('welcome');
 

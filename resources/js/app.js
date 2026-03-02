@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function () {
    
     const table = document.getElementById('instrumentTable');
 
+    if (!table) return; // Si no existe el elemento, salir
+
     // Mover fila hacia arriba
     table.addEventListener('click', function (e) {
        
