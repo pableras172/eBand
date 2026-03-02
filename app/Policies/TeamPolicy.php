@@ -31,7 +31,7 @@ class TeamPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasRole('SuperAdmin');
     }
 
     /**
@@ -39,7 +39,7 @@ class TeamPolicy
      */
     public function update(User $user, Team $team): bool
     {
-        return $user->ownsTeam($team);
+        return $user->ownsTeam($team) || $user->hasRole('SuperAdmin');
     }
 
     /**
@@ -71,6 +71,6 @@ class TeamPolicy
      */
     public function delete(User $user, Team $team): bool
     {
-        return $user->ownsTeam($team);
+        return $user->hasRole('SuperAdmin');
     }
 }

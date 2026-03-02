@@ -36,7 +36,7 @@ class WeeklyActuacionesEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '🎵 Agenda Semanal de Actuaciones - ' . $this->fechaInicio . ' al ' . $this->fechaFin
+            subject: '📅 Planning semanal  - ' . config('app.banda')
         );
     }
 
