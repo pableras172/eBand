@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="eBand es la plataforma completa para gestionar tu banda de música. Organiza actuaciones, pagos, repertorio, miembros y contratos en un solo lugar. Accede desde cualquier dispositivo.">
-    <meta name="keywords" content="gestión bandas música, software bandas, administración musical, calendario actuaciones, pagos músicos, contratos musicales, repertorio banda">
+    <meta name="description" content="eBand es la plataforma completa para gestionar tu banda de música. Organiza actuaciones, asistencias, repertorio, miembros y contratos en un solo lugar. Accede desde cualquier dispositivo.">
+    <meta name="keywords" content="gestión bandas música, software bandas, administración musical, calendario actuaciones, asistencias músicos, contratos musicales, repertorio banda">
     <meta name="author" content="eBand">
     <meta name="robots" content="index, follow">
     
@@ -12,14 +12,14 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url('/') }}">
     <meta property="og:title" content="eBand - Sistema de Gestión para Bandas de Música">
-    <meta property="og:description" content="La plataforma completa para organizar actuaciones, pagos, repertorio y mucho más. Gestiona tu banda de música de forma profesional.">
+    <meta property="og:description" content="La plataforma completa para organizar actuaciones, asistencias, repertorio y mucho más. Gestiona tu banda de música de forma profesional.">
     <meta property="og:image" content="{{ URL::to('/') }}/logo_e_band.png">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ url('/') }}">
     <meta property="twitter:title" content="eBand - Sistema de Gestión para Bandas de Música">
-    <meta property="twitter:description" content="La plataforma completa para organizar actuaciones, pagos, repertorio y mucho más. Gestiona tu banda de música de forma profesional.">
+    <meta property="twitter:description" content="La plataforma completa para organizar actuaciones, asistencias, repertorio y mucho más. Gestiona tu banda de música de forma profesional.">
     <meta property="twitter:image" content="{{ URL::to('/') }}/logo_e_band.png">
     
     <!-- Favicon -->
@@ -663,7 +663,7 @@
         <div class="hero-content">
             <img src="{{ URL::to('/') }}/logo_e_band.png" alt="eBand Logo" class="hero-logo">
             <h1>Gestiona tu banda de música</h1>
-            <p>La plataforma completa para organizar actuaciones, pagos, repertorio y mucho más</p>
+            <p>La plataforma completa para organizar actuaciones, asistencias, repertorio y mucho más</p>
             <a href="{{ route('register') }}" class="btn-cta">Comienza gratis</a>
         </div>
     </section>
@@ -681,9 +681,9 @@
             </div>
 
             <div class="feature-card">
-                <div class="feature-icon">💰</div>
-                <h3>Control de Pagos</h3>
-                <p>Sistema completo de pagos por actuación con seguimiento detallado, porcentajes personalizables y reportes automáticos.</p>
+                <div class="feature-icon">✅</div>
+                <h3>Control de Asistencias</h3>
+                <p>Sistema completo de asistencias por actuación con seguimiento detallado, disponibilidad de músicos y reportes automáticos.</p>
             </div>
 
             <div class="feature-card">
@@ -803,7 +803,7 @@
                 </div>
                 <div class="gallery-caption">
                     <h4>Detalle de Actuación</h4>
-                    <p>Información completa de cada evento: lugar, fecha, asistencias y pagos.</p>
+                    <p>Información completa de cada evento: lugar, fecha, asistencias y gestión completa.</p>
                 </div>
             </div>
 
