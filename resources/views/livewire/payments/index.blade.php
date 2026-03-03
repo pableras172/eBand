@@ -31,6 +31,10 @@
                         <select name="hijo_id" class="ml-2 border-gray-300 rounded"
                             onchange="window.location.href = '/payments/user/' + this.value + '?hijo_id=' + this.value">
 
+                            <option value="{{ Auth::user()->id }}"
+                                {{ Auth::user()->id == $usuarioActivo->id ? 'selected' : '' }}>
+                                {{ Auth::user()->name }} ({{ __('Yo') }})
+                            </option>
                             @foreach (Auth::user()->hijos as $hijo)
                                 <option value="{{ $hijo->id }}"
                                     {{ $hijo->id == $usuarioActivo->id ? 'selected' : '' }}>
