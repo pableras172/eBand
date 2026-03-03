@@ -284,7 +284,9 @@
             </div>
         </div>
     </div>
-    <x-usermetrics :userId="$user->id" />
+    @if (isset($user))
+        <x-usermetrics :userId="$user->id" />
+    @endif
     <div style="height: 75px">
 
     </div>

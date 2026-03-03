@@ -518,6 +518,17 @@ class ActuacionController extends Controller
      */
     public function getActuacionesUsuarioPorPoblacionAnyo(User $user, $year, $poblacion)
     {
+        // Validar que $year sea un año válido
+        if (!is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
+            Log::warning('Invalid year parameter in getActuacionesUsuarioPorPoblacionAnyo', [
+                'year' => $year,
+                'user_id' => $user->id,
+                'poblacion' => $poblacion,
+                'route' => request()->path()
+            ]);
+            $year = date('Y'); // Usar año actual por defecto
+        }
+
         $actuaciones = $user->listas()
             ->join('actuacions', 'listas.actuacions_id', '=', 'actuacions.id')
             ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
@@ -579,6 +590,17 @@ class ActuacionController extends Controller
             abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         }
 
+        // Validar que $year sea un año válido
+        if (!is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
+            Log::warning('Invalid year parameter in getListadoActuacionesUsuarioAndTipo', [
+                'year' => $year,
+                'user_id' => $user->id,
+                'type' => $type,
+                'route' => request()->path()
+            ]);
+            $year = date('Y'); // Usar año actual por defecto
+        }
+
         $actuaciones = $user->listas()
             ->join('actuacions', 'listas.actuacions_id', '=', 'actuacions.id')
             ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
@@ -636,6 +658,17 @@ class ActuacionController extends Controller
 
         if ($user->id !== $auth->id && !$auth->hijos->contains('id', $user->id)) {
             abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        }
+
+        // Validar que $year sea un año válido
+        if (!is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
+            Log::warning('Invalid year parameter in getListadoActuacionesUsuarioAndPoblacion', [
+                'year' => $year,
+                'user_id' => $user->id,
+                'poblacion' => $poblacion,
+                'route' => request()->path()
+            ]);
+            $year = date('Y'); // Usar año actual por defecto
         }
 
         // Obtener actuaciones por población y fecha de actuación
@@ -706,6 +739,16 @@ class ActuacionController extends Controller
 
         if ($user->id !== $auth->id && !$auth->hijos->contains('id', $user->id)) {
             abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        }
+
+        // Validar que $year sea un año válido
+        if (!is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
+            Log::warning('Invalid year parameter in getListadoActuacionesUsuarioAnyoTipo', [
+                'year' => $year,
+                'user_id' => $user->id,
+                'route' => request()->path()
+            ]);
+            $year = date('Y'); // Usar año actual por defecto
         }
 
         $actuaciones = $user->listas()
@@ -882,6 +925,17 @@ class ActuacionController extends Controller
 
         if ($user->id != Auth::user()->id && !Auth::user()->hijos->contains($user->id)) {
             abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        }
+
+        // Validar que $year sea un año válido
+        if (!is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
+            Log::warning('Invalid year parameter in getListadoActuacionesUsuarioAnyoTipo', [
+                'year' => $year,
+                'user_id' => $user->id,
+                'tipo' => $tipo,
+                'route' => request()->path()
+            ]);
+            $year = date('Y'); // Usar año actual por defecto
         }
 
         // Determinar la columna a filtrar en función del tipo recibido
