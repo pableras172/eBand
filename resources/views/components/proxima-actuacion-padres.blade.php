@@ -44,6 +44,9 @@
         @if (Auth::user()->hijos && Auth::user()->hijos->count() > 0)
             <form method="GET" action="{{ route('dashboard') }}">
                 <select name="hijo_id" class="ml-2 border-gray-300 rounded" onchange="this.form.submit()">
+                    <option value="{{ Auth::user()->id }}" {{ Auth::user()->id == $usuarioActivo->id ? 'selected' : '' }}>
+                        {{ Auth::user()->name }} ({{ __('Yo') }})
+                    </option>
                     @foreach (Auth::user()->hijos as $hijo)
                         <option value="{{ $hijo->id }}" {{ $hijo->id == $usuarioActivo->id ? 'selected' : '' }}>
                             {{ $hijo->name }}
