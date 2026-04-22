@@ -4,30 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Actuacion;
 use App\Models\Contratos;
-use App\Models\Tipoactuacion;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
-use OneSignal;
-use App\Models\User;
 use App\Models\Listas;
 use App\Models\ListasUser;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Lang;
+use App\Models\Tipoactuacion;
+use App\Models\User;
+use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use OneSignal;
+use Symfony\Component\HttpFoundation\Response;
 
 class ActuacionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-
-
     public function index()
     {
         $actuaciones = Actuacion::with('contrato', 'lista', 'tipoactuacion')
@@ -48,10 +47,8 @@ class ActuacionController extends Controller
 
     public function ubicacionesContratos()
     {
-        //comprobar usuario logueado
-        abort_if(!auth()->check(), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-
+        // comprobar usuario logueado
+        abort_if(! auth()->check(), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $hoy = now()->startOfDay();
         $limite = now()->addMonths(6);
@@ -71,7 +68,7 @@ class ActuacionController extends Controller
         $actuaciones = $query->get();
 
         return response()->json(
-            $actuaciones->map(fn($a) => [
+            $actuaciones->map(fn ($a) => [
                 'nombre' => $a->contrato->poblacion,
                 'coords' => [
                     (float) $a->contrato->latitude,
@@ -86,17 +83,15 @@ class ActuacionController extends Controller
                         </a>
                     </div>',
                     route('listas.actuacion', ['actuacion_id' => $a->id]),
-                    e(\Carbon\Carbon::parse($a->fechaActuacion)->format('d/m/Y')),
+                    e(Carbon::parse($a->fechaActuacion)->format('d/m/Y')),
                     e($a->descripcion),
                     e(optional($a->tipoactuacion)->nombre),
                     e($a->contrato->poblacion)
                 ),
 
-
             ])
         );
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -105,7 +100,7 @@ class ActuacionController extends Controller
     {
         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $actuaciones =  Actuacion::with('contrato', 'lista')
+        $actuaciones = Actuacion::with('contrato', 'lista')
             ->where('contratos_id', '=', $contratosId)
             ->orderBy('fechaActuacion', 'asc')
             ->get();
@@ -120,7 +115,6 @@ class ActuacionController extends Controller
     /**
      * Crea una nova actuacio asociada al contrat
      */
-
     public function store(Request $request)
     {
         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -140,10 +134,11 @@ class ActuacionController extends Controller
                 'totalactuacion' => 'nullable|numeric',
                 'contratos_id' => 'required|exists:contratos,id',
                 'observaciones' => 'nullable|string',
+                'is_draft' => 'nullable|boolean',
             ]);
 
             // Crear un nuevo objeto Actuacion
-            $actuacion = new Actuacion();
+            $actuacion = new Actuacion;
 
             // Asignar los valores del request al objeto Actuacion
             $actuacion->fechaActuacion = $request->fechaActuacion;
@@ -164,6 +159,7 @@ class ActuacionController extends Controller
             $actuacion->porcentajepersonal = $request->porcentajepersonal;
             $actuacion->visible = $request->visible ?? true; // Establecer el valor predeterminado de visible en true
             $actuacion->oficial = $request->oficial ?? true; // Establecer el valor predeterminado de oficial en true
+            $actuacion->is_draft = $request->is_draft ?? false; // Establecer el valor predeterminado de is_draft en false
             // Guardar la actuación en la base de datos
             $actuacion->save();
 
@@ -184,17 +180,15 @@ class ActuacionController extends Controller
                 'actuaciones' => $actuaciones,
                 'tipoActuacion' => $tipoActuacion,
                 'contrato' => $contrato,
-                'message' => 'Actuación guardada con éxito.'
+                'message' => 'Actuación guardada con éxito.',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Manejar cualquier excepción
             return view('livewire.contratos.actuacions', [
-                'message' => 'Ha ocurrido un error al guardar la actuación: ' . $e->getMessage(),
+                'message' => 'Ha ocurrido un error al guardar la actuación: '.$e->getMessage(),
             ]);
         }
     }
-
-
 
     public function notificarActuacion(Request $request)
     {
@@ -209,11 +203,12 @@ class ActuacionController extends Controller
             $actuacion = Actuacion::with('contrato')->findOrFail($request->id);
 
             // Verifica si se encontró la actuación
-            if (!$actuacion) {
-                $notification = array(
+            if (! $actuacion) {
+                $notification = [
                     'message' => Lang::get('messages.no_actuations_found'),
-                    'alert_type' => 'error'
-                );
+                    'alert_type' => 'error',
+                ];
+
                 return response()->json($notification, 200);
             }
 
@@ -224,39 +219,39 @@ class ActuacionController extends Controller
             OneSignal::sendNotificationToSegment(
                 Lang::get('messages.new_actuacion_title', [
                     'fecha' => $fechaFormateada,
-                    'descripcion' => $actuacion->descripcion
+                    'descripcion' => $actuacion->descripcion,
                 ]),
-                "Active Subscriptions",
-                env('APP_URL') . "/listas/actuacion/" . $request->id,
+                'Active Subscriptions',
+                env('APP_URL').'/listas/actuacion/'.$request->id,
                 null,
                 null,
                 null,
                 Lang::get('messages.notification_subtitle', [
                     'banda' => config('app.banda'),
-                    'poblacion' => $actuacion->contrato->poblacion
+                    'poblacion' => $actuacion->contrato->poblacion,
                 ]),
                 Lang::get('messages.view_details')
             );
 
-            $notification = array(
+            $notification = [
                 'message' => Lang::get('messages.notification_sent'),
-                'alert_type' => 'success'
-            );
+                'alert_type' => 'success',
+            ];
+
             return response()->json($notification, 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error enviando la notificación: ', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
-            $notification = array(
+            $notification = [
                 'message' => Lang::get('messages.notification_fail'),
-                'alert_type' => 'error'
-            );
+                'alert_type' => 'error',
+            ];
+
             return response()->json($notification, 500);
         }
     }
-
-
 
     public function notificarActuacionLista(Request $request)
     {
@@ -272,11 +267,12 @@ class ActuacionController extends Controller
             $actuaciones = $lista->actuacion;
 
             // Verificar si se encontraron actuaciones
-            if (!$actuaciones) {
+            if (! $actuaciones) {
                 $notification = [
                     'message' => Lang::get('messages.no_actuations_found'),
-                    'alert_type' => 'warning'
+                    'alert_type' => 'warning',
                 ];
+
                 return response()->json($notification, 404);
             }
 
@@ -291,35 +287,36 @@ class ActuacionController extends Controller
             if ($asistentes->isEmpty()) {
                 $notification = [
                     'message' => Lang::get('messages.no_musicians_found'),
-                    'alert_type' => 'warning'
+                    'alert_type' => 'warning',
                 ];
+
                 return response()->json($notification, 200);
             }
 
             foreach ($asistentes as $asistente) {
                 $dest = User::where('id', $asistente->user_id)->first();
-                if (!$dest || !$dest->uuid) {
+                if (! $dest || ! $dest->uuid) {
                     continue;
                 }
 
                 $message = Lang::get('messages.new_actuacion_notification', [
                     'fecha' => $fechaFormateada,
-                    'poblacion' => $actuaciones->contrato->poblacion
+                    'poblacion' => $actuaciones->contrato->poblacion,
                 ]);
 
                 if ($asistente->coche) {
                     $message = Lang::get('messages.new_actuacion_notification_with_car', [
-                        'poblacion' => $actuaciones->contrato->poblacion
+                        'poblacion' => $actuaciones->contrato->poblacion,
                     ]);
                 }
 
                 OneSignal::sendNotificationToExternalUser(
                     Lang::get('messages.new_actuacion_title', [
                         'fecha' => $fechaFormateada,
-                        'descripcion' => $actuaciones->descripcion
+                        'descripcion' => $actuaciones->descripcion,
                     ]),
                     $dest->uuid,
-                    env('APP_URL') . "/listas/actuacion/" . $actuaciones->id,
+                    env('APP_URL').'/listas/actuacion/'.$actuaciones->id,
                     null,
                     null,
                     null,
@@ -329,23 +326,23 @@ class ActuacionController extends Controller
             }
             $notification = [
                 'message' => Lang::get('messages.notification_sent'),
-                'alert_type' => 'success'
+                'alert_type' => 'success',
             ];
+
             return response()->json($notification, 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error enviando la notificación: ', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
             $notification = [
                 'message' => Lang::get('messages.notification_fail'),
-                'alert_type' => 'error'
+                'alert_type' => 'error',
             ];
+
             return response()->json($notification, 500);
         }
     }
-
-
 
     /**
      * Display the specified resource.
@@ -362,7 +359,7 @@ class ActuacionController extends Controller
     {
         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $actuaciones =  Actuacion::with('contrato', 'lista')
+        $actuaciones = Actuacion::with('contrato', 'lista')
             ->where('contratos_id', '=', $actuacion->contratos_id)
             ->get();
 
@@ -392,6 +389,7 @@ class ActuacionController extends Controller
             'totalactuacion' => 'nullable|numeric',
             'contratos_id' => 'required|exists:contratos,id',
             'observaciones' => 'nullable|string',
+            'is_draft' => 'nullable|boolean',
         ]);
 
         // Asignar los valores del request al objeto Actuacion
@@ -413,6 +411,7 @@ class ActuacionController extends Controller
         $actuacion->porcentajepersonal = $request->porcentajepersonal;
         $actuacion->visible = $request->visible ?? true;
         $actuacion->oficial = $request->oficial ?? true;
+        $actuacion->is_draft = $request->is_draft ?? false;
 
         $actuacion->calendar = $this->generateICSFile($actuacion);
 
@@ -420,13 +419,14 @@ class ActuacionController extends Controller
         $actuacion->update();
 
         // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
-        $actuaciones =  Actuacion::with('contrato', 'lista')
+        $actuaciones = Actuacion::with('contrato', 'lista')
             ->where('contratos_id', '=', $request->contratos_id)
             ->get();
 
         $contrato = Contratos::find($request->contratos_id);
         $tipoActuacion = Tipoactuacion::all();
-        return view('livewire.contratos.actuacions', compact('actuaciones', 'tipoActuacion', 'contrato','actuacion'));
+
+        return view('livewire.contratos.actuacions', compact('actuaciones', 'tipoActuacion', 'contrato', 'actuacion'));
     }
 
     /**
@@ -444,18 +444,19 @@ class ActuacionController extends Controller
 
                 $cid = $actuacion->contratos_id;
                 // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
-                $actuaciones =  Actuacion::with('contrato', 'lista')
+                $actuaciones = Actuacion::with('contrato', 'lista')
                     ->where('contratos_id', '=', $cid)
                     ->get();
 
                 $contrato = Contratos::find($cid);
                 $tipoActuacion = Tipoactuacion::all();
             }
-        } catch (\Illuminate\Database\QueryException $exception) {
+        } catch (QueryException $exception) {
             // Manejar la excepción de integridad referencial
             return redirect()->back()->with('error', 'No puedes eliminar esta actuación porque tiene listas relacionadas');
         }
         $eliminado = true;
+
         return view('livewire.contratos.actuacions', compact('actuaciones', 'tipoActuacion', 'contrato', 'eliminado'));
     }
 
@@ -476,10 +477,10 @@ class ActuacionController extends Controller
             ->whereHas('actuacion', function ($query) use ($year) {
                 $query->whereYear('fechaActuacion', $year);
             })
-            //->where('disponible','<>','0')
+            // ->where('disponible','<>','0')
             ->get();
 
-        //dd($listasConActuaciones);
+        // dd($listasConActuaciones);
         // Inicializar un array para almacenar los totales por tipo de actuación junto con sus iconos
         $totalesPorTipoActuacion = [];
 
@@ -492,7 +493,7 @@ class ActuacionController extends Controller
                 $tipoActuacionIcono = $tipoActuacion->icon;
                 $tipoActuacId = $tipoActuacion->id;
 
-                if (!isset($totalesPorTipoActuacion[$tipoActuacionNombre])) {
+                if (! isset($totalesPorTipoActuacion[$tipoActuacionNombre])) {
                     $totalesPorTipoActuacion[$tipoActuacionNombre] = [
                         'total' => 0,
                         'icono' => $tipoActuacionIcono,
@@ -512,19 +513,18 @@ class ActuacionController extends Controller
         ]);
     }
 
-
     /**
      * Obtiene las actuaciones de un usuario por año y poblacion
      */
     public function getActuacionesUsuarioPorPoblacionAnyo(User $user, $year, $poblacion)
     {
         // Validar que $year sea un año válido
-        if (!is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
+        if (! is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
             Log::warning('Invalid year parameter in getActuacionesUsuarioPorPoblacionAnyo', [
                 'year' => $year,
                 'user_id' => $user->id,
                 'poblacion' => $poblacion,
-                'route' => request()->path()
+                'route' => request()->path(),
             ]);
             $year = date('Y'); // Usar año actual por defecto
         }
@@ -554,9 +554,9 @@ class ActuacionController extends Controller
         inner join `tipoactuacions` on `actuacions`.`tipoactuacions_id` = `tipoactuacions`.`id`
         inner join `contratos` on `actuacions`.`contratos_id` = `contratos`.`id`
         where
-        `listas_user`.`user_id` =' . $user->id . '  
-        and year(`actuacions`.`fechaActuacion`) =' . $year . ' 
-        and `contratos`.`poblacion` = "' . $poblacion . '"  
+        `listas_user`.`user_id` ='.$user->id.'  
+        and year(`actuacions`.`fechaActuacion`) ='.$year.' 
+        and `contratos`.`poblacion` = "'.$poblacion.'"  
         and  `listas_user`.`disponible` = 1
         group by
         `tipoactuacions`.`nombre`
@@ -565,8 +565,7 @@ class ActuacionController extends Controller
 
         $actuacionesGrph = DB::select($sql);
 
-
-        if (!empty($actuacionesGrph)) {
+        if (! empty($actuacionesGrph)) {
             $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
             $data = collect($actuacionesGrph)->pluck('total')->toArray();
         } else {
@@ -577,26 +576,24 @@ class ActuacionController extends Controller
         return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones', 'year', 'user', 'tiposActuacion', 'poblaciones', 'filtropobla', 'labels', 'data'));
     }
 
-
     /**
      * listado de actuaciones de un usuario por año y tipo
      */
-
     public function getListadoActuacionesUsuarioAndTipo(User $user, $year, $type)
     {
         $auth = Auth::user();
 
-        if ($user->id !== $auth->id && !$auth->hijos->contains('id', $user->id)) {
+        if ($user->id !== $auth->id && ! $auth->hijos->contains('id', $user->id)) {
             abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         }
 
         // Validar que $year sea un año válido
-        if (!is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
+        if (! is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
             Log::warning('Invalid year parameter in getListadoActuacionesUsuarioAndTipo', [
                 'year' => $year,
                 'user_id' => $user->id,
                 'type' => $type,
-                'route' => request()->path()
+                'route' => request()->path(),
             ]);
             $year = date('Y'); // Usar año actual por defecto
         }
@@ -627,9 +624,9 @@ class ActuacionController extends Controller
         inner join `tipoactuacions` on `actuacions`.`tipoactuacions_id` = `tipoactuacions`.`id`
         inner join `contratos` on `actuacions`.`contratos_id` = `contratos`.`id`
         where
-        `listas_user`.`user_id` =' . $user->id . '    
-        and year(`actuacions`.`fechaActuacion`) =' . $year . '         
-        and tipoactuacions_id = ' . $type . '   
+        `listas_user`.`user_id` ='.$user->id.'    
+        and year(`actuacions`.`fechaActuacion`) ='.$year.'         
+        and tipoactuacions_id = '.$type.'   
         group by 
         `tipoactuacions`.`nombre` 
         order by
@@ -637,8 +634,7 @@ class ActuacionController extends Controller
 
         $actuacionesGrph = DB::select($sql);
 
-
-        if (!empty($actuacionesGrph)) {
+        if (! empty($actuacionesGrph)) {
             $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
             $data = collect($actuacionesGrph)->pluck('total')->toArray();
         } else {
@@ -650,23 +646,21 @@ class ActuacionController extends Controller
         return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones', 'year', 'user', 'tiposActuacion', 'poblaciones', 'filtrotipo', 'labels', 'data'));
     }
 
-
-
     public function getListadoActuacionesUsuarioAndPoblacion(User $user, $year, $poblacion)
     {
         $auth = Auth::user();
 
-        if ($user->id !== $auth->id && !$auth->hijos->contains('id', $user->id)) {
+        if ($user->id !== $auth->id && ! $auth->hijos->contains('id', $user->id)) {
             abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         }
 
         // Validar que $year sea un año válido
-        if (!is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
+        if (! is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
             Log::warning('Invalid year parameter in getListadoActuacionesUsuarioAndPoblacion', [
                 'year' => $year,
                 'user_id' => $user->id,
                 'poblacion' => $poblacion,
-                'route' => request()->path()
+                'route' => request()->path(),
             ]);
             $year = date('Y'); // Usar año actual por defecto
         }
@@ -702,9 +696,9 @@ class ActuacionController extends Controller
         inner join `tipoactuacions` on `actuacions`.`tipoactuacions_id` = `tipoactuacions`.`id`
         inner join `contratos` on `actuacions`.`contratos_id` = `contratos`.`id`
         where
-        `listas_user`.`user_id` =' . $user->id . '  
-        and year(`actuacions`.`fechaActuacion`) =' . $year . ' 
-        and `contratos`.`poblacion` = ' . $poblacion . '  
+        `listas_user`.`user_id` ='.$user->id.'  
+        and year(`actuacions`.`fechaActuacion`) ='.$year.' 
+        and `contratos`.`poblacion` = '.$poblacion.'  
         group by
         `tipoactuacions`.`nombre`
         order by
@@ -712,8 +706,7 @@ class ActuacionController extends Controller
 
         $actuacionesGrph = DB::select($sql);
 
-
-        if (!empty($actuacionesGrph)) {
+        if (! empty($actuacionesGrph)) {
             $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
             $data = collect($actuacionesGrph)->pluck('total')->toArray();
         } else {
@@ -727,26 +720,24 @@ class ActuacionController extends Controller
         return view('actuaciones.view-listas', compact('actuacionesPorMes', 'tiposActuacion', 'meses', 'filtropobla', 'poblaciones', 'user', 'labels', 'data'));
     }
 
-
     /**
      * Listado de actuacions filtradas por usuario y año
      */
-
     public function getListadoActuacionesUsuarioAnyo(User $user, $year)
     {
 
         $auth = Auth::user();
 
-        if ($user->id !== $auth->id && !$auth->hijos->contains('id', $user->id)) {
+        if ($user->id !== $auth->id && ! $auth->hijos->contains('id', $user->id)) {
             abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         }
 
         // Validar que $year sea un año válido
-        if (!is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
+        if (! is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
             Log::warning('Invalid year parameter in getListadoActuacionesUsuarioAnyoTipo', [
                 'year' => $year,
                 'user_id' => $user->id,
-                'route' => request()->path()
+                'route' => request()->path(),
             ]);
             $year = date('Y'); // Usar año actual por defecto
         }
@@ -783,8 +774,8 @@ class ActuacionController extends Controller
                 inner join `actuacions` on `listas`.`actuacions_id` = `actuacions`.`id`
                 inner join `tipoactuacions` on `actuacions`.`tipoactuacions_id` = `tipoactuacions`.`id`
                 where
-                `listas_user`.`user_id` =' . $user->id . '  
-                and year(`actuacions`.`fechaActuacion`) =' . $year . ' 
+                `listas_user`.`user_id` ='.$user->id.'  
+                and year(`actuacions`.`fechaActuacion`) ='.$year.' 
                 group by
                 `tipoactuacions`.`nombre`,
                 `tipoactuacions`.`icon`
@@ -793,8 +784,7 @@ class ActuacionController extends Controller
 
         $actuacionesGrph = DB::select($sql);
 
-
-        if (!empty($actuacionesGrph)) {
+        if (! empty($actuacionesGrph)) {
             $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
             $data = collect($actuacionesGrph)->pluck('total')->toArray();
             $iconos = collect($actuacionesGrph)->pluck('icono')->toArray();
@@ -808,29 +798,27 @@ class ActuacionController extends Controller
         return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones', 'year', 'user', 'tiposActuacion', 'poblaciones', 'labels', 'data', 'iconos'));
     }
 
-
-
-
     public function generateICSFile($evento)
     {
         // Contenido del archivo .ics
-        $content =  "BEGIN:VCALENDAR\r\n";
+        $content = "BEGIN:VCALENDAR\r\n";
         $content .= "VERSION:2.0\r\n";
         $content .= "PRODID:-//eBand\r\n";
         $content .= "BEGIN:VEVENT\r\n";
-        $content .= "UID:" . uniqid() . "\r\n"; // Generar un ID único para el evento
-        $content .= "DTSTAMP;VALUE=DATE-TIME:" . Carbon::now()->format('Ymd\THis') . "\r\n"; // Fecha y hora actual
-        $content .= "DTSTART;VALUE=DATE-TIME:" . Carbon::parse($evento->fechaActuacion)->format('Ymd\THis') . "\r\n"; // Fecha y hora de inicio del evento
-        $content .= "DTEND;VALUE=DATE-TIME:" . Carbon::parse($evento->fechaActuacion)->format('Ymd\THis') . "\r\n"; // Fecha y hora de fin del evento
-        $content .= "SUMMARY:" . Config::get('app.banda', 'eBand') . " - " . $evento->descripcion . "\r\n";
-        $content .= "DESCRIPTION:" . $evento->observaciones . " - " . Config::get('app.url') . "/actuacion/" . $evento->id . " \r\n";
-        //$content .= "LOCATION:Calle Gandía, 21, 46892, Montaverner\r\n";
-        //$content .= "GEO:38.8891800060307;-0.495599999999996\r\n";
+        $content .= 'UID:'.uniqid()."\r\n"; // Generar un ID único para el evento
+        $content .= 'DTSTAMP;VALUE=DATE-TIME:'.Carbon::now()->format('Ymd\THis')."\r\n"; // Fecha y hora actual
+        $content .= 'DTSTART;VALUE=DATE-TIME:'.Carbon::parse($evento->fechaActuacion)->format('Ymd\THis')."\r\n"; // Fecha y hora de inicio del evento
+        $content .= 'DTEND;VALUE=DATE-TIME:'.Carbon::parse($evento->fechaActuacion)->format('Ymd\THis')."\r\n"; // Fecha y hora de fin del evento
+        $content .= 'SUMMARY:'.Config::get('app.banda', 'eBand').' - '.$evento->descripcion."\r\n";
+        $content .= 'DESCRIPTION:'.$evento->observaciones.' - '.Config::get('app.url').'/actuacion/'.$evento->id." \r\n";
+        // $content .= "LOCATION:Calle Gandía, 21, 46892, Montaverner\r\n";
+        // $content .= "GEO:38.8891800060307;-0.495599999999996\r\n";
         $content .= "END:VEVENT\r\n";
         $content .= "END:VCALENDAR\r\n";
 
-        $newFileName = 'event_' . time() . '.ics';
-        Storage::put('eventos/' . $newFileName, $content);
+        $newFileName = 'event_'.time().'.ics';
+        Storage::put('eventos/'.$newFileName, $content);
+
         return $newFileName;
     }
 
@@ -838,21 +826,16 @@ class ActuacionController extends Controller
     {
         $actuacion = Actuacion::find($actuacionId);
 
-        if (!$actuacion) {
+        if (! $actuacion) {
             abort(404); // Actuación no encontrada
         }
 
-        return Storage::download('eventos/' . $actuacion->calendar);
+        return Storage::download('eventos/'.$actuacion->calendar);
     }
-
-
-
-
 
     /**
      * Filtra las actuaciones por tipo en el calendario principal
      */
-
     public function getActuacionesPorTipo(Request $request, $tipoActuiacionId)
     {
 
@@ -871,7 +854,6 @@ class ActuacionController extends Controller
             return Carbon::parse($date)->format('m/Y');
         })->unique();
 
-
         $actuacionesPorMes = $actuaciones->groupBy(function ($actuacion) {
             return Carbon::parse($actuacion->fechaActuacion)->format('m/Y');
         });
@@ -881,11 +863,9 @@ class ActuacionController extends Controller
         return view('actuaciones.view-listas', compact('actuacionesPorMes', 'tiposActuacion', 'meses', 'filtrotipo', 'poblaciones'));
     }
 
-
     /**
      * Filtra las actuaciones por poblacion en el listado del calendario principal
      */
-
     public function getActuacionesPorPoblacion(Request $request, $poblacion)
     {
         // Obtener actuaciones por población y fecha de actuación
@@ -919,21 +899,20 @@ class ActuacionController extends Controller
         return view('actuaciones.view-listas', compact('actuacionesPorMes', 'tiposActuacion', 'meses', 'filtropobla', 'poblaciones'));
     }
 
-
     public function getListadoActuacionesUsuarioAnyoTipo(User $user, $year, $tipo)
     {
 
-        if ($user->id != Auth::user()->id && !Auth::user()->hijos->contains($user->id)) {
+        if ($user->id != Auth::user()->id && ! Auth::user()->hijos->contains($user->id)) {
             abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         }
 
         // Validar que $year sea un año válido
-        if (!is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
+        if (! is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
             Log::warning('Invalid year parameter in getListadoActuacionesUsuarioAnyoTipo', [
                 'year' => $year,
                 'user_id' => $user->id,
                 'tipo' => $tipo,
-                'route' => request()->path()
+                'route' => request()->path(),
             ]);
             $year = date('Y'); // Usar año actual por defecto
         }
@@ -954,15 +933,15 @@ class ActuacionController extends Controller
             ->whereYear('actuacions.fechaActuacion', $year)
             ->where("tipoactuacions.$tipoColumna", true)
             ->groupBy('tipoactuacions.nombre')
-            ->select(DB::raw("'" . $tipoLabelUser . "' AS tipo"), DB::raw('COUNT(*) as total_tipo'));
+            ->select(DB::raw("'".$tipoLabelUser."' AS tipo"), DB::raw('COUNT(*) as total_tipo'));
 
         // Segunda consulta: Cuenta total de actuaciones para ese tipo
         $query2 = DB::table('actuacions')
             ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
             ->where("tipoactuacions.$tipoColumna", true)
             ->whereYear('actuacions.fechaActuacion', $year)
-             ->where('actuacions.fechaActuacion', '<=', now()->toDateString())
-            ->select(DB::raw("'" . $tipoLabeTotales . "' AS tipo"), DB::raw('COUNT(*) as total_tipo'));
+            ->where('actuacions.fechaActuacion', '<=', now()->toDateString())
+            ->select(DB::raw("'".$tipoLabeTotales."' AS tipo"), DB::raw('COUNT(*) as total_tipo'));
 
         // Unir ambas consultas con UNION
         $actuacionesGrph = $query1->union($query2)->orderByDesc('total_tipo')->get();
@@ -978,6 +957,7 @@ class ActuacionController extends Controller
 
             $actuacionesGrph = $actuacionesGrph->map(function ($item) use ($totalGeneral) {
                 $item->porcentaje = round(($item->total_tipo / $totalGeneral) * 100, 1);
+
                 return $item;
             });
 
@@ -1004,9 +984,9 @@ class ActuacionController extends Controller
     public function getActuacionesPorFecha(Request $request)
     {
         $fecha = $request->input('fecha');
-        
+
         // Validar que la fecha no sea nula y esté dentro del rango permitido
-        if (!$fecha) {
+        if (! $fecha) {
             return redirect()->route('actuacion.index');
         }
 
@@ -1044,10 +1024,10 @@ class ActuacionController extends Controller
         $tipoId = $request->input('tipo_id');
 
         $user = User::findOrFail($userId);
-        
+
         // Determinar la fecha límite según el año
-        $endDate = ($year == date('Y')) 
-            ? Carbon::now() 
+        $endDate = ($year == date('Y'))
+            ? Carbon::now()
             : Carbon::createFromDate($year, 12, 31)->endOfDay();
 
         // Total de actuaciones del tipo seleccionado en el año
@@ -1064,14 +1044,14 @@ class ActuacionController extends Controller
             ->where('actuacions.fechaActuacion', '<=', $endDate)
             ->count();
 
-        $porcentaje = $totalActuaciones > 0 
-            ? round(($actuacionesUsuario / $totalActuaciones) * 100, 2) 
+        $porcentaje = $totalActuaciones > 0
+            ? round(($actuacionesUsuario / $totalActuaciones) * 100, 2)
             : 0;
 
         return response()->json([
             'total' => $totalActuaciones,
             'usuario' => $actuacionesUsuario,
-            'porcentaje' => $porcentaje
+            'porcentaje' => $porcentaje,
         ]);
     }
 }

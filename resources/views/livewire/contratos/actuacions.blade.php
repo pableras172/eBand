@@ -41,6 +41,14 @@
                 </div>
             </div>
 
+            <div class="flex items-center space-x-2 mb-4">
+                <input type="hidden" name="is_draft" value="0">
+                <input type="checkbox" id="is_draft" name="is_draft" value="1"
+                    class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                    {{ (isset($actuacion) && $actuacion->is_draft) ? 'checked' : '' }}>
+                <label for="is_draft" class="text-sm font-medium text-gray-700">{{__('Borrador')}}</label>
+            </div>
+
             <div class="mb-4">
                 <label for="descripcion" class="block text-sm font-medium text-gray-700">{{__('Descripció')}}</label>
                 <textarea id="descripcion" name="descripcion" rows="3" required
@@ -166,9 +174,16 @@
                                     <p class="text-sm text-white">
                                         {{ \Carbon\Carbon::parse($actuacion->fechaActuacion)->format('F Y') }}</p>
                                 </div>
-                                <div class="ml-4">
-                                    <div class="uppercase tracking-wide text-sm text-black font-semibold">
-                                        {{ $actuacion->descripcion }}</div>
+                                <div class="ml-4 flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <div class="uppercase tracking-wide text-sm text-black font-semibold">
+                                            {{ $actuacion->descripcion }}</div>
+                                        @if ($actuacion->is_draft)
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                {{__('Borrador')}}
+                                            </span>
+                                        @endif
+                                    </div>
                                     <p class="mt-2 text-gray-500">{{__('Tipus')}}: {{ $actuacion->tipoactuacion->nombre }}</p>
                                     <p class="mt-2 text-gray-500">{{__('Numero musics')}}: {{ $actuacion->musicos }}</p>
                                     <p class="mt-2 text-gray-500">{{__('Cantitat de cotxes')}}: {{ $actuacion->coches }}</p>

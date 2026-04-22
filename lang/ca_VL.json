@@ -1074,7 +1074,8 @@
             "actions.save": "Desar",
             "messages.suggestion_saved": "Suggeriment enviat correctament",
             "Guest": "Visitant",
-            "crud.suggestions.create": "Crear suggeriment"
+            "crud.suggestions.create": "Crear suggeriment",
+            "Borrador": "Esborrany"
         
 
 }

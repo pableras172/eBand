@@ -255,6 +255,16 @@
                                     <x-oficial w="24" h="24" />
                                 </div>
                             @endif
+                            @can('admin')
+                                @if ($actuacion->is_draft)
+                                    <div class="absolute top-2 left-2">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-semibold text-yellow-800">
+                                            {{ __('Borrador') }}
+                                        </span>
+                                    </div>
+                                @endif
+                            @endcan
                             <h3 class="text-l mb-2 font-medium">{{ $actuacion->descripcion }}</h3>
 
                             <div class="flex items-center justify-between">

@@ -4,36 +4,38 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Contratos;
-use App\Models\Listas;
-use App\Models\Tipoactuacion;
 
 class Actuacion extends Model
 {
     use HasFactory;
-    protected $fillable = [
-    'fechaActuacion',
-    'descripcion',
-    'tipoactuacions_id',
-    'coches',
-    'preciocoche',
-    'musicos',
-    'preciomusico',
-    'totalcoches',
-    'totalmusicos',
-    'totalactuacion',
-    'contratos_id',
-    'pagado',
-    'aplicaporcentaje',
-    'noaplicapago',
-    'observaciones',
-    'porcentajepersonal',
-];
 
+    protected $fillable = [
+        'fechaActuacion',
+        'descripcion',
+        'tipoactuacions_id',
+        'coches',
+        'preciocoche',
+        'musicos',
+        'preciomusico',
+        'totalcoches',
+        'totalmusicos',
+        'totalactuacion',
+        'contratos_id',
+        'pagado',
+        'aplicaporcentaje',
+        'noaplicapago',
+        'observaciones',
+        'porcentajepersonal',
+        'is_draft',
+    ];
+
+    protected $casts = [
+        'is_draft' => 'boolean',
+    ];
 
     public function lista()
     {
-        //return $this->hasMany(Listas::class, 'actuacions_id');
+        // return $this->hasMany(Listas::class, 'actuacions_id');
         return $this->hasOne(Listas::class, 'actuacions_id');
     }
 
@@ -47,15 +49,13 @@ class Actuacion extends Model
         return $this->belongsTo(Tipoactuacion::class, 'tipoactuacions_id');
     }
 
-        public function tipo()
+    public function tipo()
     {
-        return $this->belongsTo(TipoActuacion::class, 'tipoactuacions_id');
+        return $this->belongsTo(Tipoactuacion::class, 'tipoactuacions_id');
     }
 
     public function comments()
     {
         return $this->hasMany(Comment::class, 'actuacion_id');
     }
-
-
 }

@@ -1000,5 +1000,6 @@
     "actions.save": "Guardar",
     "messages.suggestion_saved": "Sugerencia enviada correctamente",
     "Guest": "Invitado",
-    "crud.suggestions.create": "Crear sugerencia"
+    "crud.suggestions.create": "Crear sugerencia",
+    "Borrador": "Borrador"
 }
