@@ -2,17 +2,19 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Notifications\Messages\MailMessage;
-use App\Policies\UserPolicy;
-use App\Policies\TipoActuacionPolicy;
-use App\Models\User;
-use App\Models\Tipoactuacion;
+use App\Models\InventoryItem;
 use App\Models\Suggestion;
+use App\Models\Tipoactuacion;
+use App\Models\User;
+use App\Policies\InventoryItemPolicy;
 use App\Policies\SuggestionPolicy;
+use App\Policies\TipoActuacionPolicy;
+use App\Policies\UserPolicy;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,14 +27,16 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Tipoactuacion::class => TipoActuacionPolicy::class,
         Suggestion::class => SuggestionPolicy::class,
+        InventoryItem::class => InventoryItemPolicy::class,
 
     ];
+
     /**
      * Register any authentication / authorization services.
      */
     public function boot(): void
     {
-        $this->registerPolicies();      
+        $this->registerPolicies();
 
         Gate::define('admin', function ($user) {
             return $user->hasRole('Admin') || $user->hasRole('SuperAdmin');
@@ -40,7 +44,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('SuperAdmin', function ($user) {
             return $user->hasRole('SuperAdmin');
-        });     
+        });
 
         // 🔍 Sobrescribir el email de verificación
         VerifyEmail::toMailUsing(function ($notifiable, $verificationUrl) {
@@ -55,9 +59,9 @@ class AuthServiceProvider extends ServiceProvider
         // 🔐 Sobrescribir el email de restablecimiento de contraseña
         ResetPassword::toMailUsing(function ($notifiable, $token) {
             // Generar la URL correcta
-            $emailResetUrl = url("/reset-password/{$token}?email=" . urlencode($notifiable->getEmailForPasswordReset()));
+            $emailResetUrl = url("/reset-password/{$token}?email=".urlencode($notifiable->getEmailForPasswordReset()));
 
-            return (new \Illuminate\Notifications\Messages\MailMessage)
+            return (new MailMessage)
                 ->subject('🔒 Restablecimiento de contraseña')
                 ->markdown('mail.users.reset-password', [
                     'url' => $emailResetUrl,

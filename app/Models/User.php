@@ -4,23 +4,24 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
-use Laravel\Cashier\Billable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
+    use Billable;
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
     use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
-    use Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -39,7 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'fechaAlta',
         'activo',
         'uuid',
-        'email_verified_at'
+        'email_verified_at',
     ];
 
     /**
@@ -76,7 +77,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         parent::__construct($attributes);
         self::created(function (User $user) {
-            if (!$user->roles()->get()->contains(2)) {
+            if (! $user->roles()->get()->contains(2)) {
                 $user->roles()->attach(2);
             }
         });
@@ -104,7 +105,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->roles()->where('title', $role)->exists();
     }
 
-
     public function listasUsers()
     {
         return $this->hasMany(ListasUser::class);
@@ -120,7 +120,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Comment::class, 'user_id');
     }
 
-
     public function hijos()
     {
         return $this->hasMany(User::class, 'parent_id');
@@ -131,10 +130,15 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(User::class, 'parent_id');
     }
 
-    //añade la relacion a suggestions
+    // añade la relacion a suggestions
     public function suggestions()
     {
-        return $this->hasMany(Suggestion::class, 'users_id'); 
+        return $this->hasMany(Suggestion::class, 'users_id');
     }
 
+    public function inventoryItems(): BelongsToMany
+    {
+        return $this->belongsToMany(InventoryItem::class, 'inventory_item_user')
+            ->withPivot('asignado_en');
+    }
 }

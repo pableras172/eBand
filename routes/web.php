@@ -1,35 +1,44 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\App;
-use App\Livewire\Instrument\InstrumentClass;
-use App\Livewire\Contratos\ListadoContratos;
+use App\Http\Controllers\ActuacionController;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContratosController;
+use App\Http\Controllers\InventoryExportController;
+use App\Http\Controllers\ListaController;
+use App\Http\Controllers\ListasUsersController;
+use App\Http\Controllers\PDFController;
+use App\Http\Controllers\TasksController;
+use App\Http\Controllers\TipoActuacionController;
+use App\Http\Controllers\UsersController;
+use App\Jobs\SendDailyCommentsNotification;
+use App\Livewire\Comments\CommentCreate;
+use App\Livewire\Comments\CommentEdit;
+use App\Livewire\Comments\CommentIndex;
 use App\Livewire\Configuration\ConfigurationCreate;
 use App\Livewire\Configuration\ConfigurationEdit;
 use App\Livewire\Configuration\ConfigurationIndex;
-use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\ActuacionController;
-use App\Http\Controllers\ContratosController;
-use App\Http\Controllers\ListaController;
-use App\Http\Controllers\ListasUsersController;
-use App\Http\Controllers\TipoActuacionController;
-use App\Http\Controllers\PDFController;
-use App\Http\Controllers\ContactController;
-use App\Livewire\Payment\PaymentIndex;
+use App\Livewire\Contratos\ListadoContratos;
+use App\Livewire\Instrument\InstrumentClass;
+use App\Livewire\Inventory\InventoryCreate;
+use App\Livewire\Inventory\InventoryEdit;
+use App\Livewire\Inventory\InventoryIndex;
+use App\Livewire\Inventory\InventoryShow;
 use App\Livewire\Payment\PaymentCreate;
 use App\Livewire\Payment\PaymentEdit;
-use App\Livewire\Paymentresume\PaymentresumeIndex;
+use App\Livewire\Payment\PaymentIndex;
 use App\Livewire\Paymentresume\PaymentresumeCreate;
 use App\Livewire\Paymentresume\PaymentresumeEdit;
-use App\Livewire\Comments\CommentIndex;
-use App\Livewire\Comments\CommentCreate;
-use App\Livewire\Comments\CommentEdit;
-use App\Livewire\Suggestions\SuggestionIndex;
+use App\Livewire\Paymentresume\PaymentresumeIndex;
 use App\Livewire\Suggestions\SuggestionCreate;
 use App\Livewire\Suggestions\SuggestionEdit;
-use App\Jobs\SendDailyCommentsNotification;
-
+use App\Livewire\Suggestions\SuggestionIndex;
+use App\Models\User;
+use App\Services\ManifestService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,29 +57,28 @@ Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
     }
-    
+
     // Si enable_features_page no está activo, redirigir a login
-    if (!config('app.enable_features_page')) {
+    if (! config('app.enable_features_page')) {
         return redirect()->route('login');
     }
-    
+
     return view('welcome');
 })->name('welcome');
 
 // Ruta pública para el formulario de contacto
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
-
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'can:admin'])->group(function () {
     Route::resource('contratos', ListadoContratos::class);
     Route::get('/contratos/year/{year}', [ListadoContratos::class, 'contratosPorAnyo'])->name('contratos.anyo');
-    //Nueva ruta para duplicar contrato
+    // Nueva ruta para duplicar contrato
     Route::get('/contratos/duplicate/{contrato}', [ContratosController::class, 'duplicate'])->name('contratos.duplicate');
 
     Route::resource('instrument', InstrumentClass::class);
     Route::post('/update-order', [InstrumentClass::class, 'updateOrder'])->name('instrument.updateOrder');
 
-    Route::resource('users', \App\Http\Controllers\UsersController::class);
+    Route::resource('users', UsersController::class);
 
     Route::resource('tipoactuacion', TipoActuacionController::class);
 
@@ -87,14 +95,20 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('/comments/{comment}', CommentEdit::class)->name('comments.edit');
 
     Route::get('/run-job', function () {
-        dispatch(new SendDailyCommentsNotification());
+        dispatch(new SendDailyCommentsNotification);
         session()->flash('success', 'El Job se ha ejecutado correctamente.');
+
         return redirect()->route('comments.index'); // Redirige a la página de comentarios o cualquier otra
     })->name('run.job');
+
+    // Inventory Routes (admin)
+    Route::get('/inventory/create', InventoryCreate::class)->name('inventory.create');
+    Route::get('/inventory/{item}/edit', InventoryEdit::class)->name('inventory.edit');
+    Route::get('/inventory/export/excel', [InventoryExportController::class, 'excel'])->name('inventory.export.excel');
+    Route::get('/inventory/export/pdf', [InventoryExportController::class, 'pdf'])->name('inventory.export.pdf');
 });
 
-
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->group(
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(
     function () {
 
         // Suggestions - available for all authenticated users
@@ -102,34 +116,42 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/suggestions/create', SuggestionCreate::class)->name('suggestions.create');
         Route::get('/suggestions/{suggestion}', SuggestionEdit::class)->name('suggestions.edit');
 
-        //Notificaciones
+        // Notificaciones
         Route::middleware('auth')->get('/notificaciones', function () {
+            /** @var User $user */
+            $user = Auth::user();
+
             return view('notifications.index', [
-                'notifications' => auth()->user()->notifications()->latest()->paginate(20),
+                'notifications' => $user->notifications()->latest()->paginate(20),
             ]);
         })->name('notifications.index');
 
         Route::post('/notificaciones/{id}/leer', function ($id) {
-            $notification = auth()->user()->notifications()->findOrFail($id);
+            /** @var User $user */
+            $user = Auth::user();
+
+            $notification = $user->notifications()->findOrFail($id);
             $notification->markAsRead();
 
             return back();
         })->name('notifications.read');
 
-
         Route::get('/dashboard', function () {
             return view('dashboard');
         })->name('dashboard');
 
-        Route::resource('tasks', \App\Http\Controllers\TasksController::class);
-        //Route::resource('users', \App\Http\Controllers\UsersController::class);
+        Route::resource('tasks', TasksController::class);
+        // Route::resource('users', \App\Http\Controllers\UsersController::class);
 
-        //Route::resource('tipoactuacion',TipoActuacionController::class);
+        // Route::resource('tipoactuacion',TipoActuacionController::class);
 
-        //Route::resource('instrument',InstrumentClass::class);
-        //Route::post('/update-order', [InstrumentClass::class, 'updateOrder'])->name('instrument.updateOrder');
+        // Route::resource('instrument',InstrumentClass::class);
+        // Route::post('/update-order', [InstrumentClass::class, 'updateOrder'])->name('instrument.updateOrder');
 
         Route::resource('calendar', CalendarController::class);
+
+        Route::get('/inventory', InventoryIndex::class)->name('inventory.index');
+        Route::get('/inventory/{item}', InventoryShow::class)->name('inventory.show');
 
         Route::get('/actuacion/createtocontract/{contratos}', [ActuacionController::class, 'createtocontract'])->name('actuacion.createtocontract');
 
@@ -150,16 +172,15 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
         Route::post('/notificaractuacionlista', [ActuacionController::class, 'notificarActuacionLista']);
         Route::post('/notificaractuacion', [ActuacionController::class, 'notificarActuacion']);
-        
+
         Route::get('/api/user-stats', [ActuacionController::class, 'getUserStats'])->name('user.stats');
         Route::get('/api/tipoactuacions', [TipoActuacionController::class, 'getTipos'])->name('tipoactuacions.list');
 
         Route::resource('actuacion', ActuacionController::class);
         Route::get('/api/ubicaciones-contratos', [ActuacionController::class, 'ubicacionesContratos']);
 
-
-        //Route::resource('contratos',ListadoContratos::class);        
-        //Route::get('/contratos/year/{year}',[ListadoContratos::class,'contratosPorAnyo'])->name('contratos.anyo');        
+        // Route::resource('contratos',ListadoContratos::class);
+        // Route::get('/contratos/year/{year}',[ListadoContratos::class,'contratosPorAnyo'])->name('contratos.anyo');
 
         Route::resource('listas', ListaController::class);
 
@@ -171,7 +192,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::delete('/listauserclean/{listaId}', [ListasUsersController::class, 'clean']);
         Route::delete('/listauser/{listaId}/{usuarioId}', [ListasUsersController::class, 'destroy']);
 
-        Route::get('/usersuuid/{user}', [\App\Http\Controllers\UsersController::class, 'getuuid']);
+        Route::get('/usersuuid/{user}', [UsersController::class, 'getuuid']);
 
         Route::get('/generate-pdf/{listaId}', [PDFController::class, 'generatePDF']);
 
@@ -185,9 +206,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
         Route::post('/comments/add', [CommentCreate::class, 'store'])->name('comments.add');
 
-        //Route::get('/paymentresumes', PaymentresumeIndex::class)->name('paymentresumes.index');
-        //Route::get('/paymentresumes/create',PaymentresumeCreate::class)->name('paymentresumes.create');
-        //Route::get('/paymentresumes/{paymetresume}',PaymentresumeEdit::class)->name('paymentresumes.edit');
+        // Route::get('/paymentresumes', PaymentresumeIndex::class)->name('paymentresumes.index');
+        // Route::get('/paymentresumes/create',PaymentresumeCreate::class)->name('paymentresumes.create');
+        // Route::get('/paymentresumes/{paymetresume}',PaymentresumeEdit::class)->name('paymentresumes.edit');
 
         Route::post('/checkout', function (Request $request) {
             $price = config('cashier.prices.suscription');
@@ -200,9 +221,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
                 ]);
         })->name('checkout');
 
-
         Route::post('/donation', function (Request $request) {
             $donationPrice = config('cashier.prices.donation') ?? config('cashier.price'); // fallback si no hay precio específico
+
             return $request->user()->checkout(
                 [['price' => $donationPrice, 'quantity' => 1]],
                 [
@@ -226,9 +247,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     }
 );
 
-
 /*
-Route::group(['middleware' => 'auth'], 
+Route::group(['middleware' => 'auth'],
     function () {
     Route::resource('tasks', \App\Http\Controllers\TasksController::class);
     Route::resource('users', \App\Http\Controllers\UsersController::class);
@@ -256,8 +276,8 @@ Route::group(['middleware' => 'auth'],
     if (! in_array($locale, ['ca_VL', 'es'])) {
         abort(400);
     }
- 
-    App::setLocale($locale); 
+
+    App::setLocale($locale);
     return view('dashboard');
 });*/
 
@@ -272,10 +292,10 @@ Route::get('/greeting/{locale}', function (string $locale) {
     return $response;
 });
 
-//Route::get('/search-contratos', ContratosClass::class);
+// Route::get('/search-contratos', ContratosClass::class);
 
 Route::get('/manifest.json', function () {
-    $manifestService = app(\App\Services\ManifestService::class);
+    $manifestService = app(ManifestService::class);
     $manifest = $manifestService->generate();
 
     return response($manifest, 200)
