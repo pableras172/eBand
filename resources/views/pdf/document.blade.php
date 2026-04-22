@@ -35,16 +35,10 @@
 <body
     style="font-family: 'Gill Sans', 'Gill Sans MT', 'Myriad Pro', 'DejaVu Sans Condensed', Helvetica, Arial, sans-serif;">
     <table width="700px" align="center">
-        <?php
-            $path = '../public/imagenes/logo.png';
-            $type = pathinfo($path, PATHINFO_EXTENSION);
-            $data = file_get_contents($path);
-            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-            ?>
         <tbody>
             <tr>
                 <td width="50%">
-                    <img alt="" src="{{$base64}}"
+                    <img alt="" src="https://bacm.eband.app/imagenes/logo.png"
                         width="125" />
                 </td>
                 <th width="50%" align="right">
@@ -73,12 +67,6 @@
         <div>{{ $actuacion->observaciones}}</div>    
     </div>
     <hr width="700px">
-    <?php
-        $path = '../public/imagenes/car.png';
-        $type = pathinfo($path, PATHINFO_EXTENSION);
-        $data = file_get_contents($path);
-        $carBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-    ?>
 
     <?php
         $usuariosPorColumna = ceil(count($usuarios) / 3); // calcular cuántos usuarios por columna
@@ -98,7 +86,7 @@
             <li class="usuario" @if ($loop->index % 2 != 0) style="background-color:#f0f0f0;padding-top: 5px;padding-bottom: 5px;" @endif>
                 <span class="nombre" >{{ $usuario->name }}</span>
                 @if ($usuario->pivot->coche)
-                    <img src="{{$carBase64}}" class="car-img" />
+                    <img src="https://bacm.eband.app/imagenes/car.png" class="car-img" />
                 @endif
             </li>
         </ul>
