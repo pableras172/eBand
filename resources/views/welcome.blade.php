@@ -754,6 +754,14 @@
             </div>
 
             <div class="benefit-item">
+                <div class="benefit-icon">📦</div>
+                <div class="benefit-text">
+                    <h4>Control de inventario</h4>
+                    <p>Gestiona instrumentos y material con estado, valor, responsables e histórico de movimientos.</p>
+                </div>
+            </div>
+
+            <div class="benefit-item">
                 <div class="benefit-icon">🎯</div>
                 <div class="benefit-text">
                     <h4>Personalizable</h4>
@@ -906,6 +914,13 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    {!! NoCaptcha::display() !!}
+                    @error('g-recaptcha-response')
+                        <small style="color: #e74c3c;">{{ $message }}</small>
+                    @enderror
+                </div>
+
                 <button type="submit" class="btn-submit">Enviar mensaje</button>
             </form>
         </div>
@@ -920,5 +935,6 @@
             <a href="{{ route('register') }}">Registrarse</a>
         </p>
     </footer>
+    {!! NoCaptcha::renderJs() !!}
 </body>
 </html>
