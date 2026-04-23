@@ -299,5 +299,5 @@ Route::get('/manifest.json', function () {
     $manifest = $manifestService->generate();
 
     return response($manifest, 200)
-        ->header('Content-Type', 'application/json');
+        ->header('Content-Type', 'application/manifest+json');
 });

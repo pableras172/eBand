@@ -41,7 +41,7 @@
         crossorigin="anonymous">
     <!-- integrity="sha384-DyZ88mC6Up2uqS4h/KvnQZK1ZoxSDeVUPZ3h5jC4Q4hzsj4Z8cdVf4QlScYOu4i0" -->
 
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="{{ url('/manifest.json') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>

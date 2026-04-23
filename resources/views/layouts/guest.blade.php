@@ -27,6 +27,8 @@
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage" content="/storage/imagenes/ms-icon-144x144.png">
         <meta name="theme-color" content="#ffffff">
+
+        <link rel="manifest" href="{{ url('/manifest.json') }}">
     
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
