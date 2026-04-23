@@ -24,6 +24,7 @@ use App\Livewire\Inventory\InventoryCreate;
 use App\Livewire\Inventory\InventoryEdit;
 use App\Livewire\Inventory\InventoryIndex;
 use App\Livewire\Inventory\InventoryShow;
+use App\Livewire\Inventory\InventoryStats;
 use App\Livewire\Payment\PaymentCreate;
 use App\Livewire\Payment\PaymentEdit;
 use App\Livewire\Payment\PaymentIndex;
@@ -151,6 +152,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::resource('calendar', CalendarController::class);
 
         Route::livewire('/inventory', InventoryIndex::class)->name('inventory.index');
+        Route::get('/inventory/stats', InventoryStats::class)->name('inventory.stats');
         Route::livewire('/inventory/{item}', InventoryShow::class)->name('inventory.show');
 
         Route::get('/actuacion/createtocontract/{contratos}', [ActuacionController::class, 'createtocontract'])->name('actuacion.createtocontract');

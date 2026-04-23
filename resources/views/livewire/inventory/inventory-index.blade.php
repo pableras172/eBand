@@ -170,6 +170,20 @@
                 <span class="text-xs mt-1 font-semibold">{{ __('PDF') }}</span>
             </a>
 
+            <!-- Estadísticas (solo admin) -->
+            @if ($isAdmin)
+                <a href="{{ url('/inventory/stats') }}"
+                    class="flex flex-1 flex-col items-center text-gray-700 transition hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                    </svg>
+                    <span class="text-xs mt-1 font-semibold">{{ __('Estadísticas') }}</span>
+                </a>
+            @endif
+
             <!-- Crear Item (solo admin) -->
             @can('create', App\Models\InventoryItem::class)
                 <a href="{{ route('inventory.create') }}"
