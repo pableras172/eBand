@@ -3,6 +3,14 @@ importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 const CACHE_NAME = 'eband-shell-v1';
 const OFFLINE_URL = '/offline.html';
 
+// Handle messages from clients (required at initial evaluation)
+self.addEventListener('message', (event) => {
+  // Handle any messages from clients if needed
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll([OFFLINE_URL]))

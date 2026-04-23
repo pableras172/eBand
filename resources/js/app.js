@@ -69,9 +69,14 @@ function registerServiceWorker() {
 }
 
 window.addEventListener('beforeinstallprompt', (event) => {
+    // Prevent the default mini-infobar or install prompt from appearing
     event.preventDefault();
+    // Stash the event for later use
     deferredInstallPrompt = event;
+    // Trigger showing the install prompt UI
     createInstallPromptButton();
+    // Log for debugging
+    console.log('beforeinstallprompt captured successfully');
 });
 
 window.addEventListener('appinstalled', () => {
