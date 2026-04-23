@@ -43,7 +43,7 @@
         </div>
     @endif
 
-    <div class="container mx-auto py-2 px-2 sm:px-6 lg:px-0">
+    <div class="container mx-auto py-2 px-2 pb-28 sm:px-6 lg:px-0">
         <div class="container mx-auto py-2 px-2 sm:px-6 lg:px-0">
             <div class="mb-4 rounded-3xl border border-gray-200 bg-white/90 p-4 shadow-sm">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
