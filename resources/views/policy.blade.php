@@ -1,16 +1,47 @@
 <x-guest-layout>
-    <div class="pt-4 bg-gray-100 dark:bg-gray-900">
-        <div class="min-h-screen flex flex-col items-center pt-6 sm:pt-0">
-            <div>
-                <x-authentication-card-logo />
+    <section class="relative min-h-screen overflow-hidden bg-slate-50">
+        <div class="grid min-h-screen grid-cols-1 md:grid-cols-2">
+            <div class="relative hidden overflow-hidden md:flex md:flex-col md:justify-end">
+                <img
+                    src="https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=1280&q=80&fit=crop"
+                    alt="Concierto sinfónico"
+                    class="absolute inset-0 h-full w-full object-cover object-center"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/55 to-slate-800/25"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.18),transparent_55%)]"></div>
+
+                <div class="relative z-10 p-10">
+                    <a href="/" class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3 py-2 backdrop-blur-sm transition hover:bg-white/20">
+                        <img class="h-8 w-auto" src="{{ URL::to('/') }}/imagenes/logo.png" alt="Logo" />
+                        <span class="text-sm font-semibold tracking-wide text-white">eBand</span>
+                    </a>
+                    <h2 class="mt-6 text-3xl font-black tracking-tight text-white">{{ __('Tus datos, bajo control.') }}</h2>
+                    <p class="mt-2 max-w-sm text-sm text-white/70">{{ __('Conoce qué datos recogemos, cómo los usamos y cuáles son tus derechos.') }}</p>
+                </div>
             </div>
 
-            <div class="w-full sm:max-w-4xl mt-6 p-6 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg prose dark:prose-invert">
-                <h1 class="text-3xl font-bold mb-6">Política de Privacidad</h1>
-                
-                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                    <strong>Fecha de última actualización:</strong> {{ date('d/m/Y') }}
-                </p>
+            <div class="bg-slate-50 px-6 py-8 sm:px-8 md:max-h-screen md:overflow-y-auto md:px-12 md:py-10">
+                <div class="mx-auto w-full max-w-4xl rounded-2xl border border-slate-200 bg-white/95 p-6 shadow-sm backdrop-blur-sm sm:p-8">
+                    <div class="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-5">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-700">eBand Legal</p>
+                            <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-900">Política de Privacidad</h1>
+                        </div>
+                        <p class="rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">
+                            {{ __('Actualizado:') }} {{ date('d/m/Y') }}
+                        </p>
+                    </div>
+
+                    <div class="mb-8 rounded-xl border border-cyan-200 bg-cyan-50 p-4">
+                        <p class="text-sm font-semibold text-cyan-800">{{ __('Resumen rápido') }}</p>
+                        <ul class="mt-2 space-y-1 text-sm text-cyan-700">
+                            <li>{{ __('Recopilamos solo la información necesaria para gestionar la banda.') }}</li>
+                            <li>{{ __('Puedes acceder, corregir o solicitar la eliminación de tus datos.') }}</li>
+                            <li>{{ __('No vendemos tus datos personales a terceros.') }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="prose prose-slate max-w-none prose-headings:font-semibold prose-a:text-cyan-700 hover:prose-a:text-cyan-900 prose-a:no-underline hover:prose-a:underline">
 
                 <section class="mb-6">
                     <h2 class="text-2xl font-semibold mb-3">1. Información General</h2>
@@ -151,12 +182,14 @@
                     </p>
                 </section>
 
-                <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center">
+                <div class="mt-8 border-t border-slate-200 pt-6">
+                    <p class="text-center text-sm text-slate-500">
                         Esta política de privacidad está sujeta a las leyes aplicables en materia de protección de datos personales.
                     </p>
                 </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </x-guest-layout>

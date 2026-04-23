@@ -38,7 +38,7 @@ return [
     |
     */
 
-    'layout' => 'components.layouts.app',
+    'component_layout' => 'layouts::app',
 
     /*
     |---------------------------------------------------------------------------
@@ -50,7 +50,46 @@ return [
     |
     */
 
-    'lazy_placeholder' => null,
+    'component_placeholder' => null,
+
+    /*
+    |---------------------------------------------------------------------------
+    | Component Discovery
+    |---------------------------------------------------------------------------
+    |
+    | Livewire 4 supports class-based components alongside view-based component
+    | discovery. These defaults preserve the current class-based structure while
+    | allowing future view-based components under the standard directories.
+    |
+    */
+
+    'component_locations' => [
+        resource_path('views/components'),
+        resource_path('views/livewire'),
+    ],
+
+    'component_namespaces' => [
+        'layouts' => resource_path('views/layouts'),
+    ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Make Command Defaults
+    |---------------------------------------------------------------------------
+    |
+    | Keep generating class-based components by default to match the existing
+    | application structure instead of Livewire 4 single-file components.
+    |
+    */
+
+    'make_command' => [
+        'type' => 'class',
+        'emoji' => false,
+    ],
+
+    'smart_wire_keys' => true,
+
+    'csp_safe' => false,
 
     /*
     |---------------------------------------------------------------------------

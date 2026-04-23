@@ -82,17 +82,17 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
     Route::resource('tipoactuacion', TipoActuacionController::class);
 
-    Route::get('/configurations', ConfigurationIndex::class)->name('configurations.index');
-    Route::get('/configurations/create', ConfigurationCreate::class)->name('configurations.create');
-    Route::get('/configurations/{configuration}', ConfigurationEdit::class)->name('configurations.edit');
+    Route::livewire('/configurations', ConfigurationIndex::class)->name('configurations.index');
+    Route::livewire('/configurations/create', ConfigurationCreate::class)->name('configurations.create');
+    Route::livewire('/configurations/{configuration}', ConfigurationEdit::class)->name('configurations.edit');
 
-    Route::get('/paymentresumes', PaymentresumeIndex::class)->name('paymentresumes.index');
-    Route::get('/paymentresumes/create', PaymentresumeCreate::class)->name('paymentresumes.create');
-    Route::get('/paymentresumes/{paymetresume}', PaymentresumeEdit::class)->name('paymentresumes.edit');
+    Route::livewire('/paymentresumes', PaymentresumeIndex::class)->name('paymentresumes.index');
+    Route::livewire('/paymentresumes/create', PaymentresumeCreate::class)->name('paymentresumes.create');
+    Route::livewire('/paymentresumes/{paymetresume}', PaymentresumeEdit::class)->name('paymentresumes.edit');
 
-    Route::get('/comments', CommentIndex::class)->name('comments.index');
-    Route::get('/comments/create', CommentCreate::class)->name('comments.create');
-    Route::get('/comments/{comment}', CommentEdit::class)->name('comments.edit');
+    Route::livewire('/comments', CommentIndex::class)->name('comments.index');
+    Route::livewire('/comments/create', CommentCreate::class)->name('comments.create');
+    Route::livewire('/comments/{comment}', CommentEdit::class)->name('comments.edit');
 
     Route::get('/run-job', function () {
         dispatch(new SendDailyCommentsNotification);
@@ -102,8 +102,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     })->name('run.job');
 
     // Inventory Routes (admin)
-    Route::get('/inventory/create', InventoryCreate::class)->name('inventory.create');
-    Route::get('/inventory/{item}/edit', InventoryEdit::class)->name('inventory.edit');
+    Route::livewire('/inventory/create', InventoryCreate::class)->name('inventory.create');
+    Route::livewire('/inventory/{item}/edit', InventoryEdit::class)->name('inventory.edit');
     Route::get('/inventory/export/excel', [InventoryExportController::class, 'excel'])->name('inventory.export.excel');
     Route::get('/inventory/export/pdf', [InventoryExportController::class, 'pdf'])->name('inventory.export.pdf');
 });
@@ -112,9 +112,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     function () {
 
         // Suggestions - available for all authenticated users
-        Route::get('/suggestions', SuggestionIndex::class)->name('suggestions.index');
-        Route::get('/suggestions/create', SuggestionCreate::class)->name('suggestions.create');
-        Route::get('/suggestions/{suggestion}', SuggestionEdit::class)->name('suggestions.edit');
+        Route::livewire('/suggestions', SuggestionIndex::class)->name('suggestions.index');
+        Route::livewire('/suggestions/create', SuggestionCreate::class)->name('suggestions.create');
+        Route::livewire('/suggestions/{suggestion}', SuggestionEdit::class)->name('suggestions.edit');
 
         // Notificaciones
         Route::middleware('auth')->get('/notificaciones', function () {
@@ -150,8 +150,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
         Route::resource('calendar', CalendarController::class);
 
-        Route::get('/inventory', InventoryIndex::class)->name('inventory.index');
-        Route::get('/inventory/{item}', InventoryShow::class)->name('inventory.show');
+        Route::livewire('/inventory', InventoryIndex::class)->name('inventory.index');
+        Route::livewire('/inventory/{item}', InventoryShow::class)->name('inventory.show');
 
         Route::get('/actuacion/createtocontract/{contratos}', [ActuacionController::class, 'createtocontract'])->name('actuacion.createtocontract');
 
@@ -196,11 +196,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
         Route::get('/generate-pdf/{listaId}', [PDFController::class, 'generatePDF']);
 
-        Route::get('/payments', PaymentIndex::class)->name('payments.index');
-        Route::get('/payments/user/{user}', PaymentIndex::class)->name('payments.user');
+        Route::livewire('/payments', PaymentIndex::class)->name('payments.index');
+        Route::livewire('/payments/user/{user}', PaymentIndex::class)->name('payments.user');
 
-        Route::get('/payments/create', PaymentCreate::class)->name('payments.create');
-        Route::get('/payments/{payment}', PaymentEdit::class)->name('payments.edit');
+        Route::livewire('/payments/create', PaymentCreate::class)->name('payments.create');
+        Route::livewire('/payments/{payment}', PaymentEdit::class)->name('payments.edit');
 
         Route::get('/pdf/paymentresume/{paymentresume}', [PDFController::class, 'generatePaymentResumePDF'])->name('pdf.paymentresume');
 

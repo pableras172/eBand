@@ -2,7 +2,7 @@
     use App\Helpers\ConfigHelper;
 @endphp
 
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 shadow-md">
+<nav x-data="{ open: false, mobileAdminOpen: false, mobileActivityOpen: true }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 shadow-md">
     
 
     <!-- Primary Navigation Menu -->
@@ -34,7 +34,7 @@
                         <x-slot name="trigger">
                             <span class="inline-flex rounded-md">
                                 <button type="button"
-                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
+                                    class="inline-flex items-center rounded-md px-3 py-2 text-sm leading-4 font-medium transition ease-in-out duration-150 {{ request()->routeIs('actuaciones.usuario.anyo', 'payments.user', 'suggestions.index', 'inventory.index', 'inventory.show') ? 'border border-cyan-200 bg-cyan-50 text-cyan-700' : 'border border-transparent bg-white text-gray-500 hover:text-gray-700 focus:bg-gray-50 active:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:bg-gray-700 dark:active:bg-gray-700' }}">
                                     {{ __('La meva activitat') }}
                                     <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -46,9 +46,12 @@
                         </x-slot>
 
                         <x-slot name="content">
+                            <div class="px-4 pt-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                {{ __('La meva activitat') }}
+                            </div>
                             <div class="w-60 px-4 m-2">
                                 <x-nav-link
-                                    href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}">
+                                    href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}" :active="request()->routeIs('actuaciones.usuario.anyo')">
                                     <div class="flex items-center space-x-2">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
@@ -58,7 +61,7 @@
                                 </x-nav-link>
                             </div>
                             <div class="w-60 px-4  m-2">
-                                <x-nav-link href="{{ route('payments.user', [Auth::user()->id]) }}">
+                                <x-nav-link href="{{ route('payments.user', [Auth::user()->id]) }}" :active="request()->routeIs('payments.user')">
                                     <div class="flex items-center space-x-2">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
@@ -98,7 +101,7 @@
                             <x-slot name="trigger">
                                 <span class="inline-flex rounded-md">
                                     <button type="button"
-                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
+                                        class="inline-flex items-center rounded-md px-3 py-2 text-sm leading-4 font-medium transition ease-in-out duration-150 {{ request()->routeIs('tipoactuacion.*', 'instrument.*', 'users.*', 'contratos.*', 'payments.*', 'paymentresumes.*', 'comments.*', 'configurations*') ? 'border border-cyan-200 bg-cyan-50 text-cyan-700' : 'border border-transparent bg-white text-gray-500 hover:text-gray-700 focus:bg-gray-50 active:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:bg-gray-700 dark:active:bg-gray-700' }}">
                                         {{ __('Administracion') }}
                                         <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -532,49 +535,53 @@
 
                 @can('admin')
                     <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
-                    <div class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                        {{ __('Administracion') }}
-                    </div>
-                    
-                    <x-responsive-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
-                        <div class="flex items-center space-x-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                            </svg>
-                            <span>{{ __('Instruments') }}</span>
-                        </div>
-                    </x-responsive-nav-link>
+                    <button type="button" @click="mobileAdminOpen = !mobileAdminOpen"
+                        class="flex w-full items-center justify-between px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        <span>{{ __('Administracion') }}</span>
+                        <svg class="h-4 w-4 transition-transform" :class="{ 'rotate-180': mobileAdminOpen }" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.51a.75.75 0 01-1.08 0l-4.25-4.51a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
 
-                    <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
-                        <div class="flex items-center space-x-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
-                            <span>{{ __('Musics') }}</span>
-                        </div>
-                    </x-responsive-nav-link>
-
-                    <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
-                        <div class="flex items-center space-x-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                            </svg>
-                            <span>{{ __('Tipus de actuacio') }}</span>
-                        </div>
-                    </x-responsive-nav-link>
-
-                    @if (ConfigHelper::getConfigValue('enableusermessages') === 'true')
-                        <x-responsive-nav-link href="{{ route('comments.index') }}" :active="request()->routeIs('comments.index')">
+                    <div x-show="mobileAdminOpen" x-transition class="space-y-1">
+                        <x-responsive-nav-link href="{{ route('instrument.index') }}" :active="request()->routeIs('instrument.index')">
                             <div class="flex items-center space-x-3">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                                 </svg>
-                                <span>{{ __('Comentaris') }}</span>
+                                <span>{{ __('Instruments') }}</span>
                             </div>
                         </x-responsive-nav-link>
-                    @endif
 
+                        <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                                <span>{{ __('Musics') }}</span>
+                            </div>
+                        </x-responsive-nav-link>
 
+                        <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                </svg>
+                                <span>{{ __('Tipus de actuacio') }}</span>
+                            </div>
+                        </x-responsive-nav-link>
+
+                        @if (ConfigHelper::getConfigValue('enableusermessages') === 'true')
+                            <x-responsive-nav-link href="{{ route('comments.index') }}" :active="request()->routeIs('comments.index')">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                    <span>{{ __('Comentaris') }}</span>
+                                </div>
+                            </x-responsive-nav-link>
+                        @endif
+                    </div>
                 @endcan
 
                 <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
@@ -676,27 +683,33 @@
 
                 <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
 
-                <div class="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    {{ __('La meva activitat') }}
-                </div>
+                <button type="button" @click="mobileActivityOpen = !mobileActivityOpen"
+                    class="flex w-full items-center justify-between px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    <span>{{ __('La meva activitat') }}</span>
+                    <svg class="h-4 w-4 transition-transform" :class="{ 'rotate-180': mobileActivityOpen }" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.51a.75.75 0 01-1.08 0l-4.25-4.51a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
 
-                <x-responsive-nav-link href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}"
-                    :active="request()->routeIs('actuaciones.usuario.anyo')">
-                    <div class="flex items-center space-x-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                        </svg>
-                        <span>{{ __('Les meves actuacions') }}</span>
-                    </div>
-                </x-responsive-nav-link>
-                <x-responsive-nav-link href="{{ route('payments.user', [Auth::user()->id]) }}" :active="request()->routeIs('payments.user')">
-                    <div class="flex items-center space-x-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                        </svg>
-                        <span>{{ __('Els meus pagaments') }}</span>
-                    </div>
-                </x-responsive-nav-link>
+                <div x-show="mobileActivityOpen" x-transition class="space-y-1">
+                    <x-responsive-nav-link href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}"
+                        :active="request()->routeIs('actuaciones.usuario.anyo')">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                            <span>{{ __('Les meves actuacions') }}</span>
+                        </div>
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('payments.user', [Auth::user()->id]) }}" :active="request()->routeIs('payments.user')">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                            </svg>
+                            <span>{{ __('Els meus pagaments') }}</span>
+                        </div>
+                    </x-responsive-nav-link>
+                </div>
 
 
                 <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
