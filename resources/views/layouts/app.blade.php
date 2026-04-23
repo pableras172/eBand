@@ -83,7 +83,8 @@
                 OneSignalDeferred.push(function(OneSignal) {
                     OneSignal.init({
                         appId: appId,
-                        useSubscriptionWorkaround: true, // Habilitar modo de compatibilidad
+                        serviceWorkerParam: { scope: '/' },
+                        serviceWorkerPath: 'sw.js',
                         allowLocalhostAsSecureOrigin: true, // Para pruebas en local
                         cookie: {
                             secure: true,

@@ -1,8 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Llistat de Instruments') }}
-        </h2>
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div class="flex items-center gap-4">
+                <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 via-cyan-500 to-sky-600 text-white shadow-lg shadow-cyan-200">
+                    <svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2c-5.33 4.55-8 6.75-8 11 0 2.25.75 4.25 2.05 5.65.84.94 1.95 1.6 3.2 1.95V22h5.5v-1.4c1.25-.35 2.36-1.01 3.2-1.95 1.3-1.4 2.05-3.4 2.05-5.65 0-4.25-2.67-6.45-8-11zm0 4c.83 0 1.5.67 1.5 1.5S12.83 9 12 9s-1.5-.67-1.5-1.5S11.17 6 12 6zm-2.5 7c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700">{{ __('Administracion') }}</p>
+                    <h2 class="text-2xl font-black tracking-tight text-gray-900 leading-tight">
+                        {{ __('Llistat de Instruments') }}
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-500">
+                        {{ __('Instruments registrats') }}: {{ count($intruments) }}
+                    </p>
+                </div>
+            </div>
+        </div>
     </x-slot>
 
     @if (request()->has('success') && request()->success)
@@ -11,7 +26,7 @@
         </div>
     @endif
 
-    <div class="container mx-auto px-2 py-1">
+    <div class="container mx-auto px-2 py-1 pb-28">
         <div class="flex flex-col">
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
