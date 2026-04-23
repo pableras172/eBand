@@ -1,8 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Llistat de contrats') }}
-        </h2>
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div class="flex items-center gap-4">
+                <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 via-cyan-500 to-sky-600 text-white shadow-lg shadow-cyan-200">
+                    <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19.5 14.25v-8.25A2.25 2.25 0 0017.25 3.75H6.75A2.25 2.25 0 004.5 6v12a2.25 2.25 0 002.25 2.25h7.5m-6-12h7.5m-7.5 4.5h4.5m5.25 2.25v6m3-3h-6" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700">{{ __('Administracion') }}</p>
+                    <h2 class="text-2xl font-black tracking-tight text-gray-900 leading-tight">
+                        {{ __('Llistat de contrats') }}
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-500">
+                        {{ __('Contratos activos') }}: {{ $contratos->total() }}
+                    </p>
+                </div>
+            </div>
+        </div>
     </x-slot>
 
     {{-- creado --}}
@@ -29,21 +44,43 @@
     @endif
 
     <div class="container mx-auto py-2 px-2 sm:px-6 lg:px-0">
-        <div class="block mb-2 flex justify-end">
-            <select id="yearSelect"
-                class="appearance-none bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-                @for ($i = date('Y') - 3; $i <= date('Y') + 2; $i++)
-                    <option value="{{ $i }}" {{ $i == $year ? 'selected' : '' }}>
-                        {{ $i }}
-                    </option>
-                @endfor
-            </select>
+        <div class="container mx-auto py-2 px-2 sm:px-6 lg:px-0">
+            <div class="mb-4 rounded-3xl border border-gray-200 bg-white/90 p-4 shadow-sm">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <form method="GET" action="{{ route('contratos.anyo', $year) }}" class="flex w-full flex-col gap-3 sm:flex-row lg:max-w-2xl">
+                        <div class="relative flex-1">
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m21 21-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0Z" />
+                                </svg>
+                            </span>
+                            <input type="text" name="search" value="{{ $search ?? '' }}"
+                                placeholder="{{ __('Busca por población, descripción o contacto') }}"
+                                class="w-full rounded-2xl border border-gray-300 bg-gray-50 py-3 pl-11 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:border-cyan-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-100" />
+                        </div>
+                        <button type="submit"
+                            class="inline-flex items-center justify-center rounded-2xl bg-gray-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-gray-800">
+                            {{ __('Search') }}
+                        </button>
+                    </form>
+
+                    <div class="flex items-center justify-end gap-3">
+                        <select id="yearSelect"
+                            class="appearance-none rounded-2xl border border-gray-300 bg-white px-4 py-3 pr-8 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-400 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-100">
+                            @for ($i = date('Y') - 3; $i <= date('Y') + 2; $i++)
+                                <option value="{{ $i }}" {{ $i == $year ? 'selected' : '' }}>
+                                    {{ $i }}
+                                </option>
+                            @endfor
+                        </select>
+                    </div>
+                </div>
         </div>
 
         <div class="flex flex-col">
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                    <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
                         <table class="min-w-full divide-y divide-gray-200 w-full">
                             <thead>
                                 <tr>
@@ -74,49 +111,64 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($contratos as $contrato)
-                                    <tr class="hover:bg-gray-50 cursor-pointer"
+                                @forelse ($contratos as $contrato)
+                                    <tr class="cursor-pointer transition hover:bg-cyan-50/60"
                                         data-url="{{ route('contratos.edit', $contrato->id) }}">
-                                        <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900">
+                                        <td class="px-2 py-3 whitespace-nowrap text-sm font-semibold text-gray-900">
                                             {{ $contrato->poblacion }}
                                         </td>
-                                        <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900  md:table-cell">
+                                        <td class="px-2 py-3 whitespace-nowrap text-sm text-gray-700 md:table-cell">
                                             <span class="block max-w-[5rem] truncate break-words md:max-w-none md:whitespace-normal">
                                                 {{ $contrato->descripcion }}
                                             </span>
                                         </td>
                                         <td
-                                            class="px-2 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
+                                            class="px-2 py-3 whitespace-nowrap text-sm text-gray-600 hidden md:table-cell">
                                             {{ $contrato->fechainicio ? \Carbon\Carbon::parse($contrato->fechainicio)->format('d/m/Y') : '-' }}
                                         </td>
                                         <td
-                                            class="px-2 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
+                                            class="px-2 py-3 whitespace-nowrap text-sm text-gray-600 hidden md:table-cell">
                                             {{ $contrato->fechafin ? \Carbon\Carbon::parse($contrato->fechafin)->format('d/m/Y') : '-' }}
                                         </td>
                                         <td
-                                            class="px-2 py-2 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
+                                            class="px-2 py-3 whitespace-nowrap text-sm text-gray-600 hidden md:table-cell">
                                             {{ $contrato->contacto }}
                                         </td>
-                                        <td class="px-2 py-2 whitespace-nowrap text-sm font-medium hidden md:table-cell">
+                                        <td class="px-2 py-3 whitespace-nowrap text-sm font-medium hidden md:table-cell">
                                             <div class="flex justify-center items-center space-x-2">
-                                                <a href="{{ route('contratos.edit', $contrato->id) }}" class="">
+                                                <a href="{{ route('contratos.edit', $contrato->id) }}" class="rounded-xl p-1 transition hover:bg-gray-100">
                                                     <x-editar w="24" h="24" />
                                                 </a>
-                                                &nbsp;
                                                 <a href="{{ route('actuacion.createtocontract', $contrato->id) }}"
-                                                    class="">
+                                                    class="rounded-xl p-1 transition hover:bg-gray-100">
                                                     <x-calendario w="24" h="24" />
                                                 </a>
-                                                <a href="{{ route('contratos.duplicate', $contrato->id) }}">
+                                                <a href="{{ route('contratos.duplicate', $contrato->id) }}" class="rounded-xl p-1 transition hover:bg-gray-100">
                                                     <x-duplicar w="24" h="24" />
                                                 </a>
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-12 text-center">
+                                            <div class="mx-auto max-w-md">
+                                                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-gray-400">
+                                                    <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3.75 7.5h16.5M6.75 3.75h10.5A2.25 2.25 0 0119.5 6v12a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 18V6a2.25 2.25 0 012.25-2.25Z" />
+                                                    </svg>
+                                                </div>
+                                                <p class="mt-4 text-base font-semibold text-gray-900">{{ __('Sin resultados') }}</p>
+                                                <p class="mt-1 text-sm text-gray-500">{{ __('No hay contratos para este filtro.') }}</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
-                        {{ $contratos->links() }}
+                        <div class="border-t border-gray-200 px-4 py-4">
+                            {{ $contratos->links() }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -125,7 +177,15 @@
     <script>
         document.getElementById('yearSelect').addEventListener('change', function() {
             var year = this.value;
-            window.location.href = "/contratos/year/" + year;
+            var params = new URLSearchParams(window.location.search);
+            var search = params.get('search');
+            var targetUrl = "/contratos/year/" + year;
+
+            if (search) {
+                targetUrl += "?search=" + encodeURIComponent(search);
+            }
+
+            window.location.href = targetUrl;
         });
 
         // Ocultar mensajes flash con fade-out
