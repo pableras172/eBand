@@ -1,27 +1,24 @@
 <x-mail::message>
-# 🎺 ¡Nueva actualización en una actuación!
+# Disponibilidad actualizada
 
-Hola administrador,  
+El músico **{{ $username }}** ha comunicado su disponibilidad para una actuación próxima.
 
-El usuario **{{ $username }}** ha indicado lo siguiente para la próxima actuación:
+<x-mail::panel>
+**Estado**  
+{{ $customText }}
 
-📢 **Estado indicado**:  
-**{{ $customText }}**
+**Actuación**  
+{{ $actuacio->descripcion }}
 
-🎶 **Actuación**:  
-**{{ $actuacio->descripcion }}**
+**Fecha**  
+{{ \Carbon\Carbon::parse($actuacio->fechaActuacion)->format('d/m/Y · H:i') }}
+</x-mail::panel>
 
-📆 **Fecha de la actuación**:  
-**{{ \Carbon\Carbon::parse($actuacio->fechaActuacion)->format('d/m/Y H:i') }}**
-
-🔍 **Accede para gestionar la lista:**
+Accede a la lista para revisar el estado actual del grupo.
 
 <x-mail::button :url="$url" color="primary">
-📋 Ver lista de actuación
+Ver lista de actuación
 </x-mail::button>
 
----
-
-Gracias por tu dedicación,  
-**El equipo de {{ config('app.name') }}** 🎶
+{{ config('app.name') }}
 </x-mail::message>
