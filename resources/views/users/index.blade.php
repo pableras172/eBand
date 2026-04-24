@@ -20,6 +20,12 @@
         </div>
     @endif
 
+    @if (session('success_message'))
+        <div class="bg-green-200 text-green-800 py-2 px-4 mb-4 rounded">
+            {{ session('success_message') }}
+        </div>
+    @endif
+
     <div class="max-w-7xl mx-auto py-2 px-2 pb-28 sm:px-6 lg:px-8">
 
         {{-- FILTROS --}}
@@ -94,6 +100,14 @@
                             {{ __('Netejar filtres') }}
                         </a>
                     @endif
+
+                    <button type="button" onclick="openExportModal()"
+                        class="inline-flex items-center gap-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg shadow-sm transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l-4-4m4 4l4-4m5 7H3" />
+                        </svg>
+                        {{ __('Exportar') }}
+                    </button>
                 </div>
             </form>
         </div>
@@ -256,6 +270,57 @@
 
     </div>
 
+    <div id="exportModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50" onclick="closeExportModal()"></div>
+
+        <div class="relative mx-auto mt-20 w-[92%] max-w-lg rounded-xl bg-white dark:bg-gray-800 shadow-xl p-5">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ __('Exportar listado de usuarios') }}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        {{ __('¿Quieres también enviarlo por correo?') }}
+                    </p>
+                </div>
+                <button type="button" onclick="closeExportModal()" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-200">✕</button>
+            </div>
+
+            <form id="exportUsersForm" method="POST" action="{{ route('users.export') }}" class="mt-5 space-y-4">
+                @csrf
+                <input type="hidden" name="mode" id="exportModeInput" value="download">
+                <input type="hidden" name="nombre" value="{{ $nombre }}">
+                <input type="hidden" name="instrument_id" value="{{ $instrument_id }}">
+                <input type="hidden" name="activo" value="{{ $activo }}">
+                <input type="hidden" name="padres" value="{{ request()->boolean('padres') ? 1 : 0 }}">
+
+                <div>
+                    <label for="exportEmail" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">
+                        {{ __('Correo para envío (opcional)') }}
+                    </label>
+                    <input id="exportEmail" type="email" name="email"
+                        placeholder="{{ __('correo@dominio.com') }}"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                </div>
+
+                <div class="flex flex-wrap justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeExportModal()"
+                        class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm font-semibold rounded-lg shadow-sm transition">
+                        {{ __('Cancelar') }}
+                    </button>
+
+                    <button type="button" onclick="submitExport('download')"
+                        class="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg shadow-sm transition">
+                        {{ __('Solo exportar') }}
+                    </button>
+
+                    <button type="button" onclick="submitExport('email')"
+                        class="inline-flex items-center px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-lg shadow-sm transition">
+                        {{ __('Enviar por correo') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     {{-- FOOTER --}}
     <footer class="fixed bottom-0 left-0 z-20 w-full bg-white border-t border-gray-300 shadow dark:bg-gray-800 dark:border-gray-600">
         <div class="flex justify-around items-center px-6 py-3">
@@ -304,6 +369,39 @@
     </footer>
 
     <script>
+        function openExportModal() {
+            document.getElementById('exportModal').classList.remove('hidden');
+        }
+
+        function closeExportModal() {
+            document.getElementById('exportModal').classList.add('hidden');
+        }
+
+        function submitExport(mode) {
+            const form = document.getElementById('exportUsersForm');
+            const modeInput = document.getElementById('exportModeInput');
+            const emailInput = document.getElementById('exportEmail');
+
+            modeInput.value = mode;
+            emailInput.required = mode === 'email';
+
+            if (mode === 'email' && !emailInput.value) {
+                emailInput.focus();
+                return;
+            }
+
+            if (mode === 'download') {
+                closeExportModal();
+                setTimeout(() => {
+                    form.submit();
+                }, 0);
+
+                return;
+            }
+
+            form.submit();
+        }
+
         function toggleForasters(boton) {
             const rows = document.querySelectorAll('.forastero-row');
             const labelEl = boton.querySelector('span');

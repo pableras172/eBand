@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UsersExport;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Mail\UsersExportMail;
 use App\Models\Instrument;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -170,6 +174,40 @@ class UsersController extends Controller
         ]);
 
         return back();
+    }
+
+    public function export(Request $request)
+    {
+        $this->authorize('admin_access');
+
+        $validated = $request->validate([
+            'mode' => ['required', 'in:download,email'],
+            'email' => ['nullable', 'email', 'required_if:mode,email'],
+            'instrument_id' => ['nullable', 'integer'],
+            'nombre' => ['nullable', 'string'],
+            'activo' => ['nullable', 'in:0,1'],
+            'padres' => ['nullable', 'in:0,1'],
+        ]);
+
+        $fileName = 'users_'.now()->format('Ymd_His').'.xlsx';
+
+        $export = new UsersExport(
+            instrumentId: $request->integer('instrument_id') ?: null,
+            nombre: $request->filled('nombre') ? $request->string('nombre')->value() : null,
+            activo: $request->filled('activo') ? (string) $request->input('activo') : null,
+            soloPadres: $request->boolean('padres'),
+        );
+
+        if ($validated['mode'] === 'download') {
+            return Excel::download($export, $fileName);
+        }
+
+        $excelContent = Excel::raw($export, \Maatwebsite\Excel\Excel::XLSX);
+
+        Mail::to($validated['email'])->send(new UsersExportMail($excelContent, $fileName));
+
+        return redirect()->route('users.index', $request->only(['nombre', 'instrument_id', 'activo', 'padres']))
+            ->with('success_message', __('Exportación enviada por correo correctamente.'));
     }
 
     public function destroy(User $user)
