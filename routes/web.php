@@ -79,6 +79,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::resource('instrument', InstrumentClass::class);
     Route::post('/update-order', [InstrumentClass::class, 'updateOrder'])->name('instrument.updateOrder');
 
+    Route::patch('users/{user}/toggle-active', [UsersController::class, 'toggleActive'])->name('users.toggle-active');
     Route::resource('users', UsersController::class);
 
     Route::resource('tipoactuacion', TipoActuacionController::class);

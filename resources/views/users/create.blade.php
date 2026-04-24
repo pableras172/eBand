@@ -1,288 +1,298 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            @if (!isset($user))
-                {{ __('Nou Music') }}
-            @else
-                {{ __('Editar músic') }}
-            @endif
-        </h2>
+        <div class="flex items-center gap-4">
+            <div class="bg-gradient-to-br from-amber-400 to-orange-500 p-3 rounded-xl shadow-md">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.5 19a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm-11-2a4 4 0 100-8 4 4 0 000 8zm11.5 4a5.98 5.98 0 00-5.22-3.04M1.999 21a5.99 5.99 0 015.5-4 5.99 5.99 0 015.5 4" />
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                    @if (!isset($user))
+                        {{ __('Nou Music') }}
+                    @else
+                        {{ __('Editar músic') }}
+                    @endif
+                </h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    @if (!isset($user))
+                        {{ __('Alta de músics amb les dades personals, rols i configuració interna') }}
+                    @else
+                        {{ __('Actualitza la fitxa del músic i reorganitza la informació per blocs') }}
+                    @endif
+                </p>
+            </div>
+        </div>
     </x-slot>
 
-    <div>
-        <div class="max-w-4xl mx-auto py-10 sm:px-6 lg:px-8">
-            <div class="mt-5 md:mt-0 md:col-span-2">
+    <div class="max-w-6xl mx-auto py-6 px-2 pb-28 sm:px-6 lg:px-8 space-y-6">
+        <form method="post" action="{{ isset($user) ? route('users.update', $user->id) : route('users.store') }}"
+            class="space-y-6">
+            @csrf
+            @if (isset($user))
+                @method('PUT')
+            @endif
 
-                <form method="post"
-                    action="{{ isset($user) ? route('users.update', $user->id) : route('users.store') }}">
-                    @csrf
-                    @if (isset($user))
-                        @method('PUT')
-                    @endif
-                    <div class="shadow overflow-hidden sm:rounded-md">
-                        <div class="px-4 py-5 bg-white sm:p-6">
-                            <label for="name"
-                                class="block font-medium text-sm text-gray-700">{{ __('Nom') }}</label>
-                            <input type="text" name="name" id="name"
-                                class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                value="{{ isset($user) ? $user->name : old('name') }}" />
-                            @error('name')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+            <div class="grid grid-cols-1 gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+                <div class="space-y-6">
+                    <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+                        <div class="mb-4 border-b border-gray-100 pb-3">
+                            <h3 class="text-base font-semibold text-gray-900">{{ __('Identitat i accés') }}</h3>
+                            <p class="text-sm text-gray-500">{{ __('Dades bàsiques del músic i credencials d’accés.') }}</p>
                         </div>
 
-                        <div class="px-4 py-5 bg-white sm:p-6">
-                            <label for="email"
-                                class="block font-medium text-sm text-gray-700">{{ __('Email') }}</label>
-                            <input type="email" name="email" id="email"
-                                class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                value="{{ isset($user) ? $user->email : old('email') }}" />
-                            @error('email')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="px-4 py-5 bg-white sm:p-6">
-                            <label for="password"
-                                class="block font-medium text-sm text-gray-700">{{ __('Password') }}</label>
-                            <div class="relative">
-                                <input type="password" name="password" id="password"
-                                    class="form-input rounded-md shadow-sm mt-1 block w-full pr-10"
-                                    value="{{ isset($user) ? '' : 'Banda2024' }}"
-                                    placeholder="{{ isset($user) ? __('Deixa en blanc per no canviar') : '' }}" />
-                                <button type="button" onclick="togglePasswordVisibility()" 
-                                    class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                    <svg id="eye-open" class="h-5 w-5 text-gray-500 hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                    <svg id="eye-closed" class="h-5 w-5 text-gray-500 hover:text-gray-700 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                                    </svg>
-                                </button>
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700">{{ __('Nom') }}</label>
+                                <input type="text" name="name" id="name"
+                                    class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-amber-400 focus:ring-amber-400"
+                                    value="{{ old('name', isset($user) ? $user->name : '') }}" />
+                                @error('name')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
-                            @if (!isset($user))
-                                <span class="text-sm text-gray-500">{{ __('Valor predeterminat: Banda2024 (Pots canviar-lo)') }}</span>
-                            @else
-                                <span class="text-sm text-gray-500">{{ __('Deixa en blanc si no vols modificar el password') }}</span>
-                            @endif
-                            @error('password')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+
+                            <div>
+                                <label for="telefono" class="block text-sm font-medium text-gray-700">{{ __('Telefon') }}</label>
+                                <input type="text" name="telefono" id="telefono"
+                                    class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-amber-400 focus:ring-amber-400"
+                                    value="{{ old('telefono', isset($user) ? $user->telefono : '') }}" />
+                                @error('telefono')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label for="email" class="block text-sm font-medium text-gray-700">{{ __('Email') }}</label>
+                                <input type="email" name="email" id="email"
+                                    class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-amber-400 focus:ring-amber-400"
+                                    value="{{ old('email', isset($user) ? $user->email : '') }}" />
+                                @error('email')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label for="password" class="block text-sm font-medium text-gray-700">{{ __('Password') }}</label>
+                                <div class="relative mt-1">
+                                    <input type="password" name="password" id="password"
+                                        class="block w-full rounded-xl border-gray-300 pr-12 shadow-sm focus:border-amber-400 focus:ring-amber-400"
+                                        value="{{ isset($user) ? '' : 'Banda2024' }}"
+                                        placeholder="{{ isset($user) ? __('Deixa en blanc per no canviar') : '' }}" />
+                                    <button type="button" onclick="togglePasswordVisibility()"
+                                        class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-700">
+                                        <svg id="eye-open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        <svg id="eye-closed" class="hidden h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                @if (!isset($user))
+                                    <p class="mt-1 text-sm text-gray-500">{{ __('Valor predeterminat: Banda2024 (pots canviar-lo abans de guardar)') }}</p>
+                                @else
+                                    <p class="mt-1 text-sm text-gray-500">{{ __('Deixa en blanc si no vols modificar el password') }}</p>
+                                @endif
+                                @error('password')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+                        <div class="mb-4 border-b border-gray-100 pb-3">
+                            <h3 class="text-base font-semibold text-gray-900">{{ __('Dades musicals') }}</h3>
+                            <p class="text-sm text-gray-500">{{ __('Assignació instrumental, percentatge i data d’alta.') }}</p>
                         </div>
 
-                        <script>
-                            function togglePasswordVisibility() {
-                                const passwordInput = document.getElementById('password');
-                                const eyeOpen = document.getElementById('eye-open');
-                                const eyeClosed = document.getElementById('eye-closed');
-                                
-                                if (passwordInput.type === 'password') {
-                                    passwordInput.type = 'text';
-                                    eyeOpen.classList.add('hidden');
-                                    eyeClosed.classList.remove('hidden');
-                                } else {
-                                    passwordInput.type = 'password';
-                                    eyeOpen.classList.remove('hidden');
-                                    eyeClosed.classList.add('hidden');
-                                }
-                            }
-                        </script>
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                            <div class="md:col-span-2">
+                                <label for="instrument" class="block text-sm font-medium text-gray-700">{{ __('Instrument') }}</label>
+                                <select name="instrument_id" id="instrument"
+                                    class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-amber-400 focus:ring-amber-400">
+                                    <option value="">{{ __('Selecciona un instrument') }}</option>
+                                    @foreach ($instruments as $instrument)
+                                        <option value="{{ $instrument->id }}"
+                                            @selected(old('instrument_id', isset($user) ? $user->instrument_id : '') == $instrument->id)>
+                                            {{ $instrument->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('instrument_id')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                        <div class="px-4 py-5 bg-white sm:p-6">
-                            <label for="instrument"
-                                class="block font-medium text-sm text-gray-700">{{ __('Instrument') }}</label>
-                            <select name="instrument_id" id="instrument"
-                                class="form-select rounded-md shadow-sm mt-1 block w-full">
-                                <option value="">{{ __('Selecciona un instrument') }}</option>
-                                @foreach ($instruments as $instrument)
-                                    <option value="{{ $instrument->id }}"
-                                        {{ isset($user) && $user->instrument_id == $instrument->id ? 'selected' : '' }}>
-                                        {{ $instrument->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('instrument_id')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                            <div>
+                                <label for="porcentaje" class="block text-sm font-medium text-gray-700">{{ __('Percentaje') }}</label>
+                                <input type="number" name="porcentaje" id="porcentaje"
+                                    class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-amber-400 focus:ring-amber-400"
+                                    value="{{ old('porcentaje', isset($user) ? $user->porcentaje : '') }}" />
+                                @error('porcentaje')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="fechaAlta" class="block text-sm font-medium text-gray-700">{{ __('Data Alta') }}</label>
+                                <input type="date" name="fechaAlta" id="fechaAlta"
+                                    class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-amber-400 focus:ring-amber-400"
+                                    value="{{ old('fechaAlta', isset($user) ? $user->fechaAlta : '') }}" />
+                                @error('fechaAlta')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+                        <div class="mb-4 border-b border-gray-100 pb-3">
+                            <h3 class="text-base font-semibold text-gray-900">{{ __('Observacions') }}</h3>
+                            <p class="text-sm text-gray-500">{{ __('Informació interna o notas relevantes para la gestión.') }}</p>
                         </div>
 
-
-
-
-                        <div class="px-4 py-5 bg-white sm:p-6">
-                            <label for="telefono"
-                                class="block font-medium text-sm text-gray-700">{{ __('Telefon') }}</label>
-                            <input type="text" name="telefono" id="telefono"
-                                class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                value="{{ isset($user) ? $user->telefono : old('telefono') }}" />
-                            @error('telefono')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
+                        <div>
+                            <label for="observaciones" class="block text-sm font-medium text-gray-700">{{ __('Observacions') }}</label>
+                            <textarea name="observaciones" id="observaciones"
+                                class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-amber-400 focus:ring-amber-400"
+                                rows="4">{{ old('observaciones', isset($user) ? $user->observaciones : '') }}</textarea>
+                            @error('observaciones')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
+                    </section>
+                </div>
 
-                        <div class="px-4 py-5 bg-white sm:p-6">
-                            <label for="porcentaje"
-                                class="block font-medium text-sm text-gray-700">{{ __('Percentaje') }}</label>
-                            <input type="number" name="porcentaje" id="porcentaje"
-                                class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                value="{{ isset($user) ? $user->porcentaje : old('porcentaje') }}" />
-                            @error('porcentaje')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                <div class="space-y-6">
+                    <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+                        <div class="mb-4 border-b border-gray-100 pb-3">
+                            <h3 class="text-base font-semibold text-gray-900">{{ __('Estat i perfil') }}</h3>
+                            <p class="text-sm text-gray-500">{{ __('Marcadors ràpids para disponibilidad y tipología de usuario.') }}</p>
                         </div>
 
+                        <div class="space-y-3">
+                            <label for="activo"
+                                class="flex items-center justify-between rounded-xl border border-green-100 bg-green-50 px-4 py-3 cursor-pointer">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">{{ __('Actiu') }}</p>
+                                    <p class="text-xs text-gray-500">{{ __('Permite que el usuario aparezca como disponible en la aplicación.') }}</p>
+                                </div>
+                                <input type="checkbox" name="activo" id="activo"
+                                    class="h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                                    {{ (isset($user) && $user->activo) || old('activo') ? 'checked' : '' }}>
+                            </label>
+                            @error('activo')
+                                <p class="text-sm text-red-600">{{ $message }}</p>
+                            @enderror
 
-                        <div class="px-4 py-5 bg-white sm:p-6">
                             <label for="forastero"
-                                class="block font-medium text-sm text-gray-700">{{ __('Foraster') }}</label>
-                            <input type="checkbox" name="forastero" id="forastero"
-                                class="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
-                                {{ (isset($user) && $user->forastero) || old('forastero') ? 'checked' : '' }}>
+                                class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 cursor-pointer">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">{{ __('Foraster') }}</p>
+                                    <p class="text-xs text-gray-500">{{ __('Identifica a los músicos externos o no habituales.') }}</p>
+                                </div>
+                                <input type="checkbox" name="forastero" id="forastero"
+                                    class="h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500"
+                                    {{ (isset($user) && $user->forastero) || old('forastero') ? 'checked' : '' }}>
+                            </label>
                             @error('forastero')
                                 <p class="text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
+                    </section>
 
-                        <div class="px-4 py-5 bg-white sm:p-6">
-                            <label for="activo"
-                                class="block font-medium text-sm text-gray-700">{{ __('Actiu') }}</label>
-                            <input type="checkbox" name="activo" id="activo"
-                                class="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
-                                {{ (isset($user) && $user->activo) || old('activo') ? 'checked' : '' }}>
-                            @error('activo')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                    <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+                        <div class="mb-4 border-b border-gray-100 pb-3">
+                            <h3 class="text-base font-semibold text-gray-900">{{ __('Familia musical') }}</h3>
+                            <p class="text-sm text-gray-500">{{ __('Agrupa fills asociados y controla el estado de padre o madre.') }}</p>
                         </div>
-
-
-                        <div class="px-4 py-5 bg-white sm:p-6">
-                            <label for="fechaAlta"
-                                class="block font-medium text-sm text-gray-700">{{ __('Data Alta') }}</label>
-                            <input type="date" name="fechaAlta" id="fechaAlta"
-                                class="form-input rounded-md shadow-sm mt-1 block w-full"
-                                value="{{ isset($user) ? $user->fechaAlta : old('fechaAlta') }}" />
-                            @error('fechaAlta')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="px-4 py-5 bg-white sm:p-6">
-                            <label for="es_padre" class="block font-medium text-sm text-gray-700">
-                                {{ __('És pare/mare?') }}
-                            </label>
-                            <input type="checkbox" id="es_padre"
-                                class="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
-                                onchange="toggleHijos()" />
-
-                            <div id="selector-hijos" class="mt-4 hidden">
-                                <label for="hijos"
-                                    class="block font-medium text-sm text-gray-700">{{ __('Selecciona fills') }}</label>
-                                <select name="hijos[]" id="hijos" multiple
-                                    class="form-multiselect block w-full mt-1 rounded-md shadow-sm">
-                                    @foreach ($todosLosUsuarios as $posibleHijo)
-                                        @if (!isset($user) || $posibleHijo->id !== $user->id)
-                                            <option value="{{ $posibleHijo->id }}"
-                                                {{ isset($user) && $user->hijos->contains($posibleHijo->id) ? 'selected' : '' }}>
-                                                {{ $posibleHijo->name }} ({{ $posibleHijo->email }})
-                                            </option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-
-
-                        <script>
-                            function toggleHijos() {
-                                const checkbox = document.getElementById('es_padre');
-                                const hijosDiv = document.getElementById('selector-hijos');
-                                hijosDiv.classList.toggle('hidden', !checkbox.checked);
-                            }
-
-                            // Mostrar al cargar si ya tiene hijos
-                            document.addEventListener('DOMContentLoaded', function() {
-                                @if (isset($user) && $user->hijos->count())
-                                    document.getElementById('es_padre').checked = true;
-                                    toggleHijos();
-                                @endif
-                            });
-                        </script>
 
                         <input type="hidden" name="es_padre" id="es_padre_hidden" value="0">
 
-                        <script>
-                            const checkbox = document.getElementById('es_padre');
-                            checkbox.addEventListener('change', function() {
-                                document.getElementById('es_padre_hidden').value = this.checked ? 1 : 0;
-                            });
+                        <label for="es_padre"
+                            class="flex items-center justify-between rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 cursor-pointer">
+                            <div>
+                                <p class="text-sm font-semibold text-gray-900">{{ __('És pare/mare?') }}</p>
+                                <p class="text-xs text-gray-500">{{ __('Al activarlo podrás asociar músicos dependientes o hijos.') }}</p>
+                            </div>
+                            <input type="checkbox" id="es_padre"
+                                class="h-5 w-5 rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                                onchange="toggleHijos()"
+                                {{ old('es_padre', isset($user) && $user->hijos->count() ? 1 : 0) ? 'checked' : '' }}>
+                        </label>
 
-                            // Para cuando ya está marcado al cargar
-                            document.addEventListener('DOMContentLoaded', function() {
-                                document.getElementById('es_padre_hidden').value = checkbox.checked ? 1 : 0;
-                            });
-                        </script>
-
-
-                        <div class="px-4 py-5 bg-white sm:p-6">
-                            <label for="roles"
-                                class="block font-medium text-sm text-gray-700">{{ __('Roles') }}</label>
-                            <select name="roles[]" id="roles"
-                                class="form-multiselect block rounded-md shadow-sm mt-1 block w-full"
-                                multiple="multiple">
-                                @foreach ($roles as $id => $role)
-                                    <option
-                                        value="{{ $id }}"{{ isset($user) && $user->roles->contains($id) ? ' selected' : '' }}>
-                                        {{ $role }}</option>
+                        <div id="selector-hijos" class="mt-4 hidden">
+                            <label for="hijos" class="block text-sm font-medium text-gray-700">{{ __('Selecciona fills') }}</label>
+                            <select name="hijos[]" id="hijos" multiple
+                                class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-amber-400 focus:ring-amber-400">
+                                @foreach ($todosLosUsuarios as $posibleHijo)
+                                    @if (!isset($user) || $posibleHijo->id !== $user->id)
+                                        <option value="{{ $posibleHijo->id }}"
+                                            {{ collect(old('hijos', isset($user) ? $user->hijos->pluck('id')->all() : []))->contains($posibleHijo->id) ? 'selected' : '' }}>
+                                            {{ $posibleHijo->name }} ({{ $posibleHijo->email }})
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
-                            @error('roles')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-
-                        <div class="px-4 py-5 bg-white sm:p-6">
-                            <label for="observaciones"
-                                class="block font-medium text-sm text-gray-700">{{ __('Observacions') }}</label>
-                            <textarea name="observaciones" id="observaciones" class="form-textarea rounded-md shadow-sm mt-1 block w-full"
-                                rows="3">{{ old('observaciones', '') }}</textarea>
-                            @error('observaciones')
-                                <p class="text-sm text-red-600">{{ $message }}</p>
-                            @enderror
                         </div>
 
                         @if (isset($user) && $user->hijos->count())
-                            <div class="px-4 py-5 bg-white sm:p-6">
-                                <label
-                                    class="block font-medium text-sm text-gray-700">{{ __('Fills associats') }}</label>
-                                <ul class="mt-2 list-disc list-inside text-sm text-gray-800">
+                            <div class="mt-4 rounded-xl border border-amber-100 bg-amber-50/60 px-4 py-3">
+                                <p class="text-sm font-semibold text-gray-900">{{ __('Fills associats') }}</p>
+                                <ul class="mt-2 space-y-1 text-sm text-gray-700">
                                     @foreach ($user->hijos as $hijo)
                                         <li>{{ $hijo->name }} ({{ $hijo->email }})</li>
                                     @endforeach
                                 </ul>
                             </div>
                         @endif
+                    </section>
 
-
-                        <input type="hidden" id="uuid" name="uuid"
-                            value="{{ Ramsey\Uuid\Uuid::uuid4()->toString() }}" />
-
-                        <div class="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6">
-                            <button
-                                class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150">
-                                @if (isset($user))
-                                    {{ __('Actualitzar') }}
-                                @else
-                                    {{ __('Guardar') }}
-                                @endif
-                            </button>
+                    <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+                        <div class="mb-4 border-b border-gray-100 pb-3">
+                            <h3 class="text-base font-semibold text-gray-900">{{ __('Permisos') }}</h3>
+                            <p class="text-sm text-gray-500">{{ __('Selecciona uno o varios roles para definir el acceso interno.') }}</p>
                         </div>
-                    </div>
-                </form>
+
+                        <div>
+                            <label for="roles" class="block text-sm font-medium text-gray-700">{{ __('Roles') }}</label>
+                            <select name="roles[]" id="roles"
+                                class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-amber-400 focus:ring-amber-400"
+                                multiple="multiple">
+                                @foreach ($roles as $id => $role)
+                                    <option value="{{ $id }}"
+                                        {{ collect(old('roles', isset($user) ? $user->roles->pluck('id')->all() : []))->contains($id) ? 'selected' : '' }}>
+                                        {{ $role }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('roles')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </section>
+                </div>
             </div>
-        </div>
+
+            <input type="hidden" id="uuid" name="uuid" value="{{ Ramsey\Uuid\Uuid::uuid4()->toString() }}" />
+
+            <div class="rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-gray-100">
+                <div class="flex items-center justify-end">
+                    <button
+                        class="inline-flex items-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2">
+                        @if (isset($user))
+                            {{ __('Actualitzar') }}
+                        @else
+                            {{ __('Guardar') }}
+                        @endif
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
     @if (isset($user))
         <x-usermetrics :userId="$user->id" />
@@ -352,5 +362,36 @@
             @endif
         </div>
     </footer>
+
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const eyeOpen = document.getElementById('eye-open');
+            const eyeClosed = document.getElementById('eye-closed');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeOpen.classList.add('hidden');
+                eyeClosed.classList.remove('hidden');
+            } else {
+                passwordInput.type = 'password';
+                eyeOpen.classList.remove('hidden');
+                eyeClosed.classList.add('hidden');
+            }
+        }
+
+        function toggleHijos() {
+            const checkbox = document.getElementById('es_padre');
+            const hijosDiv = document.getElementById('selector-hijos');
+            const hiddenField = document.getElementById('es_padre_hidden');
+
+            hijosDiv.classList.toggle('hidden', !checkbox.checked);
+            hiddenField.value = checkbox.checked ? 1 : 0;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleHijos();
+        });
+    </script>
 
 </x-app-layout>

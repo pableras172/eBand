@@ -1,9 +1,13 @@
 import './bootstrap';
+import { initSafariPwaSupport } from './pwa-safari';
 
+// Clave persistente para recordar si el usuario oculto el aviso de instalacion PWA.
 const INSTALL_PROMPT_STORAGE_KEY = 'eband_install_prompt_hidden';
 
+// Evento nativo capturado (beforeinstallprompt) para lanzarlo desde nuestro boton personalizado.
 let deferredInstallPrompt = null;
 
+// Crea un banner flotante para instalar la app cuando el navegador lo permita.
 function createInstallPromptButton() {
     if (document.getElementById('pwa-install-button')) {
         return;
@@ -55,10 +59,12 @@ function createInstallPromptButton() {
 }
 
 function registerServiceWorker() {
+    // Si el navegador no soporta service workers, omitimos el registro sin romper la app.
     if (!('serviceWorker' in navigator)) {
         return;
     }
 
+    // Registramos el SW al terminar de cargar para no penalizar el arranque inicial.
     window.addEventListener('load', async () => {
         try {
             await navigator.serviceWorker.register('/sw.js', { scope: '/' });
@@ -71,16 +77,18 @@ function registerServiceWorker() {
 window.addEventListener('beforeinstallprompt', (event) => {
     const hiddenByUser = localStorage.getItem(INSTALL_PROMPT_STORAGE_KEY) === '1';
 
-    // If user dismissed our custom prompt, do not block browser-native prompt.
+    // Si el usuario oculto nuestro banner, dejamos que el navegador gestione su prompt nativo.
     if (hiddenByUser) {
         return;
     }
 
+    // Bloqueamos el prompt automatico para poder mostrar primero nuestro CTA personalizado.
     event.preventDefault();
     deferredInstallPrompt = event;
     createInstallPromptButton();
 });
 
+// Cuando la instalacion finaliza, limpiamos estado y evitamos volver a mostrar el banner.
 window.addEventListener('appinstalled', () => {
     deferredInstallPrompt = null;
     localStorage.setItem(INSTALL_PROMPT_STORAGE_KEY, '1');
@@ -91,7 +99,10 @@ window.addEventListener('appinstalled', () => {
 });
 
 registerServiceWorker();
+// Safari no soporta beforeinstallprompt como Chromium, por eso iniciamos una guia especifica.
+initSafariPwaSupport();
 
+// Helper global para Alpine: gestiona tema oscuro y lo persiste en localStorage.
 window.themeSwitcher = function () {
     return {
         switchOn: JSON.parse(localStorage.getItem('isDark')) || false,
@@ -108,7 +119,7 @@ window.themeSwitcher = function () {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-   
+    // Este bloque solo aplica en pantallas que incluyan la tabla de instrumentos.
     const table = document.getElementById('instrumentTable');
 
     if (!table) return; // Si no existe el elemento, salir
@@ -128,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Mover fila hacia abajo
         if (e.target.closest('.move-down')) {
-            console.log('Click3');
             const row = e.target.closest('tr');
             const nextRow = row.nextElementSibling;
             if (nextRow) {
@@ -142,6 +152,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function actualizarOrdenes() {
         const rows = document.querySelectorAll('#instrumentTable .instrument-row');
         let ordenActualizado = [];
+
+        // Recalculamos el orden visible y construimos el payload para guardar en backend.
         rows.forEach((row, index) => {
             const ordenSpan = row.querySelector('.orden');
             ordenSpan.textContent = index + 1; // Reordenar visualmente

@@ -4,52 +4,57 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Instrument;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Symfony\Component\HttpFoundation\Response;
-use App\Models\Instrument;
-use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Log;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\Response;
 
 class UsersController extends Controller
 {
-
     public function index(Request $request)
     {
         $this->authorize('admin_access');
 
         $instrument_id = $request->input('instrument_id');
         $soloPadres = $request->boolean('padres');
+        $nombre = $request->input('nombre');
+        $activo = $request->input('activo');
 
-        $usersQuery = User::with('roles')->orderBy('name', 'asc');
+        $usersQuery = User::with(['roles', 'instrument', 'hijos'])->orderBy('name', 'asc');
 
-        // Filtrar por instrumento si aplica
         if ($instrument_id) {
             $usersQuery->where('instrument_id', $instrument_id);
         }
 
-        // Filtrar solo usuarios que tienen hijos (padres)
         if ($soloPadres) {
             $usersQuery->whereHas('hijos');
         }
 
-        $users = $usersQuery->paginate(10);
+        if ($nombre) {
+            $usersQuery->where('name', 'like', '%'.$nombre.'%');
+        }
+
+        if ($activo !== null && $activo !== '') {
+            $usersQuery->where('activo', (int) $activo);
+        }
+
+        $users = $usersQuery->paginate(15)->appends($request->query());
 
         $instruments = Instrument::select('id', 'name', 'icon')
             ->withCount('users')
             ->groupBy('id', 'name', 'icon')
             ->get();
 
-        return view('users.index', compact('users', 'instruments'));
+        return view('users.index', compact('users', 'instruments', 'nombre', 'activo', 'instrument_id'));
     }
-
-
 
     public function create()
     {
-        //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->authorize('admin_access');
 
         $roles = Role::whereNotIn('title', ['SuperAdmin'])->pluck('title', 'id');
@@ -92,10 +97,9 @@ class UsersController extends Controller
         }
     }
 
-
     public function show(User $user)
     {
-        //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->authorize('admin_access');
 
         return view('users.show', compact('user'));
@@ -103,7 +107,7 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
-        //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->authorize('admin_access');
 
         $roles = Role::whereNotIn('title', ['SuperAdmin'])->pluck('title', 'id');
@@ -153,9 +157,24 @@ class UsersController extends Controller
         return redirect()->route('users.index');
     }
 
+    public function toggleActive(Request $request, User $user)
+    {
+        $this->authorize('admin_access');
+
+        $request->validate([
+            'activo' => ['required', 'boolean'],
+        ]);
+
+        $user->update([
+            'activo' => (bool) $request->boolean('activo'),
+        ]);
+
+        return back();
+    }
+
     public function destroy(User $user)
     {
-        //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->authorize('admin_access');
 
         $user->delete();
@@ -166,7 +185,7 @@ class UsersController extends Controller
     public function getuuid(User $user)
     {
         try {
-            if (!$user->uuid) {
+            if (! $user->uuid) {
                 $uuid = Uuid::uuid4()->toString();
                 $user->uuid = $uuid;
                 $user->save();
@@ -181,6 +200,7 @@ class UsersController extends Controller
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
             return response()->json(['error' => 'Error al obtener UUID'], 500);
         }
     }
