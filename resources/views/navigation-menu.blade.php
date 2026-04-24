@@ -583,6 +583,16 @@
                             </div>
                         </x-responsive-nav-link>
 
+                        <x-responsive-nav-link href="{{ route('announcements.index') }}" :active="request()->routeIs('announcements.*')">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5a2 2 0 114 0v1.465a1 1 0 00.293.707l1.535 1.535A2 2 0 0117.414 12H8.586a2 2 0 01-1.414-3.414l1.535-1.535A1 1 0 009 7.465V5a2 2 0 012-2z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17h6m-6 3h6" />
+                                </svg>
+                                <span>{{ __('Anuncios') }}</span>
+                            </div>
+                        </x-responsive-nav-link>
+
                         @if (ConfigHelper::getConfigValue('enableusermessages') === 'true')
                             <x-responsive-nav-link href="{{ route('comments.index') }}" :active="request()->routeIs('comments.index')">
                                 <div class="flex items-center space-x-3">
