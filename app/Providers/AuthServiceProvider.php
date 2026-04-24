@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Announcement;
 use App\Models\InventoryItem;
 use App\Models\Suggestion;
 use App\Models\Tipoactuacion;
 use App\Models\User;
+use App\Policies\AnnouncementPolicy;
 use App\Policies\InventoryItemPolicy;
 use App\Policies\SuggestionPolicy;
 use App\Policies\TipoActuacionPolicy;
@@ -28,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         Tipoactuacion::class => TipoActuacionPolicy::class,
         Suggestion::class => SuggestionPolicy::class,
         InventoryItem::class => InventoryItemPolicy::class,
+        Announcement::class => AnnouncementPolicy::class,
 
     ];
 

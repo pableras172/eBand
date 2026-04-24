@@ -101,7 +101,7 @@
                             <x-slot name="trigger">
                                 <span class="inline-flex rounded-md">
                                     <button type="button"
-                                        class="inline-flex items-center rounded-md px-3 py-2 text-sm leading-4 font-medium transition ease-in-out duration-150 {{ request()->routeIs('tipoactuacion.*', 'instrument.*', 'users.*', 'contratos.*', 'payments.*', 'paymentresumes.*', 'comments.*', 'configurations*') ? 'border border-cyan-200 bg-cyan-50 text-cyan-700' : 'border border-transparent bg-white text-gray-500 hover:text-gray-700 focus:bg-gray-50 active:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:bg-gray-700 dark:active:bg-gray-700' }}">
+                                        class="inline-flex items-center rounded-md px-3 py-2 text-sm leading-4 font-medium transition ease-in-out duration-150 {{ request()->routeIs('tipoactuacion.*', 'instrument.*', 'users.*', 'contratos.*', 'payments.*', 'paymentresumes.*', 'comments.*', 'configurations*', 'announcements.*') ? 'border border-cyan-200 bg-cyan-50 text-cyan-700' : 'border border-transparent bg-white text-gray-500 hover:text-gray-700 focus:bg-gray-50 active:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:bg-gray-700 dark:active:bg-gray-700' }}">
                                         {{ __('Administracion') }}
                                         <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -193,6 +193,18 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                             </svg>
                                             <span>{{ __('Inventario') }}</span>
+                                        </div>
+                                    </x-nav-link>
+                                </div>
+
+                                <div class="w-60 px-4 m-2">
+                                    <x-nav-link href="{{ route('announcements.index') }}" :active="request()->routeIs('announcements.*')">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5a2 2 0 114 0v1.465a1 1 0 00.293.707l1.535 1.535A2 2 0 0117.414 12H8.586a2 2 0 01-1.414-3.414l1.535-1.535A1 1 0 009 7.465V5a2 2 0 012-2z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17h6m-6 3h6" />
+                                            </svg>
+                                            <span>{{ __('Anuncios') }}</span>
                                         </div>
                                     </x-nav-link>
                                 </div>

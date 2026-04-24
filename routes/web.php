@@ -12,6 +12,9 @@ use App\Http\Controllers\TasksController;
 use App\Http\Controllers\TipoActuacionController;
 use App\Http\Controllers\UsersController;
 use App\Jobs\SendDailyCommentsNotification;
+use App\Livewire\Announcement\AnnouncementCreate;
+use App\Livewire\Announcement\AnnouncementEdit;
+use App\Livewire\Announcement\AnnouncementIndex;
 use App\Livewire\Comments\CommentCreate;
 use App\Livewire\Comments\CommentEdit;
 use App\Livewire\Comments\CommentIndex;
@@ -96,6 +99,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::livewire('/comments', CommentIndex::class)->name('comments.index');
     Route::livewire('/comments/create', CommentCreate::class)->name('comments.create');
     Route::livewire('/comments/{comment}', CommentEdit::class)->name('comments.edit');
+
+    Route::livewire('/announcements', AnnouncementIndex::class)->name('announcements.index');
+    Route::livewire('/announcements/create', AnnouncementCreate::class)->name('announcements.create');
+    Route::livewire('/announcements/{announcement}', AnnouncementEdit::class)->name('announcements.edit');
 
     Route::get('/run-job', function () {
         dispatch(new SendDailyCommentsNotification);

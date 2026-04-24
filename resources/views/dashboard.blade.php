@@ -12,5 +12,7 @@
             </div>
         </div>
     </div>
+
+    <livewire:announcement.announcement-popup />
     
 </x-app-layout>
