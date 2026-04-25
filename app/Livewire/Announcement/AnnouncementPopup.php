@@ -5,7 +5,9 @@ namespace App\Livewire\Announcement;
 use App\Models\Announcement;
 use App\Models\AnnouncementStatus;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class AnnouncementPopup extends Component
@@ -39,6 +41,39 @@ class AnnouncementPopup extends Component
             && str_starts_with($this->announcement->content_view, 'announcements.')
             && view()->exists($this->announcement->content_view);
 
+        $this->showModal = true;
+    }
+
+    #[On('open-announcement-popup')]
+    public function openAnnouncementPopup(int $announcementId): void
+    {
+        if (! Auth::check()) {
+            return;
+        }
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        $announcement = Announcement::query()
+            ->with('instruments')
+            ->activeWindow()
+            ->whereKey($announcementId)
+            ->where(function (Builder $builder) use ($user): void {
+                $builder->where('applies_to_all', true)
+                    ->orWhereHas('instruments', function (Builder $instrumentBuilder) use ($user): void {
+                        $instrumentBuilder->where('instruments.id', $user->instrument_id ?? 0);
+                    });
+            })
+            ->first();
+
+        if (! $announcement) {
+            return;
+        }
+
+        $this->announcement = $announcement;
+        $this->hasCustomView = filled($announcement->content_view)
+            && str_starts_with($announcement->content_view, 'announcements.')
+            && view()->exists($announcement->content_view);
         $this->showModal = true;
     }
 

@@ -105,6 +105,9 @@
     <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         <x-animated-estadisticas />
     </div>
+    <div class="w-full mx-auto mt-1 mb-1">
+        <livewire:announcement.announcement-highlights />
+    </div>
     <div class="w-full mx-auto bg-white shadow-l rounded-lg p-2 mt-1 mb-1">
         <div class="flex items-center gap-3 mb-2">
             <x-lottie style="width: 100px; height: 100px;" path="{{ asset('storage/location.json') }}"
