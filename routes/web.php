@@ -73,7 +73,7 @@ Route::get('/', function () {
 // Ruta pública para el formulario de contacto
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'can:admin'])->group(function () {
+Route::middleware(['auth', config('jetstream.auth_session'), 'verified', 'can:admin'])->group(function () {
     Route::resource('contratos', ListadoContratos::class);
     Route::get('/contratos/year/{year}', [ListadoContratos::class, 'contratosPorAnyo'])->name('contratos.anyo');
     // Nueva ruta para duplicar contrato
@@ -118,7 +118,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('/inventory/export/pdf', [InventoryExportController::class, 'pdf'])->name('inventory.export.pdf');
 });
 
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(
+Route::middleware(['auth', config('jetstream.auth_session'), 'verified'])->group(
     function () {
 
         // Suggestions - available for all authenticated users

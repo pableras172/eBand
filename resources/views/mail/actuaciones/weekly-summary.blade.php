@@ -28,7 +28,7 @@ Te informamos de la programación de actuaciones para esta semana del **{{ $fech
 
 **Total de actuaciones:** {{ $actuaciones->count() }}
 
-@component('mail::button', ['url' => env('APP_URL') . '/dashboard'])
+@component('mail::button', ['url' => tenant_route('dashboard', fallbackPath: '/dashboard')])
 Ver Agenda Completa
 @endcomponent
 
@@ -37,7 +37,7 @@ Ver Agenda Completa
 
 No hay actuaciones programadas para esta semana.
 
-@component('mail::button', ['url' => env('APP_URL') . '/dashboard'])
+@component('mail::button', ['url' => tenant_route('dashboard', fallbackPath: '/dashboard')])
 Consultar Agenda
 @endcomponent
 @endif

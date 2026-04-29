@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -11,8 +12,8 @@ return new class extends Migration
         // Obtener el rol Admin
         $adminRole = DB::table('roles')->where('title', 'Admin')->first();
 
-        if (!$adminRole) {
-            throw new \Exception("El rol 'Admin' no existe. Ejecuta primero la migración de roles.");
+        if (! $adminRole) {
+            throw new Exception("El rol 'Admin' no existe. Ejecuta primero la migración de roles.");
         }
 
         // Crear el usuario admin
@@ -21,7 +22,7 @@ return new class extends Migration
             'email' => 'admin@eband.app',
             'password' => Hash::make('AdminPassword123!'), // cámbialo por uno seguro
             'observaciones' => 'Usuario administrador del sistema',
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'uuid' => (string) Str::uuid(),
             'email_verified_at' => now(),
             'created_at' => now(),
             'updated_at' => now(),

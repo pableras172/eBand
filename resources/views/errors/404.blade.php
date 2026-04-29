@@ -230,7 +230,7 @@
         </div>
 
         <div class="btn-container">
-            <a href="{{ route('dashboard') }}" class="btn btn-primary">
+            <a href="{{ \Illuminate\Support\Facades\Route::has('dashboard') ? route('dashboard') : url('/') }}" class="btn btn-primary">
                 <span>🏠</span> Ir al inicio
             </a>
             <button onclick="history.back()" class="btn btn-secondary">

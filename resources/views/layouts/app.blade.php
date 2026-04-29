@@ -4,22 +4,22 @@
 <head>
 
     <!-- Open Graph (Facebook y WhatsApp) -->
-    <meta property="og:title" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
+    <meta property="og:title" content="{{ config('app.name', 'Laravel') }} - {{ tenant_name() }}" />
     <meta property="og:description"
         content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
     <meta property="og:image" content="{{ url('/imagenes/logo.png') }}" />
     <meta property="og:url" content="{{ url('/') }}" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
+    <meta property="og:site_name" content="{{ config('app.name', 'Laravel') }} - {{ tenant_name() }}" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
+    <meta name="twitter:title" content="{{ config('app.name', 'Laravel') }} - {{ tenant_name() }}" />
     <meta name="twitter:description"
         content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
     <meta name="twitter:image" content="{{ url('/imagenes/icons/favicon/logoSmall_192.png') }}" />
 
-    <meta name="title" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
+    <meta name="title" content="{{ config('app.name', 'Laravel') }} - {{ tenant_name() }}" />
     <meta name="description"
         content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
     <link rel="icon" href="{{ url('/imagenes/icons/favicon/logoSmall_192.png') }}" type="image/png">
@@ -28,7 +28,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}</title>
+    <title>{{ config('app.name', 'Laravel') }} - {{ tenant_name() }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -71,39 +71,48 @@
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
-        var userUUID = '';
         var userId = {{ Auth::user()->id }};
-        var appId = "{{ config('services.onesignal.app_id') }}";
-        $.ajax({
-            url: '/usersuuid/' + userId,
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                userUUID = response.uuid;
-                OneSignalDeferred.push(function(OneSignal) {
-                    OneSignal.init({
-                        appId: appId,
-                        serviceWorkerParam: { scope: '/' },
-                        serviceWorkerPath: 'sw.js',
-                        allowLocalhostAsSecureOrigin: true, // Para pruebas en local
-                        cookie: {
-                            secure: true,
-                            sameSite: 'none'
-                        },
-                    }).then(function() {
-                        OneSignal.login(userUUID);
-                    }).catch(function(error) {
-                        // Manejar cualquier error que ocurra durante la inicialización de OneSignal
-                        console.error('Error initializing OneSignal:', error);
-                    });
-                });
+        var appId = "{{ tenant_onesignal_app_id() }}";
+        var currentHost = window.location.hostname;
+        var isHttps = window.location.protocol === 'https:';
+        var shouldInitOneSignal = isHttps && appId !== '';
 
-            },
-            error: function(xhr, status, error) {
-                // Manejo de errores
-                console.error('Error al obtener el UUID del usuario:', error);
-            }
-        });
+        if (shouldInitOneSignal) {
+            $.ajax({
+                url: '/usersuuid/' + userId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var userUUID = response.uuid;
+
+                    if (!userUUID) {
+                        return;
+                    }
+
+                    OneSignalDeferred.push(function(OneSignal) {
+                        OneSignal.init({
+                            appId: appId,
+                            serviceWorkerParam: { scope: '/' },
+                            serviceWorkerPath: 'sw.js',
+                            cookie: {
+                                secure: true,
+                                sameSite: 'none'
+                            },
+                        }).then(function() {
+                            OneSignal.login(userUUID);
+                        }).catch(function(error) {
+                            console.error('Error initializing OneSignal:', error);
+                        });
+                    });
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error al obtener el UUID del usuario:', error);
+                }
+            });
+        } else {
+            console.info('OneSignal desactivado en ' + currentHost + ' (requiere HTTPS y appId válido).');
+        }
 
         function showToast(response) {
             var type = response.alert_type;

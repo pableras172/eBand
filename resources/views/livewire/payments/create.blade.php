@@ -18,7 +18,7 @@
             <div class="p-4 space-y-3">
                 <div class="w-full">
                     <x-ui.label for="users_id">{{ __('Nom') }}</x-ui.label>
-                    <x-ui.input.select wire:model="form.users_id" name="users_id" id="users_id" class="w-full" wire:change="consultarActuaciones(this.value)">
+                    <x-ui.input.select wire:model.live="form.users_id" name="users_id" id="users_id" class="w-full">
                         <option value="-1" selected>{{ __('Selecciona un usuario') }}</option>
                         <option value="0" selected>{{__('Todos los usuarios')}}</option>
                         @foreach ($users as $value => $label)
@@ -43,15 +43,13 @@
 
                 <div class="w-full">
                     <x-ui.label for="fechaInicio">{{ __('Data Inici') }}</x-ui.label>
-                    <x-ui.input type="date" class="w-full" wire:model="form.fechaInicio" name="fechaInicio" id="fechaInicio"
-                    wire:change="consultarActuaciones(this.value)" />
+                    <x-ui.input type="date" class="w-full" wire:model.live="form.fechaInicio" name="fechaInicio" id="fechaInicio" />
                     <x-ui.input.error for="form.fechaInicio" />
                 </div>
 
                 <div class="w-full">
                     <x-ui.label for="fechaFin">{{ __('Data de Fi') }}</x-ui.label>
-                    <x-ui.input type="date" class="w-full" wire:model="form.fechaFin" name="fechaFin" id="fechaFin"
-                        wire:change="consultarActuaciones(this.value)"/>
+                    <x-ui.input type="date" class="w-full" wire:model.live="form.fechaFin" name="fechaFin" id="fechaFin"/>
                     <x-ui.input.error for="form.fechaFin" />
                 </div>
             </div>

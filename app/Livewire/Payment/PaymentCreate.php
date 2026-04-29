@@ -2,71 +2,68 @@
 
 namespace App\Livewire\Payment;
 
-use App\Models\User;
-use App\Models\Payment;
-use App\Models\Paymentresume;
-use Livewire\Component;
-use Livewire\WithFileUploads;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 use App\Models\Actuacion;
 use App\Models\ListasUser;
-use App\Models\Listas;
+use App\Models\Payment;
+use App\Models\Paymentresume;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class PaymentCreate extends Component
 {
     use WithFileUploads;
 
     public Collection $users;
+
     public array $form = [
         'users_id' => '',
         'fechaPago' => '',
         'descripcion' => '',
         'fechaInicio' => '',
         'fechaFin' => '',
-    ];   
+    ];
 
     public $actuaciones;
-    
-    // in component
-    protected $listeners = [
-        'consultarActuaciones'
-    ];
 
     public function mount()
     {
 
-        if (!Auth::user()->hasRole('Admin')) {
+        if (! Auth::user()->hasRole('Admin')) {
             abort(403, __('Sorry! You are not authorized to perform this action.'));
         }
 
         $this->users = User::pluck('name', 'id');
-        //$this->actuaciones = collect();
+        // $this->actuaciones = collect();
 
         $this->form['fechaPago'] = Carbon::now()->format('Y-m-d');
     }
 
     public function consultarActuaciones()
     {
-        if($this->form['users_id'] == -1){
+        if ($this->form['users_id'] == -1) {
+            $this->actuaciones = collect();
+
             return;
         }
 
-        if (!empty($this->form['fechaInicio']) && !empty($this->form['fechaFin'])) {
+        if (! empty($this->form['fechaInicio']) && ! empty($this->form['fechaFin'])) {
             if ($this->form['users_id'] == '0') { // Todos los usuarios
                 $this->actuaciones = Actuacion::whereBetween('fechaActuacion', [$this->form['fechaInicio'], $this->form['fechaFin']])
-                    ->where('actuacions.noaplicapago', 0) 
+                    ->where('actuacions.noaplicapago', 0)
                     ->orderBy('fechaActuacion', 'asc')
                     ->get();
             } else { // Actuaciones del usuario seleccionado
                 $this->actuaciones = Actuacion::join('listas', 'actuacions.id', '=', 'listas.actuacions_id')
                     ->join('listas_user', 'listas.id', '=', 'listas_user.listas_id')
                     ->where('listas_user.user_id', $this->form['users_id'])
-                    ->where('listas_user.disponible', 1)   
-                    ->where('actuacions.noaplicapago', 0) 
+                    ->where('listas_user.disponible', 1)
+                    ->where('actuacions.noaplicapago', 0)
                     ->whereBetween('actuacions.fechaActuacion', [$this->form['fechaInicio'], $this->form['fechaFin']])
                     ->orderBy('actuacions.fechaActuacion', 'asc')
                     ->select('actuacions.*') // Asegúrate de seleccionar solo las columnas de actuacions
@@ -75,11 +72,24 @@ class PaymentCreate extends Component
         }
     }
 
+    public function updatedFormUsersId(): void
+    {
+        $this->consultarActuaciones();
+    }
 
+    public function updatedFormFechaInicio(): void
+    {
+        $this->consultarActuaciones();
+    }
+
+    public function updatedFormFechaFin(): void
+    {
+        $this->consultarActuaciones();
+    }
 
     public function save()
     {
-        $this->validate([            
+        $this->validate([
             'form.fechaPago' => 'required|date',
             'form.descripcion' => 'required|string|max:255',
             'form.fechaInicio' => 'required|date',
@@ -89,13 +99,13 @@ class PaymentCreate extends Component
         try {
             DB::transaction(function () {
 
-                $paymentresume = new Paymentresume();
+                $paymentresume = new Paymentresume;
                 $paymentresume->descripcion = $this->form['descripcion'];
                 $paymentresume->user_id = Auth::user()->id;
                 $paymentresume->save();
 
-                $usersQuery = $this->form['users_id'] == 0 
-                    ? User::where('activo', 1)->orderBy('name', 'asc')->get() 
+                $usersQuery = $this->form['users_id'] == 0
+                    ? User::where('activo', 1)->orderBy('name', 'asc')->get()
                     : User::where('id', $this->form['users_id'])->orderBy('name', 'asc')->get();
 
                 foreach ($usersQuery as $user) {
@@ -116,7 +126,7 @@ class PaymentCreate extends Component
 
                     if ($actuaciones->isNotEmpty()) {
                         $payment = Payment::create($paymentData);
-                        
+
                         $totalPagoFinal = 0;
 
                         foreach ($actuaciones as $actuacion) {
@@ -131,8 +141,8 @@ class PaymentCreate extends Component
 
                                 $porcentaje = 1;
                                 if ($actuacion->aplicaporcentaje) {
-                                    $porcentaje = !empty($actuacion->porcentajepersonal) && $actuacion->porcentajepersonal > 0 
-                                        ? $actuacion->porcentajepersonal / 100 
+                                    $porcentaje = ! empty($actuacion->porcentajepersonal) && $actuacion->porcentajepersonal > 0
+                                        ? $actuacion->porcentajepersonal / 100
                                         : ($user->porcentaje > 0 ? $user->porcentaje / 100 : 0);
                                 }
 
@@ -150,27 +160,27 @@ class PaymentCreate extends Component
                                 $totalPagoFinal += $totalActo;
                             }
                         }
-                        $payment->paymentresume_id=$paymentresume->id;
+                        $payment->paymentresume_id = $paymentresume->id;
                         $payment->totalPago = $totalPagoFinal;
                         $payment->save();
                     }
                 }
             });
 
-            Log::info('Payment created successfully.'); 
-            $this->dispatch('notconfirmed');           
+            Log::info('Payment created successfully.');
+            $this->dispatch('notconfirmed');
+
             return redirect()->route('payments.index');
         } catch (\Exception $e) {
-            Log::error('Error creating payment: ', ['error' => $e->getMessage()]);     
-            $this->dispatch('notconfirmed');      
+            Log::error('Error creating payment: ', ['error' => $e->getMessage()]);
+            $this->dispatch('notconfirmed');
+
             return redirect()->route('payments.index');
         }
     }
-
 
     public function render()
     {
         return view('livewire.payments.create', []);
     }
-
 }

@@ -6,6 +6,8 @@
     $user = auth()->user();
     $hasSubscription = $user && $user->subscribed('default');
     $hasLifetime = $user && $user->lifetime_access;
+    $hasCheckoutRoute = \Illuminate\Support\Facades\Route::has('checkout');
+    $hasDonationRoute = \Illuminate\Support\Facades\Route::has('donation');
 @endphp
 
 @if (ConfigHelper::getConfigValue('enablestripe') === 'true')
@@ -49,6 +51,7 @@
 
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
             {{-- Botón Suscripción --}}
+            @if ($hasCheckoutRoute)
             <form method="POST" action="{{ route('checkout') }}">
                 @csrf
                 <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-green-700 w-full sm:w-auto flex items-center justify-center gap-2">
@@ -56,8 +59,10 @@
                     {{ __('Suscribirme por 5€') }}
                 </button>
             </form>
+            @endif
 
             {{-- Botón Donativo --}}
+            @if ($hasDonationRoute)
             <form method="POST" action="{{ route('donation') }}">
                 @csrf
                 <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full sm:w-auto flex items-center justify-center gap-2">
@@ -65,7 +70,14 @@
                     {{ __('Hacer donativo de 10€ o más') }}
                 </button>
             </form>
+            @endif
         </div>
+
+        @if (! $hasCheckoutRoute && ! $hasDonationRoute)
+            <p class="text-sm text-gray-500">
+                {{ __('Las opciones de pago no están disponibles en este momento.') }}
+            </p>
+        @endif
     </div>
     @endif
 </div>

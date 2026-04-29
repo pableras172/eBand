@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -24,7 +25,6 @@ return new class extends Migration
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
 
         $superAdminRole = DB::table('roles')->where('title', 'SuperAdmin')->first();
         $superAdminPermission = DB::table('permissions')->where('title', 'superadmin')->first();
@@ -48,8 +48,8 @@ return new class extends Migration
             'email' => 'superadmin@eband.app',
             'password' => Hash::make('SuperAdminPassword123!'), // Cambia esto por un password seguro
             'observaciones' => 'Usuario para tareas de configuración de la aplicación',
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
-            'email_verified_at'=>now(),
+            'uuid' => (string) Str::uuid(),
+            'email_verified_at' => now(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);

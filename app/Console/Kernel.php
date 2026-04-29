@@ -2,26 +2,41 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Tenancy\CreateTenantCommand;
+use App\Console\Commands\UpdateConfigCache;
+use App\Jobs\SendDailyCommentsNotification;
+use App\Models\Tenant;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use App\Jobs\SendDailyCommentsNotification;
+use Illuminate\Support\Facades\Artisan;
 
 class Kernel extends ConsoleKernel
 {
-
     protected $commands = [
-        \App\Console\Commands\UpdateConfigCache::class,
+        UpdateConfigCache::class,
+        CreateTenantCommand::class,
     ];
 
-    
     /**
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('notificaciones:enviar-actuaciones')->mondays()->at('16:00');
-        $schedule->job(new SendDailyCommentsNotification())->dailyAt('20:00');
-        
+        $schedule->call(function (): void {
+            Tenant::query()->get()->each(function (Tenant $tenant): void {
+                $tenant->run(function (): void {
+                    Artisan::call('notificaciones:enviar-actuaciones');
+                });
+            });
+        })->mondays()->at('16:00');
+
+        $schedule->call(function (): void {
+            Tenant::query()->get()->each(function (Tenant $tenant): void {
+                $tenant->run(function (): void {
+                    dispatch(new SendDailyCommentsNotification);
+                });
+            });
+        })->dailyAt('20:00');
     }
 
     /**
@@ -32,6 +47,6 @@ class Kernel extends ConsoleKernel
         $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
-        
+
     }
 }

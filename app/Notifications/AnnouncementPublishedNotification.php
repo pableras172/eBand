@@ -23,7 +23,7 @@ class AnnouncementPublishedNotification extends Notification
             'announcement_id' => $this->announcement->id,
             'title' => $this->announcement->title,
             'starts_at' => optional($this->announcement->starts_at)->toDateTimeString(),
-            'route' => route('dashboard'),
+            'route' => '/dashboard',
         ];
     }
 }

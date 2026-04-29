@@ -77,7 +77,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
         </svg>
 
-        <a href="{{ route('actuaciones.usuario.anyo', [$usuarioActivo->id, date('Y')]) }}"
+        <a href="{{ \Illuminate\Support\Facades\Route::has('actuaciones.usuario.anyo') ? route('actuaciones.usuario.anyo', [$usuarioActivo->id, date('Y')]) : url('/dashboard') }}"
             class="text-sm sm:text-base font-semibold hover:underline">
             {{ __('Les meves actuacions') }}
         </a>

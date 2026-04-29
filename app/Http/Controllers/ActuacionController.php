@@ -8,18 +8,17 @@ use App\Models\Listas;
 use App\Models\ListasUser;
 use App\Models\Tipoactuacion;
 use App\Models\User;
+use App\Services\TenantOneSignalService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use OneSignal;
 use Symfony\Component\HttpFoundation\Response;
 
 class ActuacionController extends Controller
@@ -214,20 +213,22 @@ class ActuacionController extends Controller
 
             // Formatear la fecha
             $fechaFormateada = Carbon::parse($actuacion->fechaActuacion)->format('d-m-Y');
+            $tenantName = tenant()?->name ?? config('app.banda');
 
             // Enviar notificación OneSignal
-            OneSignal::sendNotificationToSegment(
+            $oneSignalService = new TenantOneSignalService;
+            $oneSignalService->sendNotificationToSegment(
                 Lang::get('messages.new_actuacion_title', [
                     'fecha' => $fechaFormateada,
                     'descripcion' => $actuacion->descripcion,
                 ]),
                 'Active Subscriptions',
-                env('APP_URL').'/listas/actuacion/'.$request->id,
                 null,
                 null,
                 null,
+                url('/listas/actuacion/'.$request->id),
                 Lang::get('messages.notification_subtitle', [
-                    'banda' => config('app.banda'),
+                    'banda' => $tenantName,
                     'poblacion' => $actuacion->contrato->poblacion,
                 ]),
                 Lang::get('messages.view_details')
@@ -310,13 +311,14 @@ class ActuacionController extends Controller
                     ]);
                 }
 
-                OneSignal::sendNotificationToExternalUser(
+                $oneSignalService = new TenantOneSignalService;
+                $oneSignalService->sendNotificationToExternalUser(
                     Lang::get('messages.new_actuacion_title', [
                         'fecha' => $fechaFormateada,
                         'descripcion' => $actuaciones->descripcion,
                     ]),
                     $dest->uuid,
-                    env('APP_URL').'/listas/actuacion/'.$actuaciones->id,
+                    url('/listas/actuacion/'.$actuaciones->id),
                     null,
                     null,
                     null,
@@ -800,6 +802,8 @@ class ActuacionController extends Controller
 
     public function generateICSFile($evento)
     {
+        $tenantName = tenant()?->name ?? config('app.banda', 'eBand');
+
         // Contenido del archivo .ics
         $content = "BEGIN:VCALENDAR\r\n";
         $content .= "VERSION:2.0\r\n";
@@ -809,8 +813,8 @@ class ActuacionController extends Controller
         $content .= 'DTSTAMP;VALUE=DATE-TIME:'.Carbon::now()->format('Ymd\THis')."\r\n"; // Fecha y hora actual
         $content .= 'DTSTART;VALUE=DATE-TIME:'.Carbon::parse($evento->fechaActuacion)->format('Ymd\THis')."\r\n"; // Fecha y hora de inicio del evento
         $content .= 'DTEND;VALUE=DATE-TIME:'.Carbon::parse($evento->fechaActuacion)->format('Ymd\THis')."\r\n"; // Fecha y hora de fin del evento
-        $content .= 'SUMMARY:'.Config::get('app.banda', 'eBand').' - '.$evento->descripcion."\r\n";
-        $content .= 'DESCRIPTION:'.$evento->observaciones.' - '.Config::get('app.url').'/actuacion/'.$evento->id." \r\n";
+        $content .= 'SUMMARY:'.$tenantName.' - '.$evento->descripcion."\r\n";
+        $content .= 'DESCRIPTION:'.$evento->observaciones.' - '.url('/actuacion/'.$evento->id)." \r\n";
         // $content .= "LOCATION:Calle Gandía, 21, 46892, Montaverner\r\n";
         // $content .= "GEO:38.8891800060307;-0.495599999999996\r\n";
         $content .= "END:VEVENT\r\n";

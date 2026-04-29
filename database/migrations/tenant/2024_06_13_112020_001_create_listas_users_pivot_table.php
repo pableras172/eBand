@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('listas_user', function (Blueprint $table) {
-            $table->id();  
+            $table->id();
             $table->foreignId('listas_id')->references('id')->on('listas')->cascadeOnDelete();
             $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->boolean('coche')->default(false);

@@ -2,17 +2,16 @@
 
 namespace App\Jobs;
 
+use App\Models\Comment;
+use App\Services\TenantOneSignalService;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Comment;
-use Carbon\Carbon;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Lang;
-use OneSignal;
+use Illuminate\Support\Facades\Log;
 
 class SendDailyCommentsNotification implements ShouldQueue
 {
@@ -36,24 +35,27 @@ class SendDailyCommentsNotification implements ShouldQueue
 
         if ($commentsCount > 0) {
             try {
+                $tenantName = tenant()?->name ?? config('app.banda');
+
                 // Enviar notificación a todos los usuarios activos
-                OneSignal::sendNotificationToSegment(
-                    Lang::get('messages.daily_comments_title', ['name' => config('app.banda')]),
-                    "Active Subscriptions",
-                    env('APP_URL').'/actuacion',
+                $oneSignalService = new TenantOneSignalService;
+                $oneSignalService->sendNotificationToSegment(
+                    Lang::get('messages.daily_comments_title', ['name' => $tenantName]),
+                    'Active Subscriptions',
                     null,
                     null,
                     null,
+                    url('/actuacion'),
                     Lang::get('messages.daily_comments_subtitle', ['count' => $commentsCount]),
                     Lang::get('messages.view_details')
                 );
 
                 Log::info("✅ Notificación enviada: $commentsCount nuevos comentarios en las últimas 24h.");
             } catch (\Exception $e) {
-                Log::error("❌ Error al enviar la notificación de comentarios: " . $e->getMessage());
+                Log::error('❌ Error al enviar la notificación de comentarios: '.$e->getMessage());
             }
         } else {
-            Log::info("🔍 No hay nuevos comentarios en las últimas 24 horas.");
+            Log::info('🔍 No hay nuevos comentarios en las últimas 24 horas.');
         }
     }
 }

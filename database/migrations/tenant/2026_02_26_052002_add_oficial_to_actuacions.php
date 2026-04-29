@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventory_categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre')->unique();
-            $table->text('descripcion')->nullable();
-            $table->timestamps();
+        Schema::table('actuacions', function (Blueprint $table) {
+            $table->boolean('oficial')->default(false);
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventory_categories');
+        Schema::table('actuacions', function (Blueprint $table) {
+            $table->dropColumn('oficial');
+        });
     }
 };

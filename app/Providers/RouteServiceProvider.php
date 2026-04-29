@@ -33,8 +33,21 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
+            $centralDomains = config('tenancy.central_domains', []);
+
+            if ($centralDomains !== []) {
+                $escapedDomains = array_map(
+                    static fn (string $domain): string => preg_quote($domain, '/'),
+                    $centralDomains,
+                );
+
+                Route::middleware('web')
+                    ->domain('{central_domain}')
+                    ->where([
+                        'central_domain' => implode('|', $escapedDomains),
+                    ])
+                    ->group(base_path('routes/central.php'));
+            }
         });
     }
 }

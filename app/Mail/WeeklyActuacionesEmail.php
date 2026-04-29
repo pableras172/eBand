@@ -3,8 +3,8 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -15,8 +15,11 @@ class WeeklyActuacionesEmail extends Mailable
     use Queueable, SerializesModels;
 
     public $actuaciones;
+
     public $fechaInicio;
+
     public $fechaFin;
+
     public $userName;
 
     /**
@@ -35,8 +38,10 @@ class WeeklyActuacionesEmail extends Mailable
      */
     public function envelope(): Envelope
     {
+        $tenantName = tenant()?->name ?? config('app.banda');
+
         return new Envelope(
-            subject: '📅 Planning semanal  - ' . config('app.banda')
+            subject: '📅 Planning semanal  - '.$tenantName
         );
     }
 
@@ -53,7 +58,7 @@ class WeeklyActuacionesEmail extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

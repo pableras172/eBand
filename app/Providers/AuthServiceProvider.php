@@ -62,7 +62,7 @@ class AuthServiceProvider extends ServiceProvider
         // 🔐 Sobrescribir el email de restablecimiento de contraseña
         ResetPassword::toMailUsing(function ($notifiable, $token) {
             // Generar la URL correcta
-            $emailResetUrl = url("/reset-password/{$token}?email=".urlencode($notifiable->getEmailForPasswordReset()));
+            $emailResetUrl = tenant_url("/reset-password/{$token}?email=".urlencode($notifiable->getEmailForPasswordReset()));
 
             return (new MailMessage)
                 ->subject('🔒 Restablecimiento de contraseña')

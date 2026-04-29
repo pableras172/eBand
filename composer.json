@@ -21,7 +21,8 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.0",
-        "maatwebsite/excel": "^3.1"
+        "maatwebsite/excel": "^3.1",
+        "stancl/tenancy": "^3.9"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
@@ -33,6 +34,9 @@
         "spatie/laravel-ignition": "^2.9"
     },
     "autoload": {
+        "files": [
+            "app/Helpers/TenantHelpers.php"
+        ],
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
