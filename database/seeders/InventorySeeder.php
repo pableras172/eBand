@@ -15,8 +15,12 @@ class InventorySeeder extends Seeder
      */
     public function run(): void
     {
-        // Create categories
-        $categories = InventoryCategory::factory(5)->create();
+        // Use existing categories from database
+        $categories = InventoryCategory::query()->get();
+
+        if ($categories->isEmpty()) {
+            return;
+        }
 
         // Create 15 inventory items
         $items = InventoryItem::factory(15)
