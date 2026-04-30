@@ -249,7 +249,7 @@
             position: absolute;
             inset: 0;
             background:
-                linear-gradient(180deg, rgba(255, 250, 242, 0.185), rgba(247, 242, 232, 0.205)),
+                linear-gradient(180deg, rgba(255, 250, 242, 0.712), rgba(247, 242, 232, 0.685)),
                 url('{{ URL::to('/') }}/fondo_eband_head.jpg') center/cover no-repeat;
             filter: blur(8px);
             transform: scale(1.08);
