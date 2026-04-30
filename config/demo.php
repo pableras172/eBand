@@ -7,5 +7,6 @@ return [
     'read_only_allowed_routes' => [
         // Add route names here if some write actions should be allowed in demo mode.
         'logout',
+        'demo.info.store',
     ],
 ];

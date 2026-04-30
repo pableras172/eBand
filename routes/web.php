@@ -5,6 +5,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContratosController;
 use App\Http\Controllers\DemoAccessController;
+use App\Http\Controllers\DemoInformationRequestController;
 use App\Http\Controllers\InventoryExportController;
 use App\Http\Controllers\ListaController;
 use App\Http\Controllers\ListasUsersController;
@@ -153,6 +154,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/dashboard', function () {
             return view('dashboard');
         })->name('dashboard');
+
+        Route::get('/demo/informacion', [DemoInformationRequestController::class, 'create'])->name('demo.info.create');
+        Route::post('/demo/informacion', [DemoInformationRequestController::class, 'store'])->name('demo.info.store');
 
         Route::resource('tasks', TasksController::class);
         // Route::resource('users', \App\Http\Controllers\UsersController::class);
