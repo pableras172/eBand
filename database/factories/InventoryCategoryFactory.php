@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class InventoryCategoryFactory extends Factory
 {
+    protected $model = InventoryCategory::class;
+
     /**
      * Define the model's default state.
      *
@@ -20,8 +22,8 @@ class InventoryCategoryFactory extends Factory
         $categorias = ['Instrumentos', 'Atriles', 'Muebles', 'Equipamiento', 'Herramientas', 'Electrónica'];
 
         return [
-            'nombre' => $this->faker->unique()->randomElement($categorias),
-            'descripcion' => $this->faker->sentence(),
+            'nombre' => fake()->unique()->randomElement($categorias),
+            'descripcion' => fake()->sentence(),
         ];
     }
 }
