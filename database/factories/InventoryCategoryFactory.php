@@ -22,8 +22,8 @@ class InventoryCategoryFactory extends Factory
         $categorias = ['Instrumentos', 'Atriles', 'Muebles', 'Equipamiento', 'Herramientas', 'Electrónica'];
 
         return [
-            'nombre' => fake()->unique()->randomElement($categorias),
-            'descripcion' => fake()->sentence(),
+            'nombre' => $this->faker->unique()->randomElement($categorias),
+            'descripcion' => $this->faker->sentence(),
         ];
     }
 }

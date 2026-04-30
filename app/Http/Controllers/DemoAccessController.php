@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\DemoInterestAdminNotification;
 use App\Mail\DemoInterestThankYou;
 use App\Models\DemoAccessLead;
 use App\Models\User;
@@ -52,6 +53,16 @@ class DemoAccessController extends Controller
         $demoUser->roles()->sync([1]);
 
         Mail::to($validated['email'])->send(new DemoInterestThankYou($validated['nombre']));
+
+        $adminEmail = config('mail.mail_admin');
+        if (is_string($adminEmail) && filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+            Mail::to($adminEmail)->send(new DemoInterestAdminNotification(
+                nombreCompleto: $validated['nombre'].' '.$validated['apellidos'],
+                email: $validated['email'],
+                leadId: $lead->id,
+                ipAddress: $lead->ip_address,
+            ));
+        }
 
         Auth::login($demoUser);
         $request->session()->regenerate();
