@@ -249,7 +249,7 @@
             position: absolute;
             inset: 0;
             background:
-                linear-gradient(180deg, rgba(255,250,242,0.72), rgba(247,242,232,0.9)),
+                linear-gradient(180deg, rgba(255, 250, 242, 0.185), rgba(247, 242, 232, 0.205)),
                 url('{{ URL::to('/') }}/fondo_eband_head.jpg') center/cover no-repeat;
             filter: blur(8px);
             transform: scale(1.08);
@@ -528,9 +528,9 @@
             position: absolute;
             inset: 0;
             background:
-                linear-gradient(180deg, rgba(239,230,214,0.84), rgba(239,230,214,0.92)),
+                linear-gradient(180deg, rgba(239, 230, 214, 0), rgba(239, 230, 214, 0)),
                 url('{{ URL::to('/') }}/ensayo.jpg') center/cover no-repeat;
-            filter: blur(10px);
+            filter: blur(8px);
             transform: scale(1.06);
             opacity: 0.6;
             z-index: 0;
@@ -911,9 +911,9 @@
             position: absolute;
             inset: 0;
             background:
-                linear-gradient(180deg, rgba(255,250,242,0.74), rgba(255,250,242,0.88)),
+                linear-gradient(180deg, rgba(255, 250, 242, 0), rgba(255, 250, 242, 0)),
                 url('{{ URL::to('/') }}/partitura.jpg') center/cover no-repeat;
-            filter: blur(12px);
+            filter: blur(5px);
             transform: scale(1.08);
             opacity: 0.75;
             z-index: 0;
