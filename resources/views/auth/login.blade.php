@@ -52,47 +52,53 @@
                         </div>
                     @endif
 
-                    <div class="mb-5 flex items-center justify-between rounded-xl border border-slate-200 bg-white/80 px-3 py-2 backdrop-blur-sm">
-                        <p class="text-sm font-medium text-slate-700">{{ __('¿Aún no tienes cuenta?') }}</p>
-                        <a class="rounded-md text-sm font-semibold text-cyan-700 underline decoration-cyan-300 underline-offset-4 transition hover:text-cyan-900 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-white"
-                            href="{{ route('register') }}">
-                            {{ __('Nuevo usuario?') }}
-                        </a>
-                    </div>
+                    @php
+                        $showAdminLoginForm = ! config('demo.enabled') || request()->boolean('allowAdminAcces');
+                    @endphp
 
-                    <form method="POST" action="{{ route('login') }}" class="space-y-4">
-                        @csrf
-
-                        <div>
-                            <x-label for="email" class="text-sm font-semibold text-slate-700" value="{{ __('auth.email') }}" />
-                            <x-input id="email" class="mt-1 block w-full rounded-xl border-slate-300 bg-white px-3 py-3 text-slate-900 placeholder:text-slate-400 focus:border-cyan-400 focus:ring-cyan-400" type="email" name="email" :value="old('email')"
-                                required autofocus autocomplete="username" />
+                    @if ($showAdminLoginForm)
+                        <div class="mb-5 flex items-center justify-between rounded-xl border border-slate-200 bg-white/80 px-3 py-2 backdrop-blur-sm">
+                            <p class="text-sm font-medium text-slate-700">{{ __('¿Aún no tienes cuenta?') }}</p>
+                            <a class="rounded-md text-sm font-semibold text-cyan-700 underline decoration-cyan-300 underline-offset-4 transition hover:text-cyan-900 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-white"
+                                href="{{ route('register') }}">
+                                {{ __('Nuevo usuario?') }}
+                            </a>
                         </div>
 
-                        <div>
-                            <x-label for="password" class="text-sm font-semibold text-slate-700" value="{{ __('auth.contrase') }}" />
-                            <x-input id="password" class="mt-1 block w-full rounded-xl border-slate-300 bg-white px-3 py-3 text-slate-900 placeholder:text-slate-400 focus:border-cyan-400 focus:ring-cyan-400" type="password" name="password" required
-                                autocomplete="current-password" />
-                        </div>
+                        <form method="POST" action="{{ route('login') }}" class="space-y-4">
+                            @csrf
 
-                        <div class="flex items-center justify-between gap-3 pt-1">
-                            <label for="remember_me" class="flex items-center">
-                                <x-checkbox id="remember_me" name="remember" />
-                                <span class="ms-2 text-sm text-slate-700">{{ __('auth.recordarme') }}</span>
-                            </label>
+                            <div>
+                                <x-label for="email" class="text-sm font-semibold text-slate-700" value="{{ __('auth.email') }}" />
+                                <x-input id="email" class="mt-1 block w-full rounded-xl border-slate-300 bg-white px-3 py-3 text-slate-900 placeholder:text-slate-400 focus:border-cyan-400 focus:ring-cyan-400" type="email" name="email" :value="old('email')"
+                                    required autofocus autocomplete="username" />
+                            </div>
 
-                            @if (Route::has('password.request'))
-                                <a class="text-sm font-medium text-slate-700 underline decoration-slate-300 underline-offset-4 transition hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-white"
-                                    href="{{ route('password.request') }}">
-                                    {{ __('auth.olvidado') }}
-                                </a>
-                            @endif
-                        </div>
+                            <div>
+                                <x-label for="password" class="text-sm font-semibold text-slate-700" value="{{ __('auth.contrase') }}" />
+                                <x-input id="password" class="mt-1 block w-full rounded-xl border-slate-300 bg-white px-3 py-3 text-slate-900 placeholder:text-slate-400 focus:border-cyan-400 focus:ring-cyan-400" type="password" name="password" required
+                                    autocomplete="current-password" />
+                            </div>
 
-                        <x-button class="w-full justify-center rounded-xl bg-cyan-500 px-4 py-3 text-sm font-black tracking-wide text-slate-900 shadow-lg shadow-cyan-500/25 transition hover:bg-cyan-400 focus:ring-cyan-300">
-                            {{ __('Log in') }}
-                        </x-button>
-                    </form>
+                            <div class="flex items-center justify-between gap-3 pt-1">
+                                <label for="remember_me" class="flex items-center">
+                                    <x-checkbox id="remember_me" name="remember" />
+                                    <span class="ms-2 text-sm text-slate-700">{{ __('auth.recordarme') }}</span>
+                                </label>
+
+                                @if (Route::has('password.request'))
+                                    <a class="text-sm font-medium text-slate-700 underline decoration-slate-300 underline-offset-4 transition hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-white"
+                                        href="{{ route('password.request') }}">
+                                        {{ __('auth.olvidado') }}
+                                    </a>
+                                @endif
+                            </div>
+
+                            <x-button class="w-full justify-center rounded-xl bg-cyan-500 px-4 py-3 text-sm font-black tracking-wide text-slate-900 shadow-lg shadow-cyan-500/25 transition hover:bg-cyan-400 focus:ring-cyan-300">
+                                {{ __('Log in') }}
+                            </x-button>
+                        </form>
+                    @endif
 
                     @if (config('demo.enabled'))
                         <div class="my-6 flex items-center gap-3">
