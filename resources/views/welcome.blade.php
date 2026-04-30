@@ -1352,9 +1352,8 @@
                 <div class="feat-card">
                     <div class="feat-icon">📋</div>
                     <div class="feat-title">Contratos y Documentos</div>
-                    <div class="feat-desc">Genera contratos de actuación en PDF automáticamente. Almacena y consulta el historial de documentos desde cualquier lugar.</div>
+                    <div class="feat-desc">Genera contratos de actuación. Consulta el historial de contratos desde la administración.</div>
                     <div class="feat-tags">
-                        <span class="feat-tag">PDF</span>
                         <span class="feat-tag">Automático</span>
                     </div>
                 </div>
@@ -1372,11 +1371,11 @@
 
                 <div class="feat-card">
                     <div class="feat-icon">🎁</div>
-                    <div class="feat-title">Sistema de Recompensas</div>
-                    <div class="feat-desc">Incentiva la participación y el compromiso de los miembros con un sistema de puntos y recompensas configurable por la directiva.</div>
+                    <div class="feat-title">Sistema de anuncios</div>
+                    <div class="feat-desc">Crea anuncios para que cuando los usuarios accedan a la app estén informados de novedades y eventos importantes.</div>
                     <div class="feat-tags">
-                        <span class="feat-tag">Puntos</span>
-                        <span class="feat-tag">Motivación</span>
+                        <span class="feat-tag">Anuncios</span>
+                        <span class="feat-tag">Novedades</span>
                     </div>
                 </div>
             </div>
@@ -1423,12 +1422,21 @@
             <div class="section-header reveal">
                 <div class="section-label">Interfaz</div>
                 <h2 class="section-title">Ve eBand en acción</h2>
-                <p class="section-sub">Diseño responsive con Tailwind CSS y componentes interactivos con Livewire.</p>
+                <p class="section-sub">Diseño responsive para que puedas trabajar tanto en dispositivos móviles como en escritorio.</p>
             </div>
         </div>
 
         <div class="section-inner">
             <div class="gallery-scroll reveal">
+                <div class="gallery-item">
+                    <div class="gallery-img-wrap">
+                        <img src="{{ URL::to('/') }}/galeria/anuncios.png" alt="Anuncios" loading="lazy">
+                    </div>
+                    <div class="gallery-caption">
+                        <h4>Anuncios a usuarios</h4>
+                        <p>Anuncios para mantener a los miembros informados sobre novedades y eventos importantes.</p>
+                    </div>
+                </div>
                 <div class="gallery-item">
                     <div class="gallery-img-wrap">
                         <img src="{{ URL::to('/') }}/galeria/tablero_resumen.png" alt="Tablero principal" loading="lazy">
@@ -1465,6 +1473,24 @@
                         <p>Listado completo con filtros y estadísticas.</p>
                     </div>
                 </div>
+                <div class="gallery-item">
+                    <div class="gallery-img-wrap">
+                        <img src="{{ URL::to('/') }}/galeria/inventario.png" alt="Resumen de actuaciones" loading="lazy">
+                    </div>
+                    <div class="gallery-caption">
+                        <h4>Gestión de Inventario</h4>
+                        <p>Controla en todo momento el inventario de tu banda y los músicos que tienen asignados los instrumentos.</p>
+                    </div>
+                </div> 
+                <div class="gallery-item">
+                    <div class="gallery-img-wrap">
+                        <img src="{{ URL::to('/') }}/galeria/sugerencias.png" alt="Configuración flexible" loading="lazy">
+                    </div>
+                    <div class="gallery-caption">
+                        <h4>Buzón de sugerencias</h4>
+                        <p>Escucha a los músicos.</p>
+                    </div>
+                </div>               
                 <div class="gallery-item">
                     <div class="gallery-img-wrap">
                         <img src="{{ URL::to('/') }}/galeria/personalizar_actuaciones.png" alt="Configuración flexible" loading="lazy">
