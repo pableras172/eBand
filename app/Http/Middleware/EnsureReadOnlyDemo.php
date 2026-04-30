@@ -21,9 +21,11 @@ class EnsureReadOnlyDemo
 
         $allowedRoutes = config('demo.read_only_allowed_routes', []);
         $routeName = $request->route()?->getName();
+        $isDemoInformationRequest = $routeName === 'demo.info.store';
 
         if ($request->session()->get('demo_mode')
             && ! in_array($request->method(), ['GET', 'HEAD', 'OPTIONS'], true)
+            && ! $isDemoInformationRequest
             && ! in_array($routeName, $allowedRoutes, true)) {
             if ($request->expectsJson()) {
                 abort(403, 'Modo demo: operacion no permitida en solo lectura.');
