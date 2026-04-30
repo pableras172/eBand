@@ -40,6 +40,12 @@
 
                     <x-validation-errors class="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-rose-700" />
 
+                    @if ($errors->demoAccess->any())
+                        <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+                            {{ $errors->demoAccess->first() }}
+                        </div>
+                    @endif
+
                     @if (session('status'))
                         <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">
                             {{ session('status') }}
@@ -87,8 +93,55 @@
                             {{ __('Log in') }}
                         </x-button>
                     </form>
+
+                    @if (config('demo.enabled'))
+                        <div class="my-6 flex items-center gap-3">
+                            <div class="h-px flex-1 bg-slate-200"></div>
+                            <span class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Demo</span>
+                            <div class="h-px flex-1 bg-slate-200"></div>
+                        </div>
+
+                        <form method="POST" action="{{ route('demo.access') }}" class="space-y-3 rounded-2xl border border-cyan-200 bg-cyan-50/60 p-4">
+                            @csrf
+
+                            <p class="text-sm font-semibold text-slate-800">{{ __('Solicita acceso inmediato a la demo') }}</p>
+                            <p class="text-xs text-slate-600">{{ __('Te abrimos la app al instante con acceso completo del entorno de pruebas y te enviaremos un email de seguimiento.') }}</p>
+
+                            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <div>
+                                    <x-label for="demo_nombre" class="text-sm font-semibold text-slate-700" value="Nombre" />
+                                    <x-input id="demo_nombre" class="mt-1 block w-full rounded-xl border-slate-300 bg-white px-3 py-2 text-slate-900" type="text" name="nombre"
+                                        :value="old('nombre')" required autocomplete="given-name" />
+                                </div>
+
+                                <div>
+                                    <x-label for="demo_apellidos" class="text-sm font-semibold text-slate-700" value="Apellidos" />
+                                    <x-input id="demo_apellidos" class="mt-1 block w-full rounded-xl border-slate-300 bg-white px-3 py-2 text-slate-900" type="text" name="apellidos"
+                                        :value="old('apellidos')" required autocomplete="family-name" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <x-label for="demo_email" class="text-sm font-semibold text-slate-700" value="Email" />
+                                <x-input id="demo_email" class="mt-1 block w-full rounded-xl border-slate-300 bg-white px-3 py-2 text-slate-900" type="email" name="email"
+                                    :value="old('email')" required autocomplete="email" />
+                            </div>
+
+                            <div class="flex justify-center">
+                                {!! NoCaptcha::display() !!}
+                            </div>
+
+                            <x-button class="w-full justify-center rounded-xl bg-slate-900 px-4 py-3 text-sm font-black tracking-wide text-white transition hover:bg-slate-700">
+                                {{ __('Acceder a la demo ahora') }}
+                            </x-button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>
     </section>
 </x-guest-layout>
+
+@if (config('demo.enabled'))
+    {!! NoCaptcha::renderJs() !!}
+@endif

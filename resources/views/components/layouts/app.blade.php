@@ -17,6 +17,12 @@
     <body class="font-sans antialiased">
         <x-banner />
 
+        @if (session('demo_mode'))
+            <div class="border-b border-amber-300 bg-amber-100 px-4 py-2 text-center text-sm font-semibold text-amber-900">
+                Modo demo activo: estas en un entorno de pruebas con acceso completo.
+            </div>
+        @endif
+
         <div class="min-h-screen bg-gray-100">
             @livewire('navigation-menu')
 

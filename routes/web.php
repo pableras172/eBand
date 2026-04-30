@@ -4,6 +4,7 @@ use App\Http\Controllers\ActuacionController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContratosController;
+use App\Http\Controllers\DemoAccessController;
 use App\Http\Controllers\InventoryExportController;
 use App\Http\Controllers\ListaController;
 use App\Http\Controllers\ListasUsersController;
@@ -72,8 +73,11 @@ Route::get('/', function () {
 
 // Ruta pública para el formulario de contacto
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+Route::post('/demo-access', [DemoAccessController::class, 'store'])
+    ->middleware(['guest', 'throttle:demo-access'])
+    ->name('demo.access');
 
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'can:admin'])->group(function () {
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'demo.readonly', 'can:admin'])->group(function () {
     Route::resource('contratos', ListadoContratos::class);
     Route::get('/contratos/year/{year}', [ListadoContratos::class, 'contratosPorAnyo'])->name('contratos.anyo');
     // Nueva ruta para duplicar contrato
@@ -118,7 +122,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('/inventory/export/pdf', [InventoryExportController::class, 'pdf'])->name('inventory.export.pdf');
 });
 
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'demo.readonly'])->group(
     function () {
 
         // Suggestions - available for all authenticated users

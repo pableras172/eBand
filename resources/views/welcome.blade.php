@@ -41,19 +41,19 @@
         }
 
         :root {
-            --bg-void:      #07090f;
-            --bg-deep:      #0b0f1c;
-            --bg-surface:   #111827;
-            --bg-card:      #141e32;
-            --border-dim:   rgba(255,255,255,0.07);
-            --border-glow:  rgba(245,158,11,0.35);
-            --gold:         #f59e0b;
-            --gold-soft:    #fbbf24;
-            --gold-dim:     rgba(245,158,11,0.15);
-            --coral:        #fb7185;
-            --text-primary: #f0f4ff;
-            --text-secondary: #8892b0;
-            --text-muted:   #4a5568;
+            --bg-void:      #f7f2e8;
+            --bg-deep:      #efe6d6;
+            --bg-surface:   #fffaf2;
+            --bg-card:      rgba(255,250,242,0.86);
+            --border-dim:   rgba(87, 68, 45, 0.12);
+            --border-glow:  rgba(217,119,6,0.28);
+            --gold:         #d97706;
+            --gold-soft:    #f59e0b;
+            --gold-dim:     rgba(217,119,6,0.10);
+            --coral:        #e76f51;
+            --text-primary: #1f2937;
+            --text-secondary: #5f6c7b;
+            --text-muted:   #8b7359;
             --nav-h:        72px;
         }
 
@@ -63,7 +63,9 @@
 
         body {
             font-family: 'DM Sans', system-ui, sans-serif;
-            background: var(--bg-void);
+            background:
+                radial-gradient(circle at top left, rgba(245,158,11,0.16), transparent 28%),
+                linear-gradient(180deg, #fbf7f0 0%, #f7f2e8 48%, #f1e9dc 100%);
             color: var(--text-primary);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
@@ -125,7 +127,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 5%;
-            background: rgba(7,9,15,0.72);
+            background: rgba(255,250,242,0.78);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
             border-bottom: 1px solid var(--border-dim);
@@ -185,15 +187,15 @@
         }
 
         .btn-ghost {
-            background: transparent;
-            color: var(--text-secondary);
+            background: rgba(255,255,255,0.35);
+            color: var(--text-primary);
             border-color: var(--border-dim);
         }
 
         .btn-ghost:hover {
             color: var(--text-primary);
-            border-color: rgba(255,255,255,0.18);
-            background: rgba(255,255,255,0.04);
+            border-color: rgba(217,119,6,0.22);
+            background: rgba(255,255,255,0.72);
         }
 
         .btn-gold {
@@ -239,6 +241,28 @@
             text-align: center;
             padding: calc(var(--nav-h) + 4rem) 5% 6rem;
             overflow: hidden;
+            isolation: isolate;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, rgba(255,250,242,0.72), rgba(247,242,232,0.9)),
+                url('{{ URL::to('/') }}/fondo_eband_head.jpg') center/cover no-repeat;
+            filter: blur(8px);
+            transform: scale(1.08);
+            opacity: 0.78;
+            z-index: 0;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(245,158,11,0.05));
+            z-index: 0;
         }
 
         /* Breathing ambient orb — the heart of the experience */
@@ -251,9 +275,9 @@
             transform: translate(-50%, -50%);
             border-radius: 50%;
             background: radial-gradient(circle at center,
-                rgba(245,158,11,0.28) 0%,
-                rgba(251,191,36,0.12) 30%,
-                rgba(245,158,11,0.04) 60%,
+                rgba(245,158,11,0.16) 0%,
+                rgba(251,191,36,0.10) 30%,
+                rgba(245,158,11,0.03) 60%,
                 transparent 75%
             );
             animation: breathe 7s ease-in-out infinite;
@@ -270,7 +294,7 @@
             transform: translate(-50%, -50%);
             border-radius: 50%;
             background: radial-gradient(circle at center,
-                rgba(251,191,36,0.06) 0%,
+                rgba(251,191,36,0.08) 0%,
                 transparent 65%
             );
             animation: breathe-slow 9s ease-in-out infinite;
@@ -308,8 +332,8 @@
             gap: 8px;
             padding: 6px 14px;
             border-radius: 100px;
-            background: rgba(245,158,11,0.1);
-            border: 1px solid rgba(245,158,11,0.25);
+            background: rgba(255,250,242,0.72);
+            border: 1px solid rgba(217,119,6,0.22);
             font-size: 0.8rem;
             font-weight: 500;
             color: var(--gold-soft);
@@ -428,7 +452,7 @@
         }
 
         .stat-item:hover {
-            background: rgba(245,158,11,0.04);
+            background: rgba(245,158,11,0.06);
         }
 
         .stat-num {
@@ -495,6 +519,26 @@
            ============================= */
         .features-bg {
             background: var(--bg-deep);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .features-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, rgba(239,230,214,0.84), rgba(239,230,214,0.92)),
+                url('{{ URL::to('/') }}/ensayo.jpg') center/cover no-repeat;
+            filter: blur(10px);
+            transform: scale(1.06);
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        .features-bg .section-inner {
+            position: relative;
+            z-index: 1;
         }
 
         .features-grid {
@@ -509,6 +553,7 @@
 
         .feat-card {
             background: var(--bg-card);
+            backdrop-filter: blur(10px);
             padding: 2rem 2rem 2.2rem;
             transition: background 0.25s ease;
             position: relative;
@@ -526,7 +571,7 @@
         }
 
         .feat-card:hover {
-            background: #192035;
+            background: rgba(255,248,238,0.96);
         }
 
         .feat-card:hover::before {
@@ -742,12 +787,13 @@
 
         .bento-cell {
             background: var(--bg-card);
+            backdrop-filter: blur(10px);
             padding: 2rem;
             transition: background 0.2s ease;
         }
 
         .bento-cell:hover {
-            background: #192035;
+            background: rgba(255,248,238,0.96);
         }
 
         .bento-cell.wide {
@@ -857,6 +903,20 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            isolation: isolate;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, rgba(255,250,242,0.74), rgba(255,250,242,0.88)),
+                url('{{ URL::to('/') }}/partitura.jpg') center/cover no-repeat;
+            filter: blur(12px);
+            transform: scale(1.08);
+            opacity: 0.75;
+            z-index: 0;
         }
 
         .cta-glow {
@@ -867,7 +927,7 @@
             width: 600px;
             height: 600px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(245,158,11,0.10) 0%, transparent 70%);
             pointer-events: none;
             animation: breathe 8s ease-in-out infinite;
         }
@@ -962,6 +1022,7 @@
 
         .contact-form {
             background: var(--bg-card);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--border-dim);
             border-radius: 16px;
             padding: 2.5rem;
@@ -995,7 +1056,7 @@
         .form-textarea {
             width: 100%;
             padding: 11px 14px;
-            background: var(--bg-surface);
+            background: rgba(255,255,255,0.72);
             border: 1px solid var(--border-dim);
             border-radius: 8px;
             color: var(--text-primary);
@@ -1038,7 +1099,7 @@
         .form-alert-success {
             background: rgba(52, 211, 153, 0.1);
             border: 1px solid rgba(52, 211, 153, 0.25);
-            color: #6ee7b7;
+            color: #047857;
         }
 
         .form-alert-error {
@@ -1174,7 +1235,6 @@
                 <a href="{{ route('dashboard') }}" class="btn btn-gold">Ir al dashboard</a>
             @else
                 <a href="{{ route('login') }}" class="btn btn-ghost">Iniciar sesión</a>
-                <a href="{{ route('register') }}" class="btn btn-gold">Crear cuenta</a>
             @endauth
         </div>
     </nav>
@@ -1201,18 +1261,18 @@
         <div class="hero-content">
             <div class="hero-badge">
                 <span class="hero-badge-dot"></span>
-                Sistema de Gestión Musical
+                Hecho para bandas que quieren ir tranquilas
             </div>
             <h1 class="hero-headline">
-                La sala de control<br>de <em>tu banda</em>
+                Menos caos, mas musica<br>para <em>tu banda</em>
             </h1>
             <p class="hero-sub">
-                Ahorra tiempo en las gestiones y tenlo todo bajo control.
-                Actuaciones, contratos, miembros e inventario,
-                en un solo lugar y desde cualquier dispositivo.
+                eBand te ayuda a organizar actuaciones, contratos, miembros e inventario
+                sin hojas sueltas, sin mensajes perdidos y sin complicarte el dia.
+                Todo mas claro, mas cercano y accesible desde cualquier dispositivo.
             </p>
             <div class="hero-actions">
-                <a href="{{ route('register') }}" class="btn btn-gold btn-lg">Comenzar gratis</a>
+                <a href="{{ route('login') }}" class="btn btn-gold btn-lg">Empezar la demo</a>
                 <a href="#features" class="btn btn-gold-outline btn-lg">Ver características</a>
             </div>
         </div>
@@ -1252,8 +1312,8 @@
         <div class="section-inner">
             <div class="section-header reveal">
                 <div class="section-label">Características</div>
-                <h2 class="section-title">Todo lo que tu banda necesita</h2>
-                <p class="section-sub">Herramientas diseñadas específicamente para la realidad de las bandas de música.</p>
+                <h2 class="section-title">Todo lo que necesitas para llevar la banda con calma</h2>
+                <p class="section-sub">Herramientas pensadas para el dia a dia real de ensayos, conciertos, papeleo y coordinacion entre personas.</p>
             </div>
 
             <div class="features-grid reveal">
@@ -1515,11 +1575,10 @@
         <div class="cta-glow" aria-hidden="true"></div>
         <div style="position:relative; z-index:2;">
             <div class="section-label" style="text-align:center; margin-bottom:1rem;">¿Listo?</div>
-            <h2 class="section-title" style="text-align:center;">Tu banda merece una<br><em style="font-style:normal; color:var(--gold);">gestión a su altura</em></h2>
-            <p class="section-sub" style="text-align:center; margin-top:0.5rem;">Únete a las bandas que ya usan eBand para organizarse mejor, ensayar mejor y actuar con tranquilidad.</p>
-            <div class="cta-actions" style="margin-top:2.5rem;">
-                <a href="{{ route('register') }}" class="btn btn-gold btn-lg">Crear cuenta gratis</a>
-                <a href="{{ route('login') }}" class="btn btn-ghost btn-lg">Ya tengo cuenta</a>
+            <h2 class="section-title" style="text-align:center;">Tu banda merece una<br><em style="font-style:normal; color:var(--gold);">gestion mas sencilla y humana</em></h2>
+            <p class="section-sub" style="text-align:center; margin-top:0.5rem;">Prueba eBand y descubre una forma mas clara de coordinar a tu gente, preparar actuaciones y tener todo a mano.</p>
+            <div class="cta-actions" style="margin-top:2.5rem;">                
+                <a href="{{ route('login') }}" class="btn btn-ghost btn-lg">Empezar la demo</a>
             </div>
         </div>
     </section>
@@ -1532,28 +1591,28 @@
             <div class="contact-grid">
                 <div class="reveal">
                     <div class="section-label">Contacto</div>
-                    <h2 class="contact-info-title">¿Tienes preguntas?<br>Estamos aquí</h2>
-                    <p class="contact-info-desc">Cuéntanos sobre tu banda y te explicamos cómo eBand puede ayudarte a organizarla mejor desde el primer día.</p>
+                    <h2 class="contact-info-title">Hablamos cuando quieras,<br>sin rodeos</h2>
+                    <p class="contact-info-desc">Cuéntanos como os organizais ahora y te enseñamos de manera cercana como eBand puede encajar en vuestra banda desde el primer dia.</p>
 
                     <div class="contact-benefit">
                         <div class="contact-benefit-icon">⚡</div>
                         <div class="contact-benefit-text">
                             <strong>Respuesta rápida</strong>
-                            <span>Te respondemos en menos de 24h</span>
+                            <span>Te respondemos pronto y con una propuesta clara</span>
                         </div>
                     </div>
                     <div class="contact-benefit">
                         <div class="contact-benefit-icon">🎯</div>
                         <div class="contact-benefit-text">
                             <strong>Asesoramiento personalizado</strong>
-                            <span>Adaptamos eBand a las necesidades de tu banda</span>
+                            <span>Te enseñamos lo que de verdad os puede ahorrar tiempo</span>
                         </div>
                     </div>
                     <div class="contact-benefit">
                         <div class="contact-benefit-icon">🎁</div>
                         <div class="contact-benefit-text">
                             <strong>Sin compromiso</strong>
-                            <span>Empieza gratis, sin tarjeta de crédito</span>
+                            <span>Puedes probarlo y valorar si encaja con vosotros</span>
                         </div>
                     </div>
                 </div>
