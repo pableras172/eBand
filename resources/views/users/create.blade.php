@@ -26,7 +26,7 @@
         </div>
     </x-slot>
 
-    <div class="max-w-6xl mx-auto py-6 px-2 pb-28 sm:px-6 lg:px-8 space-y-6">
+    <div class="max-w-6xl mx-auto py-2 px-2 sm:px-2 lg:px-4 space-y-6">
         <form method="post" action="{{ isset($user) ? route('users.update', $user->id) : route('users.store') }}"
             class="space-y-6">
             @csrf

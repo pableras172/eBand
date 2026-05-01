@@ -2,24 +2,28 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+    @php
+        $bandName = $bandSetting?->nombre ?? config('app.banda', config('app.name', 'eBand'));
+        $bandLogo = $bandSetting?->logo ? asset('storage/'.$bandSetting->logo) : url('/imagenes/logo.png');
+    @endphp
 
     <!-- Open Graph (Facebook y WhatsApp) -->
-    <meta property="og:title" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
+    <meta property="og:title" content="{{ $bandName }}" />
     <meta property="og:description"
         content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
-    <meta property="og:image" content="{{ url('/imagenes/logo.png') }}" />
+    <meta property="og:image" content="{{ $bandLogo }}" />
     <meta property="og:url" content="{{ url('/') }}" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
+    <meta property="og:site_name" content="{{ $bandName }}" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
+    <meta name="twitter:title" content="{{ $bandName }}" />
     <meta name="twitter:description"
         content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
-    <meta name="twitter:image" content="{{ url('/imagenes/icons/favicon/logoSmall_192.png') }}" />
+    <meta name="twitter:image" content="{{ $bandLogo }}" />
 
-    <meta name="title" content="{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}" />
+    <meta name="title" content="{{ $bandName }}" />
     <meta name="description"
         content="Facilita la gestió de bandes amb eBand: organitza concerts, assajos i molt més." />
     <link rel="icon" href="{{ url('/imagenes/icons/favicon/logoSmall_192.png') }}" type="image/png">
@@ -28,7 +32,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }} - {{ config('app.banda', '') }}</title>
+    <title>{{ $bandName }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

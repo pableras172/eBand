@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActuacionController;
+use App\Http\Controllers\BandSettingController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContratosController;
@@ -92,6 +93,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::resource('users', UsersController::class);
 
     Route::resource('tipoactuacion', TipoActuacionController::class);
+
+    Route::get('/band-settings', [BandSettingController::class, 'edit'])->name('band-settings.edit');
+    Route::put('/band-settings', [BandSettingController::class, 'update'])->name('band-settings.update');
 
     Route::livewire('/configurations', ConfigurationIndex::class)->name('configurations.index');
     Route::livewire('/configurations/create', ConfigurationCreate::class)->name('configurations.create');
@@ -194,6 +198,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
         Route::get('/api/user-stats', [ActuacionController::class, 'getUserStats'])->name('user.stats');
         Route::get('/api/tipoactuacions', [TipoActuacionController::class, 'getTipos'])->name('tipoactuacions.list');
+        Route::get('/api/instrument-musicians-stats', [UsersController::class, 'getInstrumentMusiciansStats'])->name('instrument.musicians.stats');
 
         Route::resource('actuacion', ActuacionController::class);
         Route::get('/api/ubicaciones-contratos', [ActuacionController::class, 'ubicacionesContratos']);

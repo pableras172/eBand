@@ -9,6 +9,7 @@ use App\Mail\UsersExportMail;
 use App\Models\Instrument;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -241,5 +242,27 @@ class UsersController extends Controller
 
             return response()->json(['error' => 'Error al obtener UUID'], 500);
         }
+    }
+
+    public function getInstrumentMusiciansStats(): JsonResponse
+    {
+        $instrumentStats = Instrument::query()
+            ->select(['id', 'name'])
+            ->withCount('users')
+            ->orderBy('orden')
+            ->get()
+            ->map(function (Instrument $instrument): array {
+                return [
+                    'id' => $instrument->id,
+                    'name' => $instrument->name,
+                    'musicians' => (int) $instrument->users_count,
+                ];
+            })
+            ->values();
+
+        return response()->json([
+            'total_musicians' => (int) $instrumentStats->sum('musicians'),
+            'instruments' => $instrumentStats,
+        ]);
     }
 }

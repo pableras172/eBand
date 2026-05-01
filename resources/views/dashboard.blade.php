@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{config('app.banda', '')}}
+            {{ $bandSetting?->nombre ?? config('app.banda', config('app.name', 'eBand')) }}
         </h2>
     </x-slot>
 

@@ -101,7 +101,7 @@
                             <x-slot name="trigger">
                                 <span class="inline-flex rounded-md">
                                     <button type="button"
-                                        class="inline-flex items-center rounded-md px-3 py-2 text-sm leading-4 font-medium transition ease-in-out duration-150 {{ request()->routeIs('tipoactuacion.*', 'instrument.*', 'users.*', 'contratos.*', 'payments.*', 'paymentresumes.*', 'comments.*', 'configurations*', 'announcements.*') ? 'border border-cyan-200 bg-cyan-50 text-cyan-700' : 'border border-transparent bg-white text-gray-500 hover:text-gray-700 focus:bg-gray-50 active:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:bg-gray-700 dark:active:bg-gray-700' }}">
+                                        class="inline-flex items-center rounded-md px-3 py-2 text-sm leading-4 font-medium transition ease-in-out duration-150 {{ request()->routeIs('tipoactuacion.*', 'instrument.*', 'users.*', 'band-settings.*', 'contratos.*', 'payments.*', 'paymentresumes.*', 'comments.*', 'configurations*', 'announcements.*') ? 'border border-cyan-200 bg-cyan-50 text-cyan-700' : 'border border-transparent bg-white text-gray-500 hover:text-gray-700 focus:bg-gray-50 active:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:bg-gray-700 dark:active:bg-gray-700' }}">
                                         {{ __('Administracion') }}
                                         <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -140,6 +140,16 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                             </svg>
                                             <span>{{ __('Musics') }}</span>
+                                        </div>
+                                    </x-nav-link>
+                                </div>
+                                <div class="w-60 px-4 m-2">
+                                    <x-nav-link href="{{ route('band-settings.edit') }}" :active="request()->routeIs('band-settings.*')">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 9h6M9 13h6M9 17h3" />
+                                            </svg>
+                                            <span>{{ __('Datos banda') }}</span>
                                         </div>
                                     </x-nav-link>
                                 </div>
@@ -571,6 +581,15 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                 </svg>
                                 <span>{{ __('Musics') }}</span>
+                            </div>
+                        </x-responsive-nav-link>
+
+                        <x-responsive-nav-link href="{{ route('band-settings.edit') }}" :active="request()->routeIs('band-settings.*')">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 9h6M9 13h6M9 17h3" />
+                                </svg>
+                                <span>{{ __('Datos banda') }}</span>
                             </div>
                         </x-responsive-nav-link>
 
