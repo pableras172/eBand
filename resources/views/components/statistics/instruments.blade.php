@@ -92,7 +92,7 @@
 }" 
 
 
-class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6 mb-24 bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6  bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-200 dark:border-gray-700">
     
     <!-- Título con icono -->
     <div class="flex items-center space-x-2 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
