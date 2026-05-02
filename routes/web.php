@@ -197,6 +197,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::post('/notificaractuacion', [ActuacionController::class, 'notificarActuacion']);
 
         Route::get('/api/user-stats', [ActuacionController::class, 'getUserStats'])->name('user.stats');
+        Route::get('/api/tipo-actuacion-stats', [ActuacionController::class, 'getStatsByTipoYear'])->name('stats.tipo.year');
         Route::get('/api/tipoactuacions', [TipoActuacionController::class, 'getTipos'])->name('tipoactuacions.list');
         Route::get('/api/instrument-musicians-stats', [UsersController::class, 'getInstrumentMusiciansStats'])->name('instrument.musicians.stats');
 

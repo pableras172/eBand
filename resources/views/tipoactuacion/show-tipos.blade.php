@@ -17,76 +17,73 @@
         </div>
     @endif
 
-    <div class="container mx-auto px-2 py-1 ">
-        <div class="flex flex-col">
-            <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200 w-full">
-                            <thead>
-                                <tr>
-                                    <th scope="col"
-                                        class="px-4 py-2 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ __('Nom') }}
-                                    </th>
-                                    <th scope="col"
-                                        class="px-4 py-2 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ __('Imatge') }}
-                                    </th>
-                                    <th scope="col"
-                                        class="px-4 py-2 bg-gray-50 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ __('Accions') }}
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($tipoactuacions as $tipoactuacion)
-                                    <tr>
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-center text-gray-900">
-                                            <div class="flex items-center space-x-2">
-                                                @if ($tipoactuacion->tipoensayo)
-                                                    <x-atril w="24" h="24" />
-                                                @endif
-                                                @if ($tipoactuacion->tipoconcierto)
-                                                    <x-concert w="24" h="24" />
-                                                @endif
-                                                <span>{{ $tipoactuacion->nombre }}</span>
-                                            </div>                                            
-                                        </td>
+    <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 mt-4">
+        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
 
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-center text-gray-900">
-                                            <div class="mt-2 text-center">
-                                                @if ($tipoactuacion->icon)
-                                                    <img src="{{ asset('storage/imagenes/tipoactuacion/' . $tipoactuacion->icon) }}"
-                                                        alt="{{ $tipoactuacion->nombre }}" class="rounded-full"
-                                                        style="width: 50px; height: 50px;">
-                                                @else
-                                                    <x-nophoto w="40" h="40" />
-                                                @endif
-                                            </div>
-                                        </td>
-
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-center">
-                                            <div class="flex justify-center items-center space-x-1">
-                                                <!-- Botón Editar con icono -->
-                                                <a href="{{ route('tipoactuacion.show', $tipoactuacion->id) }}">
-                                                    <x-editar w="24" h="24" />
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-
-                    </div>
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.657-1.79 3-4 3s-4-1.343-4-3 1.79-3 4-3 4 1.343 4 3zm12-3c0 1.657-1.79 3-4 3s-4-1.343-4-3 1.79-3 4-3 4 1.343 4 3z" />
+                    </svg>
                 </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ __('Tipus d\'actuació') }}</h3>
             </div>
+
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-900/50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {{ __('Nom') }}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {{ __('Imatge') }}
+                        </th>
+                        <th scope="col" class="hidden sm:table-cell px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {{ __('Accions') }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+                    @foreach ($tipoactuacions as $tipoactuacion)
+                        <tr class="hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors cursor-pointer"
+                            onclick="window.location='{{ route('tipoactuacion.show', $tipoactuacion->id) }}'">
+                            <td class="px-6 py-3 text-sm text-gray-900 dark:text-gray-100">
+                                <div class="flex items-center gap-2">
+                                    @if ($tipoactuacion->tipoensayo)
+                                        <x-atril w="24" h="24" />
+                                    @endif
+                                    @if ($tipoactuacion->tipoconcierto)
+                                        <x-concert w="24" h="24" />
+                                    @endif
+                                    <span class="font-medium">{{ $tipoactuacion->nombre }}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-3 text-center">
+                                @if ($tipoactuacion->icon)
+                                    <img src="{{ asset('storage/imagenes/tipoactuacion/' . $tipoactuacion->icon) }}"
+                                        alt="{{ $tipoactuacion->nombre }}"
+                                        class="w-10 h-10 rounded-full object-cover mx-auto">
+                                @else
+                                    <div class="flex justify-center">
+                                        <x-nophoto w="40" h="40" />
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="hidden sm:table-cell px-6 py-3 text-center">
+                                <a href="{{ route('tipoactuacion.show', $tipoactuacion->id) }}"
+                                   onclick="event.stopPropagation()"
+                                   class="inline-flex items-center justify-center">
+                                    <x-editar w="24" h="24" />
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
-    <div style="height: 100px">
-
-    </div>
+    <x-statistics.tipoactuaciones />
+    
     <footer
         class="fixed bottom-0 left-0 z-20 w-full bg-white border-t border-gray-300 shadow-inner dark:bg-gray-800 dark:border-gray-600">
         <div class="flex justify-center items-center py-3">

@@ -11,6 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -1052,6 +1053,55 @@ class ActuacionController extends Controller
             'total' => $totalActuaciones,
             'usuario' => $actuacionesUsuario,
             'porcentaje' => $porcentaje,
+        ]);
+    }
+
+    public function getStatsByTipoYear(Request $request): JsonResponse
+    {
+        $year = (int) $request->input('year', date('Y'));
+
+        $availableYears = Actuacion::query()
+            ->selectRaw('DISTINCT YEAR(fechaActuacion) as year')
+            ->orderByDesc('year')
+            ->pluck('year')
+            ->map(fn ($value) => (int) $value)
+            ->values();
+
+        if ($availableYears->isEmpty()) {
+            $currentYear = (int) date('Y');
+            $availableYears = collect([$currentYear, $currentYear - 1, $currentYear - 2]);
+        }
+
+        if (! $availableYears->contains($year)) {
+            $year = (int) $availableYears->first();
+        }
+
+        $statsByTipo = Actuacion::query()
+            ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
+            ->whereYear('actuacions.fechaActuacion', $year)
+            ->selectRaw('tipoactuacions.id, tipoactuacions.nombre, COUNT(*) as total')
+            ->groupBy('tipoactuacions.id', 'tipoactuacions.nombre')
+            ->orderByDesc('total')
+            ->get();
+
+        $totalActuaciones = (int) $statsByTipo->sum('total');
+
+        $tipos = $statsByTipo->map(function ($item) use ($totalActuaciones): array {
+            $total = (int) $item->total;
+
+            return [
+                'id' => (int) $item->id,
+                'name' => $item->nombre,
+                'total' => $total,
+                'percentage' => $totalActuaciones > 0 ? round(($total / $totalActuaciones) * 100, 1) : 0,
+            ];
+        })->values();
+
+        return response()->json([
+            'year' => $year,
+            'years' => $availableYears,
+            'total' => $totalActuaciones,
+            'tipos' => $tipos,
         ]);
     }
 }
