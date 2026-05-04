@@ -22,6 +22,12 @@ class BandSetting extends Model
         'urlinstagram',
         'urlfacebook',
         'urltiktok',
+        'activarcontactoinfo',
+        'qr_contacto_masinfo',
+    ];
+
+    protected $casts = [
+        'activarcontactoinfo' => 'boolean',
     ];
 
     public function presidente(): BelongsTo

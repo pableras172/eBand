@@ -34,6 +34,7 @@ class UpdateBandSettingRequest extends FormRequest
             'urlinstagram' => ['nullable', 'url', 'max:255'],
             'urlfacebook' => ['nullable', 'url', 'max:255'],
             'urltiktok' => ['nullable', 'url', 'max:255'],
+            'activarcontactoinfo' => ['nullable', 'boolean'],
         ];
     }
 }

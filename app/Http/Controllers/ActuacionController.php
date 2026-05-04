@@ -1061,7 +1061,12 @@ class ActuacionController extends Controller
         $year = (int) $request->input('year', date('Y'));
 
         $availableYears = Actuacion::query()
-            ->selectRaw('DISTINCT YEAR(fechaActuacion) as year')
+            ->join('listas', 'actuacions.id', '=', 'listas.actuacions_id')
+            ->join('listas_user', 'listas.id', '=', 'listas_user.listas_id')
+            ->join('users', 'listas_user.user_id', '=', 'users.id')
+            ->where('users.activo', 1)
+            ->where('users.forastero', 0)
+            ->selectRaw('DISTINCT YEAR(actuacions.fechaActuacion) as year')
             ->orderByDesc('year')
             ->pluck('year')
             ->map(fn ($value) => (int) $value)
@@ -1077,9 +1082,14 @@ class ActuacionController extends Controller
         }
 
         $statsByTipo = Actuacion::query()
+            ->join('listas', 'actuacions.id', '=', 'listas.actuacions_id')
+            ->join('listas_user', 'listas.id', '=', 'listas_user.listas_id')
+            ->join('users', 'listas_user.user_id', '=', 'users.id')
             ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
+            ->where('users.activo', 1)
+            ->where('users.forastero', 0)
             ->whereYear('actuacions.fechaActuacion', $year)
-            ->selectRaw('tipoactuacions.id, tipoactuacions.nombre, COUNT(*) as total')
+            ->selectRaw('tipoactuacions.id, tipoactuacions.nombre, COUNT(DISTINCT actuacions.id) as total')
             ->groupBy('tipoactuacions.id', 'tipoactuacions.nombre')
             ->orderByDesc('total')
             ->get();

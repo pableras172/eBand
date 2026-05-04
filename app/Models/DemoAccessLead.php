@@ -18,5 +18,11 @@ class DemoAccessLead extends Model
         'email',
         'ip_address',
         'user_agent',
+        'lead_type',
+        'source',
+        'entidad',
+        'municipio',
+        'telefono_contacto',
+        'mensaje',
     ];
 }

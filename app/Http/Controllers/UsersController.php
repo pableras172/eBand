@@ -248,7 +248,12 @@ class UsersController extends Controller
     {
         $instrumentStats = Instrument::query()
             ->select(['id', 'name'])
-            ->withCount('users')
+            ->withCount([
+                'users as users_count' => function ($query) {
+                    $query->where('activo', 1)
+                        ->where('forastero', 0);
+                },
+            ])
             ->orderBy('orden')
             ->get()
             ->map(function (Instrument $instrument): array {

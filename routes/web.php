@@ -10,6 +10,7 @@ use App\Http\Controllers\DemoInformationRequestController;
 use App\Http\Controllers\InventoryExportController;
 use App\Http\Controllers\ListaController;
 use App\Http\Controllers\ListasUsersController;
+use App\Http\Controllers\MasInfoController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\TasksController;
 use App\Http\Controllers\TipoActuacionController;
@@ -79,6 +80,9 @@ Route::post('/demo-access', [DemoAccessController::class, 'store'])
     ->middleware(['guest', 'throttle:demo-access'])
     ->name('demo.access');
 
+Route::get('/masinfo', [MasInfoController::class, 'create'])->name('masinfo.create');
+Route::post('/masinfo', [MasInfoController::class, 'store'])->name('masinfo.store');
+
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'demo.readonly', 'can:admin'])->group(function () {
     Route::resource('contratos', ListadoContratos::class);
     Route::get('/contratos/year/{year}', [ListadoContratos::class, 'contratosPorAnyo'])->name('contratos.anyo');
@@ -96,6 +100,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
     Route::get('/band-settings', [BandSettingController::class, 'edit'])->name('band-settings.edit');
     Route::put('/band-settings', [BandSettingController::class, 'update'])->name('band-settings.update');
+    Route::post('/band-settings/generate-contact-qr', [BandSettingController::class, 'generateContactQr'])->name('band-settings.generate-contact-qr');
 
     Route::livewire('/configurations', ConfigurationIndex::class)->name('configurations.index');
     Route::livewire('/configurations/create', ConfigurationCreate::class)->name('configurations.create');

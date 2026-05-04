@@ -20,6 +20,12 @@
             </div>
         @endif
 
+        @if (session('error_message'))
+            <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+                {{ session('error_message') }}
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('band-settings.update') }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
@@ -182,6 +188,64 @@
                         @enderror
                     </div>
                 </div>
+            </section>
+
+            <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+                <div class="mb-4 border-b border-gray-100 pb-3">
+                    <h3 class="text-base font-semibold text-gray-900">{{ __('Formulario público de contacto') }}</h3>
+                    <p class="text-sm text-gray-500">{{ __('Permite activar o desactivar el acceso público a /masinfo.') }}</p>
+                </div>
+
+                <div class="flex items-start justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">{{ __('Activar formulario /masinfo') }}</p>
+                        <p class="text-xs text-gray-500">{{ __('Si está desactivado, los visitantes serán redirigidos a inicio.') }}</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <input type="hidden" name="activarcontactoinfo" value="0">
+                        <input type="checkbox"
+                            name="activarcontactoinfo"
+                            id="activarcontactoinfo"
+                            value="1"
+                            @checked((bool) old('activarcontactoinfo', $bandSetting->activarcontactoinfo))
+                            class="h-5 w-5 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500">
+                        <label for="activarcontactoinfo" class="text-sm text-gray-700">{{ __('Activo') }}</label>
+                    </div>
+                </div>
+
+                @if ($bandSetting->activarcontactoinfo)
+                    <div class="mt-4 rounded-xl border border-cyan-200 bg-cyan-50 p-4">
+                        <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                            <div>
+                                <p class="text-sm font-semibold text-cyan-900">{{ __('QR de acceso a /masinfo') }}</p>
+                                <p class="text-xs text-cyan-700">{{ __('Genera o actualiza el QR con la URL pública de contacto. Se guardará en almacenamiento para usarlo cuando quieras.') }}</p>
+
+                                <form method="POST" action="{{ route('band-settings.generate-contact-qr') }}" class="mt-3">
+                                    @csrf
+                                    <button type="submit"
+                                        class="inline-flex items-center rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-700">
+                                        {{ __('Generar QR de /masinfo') }}
+                                    </button>
+                                </form>
+                            </div>
+
+                            @if ($bandSetting->qr_contacto_masinfo)
+                                <div class="flex flex-col items-center gap-2">
+                                    <img src="{{ asset('storage/' . $bandSetting->qr_contacto_masinfo) }}"
+                                        alt="QR /masinfo"
+                                        class="h-40 w-40 rounded-lg border border-cyan-200 bg-white object-contain p-2">
+                                    <a href="{{ asset('storage/' . $bandSetting->qr_contacto_masinfo) }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="text-xs font-medium text-cyan-700 hover:text-cyan-900">
+                                        {{ __('Abrir QR') }}
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endif
             </section>
 
             <div class="flex justify-end">
