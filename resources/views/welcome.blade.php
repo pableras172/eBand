@@ -1270,6 +1270,7 @@
                 eBand te ayuda a organizar actuaciones, contratos, miembros e inventario
                 sin hojas sueltas, sin mensajes perdidos y sin complicarte el dia.
                 Todo mas claro, mas cercano y accesible desde cualquier dispositivo.
+                Ahora tambien puedes publicar el programa del concierto con una URL fija y compartirlo por QR en segundos.
             </p>
             <div class="hero-actions">
                 <a href="{{ route('login') }}" class="btn btn-gold btn-lg">Empezar la demo</a>
@@ -1302,6 +1303,10 @@
         <div class="stat-item">
             <div class="stat-num">PDF</div>
             <div class="stat-label">Contratos automáticos</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">QR</div>
+            <div class="stat-label">Programa público</div>
         </div>
     </div>
 
@@ -1376,6 +1381,17 @@
                     <div class="feat-tags">
                         <span class="feat-tag">Anuncios</span>
                         <span class="feat-tag">Novedades</span>
+                    </div>
+                </div>
+
+                <div class="feat-card">
+                    <div class="feat-icon">🎼</div>
+                    <div class="feat-title">Programa de Concierto + QR</div>
+                    <div class="feat-desc">Crea el programa con repertorio, autores, imagen y logos; publícalo en una URL fija y compártelo por QR para que cualquier asistente lo vea al momento.</div>
+                    <div class="feat-tags">
+                        <span class="feat-tag">URL pública</span>
+                        <span class="feat-tag">QR descargable</span>
+                        <span class="feat-tag">Cartel A4</span>
                     </div>
                 </div>
             </div>

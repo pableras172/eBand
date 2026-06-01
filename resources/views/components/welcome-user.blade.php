@@ -102,6 +102,11 @@
             @include('components.proxima-actuacion')
         @endif
     </div>
+
+    <x-program />
+
+
+    
     <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         <x-animated-estadisticas />
     </div>

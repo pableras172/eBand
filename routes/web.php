@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActuacionController;
 use App\Http\Controllers\BandSettingController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ConcertProgramController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContratosController;
 use App\Http\Controllers\DemoAccessController;
@@ -82,6 +83,10 @@ Route::post('/demo-access', [DemoAccessController::class, 'store'])
 
 Route::get('/masinfo', [MasInfoController::class, 'create'])->name('masinfo.create');
 Route::post('/masinfo', [MasInfoController::class, 'store'])->name('masinfo.store');
+Route::get('/programa', [ConcertProgramController::class, 'publicProgram'])->name('concert-programs.public');
+Route::get('/concierto', [ConcertProgramController::class, 'publicProgram'])->name('concert.public');
+Route::get('/programa/cartel', [ConcertProgramController::class, 'publicPoster'])->name('concert-programs.poster');
+Route::get('/concierto/cartel', [ConcertProgramController::class, 'publicPoster'])->name('concert.poster');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'demo.readonly', 'can:admin'])->group(function () {
     Route::resource('contratos', ListadoContratos::class);
@@ -97,6 +102,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::resource('users', UsersController::class);
 
     Route::resource('tipoactuacion', TipoActuacionController::class);
+    Route::resource('concert-programs', ConcertProgramController::class)->except(['show']);
+    Route::post('concert-programs/download-qr', [ConcertProgramController::class, 'downloadPublicQr'])->name('concert-programs.download-qr');
+    Route::get('concert-programs/{concert_program}/poster', [ConcertProgramController::class, 'poster'])->name('concert-programs.poster.preview');
 
     Route::get('/band-settings', [BandSettingController::class, 'edit'])->name('band-settings.edit');
     Route::put('/band-settings', [BandSettingController::class, 'update'])->name('band-settings.update');
@@ -316,8 +324,15 @@ Route::get('/greeting/{locale}', function (string $locale) {
         abort(400);
     }
 
-    // Establecer la cookie de preferencia de idioma
-    $response = redirect()->route('dashboard')->withCookie(cookie('locale', $locale, 30 * 24 * 60));
+    $previousUrl = url()->previous();
+    $fallbackUrl = route('concert-programs.public');
+
+    if (! $previousUrl || $previousUrl === url()->current()) {
+        $previousUrl = $fallbackUrl;
+    }
+
+    // Establecer la cookie de preferencia de idioma y volver a la página actual
+    $response = redirect()->to($previousUrl)->withCookie(cookie('locale', $locale, 30 * 24 * 60));
 
     return $response;
 });
