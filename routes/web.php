@@ -17,6 +17,7 @@ use App\Http\Controllers\TasksController;
 use App\Http\Controllers\TipoActuacionController;
 use App\Http\Controllers\UsersController;
 use App\Jobs\SendDailyCommentsNotification;
+use App\Livewire\Actuaciones\ContratoActuaciones;
 use App\Livewire\Announcement\AnnouncementCreate;
 use App\Livewire\Announcement\AnnouncementEdit;
 use App\Livewire\Announcement\AnnouncementIndex;
@@ -215,6 +216,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/api/instrument-musicians-stats', [UsersController::class, 'getInstrumentMusiciansStats'])->name('instrument.musicians.stats');
 
         Route::resource('actuacion', ActuacionController::class);
+        Route::livewire('/contratos/{contrato}/actuaciones', ContratoActuaciones::class)
+            ->name('contratos.actuaciones.index');
         Route::get('/api/ubicaciones-contratos', [ActuacionController::class, 'ubicacionesContratos']);
 
         // Route::resource('contratos',ListadoContratos::class);

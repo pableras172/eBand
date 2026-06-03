@@ -101,16 +101,7 @@ class ActuacionController extends Controller
     {
         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $actuaciones = Actuacion::with('contrato', 'lista')
-            ->where('contratos_id', '=', $contratosId)
-            ->orderBy('fechaActuacion', 'asc')
-            ->get();
-
-        $tipoActuacion = Tipoactuacion::all();
-
-        $contrato = Contratos::find($contratosId);
-
-        return view('livewire.contratos.actuacions', compact('actuaciones', 'tipoActuacion', 'contrato'));
+        return redirect()->route('contratos.actuaciones.index', ['contrato' => $contratosId]);
     }
 
     /**
@@ -360,14 +351,10 @@ class ActuacionController extends Controller
     {
         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $actuaciones = Actuacion::with('contrato', 'lista')
-            ->where('contratos_id', '=', $actuacion->contratos_id)
-            ->get();
-
-        $contrato = Contratos::find($actuacion->contratos_id);
-        $tipoActuacion = Tipoactuacion::all();
-
-        return view('livewire.contratos.actuacions', compact('actuaciones', 'actuacion', 'tipoActuacion', 'contrato'));
+        return redirect()->route('contratos.actuaciones.index', [
+            'contrato' => $actuacion->contratos_id,
+            'edit' => $actuacion->id,
+        ]);
     }
 
     /**
@@ -438,27 +425,23 @@ class ActuacionController extends Controller
 
         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        $cid = $actuacion->contratos_id;
+
         try {
             // Verificar si la actuación existe
             if ($actuacion) {
                 $actuacion->delete();
-
-                $cid = $actuacion->contratos_id;
-                // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
-                $actuaciones = Actuacion::with('contrato', 'lista')
-                    ->where('contratos_id', '=', $cid)
-                    ->get();
-
-                $contrato = Contratos::find($cid);
-                $tipoActuacion = Tipoactuacion::all();
             }
         } catch (QueryException $exception) {
             // Manejar la excepción de integridad referencial
-            return redirect()->back()->with('error', 'No puedes eliminar esta actuación porque tiene listas relacionadas');
+            return redirect()
+                ->route('contratos.actuaciones.index', ['contrato' => $cid])
+                ->with('error', 'No puedes eliminar esta actuación porque tiene listas relacionadas');
         }
-        $eliminado = true;
 
-        return view('livewire.contratos.actuacions', compact('actuaciones', 'tipoActuacion', 'contrato', 'eliminado'));
+        return redirect()
+            ->route('contratos.actuaciones.index', ['contrato' => $cid])
+            ->with('deletesuccess', __('Actuación eliminada correctamente.'));
     }
 
     public function getTotalActuacionesUsuario(User $user, $year = null)

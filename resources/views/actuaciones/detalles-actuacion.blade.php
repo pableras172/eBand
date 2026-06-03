@@ -615,6 +615,7 @@ use App\Helpers\ConfigHelper;
                     @if ($usuarioDisponible)
                         <a id="btnodisponible" href="#" data-lista-id="{{ $lista->id }}"
                             data-usuario-id="{{ Auth::user()->id }}" data-disponible="0"
+                            data-usuario-seleccionado="{{ $usuarioSeleccionado ? 1 : 0 }}"
                             data-antelacion="{{ $antelacion->days }}" onclick="gestionarDisponibilidad(event,this)"
                             data-limite-antelacion="{{ $limiteAntelacion }}"
                             class="flex-1 flex flex-col items-center justify-center min-w-0 px-3 py-2 border-r border-slate-300 bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/40 dark:border-slate-600 dark:text-red-300 transition"
@@ -629,6 +630,7 @@ use App\Helpers\ConfigHelper;
                     @else
                         <a id="btnodisponible" href="#" data-lista-id="{{ $lista->id }}"
                             data-usuario-id="{{ Auth::user()->id }}" data-disponible="1"
+                            data-usuario-seleccionado="{{ $usuarioSeleccionado ? 1 : 0 }}"
                             data-antelacion="{{ $antelacion->days }}" onclick="gestionarDisponibilidad(event,this)"
                             data-limite-antelacion="{{ $limiteAntelacion }}"
                             class="flex-1 flex flex-col items-center justify-center min-w-0 px-3 py-2 border-r border-slate-300 bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/40 dark:border-slate-600 dark:text-green-300 transition"
@@ -842,8 +844,18 @@ use App\Helpers\ConfigHelper;
                 var listaId = componente.getAttribute('data-lista-id');
                 var usuarioId = componente.getAttribute('data-usuario-id');
                 var disponible = componente.getAttribute('data-disponible');
+                var usuarioSeleccionado = parseInt(componente.getAttribute('data-usuario-seleccionado') ?? 0);
                 var antelacion = parseInt(componente.getAttribute('data-antelacion'));
                 var limiteAntelacion = parseInt(componente.getAttribute('data-limite-antelacion') ?? 3);
+
+                if (disponible == 0 && usuarioSeleccionado === 1) {
+                    alert('Si ya estas en la lista no puedes marcar no disponible. Contacta con el responsable.');
+                    availabilityUpdateInProgress = false;
+                    setPageLoadingState(false);
+                    componente.disabled = false;
+                    componente.innerHTML = originalText;
+                    return;
+                }
 
                 // Verificar si se puede cambiar la disponibilidad
                 if (disponible == 0 && antelacion <= limiteAntelacion) {

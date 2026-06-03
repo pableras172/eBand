@@ -2,56 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Listas;
-use App\Models\User;
 use App\Models\Actuacion;
+use App\Models\Listas;
+use App\Models\ListasUser;
+use App\Models\User;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\ListasUser;
-use DateTime;
+
 class ListaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-
-        
-    }    
+    public function index() {}
 
     public function actuacion($actuacionId)
     {
         // Obtener la actuación y la lista relacionada
-        //$actuacion = Actuacion::findOrFail($actuacionId);
+        // $actuacion = Actuacion::findOrFail($actuacionId);
         // Cargar la actuación con sus comentarios y el usuario asociado a cada comentario
         $actuacion = Actuacion::with('comments.user')->findOrFail($actuacionId);
 
         $lista = $actuacion->lista;
 
         if ($lista == null) {
-            $lista = new Listas();
-            $lista->actuacions_id = $actuacionId;            
-            $lista->pagada = 0;            
-            $lista->cuentas = 0;            
+            $lista = new Listas;
+            $lista->actuacions_id = $actuacionId;
+            $lista->pagada = 0;
+            $lista->cuentas = 0;
             $lista->save(); // Guardar la nueva lista en la base de datos
         }
 
         $usuarioDisponible = true;
+        $usuarioSeleccionado = false;
 
-        if ($lista->users->contains(Auth::user()->id)
-            && !$lista->users()->where('users.id', (Auth::user()->id))->first()->pivot->disponible) {
+        $usuarioActualEnLista = $lista->users()->where('users.id', Auth::id())->first();
+
+        if ($usuarioActualEnLista) {
+            if (! $usuarioActualEnLista->pivot->disponible) {
                 $usuarioDisponible = false;
+            } else {
+                $usuarioSeleccionado = true;
+            }
         }
 
-       $usuarios = User::where('activo', 1)
-        ->whereNotNull('instrument_id') // excluir usuarios sin instrumento asignado
-        ->join('instruments as i', 'users.instrument_id', '=', 'i.id')
-        ->orderBy('i.orden')
-        ->select('users.*', 'i.orden as instrument_order')
-        ->get();
-
-
+        $usuarios = User::where('activo', 1)
+            ->whereNotNull('instrument_id') // excluir usuarios sin instrumento asignado
+            ->join('instruments as i', 'users.instrument_id', '=', 'i.id')
+            ->orderBy('i.orden')
+            ->select('users.*', 'i.orden as instrument_order')
+            ->get();
 
         // Marcar los usuarios seleccionados y con coche
         foreach ($usuarios as $usuario) {
@@ -60,8 +61,9 @@ class ListaController extends Controller
             $usuario->disponible = true;
             // Verificar si el usuario está en la lista
             if ($lista->users->contains($usuario->id)) {
-                if (!$lista->users()->where('users.id', $usuario->id)->first()->pivot->disponible) {
+                if (! $lista->users()->where('users.id', $usuario->id)->first()->pivot->disponible) {
                     $usuario->disponible = false;
+
                     continue;
                 }
                 $usuario->seleccionado = true;
@@ -69,32 +71,25 @@ class ListaController extends Controller
                 if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->coche) {
                     $usuario->coche = true;
                 }
-                
+
             }
         }
 
         // Contar el número total de filas en ListasUser con el lista_id dado
-        $totalFilas = ListasUser::where('listas_id', $lista->id)->where('disponible','<>','0')->count();
+        $totalFilas = ListasUser::where('listas_id', $lista->id)->where('disponible', '<>', '0')->count();
 
         // Contar el número de elementos con el campo "coche" igual a 1
         $cochesCount = ListasUser::where('listas_id', $lista->id)->where('coche', 1)->count();
 
-        //Comprobamos las fechas para no dejar comunicar el no disponible si son menos de 2 dias
+        // Comprobamos las fechas para no dejar comunicar el no disponible si son menos de 2 dias
 
         $date1 = new DateTime($actuacion->fechaActuacion);
-        $date2 = new DateTime(); // Fecha actual
-        
+        $date2 = new DateTime; // Fecha actual
+
         $antelacion = $date1->diff($date2);
 
-        return view('actuaciones.detalles-actuacion', compact('actuacion', 'usuarios','lista','usuarioDisponible','totalFilas','cochesCount','antelacion'));
+        return view('actuaciones.detalles-actuacion', compact('actuacion', 'usuarios', 'lista', 'usuarioDisponible', 'usuarioSeleccionado', 'totalFilas', 'cochesCount', 'antelacion'));
     }
-    
-
-
- 
-    
-    
-    
 
     /**
      * Show the form for creating a new resource.
