@@ -123,6 +123,10 @@
             @endforelse
         </div>
 
+        <div class="mt-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm sm:hidden">
+            {{ $actuaciones->links() }}
+        </div>
+
         <div class="hidden overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm sm:block">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
