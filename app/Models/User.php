@@ -57,13 +57,17 @@ class User extends Authenticatable implements MustVerifyEmail
         'two_factor_secret',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
+    protected $attributes = [
+        'tienefurgo' => false,
+        'tienecoche' => false,
+    ];
+
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'tienefurgo' => 'boolean',
+        'tienecoche' => 'boolean',
+        'activo' => 'boolean',
+        'forastero' => 'boolean',
     ];
 
     /**

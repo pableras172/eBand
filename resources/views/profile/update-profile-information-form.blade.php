@@ -4,12 +4,15 @@
             <div class="flex items-center space-x-2 sm:space-x-3">
                 <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg shadow-lg flex-shrink-0">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <span class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">{{ __('Informació del perfil') }}</span>
-                    <div class="h-1 w-12 sm:w-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mt-1"></div>
+                    <span
+                        class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">{{ __('Informació del perfil') }}</span>
+                    <div class="h-1 w-12 sm:w-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mt-1">
+                    </div>
                 </div>
             </div>
         </div>
@@ -20,9 +23,12 @@
             <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                 {{ __('Actualice la información del perfil y la dirección de correo electrónico de su cuenta.') }}
             </p>
-            <div class="flex items-start space-x-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-2 sm:p-2.5">
-                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div
+                class="flex items-start space-x-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-2 sm:p-2.5">
+                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <p class="text-xs text-blue-700 dark:text-blue-300 leading-tight">
                     {{ __('Els canvis es guardaran automàticament quan faceu clic a Guardar.') }}
@@ -149,7 +155,7 @@
                 <x-input id="activo" type="checkbox" class="mt-1 block" wire:model="state.activo" />
                 <x-input-error for="activo" class="mt-2" />
             </div>
-            
+
             <!-- Forastero -->
             <div class="col-span-3 sm:col-span-2">
                 <x-label for="forastero" value="{{ __('Foraster') }}" />
@@ -172,6 +178,42 @@
             </div>
         @endif
 
+        <div class="col-span-6 mb-3">
+            <label for="tienefurgo"
+                class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 cursor-pointer">
+                <x-furgo h="32" w="32"/>
+                <div>
+                    <p class="text-sm font-semibold text-gray-900">{{ __('Furgona') }}</p>
+                    <p class="text-xs text-gray-500">
+                        {{ __('El músic ha indicat que pot agafar furgona en cas de ser necessari.') }}</p>
+                </div>
+                <x-input type="checkbox" name="tienefurgo" id="tienefurgo"
+                    wire:model="state.tienefurgo"
+                    class="h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500" />
+            </label>
+            @error('tienefurgo')
+                <p class="text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+        <div class="col-span-6 mb-3">
+            <label for="tienecoche"
+                class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 cursor-pointer">
+                <x-coche h="32" w="32"/>
+                <div>
+                    
+                    <p class="text-sm font-semibold text-gray-900">{{ __('Coche') }}</p>
+                    <p class="text-xs text-gray-500">
+                        {{ __('El músic ha indicat que pot agafar coche en cas de ser necessari.') }}</p>
+                </div>
+                
+                <x-input type="checkbox" name="tienecoche" id="tienecoche"
+                    wire:model="state.tienecoche"
+                    class="h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500" />
+            </label>
+            @error('tienecoche')
+                <p class="text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
         <!-- Estadísticas del usuario -->
 
 
