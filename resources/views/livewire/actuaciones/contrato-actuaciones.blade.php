@@ -245,6 +245,12 @@
                             <label class="mb-1 block text-sm font-medium text-gray-700">{{ __('Numero musics') }}</label>
                             <input type="number" wire:model="musicos" min="0" class="w-full rounded-md border-gray-300">
                             @error('musicos') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                        </div>                       
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-gray-700">{{ __('Preu music') }}</label>
+                            <input type="number" wire:model="preciomusico" min="0" step="0.01" class="w-full rounded-md border-gray-300">
+                            @error('preciomusico') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
@@ -254,15 +260,21 @@
                         </div>
 
                         <div>
-                            <label class="mb-1 block text-sm font-medium text-gray-700">{{ __('Preu music') }}</label>
-                            <input type="number" wire:model="preciomusico" min="0" step="0.01" class="w-full rounded-md border-gray-300">
-                            @error('preciomusico') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                        </div>
-
-                        <div>
                             <label class="mb-1 block text-sm font-medium text-gray-700">{{ __('Preu cotxe') }}</label>
                             <input type="number" wire:model="preciocoche" min="0" step="0.01" class="w-full rounded-md border-gray-300">
                             @error('preciocoche') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-gray-700">{{ __('Cantitat de furgones') }}</label>
+                            <input type="furgonas" wire:model="furgonas" min="0" class="w-full rounded-md border-gray-300">
+                            @error('furgonas') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-gray-700">{{ __('Precio furgona') }}</label>
+                            <input type="number" wire:model="preciofurgona" min="0" step="0.01" class="w-full rounded-md border-gray-300">
+                            @error('preciofurgona') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="md:col-span-2">

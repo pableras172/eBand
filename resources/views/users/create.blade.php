@@ -202,6 +202,34 @@
                             @error('forastero')
                                 <p class="text-sm text-red-600">{{ $message }}</p>
                             @enderror
+
+                            <label for="tienefurgo"
+                                class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 cursor-pointer">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">{{ __('Furgona') }}</p>
+                                    <p class="text-xs text-gray-500">{{ __('El músic ha indicat que pot agafar furgona en cas de ser necessari.') }}</p>
+                                </div>
+                                <input type="checkbox" name="tienefurgo" id="tienefurgo"
+                                    class="h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500"
+                                    {{ (isset($user) && $user->tienefurgo) || old('tienefurgo') ? 'checked' : '' }}>
+                            </label>
+                            @error('tienefurgo')
+                                <p class="text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+
+                            <label for="tienecoche"
+                                class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 cursor-pointer">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">{{ __('Coche') }}</p>
+                                    <p class="text-xs text-gray-500">{{ __('El músic ha indicat que pot agafar coche en cas de ser necessari.') }}</p>
+                                </div>
+                                <input type="checkbox" name="tienecoche" id="tienecoche"
+                                    class="h-5 w-5 rounded border-gray-300 text-slate-600 focus:ring-slate-500"
+                                    {{ (isset($user) && $user->tienecoche) || old('tienecoche') ? 'checked' : '' }}>
+                            </label>
+                            @error('tienecoche')
+                                <p class="text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                     </section>
 

@@ -36,8 +36,10 @@ class ContratoActuaciones extends Component
     public ?int $tipoactuacions_id = null;
 
     public ?int $coches = null;
-
     public ?float $preciocoche = null;
+    
+    public ?int $furgonas = null;
+    public ?float $preciofurgona = null;
 
     public ?int $musicos = null;
 
@@ -78,8 +80,10 @@ class ContratoActuaciones extends Component
             'fechaActuacion' => ['required', 'date'],
             'descripcion' => ['required', 'string'],
             'tipoactuacions_id' => ['required', 'exists:tipoactuacions,id'],
-            'coches' => ['nullable', 'integer', 'min:0'],
+            'coches' => ['nullable', 'integer', 'min:0'],            
             'preciocoche' => ['nullable', 'numeric', 'min:0'],
+            'furgonas' => ['nullable', 'integer', 'min:0'],
+            'preciofurgona' => ['nullable', 'numeric', 'min:0'],
             'musicos' => ['nullable', 'integer', 'min:0'],
             'preciomusico' => ['nullable', 'numeric', 'min:0'],
             'observaciones' => ['nullable', 'string'],
@@ -123,6 +127,8 @@ class ContratoActuaciones extends Component
         $this->tipoactuacions_id = $actuacion->tipoactuacions_id;
         $this->coches = $actuacion->coches;
         $this->preciocoche = $actuacion->preciocoche !== null ? (float) $actuacion->preciocoche : null;
+        $this->furgonas = $actuacion->furgonas;
+        $this->preciofurgona = $actuacion->preciofurgona !== null ? (float) $actuacion->preciofurgona : null;
         $this->musicos = $actuacion->musicos;
         $this->preciomusico = $actuacion->preciomusico !== null ? (float) $actuacion->preciomusico : null;
         $this->observaciones = (string) ($actuacion->observaciones ?? '');
@@ -161,6 +167,8 @@ class ContratoActuaciones extends Component
         $actuacion->tipoactuacions_id = $validated['tipoactuacions_id'];
         $actuacion->coches = $validated['coches'];
         $actuacion->preciocoche = $validated['preciocoche'];
+        $actuacion->furgonas = $validated['furgonas'];
+        $actuacion->preciofurgona =$validated['preciofurgona'];
         $actuacion->musicos = $validated['musicos'];
         $actuacion->preciomusico = $validated['preciomusico'];
         $actuacion->observaciones = $validated['observaciones'];
@@ -193,6 +201,8 @@ class ContratoActuaciones extends Component
         $this->tipoactuacions_id = null;
         $this->coches = null;
         $this->preciocoche = null;
+        $this->furgonas = null;
+        $this->preciofurgona = null;
         $this->musicos = null;
         $this->preciomusico = null;
         $this->observaciones = '';

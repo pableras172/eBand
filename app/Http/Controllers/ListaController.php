@@ -9,6 +9,7 @@ use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ListaController extends Controller
 {
@@ -58,6 +59,7 @@ class ListaController extends Controller
         foreach ($usuarios as $usuario) {
             $usuario->seleccionado = false; // Por defecto, no seleccionado
             $usuario->coche = false; // Por defecto, no marcado
+            $usuario->furgona = false; // Por defecto, no marcado
             $usuario->disponible = true;
             // Verificar si el usuario está en la lista
             if ($lista->users->contains($usuario->id)) {
@@ -71,6 +73,10 @@ class ListaController extends Controller
                 if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->coche) {
                     $usuario->coche = true;
                 }
+                if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->furgona) {
+                    LOG::info('Usuario con furgona: ' . $usuario->id);
+                    $usuario->furgona = true;
+                }
 
             }
         }
@@ -80,6 +86,7 @@ class ListaController extends Controller
 
         // Contar el número de elementos con el campo "coche" igual a 1
         $cochesCount = ListasUser::where('listas_id', $lista->id)->where('coche', 1)->count();
+        $cochesCount = $cochesCount + ListasUser::where('listas_id', $lista->id)->where('furgona', 1)->count();
 
         // Comprobamos las fechas para no dejar comunicar el no disponible si son menos de 2 dias
 

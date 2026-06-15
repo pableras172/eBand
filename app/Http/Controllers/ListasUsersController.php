@@ -74,20 +74,27 @@ public function storecar(Request $request)
         'usuario_id' => 'required|exists:users,id',        
     ]);
 
+    $campo = 'coche';
+    //Ver que campo actualizamos: coche o furgo
+    if($request->furgo){
+        $campo = 'furgona';
+    }        
+
     // Actualizar el campo "coche" en la tabla ListasUser
     $updated = ListasUser::where('listas_id', $request->lista_id)
                         ->where('user_id', $request->usuario_id)
-                        ->update(['coche' => $request->estado]);
+                        ->update([$campo => $request->estado]);
 
         // Contar el número total de filas en ListasUser con el lista_id dado
         $totalFilas = ListasUser::where('listas_id', $request->lista_id)->where('disponible','<>','0')->count();
 
         // Contar el número de elementos con el campo "coche" igual a 1
         $cochesCount = ListasUser::where('listas_id', $request->lista_id)->where('coche', 1)->count();
+        $cochesCount = $cochesCount + ListasUser::where('listas_id', $request->lista_id)->where('furgona', 1)->count();
 
     if ($updated) {
         // Devolver una respuesta adecuada
-        return response()->json(['message' => 'Campo "coche" actualizado correctamente',
+        return response()->json(['message' => 'Campo '. $campo .' actualizado correctamente',
         'total_filas' => $totalFilas,
         'coches_count' => $cochesCount], 200);
     } else {

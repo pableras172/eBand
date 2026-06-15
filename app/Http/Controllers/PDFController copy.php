@@ -31,6 +31,7 @@ class PDFController extends Controller
         foreach ($usuarios as $usuario) {
             $usuario->seleccionado = false; // Por defecto, no seleccionado
             $usuario->coche = false; // Por defecto, no marcado
+            $usuario->furgona = false; // Por defecto, no marcado
             $usuario->disponible = true;
             // Verificar si el usuario está en la lista
             if ($lista->users->contains($usuario->id)) {
@@ -42,6 +43,9 @@ class PDFController extends Controller
                 // Verificar si el usuario tiene marcado el campo coche en la lista
                 if ($lista->users()->where('id', $usuario->id)->first()->pivot->coche) {
                     $usuario->coche = true;
+                }
+                if ($lista->users()->where('id', $usuario->id)->first()->pivot->furgona) {
+                    $usuario->furgona = true;
                 }
                 
             }

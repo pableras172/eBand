@@ -82,7 +82,7 @@
         </a>
     </div>
 
-    <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
+    <div id="dashboard-messages" class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         @include('components.carousel-mensajes')
     </div>
     @php
@@ -90,7 +90,7 @@
         $esPadre = Auth::user()?->hijos()->exists() ?? false;
     @endphp
 
-    <div class="w-full mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1">
+    <div id="dashboard-planning" class="w-full mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1">
         <div class="flex items-center justify-center gap-2 mb-3">
             <x-agenda w="24" h="24" />
             <h3 class="text-lg font-semibold text-gray-800">{{ __('Planning') }}</h3>
@@ -103,18 +103,20 @@
         @endif
     </div>
 
-    <x-program />
+    <div id="dashboard-nextconcert">
+        <x-program />
+    </div>
 
 
     
-    <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
+    <div id="dashboard-stats" class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         <x-animated-estadisticas />
     </div>
-    <div class="w-full mx-auto mt-1 mb-1">
+    <div id="dashboard-announcements" class="w-full mx-auto mt-1 mb-1">
         <livewire:announcement.announcement-highlights />
     </div>
 
-    <div class="w-full mx-auto mt-1 mb-1" x-data="{ slide: 0, total: 2 }">
+    <div id="dashboard-funfacts" class="w-full mx-auto mt-1 mb-1" x-data="{ slide: 0, total: 2 }">
         <div class="bg-white dark:bg-gray-800 shadow-l rounded-lg p-4">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-2">
@@ -172,7 +174,7 @@
         </div>
     </div>
 
-    <div class="w-full mx-auto bg-white shadow-l rounded-lg p-2 mt-1 mb-1">
+    <div id="dashboard-map" class="w-full mx-auto bg-white shadow-l rounded-lg p-2 mt-1 mb-1">
         <div class="flex items-center gap-3 mb-2">
             <x-lottie style="width: 100px; height: 100px;" path="{{ asset('storage/location.json') }}"
                         loop="true" autoplay="true" />

@@ -141,6 +141,18 @@ class UsersController extends Controller
             $user->forastero = 0;
         }
 
+        if ($request->tienefurgo) {
+            $user->tienefurgo = 1;
+        } else {
+            $user->tienefurgo = 0;
+        }
+
+        if ($request->tienecoche) {
+            $user->tienecoche = 1;
+        } else {
+            $user->tienecoche = 0;
+        }
+
         foreach ($user->hijos as $hijoActual) {
             $hijoActual->parent_id = null;
             $hijoActual->save();

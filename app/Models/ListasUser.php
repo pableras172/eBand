@@ -14,7 +14,9 @@ class ListasUser extends Model
         'payment_id',
         'totalActuacion',
         'totalActo',
-        'totalCoche'
+        'totalCoche',   
+        'coche',
+        'furgona',     
     ];
 
     

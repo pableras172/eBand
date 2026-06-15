@@ -109,6 +109,7 @@
                 <x-ui.table.header for-detailCrud>{{ __('Fecha Actuación') }}</x-ui.table.header>
                 <x-ui.table.header for-detailCrud>{{ __('Nombre Actuación') }}</x-ui.table.header>
                 <x-ui.table.header for-detailCrud>{{ __('Coche') }}</x-ui.table.header>
+                <x-ui.table.header for-detailCrud>{{ __('Furgo') }}</x-ui.table.header>
                 <x-ui.table.header for-detailCrud>{{ __('Acto') }}</x-ui.table.header>
                 <x-ui.table.header for-detailCrud>{{ __('Total') }}</x-ui.table.header>
                 @can('admin')
@@ -124,6 +125,7 @@
                     </x-ui.table.column>                    
                     <x-ui.table.column for-detailCrud>{{ $listasUser->listas->actuacion->descripcion }}</x-ui.table.column>
                     <x-ui.table.column for-detailCrud>{{ $listasUser->totalCoche }}</x-ui.table.column>
+                    <x-ui.table.column for-detailCrud>{{ $listasUser->totalFurgo }}</x-ui.table.column>
                     <x-ui.table.column for-detailCrud>{{ $listasUser->totalActuacion }}</x-ui.table.column>
                     <x-ui.table.column for-detailCrud>{{ $listasUser->totalActo }}</x-ui.table.column>                    
                     
