@@ -271,13 +271,13 @@
     @endphp
 
     @if ($usuarioDisponible && $antelacion->days <= $limiteAntelacion)
-        <div class="flex justify-center mt-4 mb-4">
+        <div class="flex justify-center mt-4 mb-2">
             {{ __('No se puede cambiar la disponibilidad con pocos dias de antelación.') }}
         </div>
     @endif
 
     @if (!$usuarioDisponible)
-        <div class="max-w-md lg:max-w-lg mx-auto px-2 mt-3">
+        <div class="max-w-md lg:max-w-lg mx-auto px-2 mt-2  ">
             <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 text-center">
                 {{ __('Has comunicado que no estás disponible para esta actuación.') }}
             </div>
@@ -286,6 +286,61 @@
     <div id="driver-componentes">
         &nbsp;
     </div>
+
+    @can('admin')
+{{-- Card: Usuaris no disponibles (badge + listado por instrumento) --}}
+    @if(isset($usuariosNoDisponibles) && $usuariosNoDisponibles->count() > 0)
+        <div class="max-w-md lg:max-w-lg mx-auto px-2 my-1">
+            <div class="bg-white shadow rounded-lg p-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-medium">Usuaris no disponibles</h3>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-800">
+                        {{ $usuariosNoDisponibles->count() }}
+                    </span>
+                </div>
+
+                <div class="mt-3 text-sm text-gray-700">
+                    @php
+                        // Asegurar que $usuariosNoDisponibles es una Collection (puede ser Builder)
+                        if (isset($usuariosNoDisponibles)) {
+                            if ($usuariosNoDisponibles instanceof \Illuminate\Database\Eloquent\Builder) {
+                                $usuariosNoDisponibles = $usuariosNoDisponibles->get();
+                            } elseif (is_array($usuariosNoDisponibles)) {
+                                $usuariosNoDisponibles = collect($usuariosNoDisponibles);
+                            } else {
+                                $usuariosNoDisponibles = collect($usuariosNoDisponibles);
+                            }
+
+                            // Ordenar por instrumento + nombre, sin agrupar
+                            $usuariosNoDisponibles = $usuariosNoDisponibles->sortBy(function($u) {
+                                return (optional($u->instrument)->name ?? '') . '|' . ($u->name ?? '');
+                            })->values();
+                        } else {
+                            $usuariosNoDisponibles = collect();
+                        }
+                    @endphp
+
+                    <ul class="mt-1 divide-y divide-gray-200">
+                        @foreach($usuariosNoDisponibles as $userNoDisp)
+                            <li class="py-2 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <img src="{{ asset($userNoDisp->profile_photo_url) }}" alt="{{ $userNoDisp->name }}" class="h-8 w-8 rounded-full">
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">{{ $userNoDisp->name }}</span>
+                                        <span class="text-xs text-gray-500">{{ optional($userNoDisp->instrument)->name ?? 'Sin instrumento' }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-red-600">No disponible</div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    @endif
+    @endcan
+
+    
 
     <div class="bg-gray-100">
         <div class="max-w-md lg:max-w-lg mx-auto px-2 my-4">
@@ -351,7 +406,7 @@
                                                 @endif
                                                 @if ($user->furgona)
                                                     <x-furgo h="32" w="32" />
-                                                    @endif
+                                                @endif
                                             </div>
                                         @endcan
 

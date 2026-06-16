@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="eBand es la plataforma completa para gestionar tu banda de música. Organiza actuaciones, asistencias, repertorio, miembros y contratos en un solo lugar. Accede desde cualquier dispositivo.">
-    <meta name="keywords" content="gestión bandas música, software bandas, administración musical, calendario actuaciones, asistencias músicos, contratos musicales, repertorio banda">
+    <meta name="description" content="Plataforma para la gestión de bandas de música y xarangas. Organiza actuaciones, control de asistencias, repertorio y contratos para tu agrupación de forma sencilla.">
     <meta name="author" content="eBand">
     <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ url('/') }}" />
+    <meta name="keywords" content="banda de música, gestión de banda, gestión bandas, xarangas, control de asistencias, repertorio, conciertos">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
@@ -29,7 +30,7 @@
     <link rel="icon" type="image/png" href="{{ URL::to('/') }}/logo_e_band.png">
     <link rel="apple-touch-icon" href="{{ URL::to('/') }}/logo_e_band.png">
 
-    <title>eBand — La sala de control de tu banda</title>
+    <title>eBand — Gestión de banda de música para bandas y xarangas</title>
     <style>
         /* =============================
            RESET & BASE
@@ -1220,6 +1221,31 @@
             }
         }
     </style>
+        <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@@graph": [
+                {
+                    "@@type": "Organization",
+                    "name": "eBand",
+                    "url": "{{ url('/') }}",
+                    "logo": "{{ URL::to('/') }}/logo_e_band.png",
+                    "sameAs": []
+                },
+                {
+                    "@@type": "WebSite",
+                    "url": "{{ url('/') }}",
+                    "name": "eBand",
+                    "description": "Plataforma para la gestión de bandas de música, xarangas y agrupaciones: calendario, asistencias, repertorio y contratos.",
+                    "potentialAction": {
+                        "@@type": "SearchAction",
+                        "target": "{{ url('/') }}?s={search_term_string}",
+                        "query-input": "required name=search_term_string"
+                    }
+                }
+            ]
+        }
+        </script>
 </head>
 <body>
     <!-- =====================
@@ -1227,7 +1253,7 @@
          ===================== -->
     <nav class="nav">
         <a href="{{ url('/') }}" class="nav-brand">
-            <img class="nav-logo" src="{{ URL::to('/') }}/logo_e_band.png" alt="eBand" />
+                    <img class="nav-logo" src="{{ URL::to('/') }}/logo_e_band.png" alt="eBand" width="36" height="36" />
             <span class="nav-wordmark">e<span>Band</span></span>
         </a>
         <div class="nav-actions">
@@ -1238,7 +1264,7 @@
             @endauth
         </div>
     </nav>
-
+    <main>
     <!-- =====================
          HERO
          ===================== -->
@@ -1264,13 +1290,11 @@
                 Hecho para bandas que quieren ir tranquilas
             </div>
             <h1 class="hero-headline">
-                Menos caos, mas musica<br>para <em>tu banda</em>
+                Gestión para bandas de música y xarangas:<br>
+                menos caos, más música para <em>tu banda</em>
             </h1>
             <p class="hero-sub">
-                eBand te ayuda a organizar actuaciones, contratos, miembros e inventario
-                sin hojas sueltas, sin mensajes perdidos y sin complicarte el dia.
-                Todo mas claro, mas cercano y accesible desde cualquier dispositivo.
-                Ahora tambien puedes publicar el programa del concierto con una URL fija y compartirlo por QR en segundos.
+                eBand es la plataforma para la gestión de bandas de música y xarangas. Organiza actuaciones, controla asistencias, gestiona el repertorio y genera contratos en segundos. Accede desde cualquier dispositivo y comparte programas y QR con tu público.
             </p>
             <div class="hero-actions">
                 <a href="{{ route('login') }}" class="btn btn-gold btn-lg">Empezar la demo</a>
@@ -1446,7 +1470,7 @@
             <div class="gallery-scroll reveal">
                 <div class="gallery-item">
                     <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/anuncios.png" alt="Anuncios" loading="lazy">
+                        <img src="{{ URL::to('/') }}/galeria/anuncios.png" alt="Anuncios" loading="lazy" width="1280" height="800">
                     </div>
                     <div class="gallery-caption">
                         <h4>Anuncios a usuarios</h4>
@@ -1455,7 +1479,7 @@
                 </div>
                 <div class="gallery-item">
                     <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/tablero_resumen.png" alt="Tablero principal" loading="lazy">
+                        <img src="{{ URL::to('/') }}/galeria/tablero_resumen.png" alt="Tablero principal" loading="lazy" width="1280" height="800">
                     </div>
                     <div class="gallery-caption">
                         <h4>Tablero Principal</h4>
@@ -1464,7 +1488,7 @@
                 </div>
                 <div class="gallery-item">
                     <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/calendario.png" alt="Calendario de actuaciones" loading="lazy">
+                        <img src="{{ URL::to('/') }}/galeria/calendario.png" alt="Calendario de actuaciones" loading="lazy" width="1280" height="800">
                     </div>
                     <div class="gallery-caption">
                         <h4>Calendario de Actuaciones</h4>
@@ -1473,7 +1497,7 @@
                 </div>
                 <div class="gallery-item">
                     <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/detalle_actuacion.png" alt="Detalle de actuación" loading="lazy">
+                        <img src="{{ URL::to('/') }}/galeria/detalle_actuacion.png" alt="Detalle de actuación" loading="lazy" width="1280" height="800">
                     </div>
                     <div class="gallery-caption">
                         <h4>Detalle de Actuación</h4>
@@ -1482,7 +1506,7 @@
                 </div>
                 <div class="gallery-item">
                     <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/resumen_actuaciones.png" alt="Resumen de actuaciones" loading="lazy">
+                        <img src="{{ URL::to('/') }}/galeria/resumen_actuaciones.png" alt="Resumen de actuaciones" loading="lazy" width="1280" height="800">
                     </div>
                     <div class="gallery-caption">
                         <h4>Resumen de Actuaciones</h4>
@@ -1491,7 +1515,7 @@
                 </div>
                 <div class="gallery-item">
                     <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/inventario.png" alt="Resumen de actuaciones" loading="lazy">
+                        <img src="{{ URL::to('/') }}/galeria/inventario.png" alt="Resumen de actuaciones" loading="lazy" width="1280" height="800">
                     </div>
                     <div class="gallery-caption">
                         <h4>Gestión de Inventario</h4>
@@ -1500,7 +1524,7 @@
                 </div> 
                 <div class="gallery-item">
                     <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/sugerencias.png" alt="Configuración flexible" loading="lazy">
+                        <img src="{{ URL::to('/') }}/galeria/sugerencias.png" alt="Configuración flexible" loading="lazy" width="1280" height="800">
                     </div>
                     <div class="gallery-caption">
                         <h4>Buzón de sugerencias</h4>
@@ -1509,7 +1533,7 @@
                 </div>               
                 <div class="gallery-item">
                     <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/personalizar_actuaciones.png" alt="Configuración flexible" loading="lazy">
+                        <img src="{{ URL::to('/') }}/galeria/personalizar_actuaciones.png" alt="Configuración flexible" loading="lazy" width="1280" height="800">
                     </div>
                     <div class="gallery-caption">
                         <h4>Configuración Flexible</h4>
@@ -1518,7 +1542,7 @@
                 </div>
                 <div class="gallery-item">
                     <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/personalizacion_instrumentos.png" alt="Gestión de instrumentos" loading="lazy">
+                        <img src="{{ URL::to('/') }}/galeria/personalizacion_instrumentos.png" alt="Gestión de instrumentos" loading="lazy" width="1280" height="800">
                     </div>
                     <div class="gallery-caption">
                         <h4>Gestión de Instrumentos</h4>
@@ -1730,9 +1754,11 @@
         </div>
     </section>
 
-    <!-- =====================
-         FOOTER
-         ===================== -->
+        </main>
+
+        <!-- =====================
+            FOOTER
+            ===================== -->
     <footer class="footer">
         <div class="footer-inner">
             <div>

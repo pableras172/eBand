@@ -88,6 +88,14 @@ class ListaController extends Controller
         $cochesCount = ListasUser::where('listas_id', $lista->id)->where('coche', 1)->count();
         $cochesCount = $cochesCount + ListasUser::where('listas_id', $lista->id)->where('furgona', 1)->count();
 
+        $usuariosNoDisponibles = User::whereIn('id', ListasUser::where('listas_id', $lista->id)->where('disponible', 0)->pluck('user_id'))
+            ->with('instrument')
+            ->get()
+            ->sortBy(function (User $u) {
+                return ($u->instrument?->name ?? '') . ' ' . $u->name;
+            })
+            ->values();
+
         // Comprobamos las fechas para no dejar comunicar el no disponible si son menos de 2 dias
 
         $date1 = new DateTime($actuacion->fechaActuacion);
@@ -95,7 +103,7 @@ class ListaController extends Controller
 
         $antelacion = $date1->diff($date2);
 
-        return view('actuaciones.detalles-actuacion', compact('actuacion', 'usuarios', 'lista', 'usuarioDisponible', 'usuarioSeleccionado', 'totalFilas', 'cochesCount', 'antelacion'));
+        return view('actuaciones.detalles-actuacion', compact('actuacion', 'usuarios', 'lista', 'usuariosNoDisponibles','usuarioDisponible', 'usuarioSeleccionado', 'totalFilas', 'cochesCount', 'antelacion'));
     }
 
     /**
