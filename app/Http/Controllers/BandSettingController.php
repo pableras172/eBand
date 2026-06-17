@@ -109,23 +109,30 @@ class BandSettingController extends Controller
         if (! function_exists('imagecreatefromstring')) {
             return $qrBinary;
         }
-
         $qrImage = @imagecreatefromstring($qrBinary);
 
         if (! $qrImage) {
             return $qrBinary;
         }
 
-        $width = imagesx($qrImage);
-        $height = imagesy($qrImage);
-        $extraHeight = 84;
+        $qrWidth = imagesx($qrImage);
+        $qrHeight = imagesy($qrImage);
 
-        $canvas = imagecreatetruecolor($width, $height + $extraHeight);
+        // space reserved for logo above the QR (clamped)
+        $logoAreaHeight = (int) floor($qrHeight * 0.18);
+        $logoAreaHeight = max(60, min(180, $logoAreaHeight));
+        $topPadding = $logoAreaHeight + 20; // extra spacing above QR
+        $bottomArea = 84; // space for name and subtitle
+
+        $canvasWidth = $qrWidth;
+        $canvasHeight = $topPadding + $qrHeight + $bottomArea;
+
+        $canvas = imagecreatetruecolor($canvasWidth, $canvasHeight);
         $white = imagecolorallocate($canvas, 255, 255, 255);
         $textColor = imagecolorallocate($canvas, 31, 41, 55);
         imagefill($canvas, 0, 0, $white);
-        imagecopy($canvas, $qrImage, 0, 0, 0, 0, $width, $height);
 
+        // Place logo centered in the top area (if provided)
         if ($logoPath) {
             $fullLogoPath = Storage::disk('public')->path($logoPath);
             if (is_file($fullLogoPath)) {
@@ -133,9 +140,19 @@ class BandSettingController extends Controller
                 $logoImage = $logoBinary ? @imagecreatefromstring($logoBinary) : false;
 
                 if ($logoImage) {
-                    $logoTarget = (int) floor($width * 0.18);
-                    $logoX = (int) floor(($width - $logoTarget) / 2);
-                    $logoY = (int) floor(($height - $logoTarget) / 2);
+                    $logoOrigW = imagesx($logoImage);
+                    $logoOrigH = imagesy($logoImage);
+
+                    $maxLogoW = (int) floor($qrWidth * 0.6);
+                    $maxLogoH = $logoAreaHeight;
+
+                    $ratio = min($maxLogoW / $logoOrigW, $maxLogoH / $logoOrigH, 1);
+                    $logoTargetW = (int) floor($logoOrigW * $ratio);
+                    $logoTargetH = (int) floor($logoOrigH * $ratio);
+
+                    $logoX = (int) floor(($canvasWidth - $logoTargetW) / 2);
+                    $logoY = (int) floor(($topPadding - $logoTargetH) / 2);
+
                     imagecopyresampled(
                         $canvas,
                         $logoImage,
@@ -143,25 +160,31 @@ class BandSettingController extends Controller
                         $logoY,
                         0,
                         0,
-                        $logoTarget,
-                        $logoTarget,
-                        imagesx($logoImage),
-                        imagesy($logoImage)
+                        $logoTargetW,
+                        $logoTargetH,
+                        $logoOrigW,
+                        $logoOrigH
                     );
+
                     imagedestroy($logoImage);
                 }
             }
         }
 
+        // Copy QR below the top area
+        imagecopy($canvas, $qrImage, 0, $topPadding, 0, 0, $qrWidth, $qrHeight);
+
+        // Add band name and URL under the QR
         $name = Str::limit((string) ($bandName ?: config('app.name', 'eBand')), 32, '...');
-        $subtitle = '/masinfo';
+        $subtitle = url('/masinfo');
 
         $fontMain = 5;
         $fontSub = 3;
         $nameWidth = imagefontwidth($fontMain) * strlen($name);
         $subtitleWidth = imagefontwidth($fontSub) * strlen($subtitle);
-        imagestring($canvas, $fontMain, (int) (($width - $nameWidth) / 2), $height + 18, $name, $textColor);
-        imagestring($canvas, $fontSub, (int) (($width - $subtitleWidth) / 2), $height + 48, $subtitle, $textColor);
+
+        imagestring($canvas, $fontMain, (int) (($canvasWidth - $nameWidth) / 2), $topPadding + $qrHeight + 12, $name, $textColor);
+        imagestring($canvas, $fontSub, (int) (($canvasWidth - $subtitleWidth) / 2), $topPadding + $qrHeight + 36, $subtitle, $textColor);
 
         ob_start();
         imagepng($canvas, null, 6);

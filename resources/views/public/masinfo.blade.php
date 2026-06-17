@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,6 +8,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white text-gray-900">
+            
     @php
         $logoUrl = $bandSetting?->logo ? asset('storage/' . $bandSetting->logo) : URL::to('/') . '/imagenes/logo.png';
     @endphp
@@ -18,11 +19,24 @@
     <div class="pointer-events-none fixed inset-0 -z-10 bg-gradient-to-b from-white/85 via-white/92 to-white"></div>
 
     <main class="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 lg:px-8" data-initial-interes="{{ old('interes', '') }}">
+        <div class="mb-2 flex justify-end">
+            <div class="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white p-1.5 shadow-sm">                
+                <div class="inline-flex overflow-hidden rounded-md border border-slate-300">
+                    <a href="/greeting/ca_VL" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition sm:text-sm {{ app()->getLocale() === 'ca_VL' ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 hover:bg-slate-50' }}">
+                        <span class="fi fi-es-ct"></span>
+                        <span>VAL</span>
+                    </a>
+                    <a href="/greeting/es" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition sm:text-sm {{ app()->getLocale() === 'es' ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 hover:bg-slate-50' }}">
+                        <span class="fi fi-es"></span>
+                        <span>CAS</span>
+                    </a>
+                </div>
+            </div>
+        </div>
         <div class="rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-xl sm:p-10 backdrop-blur-sm">
             <div class="mb-8 flex flex-col items-center text-center gap-3">
                 <img src="{{ $logoUrl }}" alt="{{ $bandSetting?->nombre ?? 'eBand' }}" class="h-20 w-20 rounded-2xl object-cover ring-4 ring-white shadow-md">
-                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">{{ __('Asistente de contacto') }}</p>
-                <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">{{ __('Hablamos cuando quieras') }}</h1>
+                <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">{{ __('Hola') }}</h1>
                 <p class="max-w-2xl text-sm text-gray-600 sm:text-base">
                     {{ __('Es facil: nos cuentas que necesitas y te respondemos de forma cercana, clara y sin compromiso.') }}
                 </p>
@@ -68,20 +82,39 @@
 
                 <div class="space-y-4">
                     <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                        
                         <h2 class="text-lg font-semibold text-gray-900">{{ $bandSetting?->nombre ?? config('app.name', 'eBand') }}</h2>
                         <p class="mt-1 text-sm text-gray-600">{{ __('Aquí tienes nuestros datos de contacto:') }}</p>
 
                         <ul class="mt-3 space-y-2 text-sm text-gray-700">
                             @if(!empty($bandSetting?->telefono))
-                                <li><span class="font-medium">{{ __('Teléfono:') }}</span> <a href="tel:{{ $bandSetting->telefono }}" class="text-sky-700 hover:underline">{{ $bandSetting->telefono }}</a></li>
+                                <li class="flex items-center gap-3">
+                                    <!-- Phone icon -->
+                                   <x-phone w="20" h="20" />
+                                    <span class="font-medium">{{ __('Teléfono:') }}</span>
+                                    <a href="tel:{{ $bandSetting->telefono }}" class="text-sky-700 hover:underline">{{ $bandSetting->telefono }}</a>
+                                </li>
                             @endif
 
                             @if(!empty($bandSetting?->email))
-                                <li><span class="font-medium">{{ __('Correo:') }}</span> <a href="mailto:{{ $bandSetting->email }}" class="text-sky-700 hover:underline">{{ $bandSetting->email }}</a></li>
+                                <li class="flex items-center gap-3">
+                                    <!-- Mail icon -->
+                                    <svg class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M3 8.5V17.5C3 18.3284 3.67157 19 4.5 19H19.5C20.3284 19 21 18.3284 21 17.5V8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M21 8.5L12 13.5L3 8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <span class="font-medium">{{ __('Correo:') }}</span>
+                                    <a href="mailto:{{ $bandSetting->email }}" class="text-sky-700 hover:underline">{{ $bandSetting->email }}</a>
+                                </li>
                             @endif
 
-                            @if(!empty($bandSetting?->sitio_web))
-                                <li><span class="font-medium">{{ __('Web:') }}</span> <a href="{{ $bandSetting->sitio_web }}" class="text-sky-700 hover:underline" target="_blank" rel="noopener noreferrer">{{ $bandSetting->sitio_web }}</a></li>
+                            @if(!empty($bandSetting?->website))
+                                <li class="flex items-center gap-3">
+                                    <!-- Globe icon -->
+                                    <x-navi w="20" h="20" />
+                                            <span class="font-medium">{{ __('Web:') }}</span>
+                                    <a href="{{ $bandSetting->website }}" class="text-sky-700 hover:underline" target="_blank" rel="noopener noreferrer">{{ $bandSetting->website }}</a>
+                                </li>
                             @endif
                         </ul>
                     </div>
@@ -96,10 +129,18 @@
 
                     <div>
                         <p class="mb-2 text-sm text-gray-700 font-semibold">{{ __('Contáctanos en redes') }}</p>
-                        <div class="flex flex-wrap gap-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            @php
+                                $waNumber = preg_replace('/\D/', '', $bandSetting?->telefono);
+                                $waText = urlencode(__('Hola, me gustaría más información sobre vuestra banda.'));
+                            @endphp
+                            <a href="https://wa.me/{{ $waNumber }}?text={{ $waText }}"  target="_blank" rel="noopener noreferrer" class="flex justify-center items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-gray-700 hover:bg-sky-50 hover:border-sky-200 w-full">
+                                        <span class="text-lg">🗨</span>
+                                        <span>{{ $waNumber }}</span>
+                                    </a>
                             @foreach($socials as $field => $meta)
                                 @if(!empty($bandSetting?->{$field}))
-                                    <a href="{{ $bandSetting->{$field} }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-sky-50 hover:border-sky-200">
+                                    <a href="{{ $bandSetting->{$field} }}" target="_blank" rel="noopener noreferrer" class="flex justify-center items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-gray-700 hover:bg-sky-50 hover:border-sky-200 w-full">
                                         <span class="text-lg">{{ $meta['emoji'] }}</span>
                                         <span>{{ $meta['label'] }}</span>
                                     </a>
@@ -178,6 +219,25 @@
             </div>
         </div>
     </main>
+
+    <footer class="mt-6">
+            <div class="mx-auto max-w-4xl px-4 py-6 text-center">
+                <a href="https://eband.app/?utm_source=site&utm_medium=footer&utm_campaign=eband_link" aria-label="Visita eBand.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-4 py-2 shadow-lg transform transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-300">
+                    <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.333 0-4 1.333-4 4s2.667 4 4 4 4-1.333 4-4-2.667-4-4-4z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                    </svg>
+                    <span class="font-semibold text-white">{{ __('Descobreix eBand.app') }}</span>
+                    <svg class="h-4 w-4 text-white opacity-90" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </a>
+
+                <p class="mt-3 text-xs text-slate-600">
+                    {{ __('Gestió i organització de bandes i xarangas. Prova la nostra app per més funcionalitats i gestió fàcil.') }}
+                </p>
+            </div>
+        </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
