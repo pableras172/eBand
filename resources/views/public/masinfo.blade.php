@@ -214,9 +214,7 @@
                 </form>
             </section>
 
-            <div class="mt-8 text-center text-sm text-gray-500">
-                <a href="{{ route('welcome') }}" class="font-medium text-sky-700 hover:text-sky-600">{{ __('Volver al inicio') }}</a>
-            </div>
+            
         </div>
     </main>
 
