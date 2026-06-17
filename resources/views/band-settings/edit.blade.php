@@ -25,7 +25,38 @@
                 {{ session('error_message') }}
             </div>
         @endif
+<section>@if ($bandSetting->activarcontactoinfo)
+                    <div class="mt-4 rounded-xl border border-cyan-200 bg-cyan-50 p-4">
+                        <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                            <div>
+                                <p class="text-sm font-semibold text-cyan-900">{{ __('QR de acceso a /masinfo') }}</p>
+                                <p class="text-xs text-cyan-700">{{ __('Genera o actualiza el QR con la URL pública de contacto. Se guardará en almacenamiento para usarlo cuando quieras.') }}</p>
 
+                                <form method="POST" action="{{ route('band-settings.generate-contact-qr') }}" class="mt-3">
+                                    @csrf
+                                    <button type="submit"
+                                        class="inline-flex items-center rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-700">
+                                        {{ __('Generar QR de /masinfo') }}
+                                    </button>
+                                </form>
+                            </div>
+
+                            @if ($bandSetting->qr_contacto_masinfo)
+                                <div class="flex flex-col items-center gap-2">
+                                    <img src="{{ asset('storage/' . $bandSetting->qr_contacto_masinfo) }}"
+                                        alt="QR /masinfo"
+                                        class="h-40 w-40 rounded-lg border border-cyan-200 bg-white object-contain p-2">
+                                    <a href="{{ asset('storage/' . $bandSetting->qr_contacto_masinfo) }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="text-xs font-medium text-cyan-700 hover:text-cyan-900">
+                                        {{ __('Abrir QR') }}
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endif</section>
         <form method="POST" action="{{ route('band-settings.update') }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
@@ -214,38 +245,7 @@
                     </div>
                 </div>
 
-                @if ($bandSetting->activarcontactoinfo)
-                    <div class="mt-4 rounded-xl border border-cyan-200 bg-cyan-50 p-4">
-                        <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                            <div>
-                                <p class="text-sm font-semibold text-cyan-900">{{ __('QR de acceso a /masinfo') }}</p>
-                                <p class="text-xs text-cyan-700">{{ __('Genera o actualiza el QR con la URL pública de contacto. Se guardará en almacenamiento para usarlo cuando quieras.') }}</p>
-
-                                <form method="POST" action="{{ route('band-settings.generate-contact-qr') }}" class="mt-3">
-                                    @csrf
-                                    <button type="submit"
-                                        class="inline-flex items-center rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-700">
-                                        {{ __('Generar QR de /masinfo') }}
-                                    </button>
-                                </form>
-                            </div>
-
-                            @if ($bandSetting->qr_contacto_masinfo)
-                                <div class="flex flex-col items-center gap-2">
-                                    <img src="{{ asset('storage/' . $bandSetting->qr_contacto_masinfo) }}"
-                                        alt="QR /masinfo"
-                                        class="h-40 w-40 rounded-lg border border-cyan-200 bg-white object-contain p-2">
-                                    <a href="{{ asset('storage/' . $bandSetting->qr_contacto_masinfo) }}"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="text-xs font-medium text-cyan-700 hover:text-cyan-900">
-                                        {{ __('Abrir QR') }}
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                @endif
+                
             </section>
 
             <div class="flex justify-end">
@@ -255,5 +255,6 @@
                 </button>
             </div>
         </form>
+        
     </div>
 </x-app-layout>

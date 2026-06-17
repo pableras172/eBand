@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UpdateBandSettingRequest;
 use App\Models\BandSetting;
 use App\Models\User;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+
 
 class BandSettingController extends Controller
 {
@@ -49,7 +51,7 @@ class BandSettingController extends Controller
             ->with('success_message', __('Datos de la banda actualizados correctamente.'));
     }
 
-    public function generateContactQr(): RedirectResponse
+    public function generateContactQr()
     {
         $bandSetting = BandSetting::query()->first();
 
@@ -65,8 +67,7 @@ class BandSettingController extends Controller
                 ->with('error_message', __('Debes activar el formulario público para generar el QR.'));
         }
 
-        $baseUrl = rtrim((string) config('app.url'), '/');
-        $targetUrl = $baseUrl.'/masinfo';
+        $targetUrl = route('masinfo.create');
 
         try {
             $response = Http::timeout(20)
@@ -91,15 +92,11 @@ class BandSettingController extends Controller
                 $bandSetting->logo
             );
 
-            $path = 'imagenes/band/qr/contacto-masinfo-'.$bandSetting->id.'.png';
-            Storage::disk('public')->put($path, $qrBinary);
-
-            $bandSetting->qr_contacto_masinfo = $path;
-            $bandSetting->save();
-
-            return redirect()
-                ->route('band-settings.edit')
-                ->with('success_message', __('QR generado correctamente.'));
+            return response()->streamDownload(function () use ($qrBinary): void {
+                echo $qrBinary;
+            }, 'masinfo-qr.png', [
+                'Content-Type' => 'image/png',
+            ]);
         } catch (\Throwable) {
             return redirect()
                 ->route('band-settings.edit')

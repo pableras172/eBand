@@ -24,7 +24,7 @@
                 <p class="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">{{ __('Asistente de contacto') }}</p>
                 <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">{{ __('Hablamos cuando quieras') }}</h1>
                 <p class="max-w-2xl text-sm text-gray-600 sm:text-base">
-                    {{ __('Te lo ponemos facil: nos cuentas que necesitas y te respondemos de forma cercana, clara y sin compromiso.') }}
+                    {{ __('Es facil: nos cuentas que necesitas y te respondemos de forma cercana, clara y sin compromiso.') }}
                 </p>
             </div>
 
@@ -63,57 +63,51 @@
 
             <section data-section="busco_banda" class="hidden">
                 <div class="mb-4 rounded-2xl border border-sky-100 bg-sky-50 p-4 text-sm text-sky-900">
-                    {{ __('Has llegado al lugar adecuado. Si quieres contar con la banda ') }}<strong>{{ $bandSetting?->nombre ?? config('app.name', 'eBand') }}</strong>{{ __(' en tus actuaciones, podemos preparar un presupuesto.') }}
+                    {{ __('Has llegado al lugar adecuado. Si quieres contar con la banda ') }}<strong>{{ $bandSetting?->nombre ?? config('app.name', 'eBand') }}</strong>{{ __(' en tus actuaciones, aquí tienes nuestros datos de contacto.') }}
                 </div>
 
-                <form method="POST" action="{{ route('masinfo.store') }}" class="space-y-4">
-                    @csrf
-                    <input type="hidden" name="interes" value="busco_banda">
+                <div class="space-y-4">
+                    <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                        <h2 class="text-lg font-semibold text-gray-900">{{ $bandSetting?->nombre ?? config('app.name', 'eBand') }}</h2>
+                        <p class="mt-1 text-sm text-gray-600">{{ __('Aquí tienes nuestros datos de contacto:') }}</p>
 
-                    <div>
-                        <label for="nombre_apellidos_presupuesto" class="block text-sm font-medium text-gray-700">{{ __('Nombre y apellidos') }}</label>
-                        <input id="nombre_apellidos_presupuesto" name="nombre_apellidos" type="text" value="{{ old('nombre_apellidos') }}" class="mt-1 w-full rounded-xl border-gray-300 focus:border-sky-500 focus:ring-sky-500" required>
-                        @error('nombre_apellidos') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
+                        <ul class="mt-3 space-y-2 text-sm text-gray-700">
+                            @if(!empty($bandSetting?->telefono))
+                                <li><span class="font-medium">{{ __('Teléfono:') }}</span> <a href="tel:{{ $bandSetting->telefono }}" class="text-sky-700 hover:underline">{{ $bandSetting->telefono }}</a></li>
+                            @endif
+
+                            @if(!empty($bandSetting?->email))
+                                <li><span class="font-medium">{{ __('Correo:') }}</span> <a href="mailto:{{ $bandSetting->email }}" class="text-sky-700 hover:underline">{{ $bandSetting->email }}</a></li>
+                            @endif
+
+                            @if(!empty($bandSetting?->sitio_web))
+                                <li><span class="font-medium">{{ __('Web:') }}</span> <a href="{{ $bandSetting->sitio_web }}" class="text-sky-700 hover:underline" target="_blank" rel="noopener noreferrer">{{ $bandSetting->sitio_web }}</a></li>
+                            @endif
+                        </ul>
                     </div>
 
-                    <div>
-                        <label for="entidad_presupuesto" class="block text-sm font-medium text-gray-700">{{ __('Comparsa o asociacion') }}</label>
-                        <input id="entidad_presupuesto" name="entidad" type="text" value="{{ old('entidad') }}" class="mt-1 w-full rounded-xl border-gray-300 focus:border-sky-500 focus:ring-sky-500">
-                        @error('entidad') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
-                    </div>
+                    @php
+                        $socials = [
+                            'urlinstagram' => ['label' => 'Instagram', 'emoji' => '📸'],
+                            'urlfacebook' => ['label' => 'Facebook', 'emoji' => '👍'],
+                            'urltiktok' => ['label' => 'TikTok', 'emoji' => '🎵'],
+                        ];
+                    @endphp
 
                     <div>
-                        <label for="municipio_presupuesto" class="block text-sm font-medium text-gray-700">{{ __('Municipio') }}</label>
-                        <input id="municipio_presupuesto" name="municipio" type="text" value="{{ old('municipio') }}" class="mt-1 w-full rounded-xl border-gray-300 focus:border-sky-500 focus:ring-sky-500">
-                        @error('municipio') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        <div>
-                            <label for="telefono_contacto_presupuesto" class="block text-sm font-medium text-gray-700">{{ __('Telefono') }}</label>
-                            <input id="telefono_contacto_presupuesto" name="telefono_contacto" type="text" value="{{ old('telefono_contacto') }}" class="mt-1 w-full rounded-xl border-gray-300 focus:border-sky-500 focus:ring-sky-500" required>
-                            @error('telefono_contacto') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
+                        <p class="mb-2 text-sm text-gray-700 font-semibold">{{ __('Contáctanos en redes') }}</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($socials as $field => $meta)
+                                @if(!empty($bandSetting?->{$field}))
+                                    <a href="{{ $bandSetting->{$field} }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-sky-50 hover:border-sky-200">
+                                        <span class="text-lg">{{ $meta['emoji'] }}</span>
+                                        <span>{{ $meta['label'] }}</span>
+                                    </a>
+                                @endif
+                            @endforeach
                         </div>
-
-                        <div>
-                            <label for="email_contacto_presupuesto" class="block text-sm font-medium text-gray-700">{{ __('Correo de contacto') }}</label>
-                            <input id="email_contacto_presupuesto" name="email_contacto" type="email" value="{{ old('email_contacto') }}" class="mt-1 w-full rounded-xl border-gray-300 focus:border-sky-500 focus:ring-sky-500" required>
-                            @error('email_contacto') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
-                        </div>
                     </div>
-
-                    <div>
-                        <label for="mensaje_presupuesto" class="block text-sm font-medium text-gray-700">{{ __('Mas informacion') }}</label>
-                        <textarea id="mensaje_presupuesto" name="mensaje" rows="4" class="mt-1 w-full rounded-xl border-gray-300 focus:border-sky-500 focus:ring-sky-500">{{ old('mensaje') }}</textarea>
-                        @error('mensaje') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div>
-                        <button type="submit" class="inline-flex items-center rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-500">
-                            {{ __('Solicitar presupuesto') }}
-                        </button>
-                    </div>
-                </form>
+                </div>
             </section>
 
             <section data-section="soy_banda" class="hidden">
