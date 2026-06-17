@@ -129,8 +129,27 @@
                         </section>
                     @endif
                 </div>
+                
             </section>
         @endif
     </main>
+        <footer class="mt-6">
+            <div class="mx-auto max-w-4xl px-4 py-6 text-center">
+                <a href="https://eband.app/?utm_source=site&utm_medium=footer&utm_campaign=eband_link" aria-label="Visita eBand.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-4 py-2 shadow-lg transform transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-300">
+                    <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.333 0-4 1.333-4 4s2.667 4 4 4 4-1.333 4-4-2.667-4-4-4z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                    </svg>
+                    <span class="font-semibold text-white">{{ __('Descobreix eBand.app') }}</span>
+                    <svg class="h-4 w-4 text-white opacity-90" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </a>
+
+                <p class="mt-3 text-xs text-slate-600">
+                    {{ __('Gestió i organització de bandes i xarangas. Prova la nostra app per més funcionalitats i gestió fàcil.') }}
+                </p>
+            </div>
+        </footer>
 </body>
 </html>
