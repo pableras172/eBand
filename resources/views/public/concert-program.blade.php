@@ -111,7 +111,7 @@
                                     <hr class="my-2 border-slate-200">
                                     <div class="mt-1 flex items-center gap-2">
                                         <x-reprod class="flex-shrink-0" w="20" h="20" />
-                                        <p class="mt-2 text-sm text-slate-700">{{ $piece->url }}</p>
+                                        <a href="{{ $piece->url }}" target="_blank" rel="noopener noreferrer" class="mt-2 text-sm text-slate-700 hover:underline">{{ $piece->url }}</a>
                                     </div>
                                     @endif
                                         </div>
