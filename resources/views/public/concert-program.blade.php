@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ __('Programa de concert') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @php
+        $shareTitle = isset($program) ? ($program->title ?? config('app.name', 'eBand')) : config('app.name', 'eBand');
+        $shareDescription = isset($program) ? ($program->participants ?? $program->location ?? '') : '';
+        if (isset($program) && $program->image_path) {
+            $shareImage = asset('storage/' . $program->image_path);
+        } elseif (!empty($program) && !empty($program->logo_1_path)) {
+            $shareImage = asset('storage/' . $program->logo_1_path);
+        } else {
+            $shareImage = asset('imagenes/logo.png');
+        }
+        $shareUrl = request()->fullUrl();
+    @endphp
+
+    <meta name="description" content="{{ \Illuminate\Support\Str::limit($shareDescription, 197) }}">
+    <meta property="og:title" content="{{ $shareTitle }}">
+    <meta property="og:description" content="{{ \Illuminate\Support\Str::limit($shareDescription, 197) }}">
+    <meta property="og:image" content="{{ $shareImage }}">
+    <meta property="og:url" content="{{ $shareUrl }}">
+    <meta property="og:site_name" content="{{ config('app.name', 'eBand') }}">
+    <meta property="og:type" content="event">
+    <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $shareTitle }}">
+    <meta name="twitter:description" content="{{ \Illuminate\Support\Str::limit($shareDescription, 197) }}">
+    <meta name="twitter:image" content="{{ $shareImage }}">
 </head>
 <body class="min-h-screen bg-gradient-to-b from-slate-100 to-white text-slate-900">
     <main class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">

@@ -6,6 +6,32 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $bandSetting?->nombre ?? config('app.name', 'eBand') }} | Mas informacion</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @php
+        $shareTitle = $program->title ?? ($bandSetting?->nombre ?? config('app.name', 'eBand'));
+        $shareDescription = $program->participants ?? ($bandSetting?->descripcion ?? __('Es fácil: contáctanos para más info sobre la banda.'));
+        if (isset($program) && $program->image_path) {
+            $shareImage = asset('storage/' . $program->image_path);
+        } elseif (!empty($bandSetting?->logo)) {
+            $shareImage = asset('storage/' . $bandSetting->logo);
+        } else {
+            $shareImage = asset('imagenes/logo.png');
+        }
+        $shareUrl = request()->fullUrl();
+    @endphp
+
+    <meta name="description" content="{{ \Illuminate\Support\Str::limit($shareDescription, 197) }}">
+    <meta property="og:title" content="{{ $shareTitle }}">
+    <meta property="og:description" content="{{ \Illuminate\Support\Str::limit($shareDescription, 197) }}">
+    <meta property="og:image" content="{{ $shareImage }}">
+    <meta property="og:url" content="{{ $shareUrl }}">
+    <meta property="og:site_name" content="{{ config('app.name', 'eBand') }}">
+    <meta property="og:type" content="{{ isset($program) ? 'event' : 'website' }}">
+    <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $shareTitle }}">
+    <meta name="twitter:description" content="{{ \Illuminate\Support\Str::limit($shareDescription, 197) }}">
+    <meta name="twitter:image" content="{{ $shareImage }}">
 </head>
 <body class="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white text-gray-900">
             
