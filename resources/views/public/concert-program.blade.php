@@ -98,10 +98,21 @@
                                         <div class="min-w-0">
                                             <h3 class="text-lg font-semibold">{{ $piece->title }}</h3>
                                     @if ($piece->author)
-                                        <p class="text-sm text-slate-600">{{ __('Autor') }}: {{ $piece->author }}</p>
+                                        <div class="mt-1 flex items-center gap-2">
+                                            <x-composer class="flex-shrink-0" w="20" h="20" />
+                                            <p class="text-sm text-slate-600">{{ __('Autor') }}: {{ $piece->author }}</p>
+                                        </div>
                                     @endif
                                     @if ($piece->details)
+                                    <hr class="my-2 border-slate-200">
                                         <p class="mt-2 text-sm text-slate-700">{{ $piece->details }}</p>
+                                    @endif
+                                    @if ($piece->url)
+                                    <hr class="my-2 border-slate-200">
+                                    <div class="mt-1 flex items-center gap-2">
+                                        <x-reprod class="flex-shrink-0" w="20" h="20" />
+                                        <p class="mt-2 text-sm text-slate-700">{{ $piece->url }}</p>
+                                    </div>
                                     @endif
                                         </div>
                                     </div>
