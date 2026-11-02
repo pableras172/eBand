@@ -52,6 +52,27 @@
                         </div>
                     @endif
 
+                    @if (function_exists('tenant') && (tenant('id') === 'demo' || tenant('code') === 'demo'))
+                        <div class="mb-6 rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-4 shadow-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="flex h-2.5 w-2.5 rounded-full bg-blue-600 animate-pulse"></span>
+                                <span class="text-xs font-bold uppercase tracking-wider text-blue-900">Entorno de Pruebas Demo</span>
+                            </div>
+                            <p class="mt-1.5 text-xs text-slate-600 leading-relaxed">
+                                Estás en el espacio de demostración de eBand. Puedes explorar todas las funcionalidades sin necesidad de introducir contraseña.
+                            </p>
+                            <form method="POST" action="{{ route('demo.quick-login') }}" class="mt-3">
+                                @csrf
+                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-600 px-4 py-3 text-xs font-bold text-white shadow-md shadow-blue-700/20 transition hover:from-blue-800 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+                                    <span>Acceder a la Demo con 1 clic (Administrador)</span>
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+
                     @php
                         $showAdminLoginForm = ! config('demo.enabled') || request()->boolean('allowAdminAcces');
                     @endphp

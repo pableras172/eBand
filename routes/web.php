@@ -8,6 +8,7 @@ use App\Http\Controllers\ConcertProgramController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContratosController;
 use App\Http\Controllers\DemoAccessController;
+use App\Http\Controllers\DemoAutologinController;
 use App\Http\Controllers\DemoInformationRequestController;
 use App\Http\Controllers\InventoryExportController;
 use App\Http\Controllers\ListaController;
@@ -92,6 +93,11 @@ Route::post('/contact', [ContactController::class, 'send'])->name('contact.send'
 Route::post('/demo-access', [DemoAccessController::class, 'store'])
     ->middleware(['guest', 'throttle:demo-access'])
     ->name('demo.access');
+
+Route::get('/demo/autologin', [DemoAutologinController::class, 'autologin'])
+    ->name('demo.autologin');
+Route::post('/demo/quick-login', [DemoAutologinController::class, 'quickLogin'])
+    ->name('demo.quick-login');
 
 Route::get('/masinfo', [MasInfoController::class, 'create'])->name('masinfo.create');
 Route::post('/masinfo', [MasInfoController::class, 'store'])->name('masinfo.store');

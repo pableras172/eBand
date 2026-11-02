@@ -23,6 +23,6 @@ class TenantAccessTest extends TestCase
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirectContains('/login');
+        $response->assertRedirectContains('/demo/autologin');
     }
 }

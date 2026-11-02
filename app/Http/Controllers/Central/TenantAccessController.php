@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Central\TenantAccessCodeRequest;
 use App\Models\Tenant;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class TenantAccessController extends Controller
@@ -84,6 +86,16 @@ class TenantAccessController extends Controller
             return back()
                 ->withInput()
                 ->withErrors(['code' => __('El grupo existe pero no tiene un dominio configurado todavía.')]);
+        }
+
+        if (strtolower($code) === 'demo') {
+            $token = Str::random(64);
+            $demoEmail = (string) (session('demo_email') ?? 'admin@eband.app');
+            Cache::put('demo_autologin_'.$token, [
+                'email' => $demoEmail,
+            ], now()->addMinutes(15));
+
+            return redirect()->away(tenant_url('/demo/autologin?token='.$token, $tenant));
         }
 
         return redirect()->away(tenant_url('/login', $tenant));
