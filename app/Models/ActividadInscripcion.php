@@ -21,6 +21,7 @@ class ActividadInscripcion extends Model
     protected $fillable = [
         'actividad_id',
         'user_id',
+        'nombre_manual',
         'fecha_inscripcion',
         'total',
         'observaciones_alergias',
@@ -42,6 +43,11 @@ class ActividadInscripcion extends Model
             'total' => 'decimal:2',
             'pagado' => 'boolean',
         ];
+    }
+
+    public function getNombreCompletoAttribute(): string
+    {
+        return $this->user ? $this->user->name : ($this->nombre_manual ?: 'Invitado / Asistente');
     }
 
     /**

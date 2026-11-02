@@ -63,6 +63,8 @@
 - [x] T024 [US4] Crear tabla de inscritos con desglose de opciones, alergias y estado de pago
 - [x] T025 [US4] Implementar acción/modal para marcar inscripción como "Pagada" registrando opcionalmente el método (`bizum`, `efectivo`, `transferencia`)
 - [x] T026 [US4] Permitir al administrador editar o dar de baja una inscripción a petición de un músico
+- [x] T031 [US4] Permitir al administrador inscribir directamente a miembros de la banda o personas externas/sin cuenta seleccionando platos/opciones y cobro inicial
+- [x] T032 [US4] Permitir al administrador editar inscripciones existentes directamente desde la tabla nominal
 
 ---
 

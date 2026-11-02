@@ -63,6 +63,7 @@ Como administrador, quiero consultar la lista de inscritos de una actividad, ver
   1. **Dado** que hay múltiples músicos inscritos, **cuando** el administrador visualiza la actividad, **entonces** ve un resumen métrico con el recuento total por opción (ej: 45 Menú Carne, 20 Menú Pescado, 10 Menú Infantil) y el balance de recaudación (Total previsto, Total cobrado, Total pendiente).
   2. **Dado** un registro de inscripción pendiente, **cuando** el administrador pulsa en marcar como "Pagado", **entonces** puede opcionalmente seleccionar el método de pago (`bizum`, `efectivo`, `transferencia`, `otro`) y el sistema guarda el estado `pagado = true` con la fecha y método.
   3. **Dado** que un músico necesita modificar sus opciones o darse de baja, **cuando** el administrador edita o elimina la inscripción desde el panel, **entonces** las cantidades y totales se recalculan automáticamente.
+  4. **Dado** que un miembro sin acceso a la app o una persona externa necesita apuntarse, **cuando** el administrador pulsa en "Inscribir Asistente", **entonces** puede seleccionar un miembro existente o indicar un nombre manual, seleccionar las cantidades de cada menú/opción (ej: 2 adultos y 2 niños), indicar alergias y opcionalmente marcar el pago directo.
 
 ---
 

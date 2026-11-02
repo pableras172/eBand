@@ -202,4 +202,100 @@ class ActividadInscripcionTest extends TestCase
 
         $this->assertNotNull($actividad->fresh()->notified_at);
     }
+
+    public function test_admin_can_inscribe_registered_musician(): void
+    {
+        $admin = $this->createAdminUser();
+        $musician = $this->createRegularUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Comida de Santa Cecilia',
+            'tipo' => 'comida',
+            'fecha' => Carbon::now()->addDays(10),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(5),
+            'estado' => 'abierta',
+        ]);
+
+        $opcionAdulto = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú Adulto',
+            'precio' => 25.00,
+            'orden' => 1,
+        ]);
+
+        $opcionNino = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú Infantil',
+            'precio' => 12.00,
+            'orden' => 2,
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(ActividadAdminDetail::class, ['actividadId' => $actividad->id])
+            ->call('openCreateInscripcionModal')
+            ->set('tipoAsistente', 'miembro')
+            ->set('selectedUserId', $musician->id)
+            ->set("cantidades.{$opcionAdulto->id}", 2)
+            ->set("cantidades.{$opcionNino->id}", 2)
+            ->set('observaciones_alergias', 'Uno de los niños es celíaco')
+            ->set('marcarPagado', true)
+            ->set('metodoPago', 'efectivo')
+            ->call('guardarInscripcion')
+            ->assertHasNoErrors()
+            ->assertSet('showingInscripcionModal', false);
+
+        $this->assertDatabaseHas('actividad_inscripciones', [
+            'actividad_id' => $actividad->id,
+            'user_id' => $musician->id,
+            'total' => 74.00, // 2*25 + 2*12
+            'pagado' => true,
+            'metodo_pago' => 'efectivo',
+            'observaciones_alergias' => 'Uno de los niños es celíaco',
+        ]);
+    }
+
+    public function test_admin_can_inscribe_guest_without_app_account(): void
+    {
+        $admin = $this->createAdminUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Comida Fin de Curso',
+            'tipo' => 'comida',
+            'fecha' => Carbon::now()->addDays(10),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(5),
+            'estado' => 'abierta',
+        ]);
+
+        $opcion = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú Único',
+            'precio' => 20.00,
+            'orden' => 1,
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(ActividadAdminDetail::class, ['actividadId' => $actividad->id])
+            ->call('openCreateInscripcionModal')
+            ->set('tipoAsistente', 'manual')
+            ->set('nombreManual', 'Vicente Gómez (músico honorífico)')
+            ->set("cantidades.{$opcion->id}", 3)
+            ->set('marcarPagado', false)
+            ->call('guardarInscripcion')
+            ->assertHasNoErrors()
+            ->assertSet('showingInscripcionModal', false);
+
+        $this->assertDatabaseHas('actividad_inscripciones', [
+            'actividad_id' => $actividad->id,
+            'user_id' => null,
+            'nombre_manual' => 'Vicente Gómez (músico honorífico)',
+            'total' => 60.00,
+            'pagado' => false,
+        ]);
+
+        $inscripcion = ActividadInscripcion::query()
+            ->where('nombre_manual', 'Vicente Gómez (músico honorífico)')
+            ->firstOrFail();
+
+        $this->assertEquals('Vicente Gómez (músico honorífico)', $inscripcion->nombre_completo);
+    }
 }

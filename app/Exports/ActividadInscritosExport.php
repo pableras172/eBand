@@ -61,8 +61,8 @@ class ActividadInscritosExport implements FromCollection, ShouldAutoSize, WithHe
 
         return [
             $row->id,
-            $row->user->name ?? 'Usuario',
-            $row->user->email ?? '',
+            $row->nombre_completo,
+            $row->user->email ?? '-',
             $row->fecha_inscripcion ? $row->fecha_inscripcion->format('d/m/Y H:i') : '',
             $opcionesDesglose,
             number_format((float) $row->total, 2, ',', ''),

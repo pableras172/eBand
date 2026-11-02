@@ -26,6 +26,14 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-2">
+                <button type="button" wire:click="openCreateInscripcionModal"
+                    class="inline-flex items-center rounded-lg bg-cyan-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-cyan-500 transition">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                    {{ __('actividades.register_member_or_guest') }}
+                </button>
+
                 <button type="button" wire:click="notificarOneSignal"
                     wire:confirm="{{ __('actividades.confirm_notify') }}"
                     title="{{ __('actividades.notify_onesignal') }}"
@@ -99,53 +107,60 @@
                         <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">
                             {{ $rec['titulo'] }}
                         </span>
-                        <div class="text-2xl font-black text-gray-900">
-                            {{ $rec['cantidad'] }} <span class="text-xs font-normal text-gray-500">{{ __('actividades.units') }}</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-3xl font-black text-gray-900">{{ $rec['cantidad'] }}</span>
+                            <span class="text-xs text-gray-500 font-medium">{{ __('actividades.units') }}</span>
                         </div>
                     </div>
-                    <div class="mt-3 pt-2 border-t border-gray-200/60 flex items-center justify-between text-xs text-gray-600">
-                        <span>{{ number_format($rec['precio'], 2, ',', '.') }} € / ud.</span>
-                        <span class="font-semibold text-gray-900">{{ number_format($rec['importe'], 2, ',', '.') }} €</span>
+                    <div class="mt-3 pt-3 border-t border-gray-200/80 flex items-center justify-between text-xs text-gray-600">
+                        <span>{{ number_format((float) $rec['precio'], 2, ',', '.') }} € / ud.</span>
+                        <span class="font-bold text-gray-800">{{ number_format((float) $rec['importe'], 2, ',', '.') }} €</span>
                     </div>
                 </div>
             @empty
-                <div class="col-span-full py-4 text-center text-xs text-gray-500">
-                    {{ __('No hi ha opcions configurades.') }}
+                <div class="col-span-full text-center py-6 text-sm text-gray-500">
+                    {{ __('No hay opciones configuradas.') }}
                 </div>
             @endforelse
         </div>
     </div>
 
-    <!-- Bloque de Balance Financiero -->
+    <!-- Métricas Financieras y de Cobro -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
-            <span class="text-xs font-semibold uppercase tracking-wider text-gray-500 block mb-1">{{ __('actividades.total_predicted') }}</span>
-            <div class="text-2xl font-bold text-gray-900">
-                {{ number_format($totalPrevisto, 2, ',', '.') }} €
+            <span class="text-xs font-bold uppercase tracking-wider text-gray-400 block mb-1">
+                {{ __('actividades.total_predicted') }}
+            </span>
+            <div class="text-2xl font-black text-gray-900">
+                {{ number_format((float) $totalPrevisto, 2, ',', '.') }} €
             </div>
-            <p class="text-xs text-gray-500 mt-1">{{ __('actividades.total_predicted_sub') }}</p>
+            <p class="text-[11px] text-gray-500 mt-1">{{ __('actividades.total_predicted_sub') }}</p>
         </div>
 
-        <div class="rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
-            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-600 block mb-1">{{ __('actividades.total_collected') }}</span>
-            <div class="text-2xl font-bold text-emerald-700">
-                {{ number_format($totalCobrado, 2, ',', '.') }} €
+        <div class="rounded-2xl bg-white p-5 shadow-sm border border-emerald-100 bg-emerald-50/30">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 block mb-1">
+                {{ __('actividades.total_collected') }}
+            </span>
+            <div class="text-2xl font-black text-emerald-700">
+                {{ number_format((float) $totalCobrado, 2, ',', '.') }} €
             </div>
-            <p class="text-xs text-emerald-600/80 mt-1">
+            <p class="text-[11px] text-emerald-600 mt-1">
                 @if ($totalPrevisto > 0)
-                    {{ round(($totalCobrado / $totalPrevisto) * 100) }}% {{ __('recaudado') }}
+                    {{ number_format(($totalCobrado / $totalPrevisto) * 100, 1) }}% cobrado
                 @else
                     0%
                 @endif
             </p>
         </div>
 
-        <div class="rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
-            <span class="text-xs font-semibold uppercase tracking-wider text-amber-600 block mb-1">{{ __('actividades.total_pending') }}</span>
-            <div class="text-2xl font-bold text-amber-700">
-                {{ number_format($totalPendiente, 2, ',', '.') }} €
+        <div class="rounded-2xl bg-white p-5 shadow-sm border border-amber-100 bg-amber-50/30">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-600 block mb-1">
+                {{ __('actividades.total_pending') }}
+            </span>
+            <div class="text-2xl font-black text-amber-700">
+                {{ number_format((float) $totalPendiente, 2, ',', '.') }} €
             </div>
-            <p class="text-xs text-amber-600/80 mt-1">{{ __('actividades.total_pending_sub') }}</p>
+            <p class="text-[11px] text-amber-600 mt-1">{{ __('actividades.total_pending_sub') }}</p>
         </div>
     </div>
 
@@ -186,8 +201,21 @@
                     @forelse ($inscritos as $ins)
                         <tr wire:key="inscrito-{{ $ins->id }}" class="hover:bg-gray-50/60 transition">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="font-semibold text-sm text-gray-900">{{ $ins->user->name }}</div>
-                                <div class="text-xs text-gray-500">{{ $ins->fecha_inscripcion->translatedFormat('d M Y, H:i') }}</div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-semibold text-sm text-gray-900">{{ $ins->nombre_completo }}</span>
+                                    @if (!$ins->user_id)
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                                            {{ __('actividades.external_or_no_account') }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="text-xs text-gray-500 flex items-center gap-2 mt-0.5">
+                                    <span>{{ $ins->fecha_inscripcion->translatedFormat('d M Y, H:i') }}</span>
+                                    @if ($ins->user && $ins->user->email)
+                                        <span>•</span>
+                                        <span class="text-gray-400">{{ $ins->user->email }}</span>
+                                    @endif
+                                </div>
                             </td>
 
                             <td class="px-6 py-4">
@@ -237,9 +265,13 @@
                                 @endif
                             </td>
 
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-xs">
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-xs space-x-2">
+                                <button type="button" wire:click="openEditInscripcionModal({{ $ins->id }})"
+                                    class="text-cyan-600 hover:text-cyan-800 font-medium transition">
+                                    {{ __('Editar') }}
+                                </button>
                                 <button type="button" wire:click="eliminarInscripcion({{ $ins->id }})"
-                                    wire:confirm="{{ __('actividades.confirm_cancel_registration', ['name' => $ins->user->name]) }}"
+                                    wire:confirm="{{ __('actividades.confirm_cancel_registration', ['name' => $ins->nombre_completo]) }}"
                                     class="text-rose-500 hover:text-rose-700 font-medium transition">
                                     {{ __('actividades.cancel_registration') }}
                                 </button>
@@ -257,7 +289,149 @@
         </div>
     </div>
 
-    <!-- Modal Registrar Pago -->
+    <!-- Modal Registrar / Editar Inscripción (Admin) -->
+    @if ($showingInscripcionModal)
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl space-y-5 border border-gray-100 max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <div>
+                        <h3 class="text-base font-bold text-gray-900">
+                            {{ $editingInscripcionId ? __('actividades.edit_registration') : __('actividades.register_member_or_guest') }}
+                        </h3>
+                        <p class="text-xs text-gray-500">{{ __('actividades.register_member_or_guest_sub') }}</p>
+                    </div>
+                    <button type="button" wire:click="$set('showingInscripcionModal', false)" class="text-gray-400 hover:text-gray-600">
+                        ✕
+                    </button>
+                </div>
+
+                <!-- Tipo de Asistente -->
+                <div class="space-y-3">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-700">{{ __('actividades.attendee_type') }}</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center gap-2.5 p-3 rounded-xl border {{ $tipoAsistente === 'miembro' ? 'border-cyan-500 bg-cyan-50/40 text-cyan-900 font-semibold ring-1 ring-cyan-500' : 'border-gray-200 hover:bg-gray-50 text-gray-700' }} cursor-pointer text-xs transition">
+                            <input type="radio" wire:model.live="tipoAsistente" value="miembro" class="text-cyan-600 focus:ring-cyan-500" />
+                            <span>👥 {{ __('actividades.band_member') }}</span>
+                        </label>
+                        <label class="flex items-center gap-2.5 p-3 rounded-xl border {{ $tipoAsistente === 'manual' ? 'border-cyan-500 bg-cyan-50/40 text-cyan-900 font-semibold ring-1 ring-cyan-500' : 'border-gray-200 hover:bg-gray-50 text-gray-700' }} cursor-pointer text-xs transition">
+                            <input type="radio" wire:model.live="tipoAsistente" value="manual" class="text-cyan-600 focus:ring-cyan-500" />
+                            <span>👤 {{ __('actividades.external_or_no_account') }}</span>
+                        </label>
+                    </div>
+
+                    @if ($tipoAsistente === 'miembro')
+                        <div class="mt-2">
+                            <label class="block text-xs font-medium text-gray-700 mb-1">{{ __('actividades.select_member') }}</label>
+                            <select wire:model="selectedUserId" class="w-full rounded-lg border-gray-300 text-xs shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
+                                <option value="">{{ __('actividades.select_member_placeholder') }}</option>
+                                @foreach ($usuariosDisponibles as $usr)
+                                    <option value="{{ $usr->id }}">{{ $usr->name }} ({{ $usr->email }})</option>
+                                @endforeach
+                            </select>
+                            @error('selectedUserId') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
+                        </div>
+                    @else
+                        <div class="mt-2">
+                            <label class="block text-xs font-medium text-gray-700 mb-1">{{ __('actividades.guest_name_label') }}</label>
+                            <input type="text" wire:model="nombreManual" placeholder="{{ __('actividades.guest_name_placeholder') }}"
+                                class="w-full rounded-lg border-gray-300 text-xs shadow-sm focus:border-cyan-500 focus:ring-cyan-500" />
+                            @error('nombreManual') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Selección de Menús / Opciones con Cantidades -->
+                <div class="space-y-3 pt-3 border-t border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-700">{{ __('actividades.selected_options') }}</label>
+                        <span class="text-xs font-bold text-cyan-700">{{ number_format($totalCalculado, 2, ',', '.') }} €</span>
+                    </div>
+
+                    <div class="space-y-2">
+                        @foreach ($actividad->opciones as $opc)
+                            <div class="flex items-center justify-between p-3 rounded-xl border border-gray-200 bg-gray-50/50">
+                                <div class="pr-2">
+                                    <div class="text-xs font-bold text-gray-900">{{ $opc->titulo }}</div>
+                                    <div class="text-[11px] text-gray-500">{{ number_format((float) $opc->precio, 2, ',', '.') }} € / ud.</div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" wire:click="decrementarCantidad({{ $opc->id }})"
+                                        class="w-7 h-7 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 flex items-center justify-center font-bold text-sm">
+                                        -
+                                    </button>
+                                    <input type="number" wire:model.live="cantidades.{{ $opc->id }}" min="0"
+                                        class="w-14 text-center rounded-lg border-gray-300 text-xs py-1 font-bold focus:border-cyan-500 focus:ring-cyan-500" />
+                                    <button type="button" wire:click="incrementarCantidad({{ $opc->id }})"
+                                        class="w-7 h-7 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 flex items-center justify-center font-bold text-sm">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    @error('cantidades') <p class="mt-1 text-xs text-rose-600">{{ $message }}</p> @enderror
+                </div>
+
+                <!-- Alergias y Observaciones -->
+                <div class="space-y-2 pt-3 border-t border-gray-100">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-700">{{ __('actividades.allergies_notes') }}</label>
+                    <textarea wire:model="observaciones_alergias" rows="2" placeholder="{{ __('actividades.allergies_placeholder') }}"
+                        class="w-full rounded-lg border-gray-300 text-xs shadow-sm focus:border-cyan-500 focus:ring-cyan-500"></textarea>
+                </div>
+
+                <!-- Estado del Pago Inicial -->
+                <div class="space-y-3 pt-3 border-t border-gray-100">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" wire:model.live="marcarPagado" class="rounded border-gray-300 text-cyan-600 focus:ring-cyan-500" />
+                        <span class="text-xs font-semibold text-gray-800">{{ __('actividades.mark_paid_now') }}</span>
+                    </label>
+
+                    @if ($marcarPagado)
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-200 space-y-2">
+                            <label class="block text-[11px] font-semibold text-gray-600 uppercase">{{ __('actividades.payment_method_used') }}</label>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <label class="flex items-center gap-1.5 p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 cursor-pointer">
+                                    <input type="radio" wire:model="metodoPago" value="efectivo" class="text-cyan-600 focus:ring-cyan-500" />
+                                    <span>💶 {{ __('actividades.payment_methods.efectivo') }}</span>
+                                </label>
+                                <label class="flex items-center gap-1.5 p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 cursor-pointer">
+                                    <input type="radio" wire:model="metodoPago" value="bizum" class="text-cyan-600 focus:ring-cyan-500" />
+                                    <span>📱 {{ __('actividades.payment_methods.bizum') }}</span>
+                                </label>
+                                <label class="flex items-center gap-1.5 p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 cursor-pointer">
+                                    <input type="radio" wire:model="metodoPago" value="transferencia" class="text-cyan-600 focus:ring-cyan-500" />
+                                    <span>🏦 {{ __('actividades.payment_methods.transferencia') }}</span>
+                                </label>
+                                <label class="flex items-center gap-1.5 p-2 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 cursor-pointer">
+                                    <input type="radio" wire:model="metodoPago" value="otro" class="text-cyan-600 focus:ring-cyan-500" />
+                                    <span>{{ __('actividades.payment_methods.otro') }}</span>
+                                </label>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div class="text-xs text-gray-500">
+                        {{ __('Total') }}: <span class="text-sm font-bold text-gray-900">{{ number_format($totalCalculado, 2, ',', '.') }} €</span>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button type="button" wire:click="$set('showingInscripcionModal', false)"
+                            class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
+                            {{ __('actividades.cancel') }}
+                        </button>
+                        <button type="button" wire:click="guardarInscripcion"
+                            class="rounded-lg bg-cyan-600 px-4 py-2 text-xs font-semibold text-white hover:bg-cyan-500 shadow-sm transition">
+                            {{ __('actividades.save_changes') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Registrar Pago Rápido -->
     @if ($showingPaymentModal)
         <div class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 backdrop-blur-xs flex items-center justify-center p-4">
             <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl space-y-4 border border-gray-100">
