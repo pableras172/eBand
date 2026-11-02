@@ -1,72 +1,82 @@
 <div class="max-w-7xl mx-auto py-4 px-2 pb-24 sm:px-6 lg:px-8 space-y-6">
     <x-slot name="header">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                    <a href="{{ route('admin.actividades.index') }}" class="hover:text-cyan-600 transition">{{ __('actividades.title') }}</a>
-                    <span>/</span>
-                    <span class="text-gray-700 font-medium">{{ __('actividades.dashboard_title') }}</span>
-                </div>
-                <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                    <span>{{ $actividad->icono }}</span> {{ $actividad->titulo }}
-                </h1>
-                <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500 mt-1">
-                    <span>📅 {{ $actividad->fecha->translatedFormat('d M Y, H:i') }} h</span>
-                    @if ($actividad->lugar)
-                        <span>•</span>
-                        <span>📍 {{ $actividad->lugar }}</span>
-                    @endif
-                    <span>•</span>
-                    <span>⏰ {{ __('actividades.deadline') }}: {{ $actividad->fecha_limite_inscripcion->translatedFormat('d M Y, H:i') }} h</span>
-                    @if ($actividad->notified_at)
-                        <span>•</span>
-                        <span class="text-indigo-600 font-medium">🔔 {{ __('actividades.notified_at', ['date' => $actividad->notified_at->translatedFormat('d M Y, H:i')]) }}</span>
-                    @endif
-                </div>
+        <div>
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                <a href="{{ route('admin.actividades.index') }}" class="hover:text-cyan-600 transition">{{ __('actividades.title') }}</a>
+                <span>/</span>
+                <span class="text-gray-700 font-medium">{{ __('actividades.dashboard_title') }}</span>
             </div>
-
-            <div class="flex flex-wrap items-center gap-2">
-                <button type="button" wire:click="openCreateInscripcionModal"
-                    class="inline-flex items-center rounded-lg bg-cyan-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-cyan-500 transition">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                    </svg>
-                    {{ __('actividades.register_member_or_guest') }}
-                </button>
-
-                <button type="button" wire:click="notificarOneSignal"
-                    wire:confirm="{{ __('actividades.confirm_notify') }}"
-                    title="{{ __('actividades.notify_onesignal') }}"
-                    class="inline-flex items-center rounded-lg bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 transition">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                    {{ __('actividades.notify_onesignal') }}
-                </button>
-
-                <a href="{{ route('actividades.show', $actividad) }}" target="_blank"
-                    class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
-                    <svg class="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                    {{ __('actividades.view_as_musician') }}
-                </a>
-
-                <a href="{{ route('admin.actividades.export', $actividad) }}"
-                    class="inline-flex items-center rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-500 transition">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    {{ __('actividades.export_excel') }}
-                </a>
-
-                <a href="{{ route('admin.actividades.edit', $actividad) }}"
-                    class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
-                    {{ __('Editar') }}
-                </a>
-            </div>
+            <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <span>{{ $actividad->icono }}</span> {{ $actividad->titulo }}
+            </h1>
         </div>
     </x-slot>
+
+    <!-- Barra de acciones y metadatos dentro del componente Livewire -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500">
+                <span class="flex items-center gap-1 font-semibold text-gray-800">
+                    <span>📅</span> {{ $actividad->fecha->translatedFormat('d M Y, H:i') }} h
+                </span>
+                @if ($actividad->lugar)
+                    <span>•</span>
+                    <span class="flex items-center gap-1">
+                        <span>📍</span> {{ $actividad->lugar }}
+                    </span>
+                @endif
+                <span>•</span>
+                <span class="flex items-center gap-1 text-rose-600 font-medium">
+                    <span>⏰</span> {{ __('actividades.deadline') }}: {{ $actividad->fecha_limite_inscripcion->translatedFormat('d M Y, H:i') }} h
+                </span>
+                @if ($actividad->notified_at)
+                    <span>•</span>
+                    <span class="text-indigo-600 font-medium">🔔 {{ __('actividades.notified_at', ['date' => $actividad->notified_at->translatedFormat('d M Y, H:i')]) }}</span>
+                @endif
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+            <button type="button" wire:click="openCreateInscripcionModal"
+                class="inline-flex items-center rounded-lg bg-cyan-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-cyan-500 transition cursor-pointer">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                {{ __('actividades.register_member_or_guest') }}
+            </button>
+
+            <button type="button" wire:click="notificarOneSignal"
+                wire:confirm="{{ __('actividades.confirm_notify') }}"
+                title="{{ __('actividades.notify_onesignal') }}"
+                class="inline-flex items-center rounded-lg bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 transition cursor-pointer">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                {{ __('actividades.notify_onesignal') }}
+            </button>
+
+            <a href="{{ route('actividades.show', $actividad) }}" target="_blank"
+                class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
+                <svg class="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+                {{ __('actividades.view_as_musician') }}
+            </a>
+
+            <a href="{{ route('admin.actividades.export', $actividad) }}"
+                class="inline-flex items-center rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-500 transition">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                {{ __('actividades.export_excel') }}
+            </a>
+
+            <a href="{{ route('admin.actividades.edit', $actividad) }}"
+                class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
+                {{ __('Editar') }}
+            </a>
+        </div>
+    </div>
 
     @if (session()->has('success'))
         <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800 flex items-center gap-2 shadow-sm">
@@ -179,9 +189,17 @@
                 <p class="text-xs text-gray-500">{{ __('actividades.nominal_list_sub') }}</p>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+                <button type="button" wire:click="openCreateInscripcionModal"
+                    class="inline-flex items-center rounded-lg bg-cyan-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-cyan-500 transition cursor-pointer">
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                    {{ __('actividades.register_member_or_guest') }}
+                </button>
+
                 <input type="text" wire:model.live.debounce.300ms="searchInscritos" placeholder="{{ __('actividades.search_musician') }}"
-                    class="rounded-lg border-gray-300 text-xs shadow-sm focus:border-cyan-500 focus:ring-cyan-500 w-48" />
+                    class="rounded-lg border-gray-300 text-xs shadow-sm focus:border-cyan-500 focus:ring-cyan-500 w-44" />
 
                 <select wire:model.live="filtroPago"
                     class="rounded-lg border-gray-300 text-xs shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
