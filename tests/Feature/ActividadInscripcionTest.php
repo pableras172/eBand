@@ -348,4 +348,32 @@ class ActividadInscripcionTest extends TestCase
             'total' => 20.00,
         ]);
     }
+
+    public function test_activity_description_supports_html_formatting(): void
+    {
+        $user = $this->createRegularUser();
+
+        $htmlDesc = '<p>Reunión en la <strong>sede</strong>:</p><ul><li>Traer partituras</li><li>Uniforme oficial</li></ul>';
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Concierto de Gala',
+            'tipo' => 'otro',
+            'descripcion' => $htmlDesc,
+            'fecha' => Carbon::now()->addDays(10),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(5),
+            'estado' => 'abierta',
+        ]);
+
+        ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Entrada General',
+            'precio' => 0.00,
+            'orden' => 1,
+        ]);
+
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->assertSeeHtml('<strong>sede</strong>')
+            ->assertSeeHtml('<li>Traer partituras</li>');
+    }
 }

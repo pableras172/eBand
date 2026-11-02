@@ -78,7 +78,7 @@
                     <div>
                         <h2 class="text-lg font-bold text-gray-900 leading-snug">{{ $act->titulo }}</h2>
                         @if ($act->descripcion)
-                            <p class="text-xs text-gray-600 line-clamp-2 mt-1">{{ $act->descripcion }}</p>
+                            <p class="text-xs text-gray-600 line-clamp-2 mt-1">{{ strip_tags($act->descripcion) }}</p>
                         @endif
                     </div>
 

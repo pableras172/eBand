@@ -111,13 +111,109 @@
                     @error('lugar') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
-                <!-- Descripción -->
-                <div class="md:col-span-2">
-                    <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-1">
-                        {{ __('actividades.description') }}
-                    </label>
-                    <textarea id="descripcion" rows="3" wire:model="descripcion" placeholder="Detalls de l'esdeveniment, horaris, etc."
-                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 text-sm"></textarea>
+                <!-- Descripción e Información (con soporte HTML) -->
+                <div class="md:col-span-2" x-data="{
+                    tab: 'write',
+                    format(tagOpen, tagClose = '') {
+                        const textarea = this.$refs.textarea;
+                        const start = textarea.selectionStart;
+                        const end = textarea.selectionEnd;
+                        const text = textarea.value;
+                        const selected = text.substring(start, end);
+                        const replacement = tagOpen + (selected || '') + tagClose;
+                        textarea.value = text.substring(0, start) + replacement + text.substring(end);
+                        textarea.focus();
+                        textarea.setSelectionRange(start + tagOpen.length, start + tagOpen.length + (selected ? selected.length : 0));
+                        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    },
+                    insertList(ordered = false) {
+                        const textarea = this.$refs.textarea;
+                        const start = textarea.selectionStart;
+                        const end = textarea.selectionEnd;
+                        const text = textarea.value;
+                        const tag = ordered ? 'ol' : 'ul';
+                        const listHtml = `<${tag}>\n  <li>Elemento 1</li>\n  <li>Elemento 2</li>\n</${tag}>\n`;
+                        textarea.value = text.substring(0, start) + listHtml + text.substring(end);
+                        textarea.focus();
+                        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                }">
+                    <div class="flex items-center justify-between mb-1">
+                        <label for="descripcion" class="block text-sm font-medium text-gray-700">
+                            {{ __('actividades.description') }}
+                        </label>
+                        <!-- Selector Modo Editor / Vista Previa -->
+                        <div class="flex rounded-lg bg-gray-100 p-0.5 text-xs">
+                            <button type="button" @click="tab = 'write'"
+                                :class="tab === 'write' ? 'bg-white text-gray-900 shadow-xs font-semibold' : 'text-gray-500 hover:text-gray-800'"
+                                class="px-2.5 py-1 rounded-md transition flex items-center gap-1">
+                                <span>✏️</span>
+                                <span>{{ __('Editor') }}</span>
+                            </button>
+                            <button type="button" @click="tab = 'preview'"
+                                :class="tab === 'preview' ? 'bg-white text-gray-900 shadow-xs font-semibold' : 'text-gray-500 hover:text-gray-800'"
+                                class="px-2.5 py-1 rounded-md transition flex items-center gap-1">
+                                <span>👁️</span>
+                                <span>{{ __('Vista previa') }}</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Barra de herramientas de formato HTML -->
+                    <div x-show="tab === 'write'" class="flex flex-wrap items-center gap-1 p-1.5 bg-gray-50 border border-gray-300 rounded-t-lg border-b-0 text-xs">
+                        <button type="button" @click="format('<strong>', '</strong>')" title="{{ __('Negrita') }}"
+                            class="px-2.5 py-1 rounded bg-white hover:bg-gray-100 border border-gray-200 font-bold text-gray-800 shadow-2xs">
+                            B
+                        </button>
+                        <button type="button" @click="format('<em>', '</em>')" title="{{ __('Cursiva') }}"
+                            class="px-2.5 py-1 rounded bg-white hover:bg-gray-100 border border-gray-200 italic font-serif text-gray-800 shadow-2xs">
+                            I
+                        </button>
+                        <button type="button" @click="format('<u>', '</u>')" title="{{ __('Subrayado') }}"
+                            class="px-2.5 py-1 rounded bg-white hover:bg-gray-100 border border-gray-200 underline text-gray-800 shadow-2xs">
+                            U
+                        </button>
+                        <span class="w-px h-4 bg-gray-300 mx-1"></span>
+                        <button type="button" @click="insertList(false)" title="{{ __('Lista con viñetas') }}"
+                            class="px-2.5 py-1 rounded bg-white hover:bg-gray-100 border border-gray-200 text-gray-800 shadow-2xs flex items-center gap-1">
+                            <span>•</span> <span>{{ __('Lista') }}</span>
+                        </button>
+                        <button type="button" @click="insertList(true)" title="{{ __('Lista numerada') }}"
+                            class="px-2.5 py-1 rounded bg-white hover:bg-gray-100 border border-gray-200 text-gray-800 shadow-2xs flex items-center gap-1">
+                            <span>1.</span> <span>{{ __('Numerada') }}</span>
+                        </button>
+                        <span class="w-px h-4 bg-gray-300 mx-1"></span>
+                        <button type="button" @click="format('<p>', '</p>')" title="{{ __('Párrafo') }}"
+                            class="px-2.5 py-1 rounded bg-white hover:bg-gray-100 border border-gray-200 text-gray-800 shadow-2xs">
+                            ¶ {{ __('Párrafo') }}
+                        </button>
+                        <button type="button" @click="format('<br>')" title="{{ __('Salto de línea') }}"
+                            class="px-2.5 py-1 rounded bg-white hover:bg-gray-100 border border-gray-200 text-gray-800 shadow-2xs">
+                            ↵ {{ __('Salto') }}
+                        </button>
+                    </div>
+
+                    <!-- Textarea con wire:model -->
+                    <div x-show="tab === 'write'">
+                        <textarea x-ref="textarea" id="descripcion" rows="5" wire:model="descripcion"
+                            placeholder="Detalles del evento, horarios, menú o itinerario. Puedes escribir texto o etiquetas HTML como <strong>negrita</strong> o <ul><li>listas</li></ul>..."
+                            class="w-full rounded-b-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 text-sm font-sans"></textarea>
+                    </div>
+
+                    <!-- Pestaña de Vista Previa -->
+                    <div x-show="tab === 'preview'" class="p-4 rounded-lg border border-gray-300 bg-gray-50/50 min-h-[9rem]">
+                        <template x-if="$wire.descripcion">
+                            <div class="prose prose-sm max-w-none text-gray-700 bg-white p-4 rounded-lg border border-gray-100 shadow-2xs"
+                                x-html="$wire.descripcion"></div>
+                        </template>
+                        <template x-if="!$wire.descripcion">
+                            <p class="text-xs text-gray-400 italic text-center py-4">{{ __('Sin descripción') }}</p>
+                        </template>
+                    </div>
+
+                    <p class="text-[11px] text-gray-400 mt-1">
+                        {{ __('Admite formato HTML: puedes usar los botones de la barra para insertar negritas, listas o párrafos, o escribir tus propias etiquetas.') }}
+                    </p>
                     @error('descripcion') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
                 </div>
 

@@ -59,9 +59,9 @@
         </div>
 
         @if ($actividad->descripcion)
-            <p class="text-sm text-gray-700 leading-relaxed bg-gray-50/50 p-4 rounded-2xl border border-gray-100">
-                {{ $actividad->descripcion }}
-            </p>
+            <div class="prose prose-sm max-w-none text-gray-700 leading-relaxed bg-gray-50/50 p-5 rounded-2xl border border-gray-100">
+                {!! str_contains($actividad->descripcion, '<') ? $actividad->descripcion : nl2br(e($actividad->descripcion)) !!}
+            </div>
         @endif
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-gray-100 text-sm">
