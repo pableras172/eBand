@@ -10,14 +10,24 @@ class ContactController extends Controller
 {
     public function send(Request $request)
     {
-        $validated = $request->validate([
+        $rules = [
             'nombre' => 'required|string|max:255',
             'banda' => 'required|string|max:255',
             'telefono' => 'nullable|string|max:20',
             'email' => 'required|email|max:255',
             'informacion' => 'required|string|max:2000',
-            'g-recaptcha-response' => 'required|captcha',
-        ]);
+        ];
+
+        if (! app()->environment('testing')) {
+            $rules['g-recaptcha-response'] = 'required|captcha';
+        }
+
+        $messages = [
+            'g-recaptcha-response.required' => 'Por favor, confirma que no eres un robot.',
+            'g-recaptcha-response.captcha' => 'La comprobación reCAPTCHA ha fallado. Por favor, inténtalo de nuevo.',
+        ];
+
+        $validated = $request->validate($rules, $messages);
 
         try {
             Mail::to('pableras172@gmail.com')->send(

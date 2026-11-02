@@ -37,7 +37,12 @@ class DemoAccessController extends Controller
             $rules['g-recaptcha-response'] = ['required', 'captcha'];
         }
 
-        $validated = $request->validateWithBag('demoAccess', $rules);
+        $messages = [
+            'g-recaptcha-response.required' => 'Por favor, confirma que no eres un robot.',
+            'g-recaptcha-response.captcha' => 'La comprobación de seguridad reCAPTCHA ha fallado. Inténtalo de nuevo.',
+        ];
+
+        $validated = $request->validateWithBag('demoAccess', $rules, $messages);
 
         $lead = DemoAccessLead::create([
             'nombre' => $validated['nombre'],

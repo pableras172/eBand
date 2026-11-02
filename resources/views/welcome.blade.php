@@ -1150,6 +1150,9 @@
 
                 <div class="pt-2">
                     {!! NoCaptcha::display() !!}
+                    @if ($errors->demoAccess->has('g-recaptcha-response'))
+                        <span class="mt-1 block text-xs text-rose-600 font-medium">{{ $errors->demoAccess->first('g-recaptcha-response') }}</span>
+                    @endif
                 </div>
 
                 <button type="submit" 

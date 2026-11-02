@@ -24,7 +24,9 @@ Route::get('/', function () {
 // Acceso de miembros a su banda (mediante código que redirige a xxx.eband.app)
 Route::get('/acceso', [TenantAccessController::class, 'index'])->name('tenant-access.index');
 Route::get('/login', [TenantAccessController::class, 'index'])->name('login');
-Route::post('/tenant/access', [TenantAccessController::class, 'store'])->name('tenant-access.store');
+Route::post('/tenant/access', [TenantAccessController::class, 'store'])
+    ->middleware('throttle:15,1')
+    ->name('tenant-access.store');
 
 // Enlaces de cortesía para la landing
 Route::get('/register', fn () => redirect('/#contact'))->name('central.register');

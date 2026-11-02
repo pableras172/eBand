@@ -232,6 +232,13 @@
                         @error('mensaje') <p class="mt-1 text-sm text-rose-600">{{ $message }}</p> @enderror
                     </div>
 
+                    <div class="pt-2">
+                        {!! NoCaptcha::display() !!}
+                        @error('g-recaptcha-response')
+                            <p class="mt-1 text-sm text-rose-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <div>
                         <button type="submit" class="inline-flex items-center rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500">
                             {{ __('Quiero mas informacion') }}
@@ -310,5 +317,6 @@
             }
         });
     </script>
+    {!! NoCaptcha::renderJs() !!}
 </body>
 </html>

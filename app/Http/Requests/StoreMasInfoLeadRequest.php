@@ -16,7 +16,7 @@ class StoreMasInfoLeadRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'interes' => ['required', 'in:busco_banda,soy_banda'],
             'nombre_apellidos' => ['required', 'string', 'max:255'],
             'entidad' => ['nullable', 'string', 'max:255', 'required_if:interes,busco_banda'],
@@ -25,6 +25,12 @@ class StoreMasInfoLeadRequest extends FormRequest
             'email_contacto' => ['required', 'email', 'max:255'],
             'mensaje' => ['nullable', 'string', 'max:2000'],
         ];
+
+        if (! app()->environment('testing')) {
+            $rules['g-recaptcha-response'] = ['required', 'captcha'];
+        }
+
+        return $rules;
     }
 
     /**
@@ -41,6 +47,8 @@ class StoreMasInfoLeadRequest extends FormRequest
             'telefono_contacto.required' => 'Indica un telefono de contacto.',
             'email_contacto.required' => 'Indica un correo de contacto.',
             'email_contacto.email' => 'El correo de contacto no es valido.',
+            'g-recaptcha-response.required' => 'Por favor, confirma que no eres un robot.',
+            'g-recaptcha-response.captcha' => 'La comprobación reCAPTCHA ha fallado. Por favor, inténtalo de nuevo.',
         ];
     }
 }

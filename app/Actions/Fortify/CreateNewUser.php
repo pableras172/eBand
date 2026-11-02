@@ -2,16 +2,16 @@
 
 namespace App\Actions\Fortify;
 
+use App\Mail\NewUserRegistration;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NewUserRegistration;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -26,12 +26,15 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],            
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
             'telefono' => ['required', 'numeric'],
             'es_padre' => ['nullable', 'boolean'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
-            'g-recaptcha-response' => 'required|captcha'            
+            'g-recaptcha-response' => app()->environment('testing') ? ['nullable'] : ['required', 'captcha'],
+        ], [
+            'g-recaptcha-response.required' => 'Por favor, confirma que no eres un robot.',
+            'g-recaptcha-response.captcha' => 'La comprobación reCAPTCHA ha fallado. Por favor, inténtalo de nuevo.',
         ])->validate();
 
         return DB::transaction(function () use ($input) {
@@ -42,16 +45,16 @@ class CreateNewUser implements CreatesNewUsers
                 'activo' => false,
                 'fechaAlta' => now(),
                 'instrument_id' => $input['instrument_id'],
-                'es_padre' => !empty($input['es_padre']) ? 1 : 0,   // guardar valor
-                'telefono'=>$input['telefono'],
-                'uuid'=>Uuid::uuid4()->toString(),
+                'es_padre' => ! empty($input['es_padre']) ? 1 : 0,   // guardar valor
+                'telefono' => $input['telefono'],
+                'uuid' => Uuid::uuid4()->toString(),
             ]), function (User $user) {
-                $this->createTeam($user);  
-                $user->roles()->sync(2); 
-                Mail::to(config('mail.mail_admin', ''))->send(new NewUserRegistration($user));            
+                $this->createTeam($user);
+                $user->roles()->sync(2);
+                Mail::to(config('mail.mail_admin', ''))->send(new NewUserRegistration($user));
             });
-        });        
-       
+        });
+
     }
 
     /**
