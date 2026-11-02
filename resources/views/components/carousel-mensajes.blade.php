@@ -62,8 +62,12 @@
                             {{-- Badge con icono del instrumento --}}
                             <div
                                 class="absolute bottom-0 right-0 w-5 h-5 sm:w-6 sm:h-6 bg-white rounded-full border-2 border-blue-500 flex items-center justify-center">
-                                <img id="carousel-instrument" src="{{ asset('storage/imagenes/instruments/' . $mensaje->user->instrument->icon) }}"
-                                    alt="{{ $mensaje->user->instrument }}" class="w-3 h-3 sm:w-4 sm:h-4">
+                                @if(isset($mensaje->user->instrument) && !empty($mensaje->user->instrument->icon))
+                                    <img id="carousel-instrument" src="{{ asset('storage/imagenes/instruments/' . $mensaje->user->instrument->icon) }}"
+                                        alt="{{ $mensaje->user->instrument->name ?? '' }}" class="w-3 h-3 sm:w-4 sm:h-4">
+                                @else
+                                    <span class="text-[10px] font-bold text-blue-600">🎵</span>
+                                @endif
                             </div>
                         </div>
 

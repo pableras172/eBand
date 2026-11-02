@@ -27,8 +27,8 @@ Route::get('/login', [TenantAccessController::class, 'index'])->name('login');
 Route::post('/tenant/access', [TenantAccessController::class, 'store'])->name('tenant-access.store');
 
 // Enlaces de cortesía para la landing
-Route::get('/register', fn () => redirect('/#contact'))->name('register');
-Route::get('/dashboard', fn () => redirect()->route('tenant-access.index', ['code' => 'demo']))->name('dashboard');
+Route::get('/register', fn () => redirect('/#contact'))->name('central.register');
+Route::get('/dashboard', fn () => redirect()->route('tenant-access.index', ['code' => 'demo']))->name('central.dashboard');
 
 // Formulario de contacto
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');

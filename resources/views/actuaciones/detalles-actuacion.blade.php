@@ -361,7 +361,7 @@
                                 </button>
                             @endcan
                             <img class="w-10 h-10 rounded-full px-1 py-1"
-                                src="{{ asset('storage/imagenes/instruments/' . $usuariosDelInstrumento->first()->instrument->icon) }}">
+                                src="{{ asset($usuariosDelInstrumento->first()?->instrument?->icon ? 'storage/imagenes/instruments/' . $usuariosDelInstrumento->first()->instrument->icon : 'storage/imagenes/instruments/default.png') }}">
                         </div>
 
 

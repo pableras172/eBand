@@ -51,7 +51,7 @@ class DemoAutologinController extends Controller
             $request->session()->put('demo_lead_id', $data['lead_id']);
         }
 
-        return redirect()->route('dashboard')->with('status', '¡Bienvenido/a a la demo de eBand!');
+        return redirect('/dashboard')->with('status', '¡Bienvenido/a a la demo de eBand!');
     }
 
     /**
@@ -78,6 +78,6 @@ class DemoAutologinController extends Controller
         $request->session()->regenerate();
         $request->session()->put('demo_mode', true);
 
-        return redirect()->route('dashboard')->with('status', 'Has accedido a la demo como Administrador.');
+        return redirect('/dashboard')->with('status', 'Has accedido a la demo como Administrador.');
     }
 }
