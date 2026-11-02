@@ -17,10 +17,60 @@ class TenantAccessController extends Controller
 
     public function store(TenantAccessCodeRequest $request): RedirectResponse
     {
+        $code = (string) $request->validated('code');
+
         $tenant = Tenant::query()
             ->with('domains')
-            ->where('code', $request->validated('code'))
+            ->where('code', $code)
             ->first();
+
+        // Si el tenant demo existe pero no tiene dominio, asignarlo
+        if ($tenant && strtolower($code) === 'demo' && ! $tenant->domains()->exists()) {
+            $centralHost = (string) (request()?->getHost() ?? 'localhost');
+            $demoDomain = str_contains($centralHost, 'localhost') ? 'demo.localhost' : 'demo.eband.app';
+
+            try {
+                $tenant->domains()->create([
+                    'domain' => $demoDomain,
+                ]);
+            } catch (\Throwable) {
+                // Silently handle if already exists
+            }
+
+            $tenant->unsetRelation('domains')->load('domains');
+        }
+
+        // Autoprovisionar tenant 'demo' si todavía no existe en base de datos
+        if (! $tenant && strtolower($code) === 'demo') {
+            $centralHost = (string) (request()?->getHost() ?? 'localhost');
+            $demoDomain = str_contains($centralHost, 'localhost') ? 'demo.localhost' : 'demo.eband.app';
+
+            try {
+                $tenant = Tenant::query()->create([
+                    'id' => 'demo',
+                    'name' => 'Banda Demo',
+                    'code' => 'demo',
+                ]);
+            } catch (\Throwable) {
+                $tenant = Tenant::withoutEvents(function () {
+                    return Tenant::query()->firstOrCreate(
+                        ['id' => 'demo'],
+                        [
+                            'name' => 'Banda Demo',
+                            'code' => 'demo',
+                        ]
+                    );
+                });
+            }
+
+            if (! $tenant->domains()->exists()) {
+                $tenant->domains()->create([
+                    'domain' => $demoDomain,
+                ]);
+            }
+
+            $tenant->unsetRelation('domains')->load('domains');
+        }
 
         if (! $tenant) {
             return back()
@@ -28,7 +78,7 @@ class TenantAccessController extends Controller
                 ->withErrors(['code' => __('Código de grupo no válido.')]);
         }
 
-        $tenantDomain = $tenant->domains->first()?->domain;
+        $tenantDomain = $tenant->domains->first()?->domain ?? $tenant->domains()->first()?->domain;
 
         if (! $tenantDomain) {
             return back()

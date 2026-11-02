@@ -56,8 +56,10 @@ if (! function_exists('tenant_url')) {
         }
 
         $scheme = request()?->getScheme() ?: parse_url((string) config('app.url'), PHP_URL_SCHEME) ?: 'http';
+        $port = request()?->getPort();
+        $portSuffix = ($port && ! in_array($port, [80, 443], true)) ? ':'.$port : '';
 
-        return sprintf('%s://%s/%s', $scheme, $domain, ltrim($path, '/'));
+        return sprintf('%s://%s%s/%s', $scheme, $domain, $portSuffix, ltrim($path, '/'));
     }
 }
 

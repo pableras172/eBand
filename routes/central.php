@@ -28,7 +28,7 @@ Route::post('/tenant/access', [TenantAccessController::class, 'store'])->name('t
 
 // Enlaces de cortesía para la landing
 Route::get('/register', fn () => redirect('/#contact'))->name('register');
-Route::get('/dashboard', fn () => redirect()->route('tenant-access.index'))->name('dashboard');
+Route::get('/dashboard', fn () => redirect()->route('tenant-access.index', ['code' => 'demo']))->name('dashboard');
 
 // Formulario de contacto
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
