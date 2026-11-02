@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     
     <!-- Primary Meta Tags -->
-    <title>eBand — El software de gestión para Bandas de Música, Xarangas y Corales</title>
-    <meta name="title" content="eBand — El software de gestión para Bandas de Música, Xarangas y Corales">
-    <meta name="description" content="Plataforma todo en uno para Bandas de Música, Xarangas, Sociedades Musicales y Corales. Control de asistencias (Voy / No voy), archivo digital de partituras, inventario de instrumentos y uniformes, liquidación de bolos y app móvil PWA. Tarifa plana 150€/año.">
-    <meta name="keywords" content="software bandas de musica, app banda musica, gestion corales coros orfeones, app charanga xaranga, agrupaciones musicales, control asistencia ensayos, archivo partituras digital, inventario instrumentos uniformes, liquidacion actuaciones bolos, eband, software musical saas">
+    <title>eBand — El software de gestión para Bandas de Música, Charangas y Corales</title>
+    <meta name="title" content="eBand — El software de gestión para Bandas de Música, Charangas y Corales">
+    <meta name="description" content="Plataforma todo en uno para Bandas de Música, Charangas, Sociedades Musicales y Corales. Control de disponibilidad (Disponible / No disponible), control parental para familias, inventario de uniformes y material, actividades extra, liquidaciones y app móvil PWA. Tarifa plana 150€/año.">
+    <meta name="keywords" content="software bandas de musica, app banda musica, app charanga, gestion corales coros orfeones, agrupaciones musicales, control asistencia disponibilidad ensayos, control parental banda musica, inventario uniformes material banda, actividades extra banda, liquidacion bolos, eband, software musical saas">
     <meta name="author" content="eBand">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url('/') }}">
@@ -16,8 +16,8 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url('/') }}">
-    <meta property="og:title" content="eBand — El software de gestión para Bandas de Música, Xarangas y Corales">
-    <meta property="og:description" content="La solución todo en uno para Bandas, Xarangas y Corales. Asistencias en tiempo real, archivo digital de partituras, inventario y liquidación de bolos. 150€/año todo incluido.">
+    <meta property="og:title" content="eBand — El software de gestión para Bandas de Música, Charangas y Corales">
+    <meta property="og:description" content="La solución todo en uno para Bandas, Charangas y Corales. Disponibilidad en tiempo real, control parental, inventario de uniformes y material, actividades extra y liquidación de bolos. 150€/año todo incluido.">
     <meta property="og:image" content="{{ asset('logo_e_band.png') }}">
     <meta property="og:site_name" content="eBand">
     <meta property="og:locale" content="es_ES">
@@ -25,8 +25,8 @@
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ url('/') }}">
-    <meta property="twitter:title" content="eBand — El software de gestión para Bandas de Música, Xarangas y Corales">
-    <meta property="twitter:description" content="Gestiona tu Banda, Xaranga o Coral sin complicaciones: asistencias, archivo de partituras, inventario y liquidaciones.">
+    <meta property="twitter:title" content="eBand — El software de gestión para Bandas de Música, Charangas y Corales">
+    <meta property="twitter:description" content="Gestiona tu Banda, Charanga o Coral sin complicaciones: disponibilidad, control parental, inventario de uniformes y material, actividades y liquidaciones.">
     <meta property="twitter:image" content="{{ asset('logo_e_band.png') }}">
 
     <!-- Mobile & PWA settings -->
@@ -46,6 +46,9 @@
 
     <!-- Styles & Scripts via Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Alpine.js for lightweight reactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 
     <style>
         body {
@@ -73,9 +76,9 @@
             "priceCurrency": "EUR",
             "priceValidUntil": "2027-12-31",
             "availability": "https://schema.org/InStock",
-            "description": "Tarifa plana anual de 150€ con miembros, partituras, actuaciones e inventario ilimitados para agrupaciones musicales."
+            "description": "Tarifa plana anual de 150€ con miembros, actuaciones, actividades extra, control parental e inventario ilimitados para agrupaciones musicales."
           },
-          "description": "Software especializado en la gestión integral de Bandas de Música, Xarangas, Sociedades Musicales, Corales y Orquestas.",
+          "description": "Software especializado en la gestión integral de Bandas de Música, Charangas, Sociedades Musicales y Corales.",
           "url": "{{ url('/') }}",
           "image": "{{ asset('logo_e_band.png') }}"
         },
@@ -93,10 +96,18 @@
           "mainEntity": [
             {
               "@@type": "Question",
-              "name": "¿Sirve eBand para Corales, Coros y Orfeones además de Bandas?",
+              "name": "¿Sirve eBand para Corales y Coros además de Bandas?",
               "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "Sí, totalmente. eBand permite clasificar a los integrantes tanto por instrumentos y cuerdas musicales como por tipos de voz (sopranos, contraltos, tenores, bajos) y compartir partituras corales y audios."
+                "text": "Sí, totalmente. eBand permite clasificar a los integrantes tanto por instrumentos y cuerdas musicales como por tipos de voz (sopranos, contraltos, tenores, bajos) y gestionar convocatorias, asistencias y actividades."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Cómo funciona el Control Parental para familias con menores?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Los padres o tutores disponen de una vista unificada desde su propio usuario donde pueden ver las convocatorias, ensayos, uniformes y actividades de sus hijos menores, e inscribirlos directamente."
               }
             },
             {
@@ -112,15 +123,7 @@
               "name": "¿Qué incluye la tarifa de 150€ al año?",
               "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "Es una tarifa plana completa: músicos ilimitados, ensayos y conciertos sin límite, control de asistencia, archivo de partituras en la nube, inventario de trajes e instrumentos, reparto de liquidaciones y soporte continuo."
-              }
-            },
-            {
-              "@@type": "Question",
-              "name": "¿Cómo acceden los músicos de una banda a su espacio?",
-              "acceptedAnswer": {
-                "@@type": "Answer",
-                "text": "Cada agrupación dispone de su propio subdominio privado (ejemplo: tubanda.eband.app) o bien los músicos pueden introducir su código de agrupación en la pantalla de acceso central de eBand."
+                "text": "Es una tarifa plana completa: músicos ilimitados, ensayos y conciertos sin límite, control de disponibilidad (Disponible / No disponible), inventario de trajes y material, control parental, actividades extra, liquidaciones de bolos y soporte continuo."
               }
             }
           ]
@@ -150,7 +153,7 @@
                     <span class="font-heading text-2xl font-extrabold tracking-tight text-slate-900">
                         e<span class="text-blue-700">Band</span><span class="text-amber-500">.</span>
                     </span>
-                    <span class="text-[10px] font-semibold tracking-wider uppercase text-slate-500">Bandas · Xarangas · Corales</span>
+                    <span class="text-[10px] font-semibold tracking-wider uppercase text-slate-500">Bandas · Charangas · Corales</span>
                 </div>
             </a>
 
@@ -174,6 +177,7 @@
                     Acceso a mi banda
                 </a>
                 <button type="button" 
+                        data-demo-trigger
                         @click="demoModalOpen = true"
                         class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-600 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-700/20 transition hover:from-blue-800 hover:to-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
                     <span>Probar Demo</span>
@@ -186,26 +190,22 @@
             <!-- Mobile Hamburger Button -->
             <div class="flex items-center md:hidden">
                 <button type="button" 
+                        id="mobile-nav-toggle"
                         @click="mobileNav = !mobileNav"
                         class="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 focus:outline-none"
                         aria-label="Abrir menú de navegación">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path x-show="!mobileNav" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path x-show="mobileNav" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path :class="mobileNav ? 'hidden' : 'block'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="mobileNav ? 'block' : 'hidden'" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
         </div>
 
         <!-- Mobile Nav Menu -->
-        <div x-show="mobileNav" 
+        <div id="mobile-nav-menu"
+             x-show="mobileNav" 
              x-cloak 
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 -translate-y-2"
-             x-transition:enter-end="opacity-100 translate-y-0"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="opacity-100 translate-y-0"
-             x-transition:leave-end="opacity-0 -translate-y-2"
              class="border-b border-slate-200 bg-white px-4 pt-2 pb-6 md:hidden">
             <nav class="flex flex-col space-y-3 text-base font-medium text-slate-700">
                 <a href="#para-quien" @click="mobileNav = false" class="py-2 hover:text-blue-700">Para quién</a>
@@ -221,7 +221,7 @@
                     <a href="{{ Route::has('tenant-access.index') ? route('tenant-access.index') : (Route::has('login') ? route('login') : url('/acceso')) }}" class="w-full text-center rounded-xl border border-slate-200 py-2.5 text-sm font-semibold text-slate-700">
                         Acceso a mi banda
                     </a>
-                    <button type="button" @click="mobileNav = false; demoModalOpen = true" class="w-full text-center rounded-xl bg-blue-700 py-2.5 text-sm font-bold text-white shadow-md">
+                    <button type="button" data-demo-trigger @click="mobileNav = false; demoModalOpen = true" class="w-full text-center rounded-xl bg-blue-700 py-2.5 text-sm font-bold text-white shadow-md">
                         Probar Demo Inmediata
                     </button>
                 </div>
@@ -254,16 +254,17 @@
                     <h1 class="font-heading text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl sm:leading-tight lg:leading-[1.12]">
                         El software integral para tu <br class="hidden sm:inline">
                         <span class="bg-gradient-to-r from-blue-700 via-indigo-600 to-amber-600 bg-clip-text text-transparent">
-                            Banda de Música, Xaranga o Coral
+                            Banda de Música, Charanga o Coral
                         </span>
                     </h1>
                     <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-normal">
-                        Pon fin al caos de los grupos de WhatsApp, las partituras perdidas y la incertidumbre de saber quién vendrá al próximo ensayo o concierto. eBand reúne asistencias, repertorio, bolos, contratos e inventario en una única app que todos tus músicos sabrán usar.
+                        Pon fin al caos de los grupos de WhatsApp y a la incertidumbre de saber quién asistirá a cada ensayo o actuación. Con eBand gestionas la disponibilidad de tus músicos, el control parental para familias, el inventario de uniformes y material, las actividades extra y las liquidaciones de bolos en una única app que todos sabrán usar.
                     </p>
 
                     <!-- CTAs -->
                     <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <button type="button" 
+                                data-demo-trigger
                                 @click="demoModalOpen = true"
                                 class="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-600 px-8 py-4 text-base font-bold text-white shadow-xl shadow-blue-700/25 transition-all hover:scale-[1.02] hover:shadow-2xl hover:from-blue-800 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
                             <span>Probar Demo Gratis</span>
@@ -286,7 +287,7 @@
                             <svg class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                             </svg>
-                            <span>Músicos y socios ilimitados</span>
+                            <span>Músicos y familias ilimitados</span>
                         </div>
                         <div class="flex items-center gap-1.5">
                             <svg class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
@@ -331,7 +332,7 @@
                         <!-- Screenshot Image -->
                         <div class="overflow-hidden rounded-b-xl bg-slate-100">
                             <img src="{{ asset('galeria/tablero_resumen.png') }}" 
-                                 alt="Panel de control eBand - Gestión de actuaciones, asistencias y repertorio" 
+                                 alt="Panel de control eBand - Gestión de actuaciones, disponibilidad y actividades" 
                                  class="w-full h-auto object-cover object-top max-h-[640px]"
                                  loading="eager" 
                                  width="1280" 
@@ -346,20 +347,20 @@
                                 </svg>
                             </div>
                             <div>
-                                <div class="text-xs font-bold text-slate-900">Asistencia confirmada</div>
-                                <div class="text-[11px] text-slate-500">42 músicos listos para el ensayo</div>
+                                <div class="text-xs font-bold text-slate-900">Disponibilidad en tiempo real</div>
+                                <div class="text-[11px] text-slate-500">Músicos disponibles para el ensayo</div>
                             </div>
                         </div>
 
                         <div class="absolute -bottom-4 -right-4 sm:bottom-10 sm:-right-6 hidden md:flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/95 p-3.5 shadow-xl backdrop-blur-md">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
                                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
                             </div>
                             <div>
-                                <div class="text-xs font-bold text-slate-900">Repertorio sincronizado</div>
-                                <div class="text-[11px] text-slate-500">Partituras en PDF por instrumento</div>
+                                <div class="text-xs font-bold text-slate-900">Control Parental y Familias</div>
+                                <div class="text-[11px] text-slate-500">Padres y alumnos conectados</div>
                             </div>
                         </div>
                     </div>
@@ -395,31 +396,31 @@
                             </div>
                             <h3 class="mt-6 font-heading text-xl font-bold text-slate-900">Bandas y Sociedades Musicales</h3>
                             <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-                                Control exhaustivo de ensayos generales y parciales por cuerda (maderas, metales, percusión). Generación automática de contratos municipales y gestión del archivo histórico.
+                                Control exhaustivo de ensayos generales y parciales por cuerda (maderas, metales, percusión). Gestión de familias con alumnos menores, actividades extra e inventario de material.
                             </p>
                             <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
                                 <li class="flex items-center gap-2">
-                                    <span class="text-blue-600 font-bold">✓</span> Asistencias con avisos "Voy / No voy"
+                                    <span class="text-blue-600 font-bold">✓</span> Disponibilidad inmediata ("Disponible / No disponible")
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <span class="text-blue-600 font-bold">✓</span> Inventario de uniformes y préstamo de instrumental
+                                    <span class="text-blue-600 font-bold">✓</span> Control parental para padres de educandos y menores
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <span class="text-blue-600 font-bold">✓</span> Control de músicos invitados y forasteros
+                                    <span class="text-blue-600 font-bold">✓</span> Inventario de uniformes y de todo el material de la banda
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <span class="text-blue-600 font-bold">✓</span> Programas de concierto públicos con código QR
+                                    <span class="text-blue-600 font-bold">✓</span> Actividades extra, viajes, comidas y cursos
                                 </li>
                             </ul>
                         </div>
                         <div class="mt-8 pt-4 border-t border-slate-200/60">
                             <span class="text-xs font-semibold text-blue-700 flex items-center gap-1">
-                                Ideal para bandas sinfónicas y patronales &rarr;
+                                Para bandas sinfónicas, patronales y escuelas &rarr;
                             </span>
                         </div>
                     </div>
 
-                    <!-- 2. Xarangas y Charangas -->
+                    <!-- 2. Charangas -->
                     <div class="group relative flex flex-col justify-between rounded-2xl border-2 border-amber-300/80 bg-gradient-to-b from-amber-50/40 to-white p-8 shadow-md transition hover:border-amber-500 hover:shadow-2xl">
                         <div class="absolute -top-3.5 right-6">
                             <span class="rounded-full bg-gradient-to-r from-amber-500 to-amber-600 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-white shadow-sm">
@@ -432,13 +433,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                             </div>
-                            <h3 class="mt-6 font-heading text-xl font-bold text-slate-900">Xarangas y Charangas</h3>
+                            <h3 class="mt-6 font-heading text-xl font-bold text-slate-900">Charangas</h3>
                             <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-                                Respuestas inmediatas para cerrar la plantilla de cada bolo en un clic. Reparto de honorarios por bolo con liquidaciones transparentes para cada miembro.
+                                Respuestas inmediatas para cerrar la plantilla de cada bolo en un clic. Reparto de honorarios por bolo con liquidaciones transparentes para cada miembro o refuerzo.
                             </p>
                             <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
                                 <li class="flex items-center gap-2">
-                                    <span class="text-amber-600 font-bold">✓</span> Confirmación ultra-rápida desde el móvil
+                                    <span class="text-amber-600 font-bold">✓</span> Confirmación ultra-rápida desde el móvil (Disponible / No disponible)
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-amber-600 font-bold">✓</span> Liquidación y cálculo de cobro por actuación
@@ -447,7 +448,7 @@
                                     <span class="text-amber-600 font-bold">✓</span> Ubicaciones GPS de pasacalles y puntos de encuentro
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <span class="text-amber-600 font-bold">✓</span> Repertorio de bolos disponible offline
+                                    <span class="text-amber-600 font-bold">✓</span> Horarios de salida de transporte y furgoneta
                                 </li>
                             </ul>
                         </div>
@@ -463,22 +464,22 @@
                         <div>
                             <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-700 transition group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white">
                                 <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
                                 </svg>
                             </div>
                             <h3 class="mt-6 font-heading text-xl font-bold text-slate-900">Corales, Coros y Orfeones</h3>
                             <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-                                Organización específica por cuerdas vocales (sopranos, contraltos, tenores y bajos). Archivo de partituras corales y convocatorias claras a encuentros y misas.
+                                Organización específica por cuerdas vocales (sopranos, contraltos, tenores y bajos). Convocatorias a misas, certámenes, encuentros corales y salidas grupales.
                             </p>
                             <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
                                 <li class="flex items-center gap-2">
                                     <span class="text-indigo-600 font-bold">✓</span> Segmentación por cuerdas de voz
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <span class="text-indigo-600 font-bold">✓</span> Partituras y pistas de ensayo en la nube
+                                    <span class="text-indigo-600 font-bold">✓</span> Convocatorias claras a ensayos y conciertos
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <span class="text-indigo-600 font-bold">✓</span> Asistencia a ensayos semanales y conciertos
+                                    <span class="text-indigo-600 font-bold">✓</span> Actividades extra y viajes de hermanamiento
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-indigo-600 font-bold">✓</span> Tablón de avisos y cambios de última hora
@@ -505,76 +506,76 @@
                         Funcionalidades Destacadas
                     </span>
                     <h2 class="mt-4 font-heading text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-                        Todo lo que tu directiva y tus músicos necesitan
+                        Todo lo que tu directiva y tus miembros necesitan
                     </h2>
                     <p class="mt-4 text-base sm:text-lg text-slate-600">
-                        Olvídate de hojas de Excel desactualizadas y notas dispersas. Gestiona tu día a día con herramientas diseñadas exactamente para música en grupo.
+                        Olvídate de hojas de cálculo dispersas y notas de papel. Gestiona tu día a día con herramientas diseñadas exactamente para la realidad asociativa.
                     </p>
                 </div>
 
                 <div class="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    <!-- Feature 1: Asistencias -->
+                    <!-- Feature 1: Asistencia / Disponibilidad -->
                     <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
                         <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                             </svg>
                         </div>
-                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Control de Asistencia ("Voy / No voy")</h3>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Control de Asistencia y Disponibilidad</h3>
                         <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                            Los músicos confirman su asistencia con un toque desde su teléfono. Los directores ven la plantilla en tiempo real clasificada por instrumento o cuerda vocal.
+                            Los músicos pueden indicar si están <strong>Disponibles</strong> o <strong>No disponibles</strong> con un solo clic. El director y la directiva conocen la plantilla exacta por cuerda en tiempo real.
                         </p>
                     </div>
 
-                    <!-- Feature 2: Partituras -->
+                    <!-- Feature 2: Control Parental y Familias -->
                     <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
                         <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                         </div>
-                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Archivo de Partituras Digital</h3>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Control Parental para Familias</h3>
                         <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                            Organiza el repertorio por obras, carpetas y papeles individuales en PDF. Cada músico descarga únicamente las partituras que le corresponden.
+                            Los padres y tutores pueden supervisar las convocatorias, ensayos y eventos de sus hijos menores, ver sus uniformes asignados e inscribirlos en actividades desde una única cuenta.
                         </p>
                     </div>
 
-                    <!-- Feature 3: Actuaciones y Bolos -->
+                    <!-- Feature 3: Actividades Extra -->
                     <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
                         <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
-                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Actuaciones, Pasacalles y Bolos</h3>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Actividades Extra y Convivencia</h3>
                         <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                            Detalla horario de citación, salida de autobús o furgoneta, uniforme oficial, ubicación GPS exacta y programa de piezas a interpretar.
+                            Organiza comidas de hermandad, viajes, talleres de formación, concursos y encuentros. Gestiona las inscripciones de músicos, socios y acompañantes con total claridad.
                         </p>
                     </div>
 
-                    <!-- Feature 4: Inventario -->
+                    <!-- Feature 4: Inventario de uniformes y material -->
                     <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
                         <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                             </svg>
                         </div>
-                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Inventario de Trajes e Instrumentos</h3>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Inventario de Uniformes y Material</h3>
                         <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                            Trazabilidad de instrumentos cedidos, chaquetas, corbatas, polos y accesorios con número de serie y registro de entrega firmado.
+                            Controla los uniformes oficiales (trajes, corbatas, polos) y todo el material de la banda: instrumentos propios, atriles, fundas y accesorios asignados a cada integrante.
                         </p>
                     </div>
 
-                    <!-- Feature 5: Liquidaciones -->
+                    <!-- Feature 5: Liquidaciones económicas -->
                     <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
                         <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-50 text-rose-700">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Liquidaciones y Pagos Transparentes</h3>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Liquidaciones y Reparto por Bolo</h3>
                         <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                            Calcula el reparto económico por actuación, gestiona los pagos a refuerzos o colaboradores externos y genera resúmenes contables en PDF.
+                            Calcula el reparto económico por actuación, gestiona los pagos a refuerzos o colaboradores externos (forasteros) y genera balances contables claros.
                         </p>
                     </div>
 
@@ -585,9 +586,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                             </svg>
                         </div>
-                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">App Móvil PWA para iOS y Android</h3>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">App Móvil PWA (iOS y Android)</h3>
                         <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                            Sin necesidad de descargar nada desde tiendas lentas. Los integrantes guardan eBand como icono en su pantalla de inicio y tienen acceso al instante.
+                            Sin necesidad de descargar nada desde tiendas. Los integrantes y familias guardan eBand como icono en su pantalla de inicio y tienen acceso al instante.
                         </p>
                     </div>
                 </div>
@@ -607,7 +608,7 @@
                         Una interfaz clara que cualquiera sabe utilizar
                     </h2>
                     <p class="mt-4 text-base sm:text-lg text-slate-600">
-                        Explora las diferentes pantallas de eBand: pensadas tanto para directivos como para músicos de todas las edades.
+                        Explora las diferentes pantallas de eBand: pensadas tanto para directivos como para músicos y familias de todas las edades.
                     </p>
                 </div>
 
@@ -616,14 +617,14 @@
                     <div class="group overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 transition hover:shadow-xl hover:border-slate-300">
                         <div class="overflow-hidden bg-slate-200">
                             <img src="{{ asset('galeria/detalle_actuacion.png') }}" 
-                                 alt="Ficha de detalle de actuación y asistencias" 
+                                 alt="Ficha de detalle de actuación y disponibilidad" 
                                  class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
                                  loading="lazy">
                         </div>
                         <div class="p-5">
                             <h4 class="font-heading font-bold text-slate-900">Detalle de Actuación y Bolos</h4>
                             <p class="mt-1 text-xs text-slate-600 leading-relaxed">
-                                Mapa de ubicación, horarios de viaje, uniforme y panel de asistencia de cada músico.
+                                Mapa de ubicación, horarios de transporte, uniforme requerido y panel de disponibilidad de los músicos.
                             </p>
                         </div>
                     </div>
@@ -639,7 +640,7 @@
                         <div class="p-5">
                             <h4 class="font-heading font-bold text-slate-900">Calendario Visual de Ensayos</h4>
                             <p class="mt-1 text-xs text-slate-600 leading-relaxed">
-                                Vista global del mes para evitar solapamientos y planificar convocatorias con antelación.
+                                Vista global del mes para evitar solapamientos y planificar convocatorias y actividades con antelación.
                             </p>
                         </div>
                     </div>
@@ -648,14 +649,14 @@
                     <div class="group overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 transition hover:shadow-xl hover:border-slate-300">
                         <div class="overflow-hidden bg-slate-200">
                             <img src="{{ asset('galeria/inventario.png') }}" 
-                                 alt="Gestión de inventario de instrumentos y uniformes" 
+                                 alt="Gestión de inventario de uniformes y material de la banda" 
                                  class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
                                  loading="lazy">
                         </div>
                         <div class="p-5">
-                            <h4 class="font-heading font-bold text-slate-900">Control de Inventario</h4>
+                            <h4 class="font-heading font-bold text-slate-900">Inventario de Material y Uniformes</h4>
                             <p class="mt-1 text-xs text-slate-600 leading-relaxed">
-                                Registro de instrumentos propiedad de la asociación y qué músico tiene asignado cada uno.
+                                Registro completo del material propiedad de la agrupación y qué músico o familia tiene asignado cada elemento.
                             </p>
                         </div>
                     </div>
@@ -671,7 +672,7 @@
                         <div class="p-5">
                             <h4 class="font-heading font-bold text-slate-900">Historial y Estadísticas</h4>
                             <p class="mt-1 text-xs text-slate-600 leading-relaxed">
-                                Métricas de compromisos anuales, porcentaje de asistencia y balances económicos.
+                                Métricas de compromisos anuales, porcentaje de asistencia y balances económicos de bolos.
                             </p>
                         </div>
                     </div>
@@ -687,7 +688,7 @@
                         <div class="p-5">
                             <h4 class="font-heading font-bold text-slate-900">Tablón de Anuncios</h4>
                             <p class="mt-1 text-xs text-slate-600 leading-relaxed">
-                                Comunicados oficiales visibles para todos los socios al iniciar sesión en su app.
+                                Comunicados oficiales visibles para todos los socios y familias al entrar en la aplicación.
                             </p>
                         </div>
                     </div>
@@ -703,7 +704,7 @@
                         <div class="p-5">
                             <h4 class="font-heading font-bold text-slate-900">Buzón de Sugerencias</h4>
                             <p class="mt-1 text-xs text-slate-600 leading-relaxed">
-                                Canal participativo para escuchar propuestas, peticiones de repertorio y mejoras de los miembros.
+                                Canal participativo para escuchar propuestas, actividades y sugerencias de mejora de los integrantes.
                             </p>
                         </div>
                     </div>
@@ -742,7 +743,7 @@
                         <div class="text-center pt-2">
                             <h3 class="font-heading text-2xl font-extrabold text-slate-900">Plan Completo eBand</h3>
                             <p class="mt-2 text-sm text-slate-600">
-                                Para Bandas de Música, Xarangas, Sociedades Musicales y Corales.
+                                Para Bandas de Música, Charangas y Corales.
                             </p>
 
                             <div class="mt-6 flex items-baseline justify-center gap-2">
@@ -760,37 +761,43 @@
                                     <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                     </svg>
-                                    <span><strong>Músicos y socios ilimitados:</strong> da de alta a toda tu plantilla sin sobrecostes.</span>
+                                    <span><strong>Músicos, socios y familias ilimitados:</strong> da de alta a toda tu agrupación sin sobrecostes.</span>
                                 </li>
                                 <li class="flex items-start gap-3">
                                     <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                     </svg>
-                                    <span><strong>Ensayos, conciertos y bolos ilimitados:</strong> agenda y convoca todo el año.</span>
+                                    <span><strong>Control de disponibilidad:</strong> el músico o tutor indica "Disponible / No disponible" con 1 clic.</span>
                                 </li>
                                 <li class="flex items-start gap-3">
                                     <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                     </svg>
-                                    <span><strong>Archivo musical en la nube:</strong> sube partituras en PDF organizadas por papeles e instrumentos.</span>
+                                    <span><strong>Control parental y gestión de menores:</strong> acceso familiar unificado para padres y alumnos.</span>
                                 </li>
                                 <li class="flex items-start gap-3">
                                     <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                     </svg>
-                                    <span><strong>Inventario de trajes e instrumental:</strong> controla el material de la agrupación y las asignaciones.</span>
+                                    <span><strong>Actividades extra y eventos especiales:</strong> viajes, comidas, talleres y convivencia con inscripción.</span>
                                 </li>
                                 <li class="flex items-start gap-3">
                                     <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                     </svg>
-                                    <span><strong>Liquidaciones económicas por bolo:</strong> cálculo y reparto automático de pagos.</span>
+                                    <span><strong>Inventario de uniformes y material:</strong> trazabilidad de trajes, instrumentos propios y accesorios.</span>
                                 </li>
                                 <li class="flex items-start gap-3">
                                     <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                     </svg>
-                                    <span><strong>App Móvil PWA para cada músico:</strong> lista para instalar en iPhone y Android.</span>
+                                    <span><strong>Liquidaciones económicas por bolo:</strong> cálculo y reparto automático de pagos a integrantes y refuerzos.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span><strong>App Móvil PWA para cada músico:</strong> instalable fácilmente en iPhone y Android.</span>
                                 </li>
                                 <li class="flex items-start gap-3">
                                     <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
@@ -802,7 +809,7 @@
                                     <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                     </svg>
-                                    <span><strong>Soporte técnico cercano y copias de seguridad:</strong> te ayudamos en la puesta en marcha.</span>
+                                    <span><strong>Soporte técnico y copias de seguridad:</strong> te ayudamos en la puesta en marcha.</span>
                                 </li>
                             </ul>
                         </div>
@@ -810,6 +817,7 @@
                         <!-- Action Buttons -->
                         <div class="mt-8 flex flex-col gap-3">
                             <button type="button" 
+                                    data-demo-trigger
                                     @click="demoModalOpen = true"
                                     class="w-full rounded-xl bg-blue-700 py-4 text-center text-sm font-bold text-white shadow-lg shadow-blue-700/25 transition hover:bg-blue-800">
                                 Probar Demo Inmediata Gratis
@@ -825,7 +833,7 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- FAQ SECTION (ACCORDION WITH ALPINE)                            -->
+        <!-- FAQ SECTION (ACCORDION WITH ALPINE + FALLBACK)                 -->
         <!-- ============================================================== -->
         <section id="faq" class="py-24 bg-white border-t border-slate-200/80">
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
@@ -842,88 +850,117 @@
                 </div>
 
                 <div class="mt-14 space-y-4">
-                    <!-- FAQ 1 -->
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
+                    <!-- FAQ 1: Corales -->
+                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
                         <button type="button" 
-                                class="flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
+                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
                                 @click="activeFaq = (activeFaq === 1 ? null : 1)">
                             <span>¿eBand es compatible con Corales y Coros además de Bandas?</span>
                             <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
-                                <svg class="h-4 w-4 transform transition-transform" :class="activeFaq === 1 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 1 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </span>
                         </button>
-                        <div x-show="activeFaq === 1" x-cloak x-collapse class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
-                            Absolutamente. Puedes clasificar a los integrantes tanto por instrumentos (en el caso de bandas y agrupaciones instrumentales) como por <strong>cuerdas vocales (sopranos, contraltos, tenores y bajos)</strong> en coros y agrupaciones vocales. Las partituras y las convocatorias de asistencia se filtran según la voz correspondiente de cada corista.
+                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
+                             x-show="activeFaq === 1"
+                             :class="activeFaq === 1 ? 'block' : 'hidden'">
+                            Absolutamente. Puedes clasificar a los integrantes tanto por instrumentos (en el caso de bandas y agrupaciones instrumentales) como por <strong>cuerdas vocales (sopranos, contraltos, tenores y bajos)</strong> en coros y agrupaciones vocales. Las convocatorias, disponibilidad y actividades se gestionan perfectamente según la voz de cada corista.
                         </div>
                     </div>
 
-                    <!-- FAQ 2 -->
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
+                    <!-- FAQ 2: Control Parental -->
+                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
                         <button type="button" 
-                                class="flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
+                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
                                 @click="activeFaq = (activeFaq === 2 ? null : 2)">
+                            <span>¿Cómo funciona el Control Parental para familias con hijos menores?</span>
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
+                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 2 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
+                             x-show="activeFaq === 2"
+                             :class="activeFaq === 2 ? 'block' : 'hidden'">
+                            Muchos músicos de bandas y escuelas de música son menores de edad. Los padres o tutores disponen de una vista familiar donde pueden consultar las convocatorias, ensayos, uniformes y actividades de sus hijos, marcar su disponibilidad (Disponible / No disponible) e inscribirlos en salidas o actividades extra sin necesidad de que el menor gestione un usuario independiente.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3: iPhone y Android -->
+                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
+                        <button type="button" 
+                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
+                                @click="activeFaq = (activeFaq === 3 ? null : 3)">
                             <span>¿Cómo se instala en iPhone y teléfonos Android?</span>
                             <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
-                                <svg class="h-4 w-4 transform transition-transform" :class="activeFaq === 2 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 3 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </span>
                         </button>
-                        <div x-show="activeFaq === 2" x-cloak x-collapse class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
-                            eBand funciona como una <strong>Progressive Web App (PWA)</strong>. No requiere pasar por la App Store ni Google Play. Al abrir el enlace de tu banda en el navegador del móvil, un aviso te permite pulsar <em>"Añadir a pantalla de inicio"</em> (en Safari de iOS o Chrome de Android). Se creará un icono idéntico a una app nativa, con navegación a pantalla completa y funcionamiento fluido sin ocupar almacenamiento innecesario.
+                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
+                             x-show="activeFaq === 3"
+                             :class="activeFaq === 3 ? 'block' : 'hidden'">
+                            eBand funciona como una <strong>Progressive Web App (PWA)</strong>. No requiere pasar por la App Store ni Google Play. Al abrir el enlace de tu banda en el navegador del móvil, basta con pulsar <em>"Añadir a pantalla de inicio"</em> (en Safari de iOS o Chrome de Android). Se creará un icono idéntico al de una aplicación nativa, con navegación a pantalla completa y acceso rápido.
                         </div>
                     </div>
 
-                    <!-- FAQ 3 -->
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
+                    <!-- FAQ 4: Tarifa -->
+                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
                         <button type="button" 
-                                class="flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
-                                @click="activeFaq = (activeFaq === 3 ? null : 3)">
+                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
+                                @click="activeFaq = (activeFaq === 4 ? null : 4)">
                             <span>¿Qué incluye exactamente la tarifa plana de 150€/año?</span>
                             <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
-                                <svg class="h-4 w-4 transform transition-transform" :class="activeFaq === 3 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 4 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </span>
                         </button>
-                        <div x-show="activeFaq === 3" x-cloak x-collapse class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
-                            Incluye el 100% de la plataforma: músicos ilimitados, actuaciones y ensayos sin límite, repositorio de partituras, inventario de trajes e instrumental, módulo de liquidación económica por bolo, soporte por email o WhatsApp, copias de seguridad automáticas y todas las actualizaciones que vayamos publicando.
+                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
+                             x-show="activeFaq === 4"
+                             :class="activeFaq === 4 ? 'block' : 'hidden'">
+                            Incluye el 100% de la plataforma: músicos y familias ilimitados, actuaciones, ensayos y actividades extra sin límite, control de disponibilidad, inventario de uniformes y material de la banda, módulo de liquidación económica por bolo, soporte por email o WhatsApp, copias de seguridad continuas y todas las actualizaciones de la versión 3.0.
                         </div>
                     </div>
 
-                    <!-- FAQ 4 -->
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
+                    <!-- FAQ 5: Acceso -->
+                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
                         <button type="button" 
-                                class="flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
-                                @click="activeFaq = (activeFaq === 4 ? null : 4)">
-                            <span>¿Cómo acceden los músicos a su espacio privado?</span>
-                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
-                                <svg class="h-4 w-4 transform transition-transform" :class="activeFaq === 4 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </span>
-                        </button>
-                        <div x-show="activeFaq === 4" x-cloak x-collapse class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
-                            Tu agrupación dispone de una dirección web propia (por ejemplo <code>tubanda.eband.app</code>). Además, desde la página principal de <code>eband.app</code> en el botón <em>"Acceso a mi banda"</em>, los integrantes pueden introducir su código único y serán redirigidos a su espacio privado inmediatamente.
-                        </div>
-                    </div>
-
-                    <!-- FAQ 5 -->
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
-                        <button type="button" 
-                                class="flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
+                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
                                 @click="activeFaq = (activeFaq === 5 ? null : 5)">
+                            <span>¿Cómo acceden los integrantes a su espacio privado?</span>
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
+                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 5 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
+                             x-show="activeFaq === 5"
+                             :class="activeFaq === 5 ? 'block' : 'hidden'">
+                            Cada agrupación dispone de una dirección web propia (por ejemplo <code>tubanda.eband.app</code>). Además, desde la página principal de <code>eband.app</code> en el botón <em>"Acceso a mi banda"</em>, los integrantes pueden introducir su código único y serán dirigidos automáticamente a su espacio privado.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 6: Demo -->
+                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
+                        <button type="button" 
+                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
+                                @click="activeFaq = (activeFaq === 6 ? null : 6)">
                             <span>¿Puedo probar la herramienta antes de contratar?</span>
                             <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
-                                <svg class="h-4 w-4 transform transition-transform" :class="activeFaq === 5 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 6 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </span>
                         </button>
-                        <div x-show="activeFaq === 5" x-cloak x-collapse class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
-                            Sí. Puedes acceder a nuestra demo interactiva en cualquier momento pulsando el botón <strong>"Probar Demo"</strong>. Podrás explorar el panel de administración, ver cómo se configuran las actuaciones y experimentar la facilidad de uso.
+                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
+                             x-show="activeFaq === 6"
+                             :class="activeFaq === 6 ? 'block' : 'hidden'">
+                            Sí. Puedes acceder a nuestra demo interactiva en cualquier momento pulsando el botón <strong>"Probar Demo"</strong>. Podrás explorar el panel de administración, ver cómo se configuran las actuaciones y comprobar la agilidad de uso.
                         </div>
                     </div>
                 </div>
@@ -957,7 +994,7 @@
                                 </div>
                                 <div>
                                     <h4 class="text-sm font-bold text-slate-900">Respuesta rápida</h4>
-                                    <p class="text-xs text-slate-600">Te contestamos en menos de 24 horas laborables con una respuesta clara y directa.</p>
+                                    <p class="text-xs text-slate-600">Te contestamos en menos de 24 horas laborables con una propuesta clara y directa.</p>
                                 </div>
                             </div>
 
@@ -969,7 +1006,7 @@
                                 </div>
                                 <div>
                                     <h4 class="text-sm font-bold text-slate-900">Asesoramiento personalizado</h4>
-                                    <p class="text-xs text-slate-600">Revisamos tu caso: banda con escuela, xaranga con bolos o coro polifónico.</p>
+                                    <p class="text-xs text-slate-600">Revisamos tu caso: banda con escuela, charanga con bolos o coro polifónico.</p>
                                 </div>
                             </div>
 
@@ -1023,7 +1060,7 @@
                                 <div>
                                     <label for="banda" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Nombre de la Agrupación *</label>
                                     <input type="text" id="banda" name="banda" value="{{ old('banda') }}" required
-                                           placeholder="Banda, Xaranga o Coral..."
+                                           placeholder="Banda, Charanga o Coral..."
                                            class="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
                                     @error('banda')
                                         <span class="text-xs text-rose-600 font-medium">{{ $message }}</span>
@@ -1086,37 +1123,27 @@
     </main>
 
     <!-- ============================================================== -->
-    <!-- DEMO ACCESS MODAL (ALPINE.JS)                                  -->
+    <!-- DEMO ACCESS MODAL (ALPINE.JS + PURE JS RESILIENT)              -->
     <!-- ============================================================== -->
-    <div x-show="demoModalOpen" 
-         x-cloak 
-         class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+    <div id="demo-modal"
+         x-show="demoModalOpen" 
+         :class="demoModalOpen ? 'flex' : 'hidden'"
+         class="hidden fixed inset-0 z-50 items-center justify-center p-4 sm:p-6 overflow-y-auto"
          role="dialog" 
          aria-modal="true">
         <!-- Backdrop -->
-        <div x-show="demoModalOpen"
-             x-transition:enter="ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
+        <div id="demo-modal-backdrop"
              @click="demoModalOpen = false"
              class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
 
         <!-- Modal Card -->
-        <div x-show="demoModalOpen"
-             x-transition:enter="ease-out duration-300"
-             x-transition:enter-start="opacity-0 scale-95"
-             x-transition:enter-end="opacity-100 scale-100"
-             x-transition:leave="ease-in duration-200"
-             x-transition:leave-start="opacity-100 scale-100"
-             x-transition:leave-end="opacity-0 scale-95"
-             class="relative w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-2xl transition-all z-10">
+        <div class="relative w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-2xl transition-all z-10">
             
             <button type="button" 
+                    id="demo-modal-close"
                     @click="demoModalOpen = false" 
-                    class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none">
+                    class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none"
+                    aria-label="Cerrar ventana">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -1130,7 +1157,7 @@
                 </div>
                 <div>
                     <h3 class="font-heading text-xl font-bold text-slate-900">Acceso Inmediato a la Demo</h3>
-                    <p class="text-xs text-slate-500">Prueba todas las funcionalidades sin esperas</p>
+                    <p class="text-xs text-slate-500">Explora eBand en tiempo real sin esperas</p>
                 </div>
             </div>
 
@@ -1189,7 +1216,7 @@
                             e<span class="text-blue-700">Band</span><span class="text-amber-500">.</span>
                         </div>
                         <p class="text-xs text-slate-500">
-                            &copy; {{ date('Y') }} eBand. El software para Bandas de Música, Xarangas y Corales.
+                            &copy; {{ date('Y') }} eBand. El software para Bandas de Música, Charangas y Corales.
                         </p>
                     </div>
                 </div>
@@ -1208,5 +1235,81 @@
 
     <!-- Render reCAPTCHA Script -->
     {!! NoCaptcha::renderJs() !!}
+
+    <!-- Fallback pure JS for bulletproof modal, FAQ accordion and mobile menu -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Demo Modal open / close handlers
+            const demoModal = document.getElementById('demo-modal');
+            const demoButtons = document.querySelectorAll('[data-demo-trigger]');
+            const demoClose = document.getElementById('demo-modal-close');
+            const demoBackdrop = document.getElementById('demo-modal-backdrop');
+
+            function openModal() {
+                if (demoModal) {
+                    demoModal.classList.remove('hidden');
+                    demoModal.classList.add('flex');
+                }
+            }
+
+            function closeModal() {
+                if (demoModal) {
+                    demoModal.classList.add('hidden');
+                    demoModal.classList.remove('flex');
+                }
+            }
+
+            demoButtons.forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    openModal();
+                });
+            });
+
+            if (demoClose) {
+                demoClose.addEventListener('click', closeModal);
+            }
+            if (demoBackdrop) {
+                demoBackdrop.addEventListener('click', closeModal);
+            }
+
+            // FAQ accordion toggle handlers
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(function (item) {
+                const btn = item.querySelector('.faq-btn');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.faq-icon');
+
+                if (btn && content) {
+                    btn.addEventListener('click', function () {
+                        const isOpen = !content.classList.contains('hidden');
+                        
+                        // Close all others
+                        faqItems.forEach(function (otherItem) {
+                            const otherContent = otherItem.querySelector('.faq-content');
+                            const otherIcon = otherItem.querySelector('.faq-icon');
+                            if (otherContent) otherContent.classList.add('hidden');
+                            if (otherIcon) otherIcon.classList.remove('rotate-180');
+                        });
+
+                        // Toggle current
+                        if (!isOpen) {
+                            content.classList.remove('hidden');
+                            if (icon) icon.classList.add('rotate-180');
+                        }
+                    });
+                }
+            });
+
+            // Mobile menu toggle
+            const mobileToggle = document.getElementById('mobile-nav-toggle');
+            const mobileMenu = document.getElementById('mobile-nav-menu');
+            if (mobileToggle && mobileMenu) {
+                mobileToggle.addEventListener('click', function () {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

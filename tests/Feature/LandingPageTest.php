@@ -13,10 +13,20 @@ class LandingPageTest extends TestCase
         $response->assertStatus(200);
 
         // SEO y Encabezados
-        $response->assertSee('eBand — El software de gestión para Bandas de Música, Xarangas y Corales');
-        $response->assertSee('Corales');
-        $response->assertSee('Xarangas');
+        $response->assertSee('eBand — El software de gestión para Bandas de Música, Charangas y Corales');
+        $response->assertSee('Charangas');
         $response->assertSee('Bandas');
+        $response->assertSee('Corales');
+
+        // Nuevas funcionalidades requeridas
+        $response->assertSee('Control Parental');
+        $response->assertSee('Actividades Extra');
+        $response->assertSee('Disponible');
+        $response->assertSee('Inventario de Uniformes y Material');
+
+        // Partituras NO debe aparecer
+        $response->assertDontSee('archivo de partituras digital', false);
+        $response->assertDontSee('Repertorio sincronizado', false);
 
         // Tarifa Plana 150€
         $response->assertSee('150€');
