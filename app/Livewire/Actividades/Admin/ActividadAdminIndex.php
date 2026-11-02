@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Livewire\Actividades\Admin;
 
 use App\Models\Actividad;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\WithPagination;
+use OneSignal;
+use Throwable;
 
 class ActividadAdminIndex extends Component
 {
@@ -54,6 +57,36 @@ class ActividadAdminIndex extends Component
         if (in_array($nuevoEstado, ['borrador', 'abierta', 'cerrada'], true)) {
             $actividad->update(['estado' => $nuevoEstado]);
             session()->flash('success', "Estado de «{$actividad->titulo}» cambiado a {$nuevoEstado}.");
+        }
+    }
+
+    public function notificarOneSignal(int $actividadId): void
+    {
+        abort_if(! Gate::allows('admin'), 403);
+
+        $actividad = Actividad::query()->findOrFail($actividadId);
+        $url = route('actividades.show', $actividad->id);
+        $fechaLimite = $actividad->fecha_limite_inscripcion->translatedFormat('d M Y, H:i');
+
+        try {
+            OneSignal::sendNotificationToSegment(
+                __('actividades.notification_title', ['titulo' => $actividad->titulo]),
+                'Active Subscriptions',
+                $url,
+                null,
+                null,
+                null,
+                __('actividades.notification_subtitle', ['fecha' => $fechaLimite]),
+                __('actividades.inscribe')
+            );
+
+            $actividad->update([
+                'notified_at' => Carbon::now(),
+            ]);
+
+            session()->flash('success', __('actividades.notification_sent'));
+        } catch (Throwable $e) {
+            session()->flash('error', 'Error OneSignal: '.$e->getMessage());
         }
     }
 

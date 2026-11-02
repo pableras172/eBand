@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Exports\ActividadInscritosExport;
 use App\Livewire\Actividades\ActividadDetalle;
+use App\Livewire\Actividades\Admin\ActividadAdminDetail;
 use App\Models\Actividad;
 use App\Models\ActividadInscripcion;
 use App\Models\ActividadOpcion;
@@ -176,5 +177,29 @@ class ActividadInscripcionTest extends TestCase
         Excel::assertDownloaded("actividad_excursion-a-valencia_{$actividad->fecha->format('Ymd')}.xlsx", function (ActividadInscritosExport $export): bool {
             return true;
         });
+    }
+
+    public function test_admin_can_send_onesignal_notification_for_activity(): void
+    {
+        $admin = $this->createAdminUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Cena de Navidad',
+            'tipo' => 'cena',
+            'fecha' => Carbon::now()->addDays(15),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(10),
+            'estado' => 'abierta',
+        ]);
+
+        \OneSignal::shouldReceive('sendNotificationToSegment')
+            ->once()
+            ->andReturn(null);
+
+        Livewire::actingAs($admin)
+            ->test(ActividadAdminDetail::class, ['actividadId' => $actividad->id])
+            ->call('notificarOneSignal')
+            ->assertHasNoErrors();
+
+        $this->assertNotNull($actividad->fresh()->notified_at);
     }
 }

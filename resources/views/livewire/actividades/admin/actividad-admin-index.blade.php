@@ -32,6 +32,15 @@
         </div>
     @endif
 
+    @if (session()->has('error'))
+        <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 flex items-center gap-2 shadow-sm">
+            <svg class="w-5 h-5 text-rose-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
     <!-- Filtros y Búsqueda -->
     <div class="rounded-2xl bg-white p-4 shadow-sm sm:p-6 border border-gray-100">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -88,7 +97,12 @@
                                 <div class="flex items-center gap-3">
                                     <span class="text-2xl p-2 rounded-xl bg-gray-50">{{ $act->icono }}</span>
                                     <div>
-                                        <div class="font-semibold text-gray-900">{{ $act->titulo }}</div>
+                                        <div class="font-semibold text-gray-900 flex items-center gap-1.5">
+                                            <span>{{ $act->titulo }}</span>
+                                            @if ($act->notified_at)
+                                                <span title="{{ __('actividades.notified_at', ['date' => $act->notified_at->translatedFormat('d M Y, H:i')]) }}" class="cursor-pointer text-xs">🔔</span>
+                                            @endif
+                                        </div>
                                         <div class="text-xs text-gray-500 flex items-center gap-2 mt-0.5">
                                             <span>{{ __('actividades.types.' . $act->tipo) }}</span>
                                             @if($act->lugar)
@@ -142,6 +156,18 @@
 
                             <td class="px-5 py-4 whitespace-nowrap text-right text-sm">
                                 <div class="flex items-center justify-end gap-1.5">
+                                    <!-- Notificar OneSignal -->
+                                    @if ($act->estado === 'abierta')
+                                        <button type="button" wire:click="notificarOneSignal({{ $act->id }})"
+                                            wire:confirm="{{ __('actividades.confirm_notify') }}"
+                                            title="{{ __('actividades.notify_onesignal') }}"
+                                            class="p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                            </svg>
+                                        </button>
+                                    @endif
+
                                     <!-- Ver detalle / inscripciones -->
                                     <a href="{{ route('admin.actividades.detail', $act) }}"
                                         title="{{ __('actividades.dashboard_title') }}"

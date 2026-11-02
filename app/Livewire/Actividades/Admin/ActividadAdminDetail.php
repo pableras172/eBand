@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
+use OneSignal;
+use Throwable;
 
 class ActividadAdminDetail extends Component
 {
@@ -75,6 +77,35 @@ class ActividadAdminDetail extends Component
         ]);
 
         session()->flash('success', __('actividades.payment_marked_pending', ['name' => $inscripcion->user->name]));
+    }
+
+    public function notificarOneSignal(): void
+    {
+        abort_if(! Gate::allows('admin'), 403);
+
+        $url = route('actividades.show', $this->actividad->id);
+        $fechaLimite = $this->actividad->fecha_limite_inscripcion->translatedFormat('d M Y, H:i');
+
+        try {
+            OneSignal::sendNotificationToSegment(
+                __('actividades.notification_title', ['titulo' => $this->actividad->titulo]),
+                'Active Subscriptions',
+                $url,
+                null,
+                null,
+                null,
+                __('actividades.notification_subtitle', ['fecha' => $fechaLimite]),
+                __('actividades.inscribe')
+            );
+
+            $this->actividad->update([
+                'notified_at' => Carbon::now(),
+            ]);
+
+            session()->flash('success', __('actividades.notification_sent'));
+        } catch (Throwable $e) {
+            session()->flash('error', 'Error OneSignal: '.$e->getMessage());
+        }
     }
 
     public function eliminarInscripcion(int $inscripcionId): void

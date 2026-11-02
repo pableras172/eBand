@@ -28,6 +28,7 @@ class Actividad extends Model
         'fecha_limite_inscripcion',
         'estado',
         'instrucciones_pago',
+        'notified_at',
     ];
 
     /**
@@ -40,6 +41,7 @@ class Actividad extends Model
         return [
             'fecha' => 'datetime',
             'fecha_limite_inscripcion' => 'datetime',
+            'notified_at' => 'datetime',
         ];
     }
 

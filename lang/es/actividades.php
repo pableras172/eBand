@@ -119,4 +119,11 @@ return [
     'activity_deleted' => 'Actividad «:titulo» eliminada correctamente.',
     'activity_created' => 'Actividad creada con éxito.',
     'activity_updated' => 'Actividad actualizada con éxito.',
+    'notify_onesignal' => 'Notificar a los músicos',
+    'confirm_notify' => '¿Deseas enviar una notificación push a todos los músicos sobre esta actividad?',
+    'notification_sent' => 'Notificación enviada correctamente a los músicos.',
+    'notification_title' => '🎉 Nueva Actividad: :titulo',
+    'notification_subtitle' => 'Apúntate antes del :fecha. ¡Haz clic para reservar!',
+    'notified_at' => 'Notificado el :date',
+    'not_notified' => 'No notificado',
 ];

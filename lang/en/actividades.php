@@ -119,4 +119,11 @@ return [
     'activity_deleted' => 'Activity «:titulo» deleted successfully.',
     'activity_created' => 'Activity created successfully.',
     'activity_updated' => 'Activity updated successfully.',
+    'notify_onesignal' => 'Notify Musicians',
+    'confirm_notify' => 'Do you want to send a push notification to all musicians for this activity?',
+    'notification_sent' => 'Notification successfully sent to musicians.',
+    'notification_title' => '🎉 New Activity: :titulo',
+    'notification_subtitle' => 'Sign up before :fecha. Click to reserve!',
+    'notified_at' => 'Notified on :date',
+    'not_notified' => 'Not notified',
 ];
