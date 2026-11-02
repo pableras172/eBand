@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActividadExportController;
 use App\Http\Controllers\ActuacionController;
 use App\Http\Controllers\BandSettingController;
 use App\Http\Controllers\CalendarController;
@@ -17,6 +18,11 @@ use App\Http\Controllers\TasksController;
 use App\Http\Controllers\TipoActuacionController;
 use App\Http\Controllers\UsersController;
 use App\Jobs\SendDailyCommentsNotification;
+use App\Livewire\Actividades\ActividadDetalle;
+use App\Livewire\Actividades\ActividadesIndex;
+use App\Livewire\Actividades\Admin\ActividadAdminDetail;
+use App\Livewire\Actividades\Admin\ActividadAdminForm;
+use App\Livewire\Actividades\Admin\ActividadAdminIndex;
 use App\Livewire\Actuaciones\ContratoActuaciones;
 use App\Livewire\Announcement\AnnouncementCreate;
 use App\Livewire\Announcement\AnnouncementEdit;
@@ -139,10 +145,21 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::livewire('/inventory/{item}/edit', InventoryEdit::class)->name('inventory.edit');
     Route::get('/inventory/export/excel', [InventoryExportController::class, 'excel'])->name('inventory.export.excel');
     Route::get('/inventory/export/pdf', [InventoryExportController::class, 'pdf'])->name('inventory.export.pdf');
+
+    // Actividades Internas (admin)
+    Route::get('/admin/actividades', ActividadAdminIndex::class)->name('admin.actividades.index');
+    Route::get('/admin/actividades/create', ActividadAdminForm::class)->name('admin.actividades.create');
+    Route::get('/admin/actividades/{actividadId}/edit', ActividadAdminForm::class)->name('admin.actividades.edit');
+    Route::get('/admin/actividades/{actividadId}', ActividadAdminDetail::class)->name('admin.actividades.detail');
+    Route::get('/admin/actividades/{actividad}/export', [ActividadExportController::class, 'export'])->name('admin.actividades.export');
 });
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified', 'demo.readonly'])->group(
     function () {
+
+        // Actividades Internas (músicos)
+        Route::get('/actividades', ActividadesIndex::class)->name('actividades.index');
+        Route::get('/actividades/{actividadId}', ActividadDetalle::class)->name('actividades.show');
 
         // Suggestions - available for all authenticated users
         Route::livewire('/suggestions', SuggestionIndex::class)->name('suggestions.index');

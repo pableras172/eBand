@@ -29,6 +29,12 @@
                     </x-nav-link>
                 </div>
 
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('actividades.index') }}" :active="request()->routeIs('actividades.*')">
+                        {{ __('actividades.nav') }}
+                    </x-nav-link>
+                </div>
+
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex items-center">
                     <x-dropdown align="right" width="60">
                         <x-slot name="trigger">
@@ -215,6 +221,17 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17h6m-6 3h6" />
                                             </svg>
                                             <span>{{ __('Anuncios') }}</span>
+                                        </div>
+                                    </x-nav-link>
+                                </div>
+
+                                <div class="w-60 px-4 m-2">
+                                    <x-nav-link href="{{ route('admin.actividades.index') }}" :active="request()->routeIs('admin.actividades.*')">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span>{{ __('actividades.nav') }}</span>
                                         </div>
                                     </x-nav-link>
                                 </div>
@@ -541,6 +558,15 @@
                     </div>
                 </x-responsive-nav-link>
 
+                <x-responsive-nav-link href="{{ route('actividades.index') }}" :active="request()->routeIs('actividades.*')">
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{{ __('actividades.nav') }}</span>
+                    </div>
+                </x-responsive-nav-link>
+
                 <x-responsive-nav-link href="{{ route('suggestions.index') }}" :active="request()->routeIs('suggestions.index')">
                     <div class="flex items-center space-x-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -620,6 +646,15 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17h6m-6 3h6" />
                                 </svg>
                                 <span>{{ __('Anuncios') }}</span>
+                            </div>
+                        </x-responsive-nav-link>
+
+                        <x-responsive-nav-link href="{{ route('admin.actividades.index') }}" :active="request()->routeIs('admin.actividades.*')">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>{{ __('actividades.nav_admin') }}</span>
                             </div>
                         </x-responsive-nav-link>
 

@@ -1,0 +1,180 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Feature;
+
+use App\Exports\ActividadInscritosExport;
+use App\Livewire\Actividades\ActividadDetalle;
+use App\Models\Actividad;
+use App\Models\ActividadInscripcion;
+use App\Models\ActividadOpcion;
+use App\Models\Role;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
+use Maatwebsite\Excel\Facades\Excel;
+use Tests\TestCase;
+
+class ActividadInscripcionTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected function ensureBaseRoles(): void
+    {
+        Role::query()->insertOrIgnore([
+            ['id' => 1, 'title' => 'Admin', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'title' => 'User', 'created_at' => now(), 'updated_at' => now()],
+        ]);
+    }
+
+    protected function createAdminUser(): User
+    {
+        $this->ensureBaseRoles();
+        $admin = User::factory()->create();
+        $admin->roles()->attach(1);
+
+        return $admin;
+    }
+
+    protected function createRegularUser(): User
+    {
+        $this->ensureBaseRoles();
+        $user = User::factory()->create();
+        $user->roles()->attach(2);
+
+        return $user;
+    }
+
+    public function test_non_admin_cannot_access_admin_actividades(): void
+    {
+        $user = $this->createRegularUser();
+
+        $this->actingAs($user)
+            ->get(route('admin.actividades.index'))
+            ->assertForbidden();
+    }
+
+    public function test_admin_can_access_admin_actividades(): void
+    {
+        $admin = $this->createAdminUser();
+
+        $this->actingAs($admin)
+            ->get(route('admin.actividades.index'))
+            ->assertOk();
+    }
+
+    public function test_musician_sees_open_activity_and_can_inscribe(): void
+    {
+        $user = $this->createRegularUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Cena Santa Cecilia',
+            'tipo' => 'cena',
+            'descripcion' => 'Cena de celebración',
+            'lugar' => 'Restaurante Central',
+            'fecha' => Carbon::now()->addDays(5),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(3),
+            'estado' => 'abierta',
+            'instrucciones_pago' => 'Bizum al 600000000',
+        ]);
+
+        $opcionCarne = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú Carne',
+            'precio' => 25.00,
+            'orden' => 1,
+        ]);
+
+        $opcionInfantil = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú Infantil',
+            'precio' => 12.00,
+            'orden' => 2,
+        ]);
+
+        // Verificar listado público
+        $this->actingAs($user)
+            ->get(route('actividades.index'))
+            ->assertOk()
+            ->assertSee('Cena Santa Cecilia');
+
+        // Probar inscripción vía Livewire
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->set("cantidades.{$opcionCarne->id}", 2)
+            ->set("cantidades.{$opcionInfantil->id}", 1)
+            ->set('observaciones_alergias', '1 menú sin cebolla')
+            ->call('inscribirme')
+            ->assertHasNoErrors();
+
+        // Comprobar persistencia
+        $this->assertDatabaseHas('actividad_inscripciones', [
+            'actividad_id' => $actividad->id,
+            'user_id' => $user->id,
+            'total' => 62.00, // (2 * 25) + (1 * 12) = 62.00
+            'observaciones_alergias' => '1 menú sin cebolla',
+            'pagado' => false,
+        ]);
+
+        $this->assertDatabaseCount('actividad_inscripcion_items', 2);
+    }
+
+    public function test_musician_cannot_register_twice_for_same_activity(): void
+    {
+        $user = $this->createRegularUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Comida Primavera',
+            'tipo' => 'comida',
+            'fecha' => Carbon::now()->addDays(10),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(8),
+            'estado' => 'abierta',
+        ]);
+
+        $opcion = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú Único',
+            'precio' => 20.00,
+            'orden' => 1,
+        ]);
+
+        // Primera inscripción
+        ActividadInscripcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'user_id' => $user->id,
+            'fecha_inscripcion' => now(),
+            'total' => 20.00,
+            'pagado' => false,
+        ]);
+
+        // Intentar inscribirse de nuevo debe mostrar ya inscrito
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->assertSee(__('actividades.already_inscribed'))
+            ->assertDontSee(__('actividades.confirm_registration'));
+    }
+
+    public function test_admin_can_export_actividad_to_excel(): void
+    {
+        Excel::fake();
+        $admin = $this->createAdminUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Excursión a Valencia',
+            'tipo' => 'excursion',
+            'fecha' => Carbon::now()->addDays(20),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(15),
+            'estado' => 'abierta',
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.actividades.export', $actividad))
+            ->assertOk();
+
+        Excel::assertDownloaded("actividad_excursion-a-valencia_{$actividad->fecha->format('Ymd')}.xlsx", function (ActividadInscritosExport $export): bool {
+            return true;
+        });
+    }
+}
