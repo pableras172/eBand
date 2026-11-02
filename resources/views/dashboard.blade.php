@@ -19,6 +19,7 @@
             ['element' => '#dashboard-messages', 'popover' => ['title' => __('Mensajes'), 'description' => __('Aquí verás los mensajes recientes de la dirección y compañeros.'), 'position' => 'bottom']],
             ['element' => '#dashboard-planning', 'popover' => ['title' => __('Planificación'), 'description' => __('Accede a la planificación y próximas actuaciones.'), 'position' => 'bottom']],
             ['element' => '#dashboard-nextconcert', 'popover' => ['title' => __('Próximo concierto'), 'description' => __('Detalles del siguiente concierto programado.'), 'position' => 'right']],
+            ['element' => '#dashboard-activities', 'popover' => ['title' => __('actividades.title'), 'description' => __('actividades.subtitle'), 'position' => 'bottom']],
             ['element' => '#dashboard-stats', 'popover' => ['title' => __('Estadísticas'), 'description' => __('Visualiza estadísticas de asistencia y actividad.'), 'position' => 'left']],
             ['element' => '#dashboard-announcements', 'popover' => ['title' => __('Anuncios'), 'description' => __('Anuncios importantes y avisos.'), 'position' => 'top']],
             ['element' => '#dashboard-funfacts', 'popover' => ['title' => __('Datos curiosos'), 'description' => __('Curiosidades y datos interesantes sobre la banda.'), 'position' => 'top']],

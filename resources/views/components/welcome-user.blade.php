@@ -107,6 +107,10 @@
         <x-program />
     </div>
 
+    <div id="dashboard-activities" class="w-full mx-auto mt-1 mb-1">
+        <livewire:actividades.actividades-highlights />
+    </div>
+
 
     
     <div id="dashboard-stats" class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
