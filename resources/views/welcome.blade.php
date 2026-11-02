@@ -47,9 +47,6 @@
     <!-- Styles & Scripts via Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Alpine.js for lightweight reactivity -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
-
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -132,12 +129,7 @@
     }
     </script>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white"
-      x-data="{ 
-          demoModalOpen: {{ $errors->demoAccess->any() ? 'true' : 'false' }}, 
-          mobileNav: false,
-          activeFaq: null 
-      }">
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
 
     <!-- ============================================================== -->
     <!-- NAVIGATION BAR                                                 -->
@@ -178,7 +170,6 @@
                 </a>
                 <button type="button" 
                         data-demo-trigger
-                        @click="demoModalOpen = true"
                         class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-600 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-700/20 transition hover:from-blue-800 hover:to-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
                     <span>Probar Demo</span>
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -191,12 +182,10 @@
             <div class="flex items-center md:hidden">
                 <button type="button" 
                         id="mobile-nav-toggle"
-                        @click="mobileNav = !mobileNav"
                         class="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 focus:outline-none"
                         aria-label="Abrir menú de navegación">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path :class="mobileNav ? 'hidden' : 'block'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="mobileNav ? 'block' : 'hidden'" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
             </div>
@@ -204,24 +193,22 @@
 
         <!-- Mobile Nav Menu -->
         <div id="mobile-nav-menu"
-             x-show="mobileNav" 
-             x-cloak 
-             class="border-b border-slate-200 bg-white px-4 pt-2 pb-6 md:hidden">
+             class="hidden border-b border-slate-200 bg-white px-4 pt-2 pb-6 md:hidden">
             <nav class="flex flex-col space-y-3 text-base font-medium text-slate-700">
-                <a href="#para-quien" @click="mobileNav = false" class="py-2 hover:text-blue-700">Para quién</a>
-                <a href="#funcionalidades" @click="mobileNav = false" class="py-2 hover:text-blue-700">Funcionalidades</a>
-                <a href="#galeria" @click="mobileNav = false" class="py-2 hover:text-blue-700">Galería del software</a>
-                <a href="#precio" @click="mobileNav = false" class="py-2 flex items-center justify-between hover:text-blue-700">
+                <a href="#para-quien" class="py-2 hover:text-blue-700">Para quién</a>
+                <a href="#funcionalidades" class="py-2 hover:text-blue-700">Funcionalidades</a>
+                <a href="#galeria" class="py-2 hover:text-blue-700">Galería del software</a>
+                <a href="#precio" class="py-2 flex items-center justify-between hover:text-blue-700">
                     <span>Tarifa anual</span>
                     <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-800">150€/año</span>
                 </a>
-                <a href="#faq" @click="mobileNav = false" class="py-2 hover:text-blue-700">Preguntas Frecuentes</a>
-                <a href="#contacto" @click="mobileNav = false" class="py-2 hover:text-blue-700">Contacto</a>
+                <a href="#faq" class="py-2 hover:text-blue-700">Preguntas Frecuentes</a>
+                <a href="#contacto" class="py-2 hover:text-blue-700">Contacto</a>
                 <div class="pt-4 flex flex-col gap-2">
                     <a href="{{ Route::has('tenant-access.index') ? route('tenant-access.index') : (Route::has('login') ? route('login') : url('/acceso')) }}" class="w-full text-center rounded-xl border border-slate-200 py-2.5 text-sm font-semibold text-slate-700">
                         Acceso a mi banda
                     </a>
-                    <button type="button" data-demo-trigger @click="mobileNav = false; demoModalOpen = true" class="w-full text-center rounded-xl bg-blue-700 py-2.5 text-sm font-bold text-white shadow-md">
+                    <button type="button" data-demo-trigger class="w-full text-center rounded-xl bg-blue-700 py-2.5 text-sm font-bold text-white shadow-md">
                         Probar Demo Inmediata
                     </button>
                 </div>
@@ -265,7 +252,6 @@
                     <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <button type="button" 
                                 data-demo-trigger
-                                @click="demoModalOpen = true"
                                 class="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-600 px-8 py-4 text-base font-bold text-white shadow-xl shadow-blue-700/25 transition-all hover:scale-[1.02] hover:shadow-2xl hover:from-blue-800 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
                             <span>Probar Demo Gratis</span>
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -818,7 +804,6 @@
                         <div class="mt-8 flex flex-col gap-3">
                             <button type="button" 
                                     data-demo-trigger
-                                    @click="demoModalOpen = true"
                                     class="w-full rounded-xl bg-blue-700 py-4 text-center text-sm font-bold text-white shadow-lg shadow-blue-700/25 transition hover:bg-blue-800">
                                 Probar Demo Inmediata Gratis
                             </button>
@@ -833,7 +818,7 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- FAQ SECTION (ACCORDION WITH ALPINE + FALLBACK)                 -->
+        <!-- FAQ SECTION (NATIVE HTML5 ACCORDION WITH DETAILS/SUMMARY)       -->
         <!-- ============================================================== -->
         <section id="faq" class="py-24 bg-white border-t border-slate-200/80">
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
@@ -851,118 +836,94 @@
 
                 <div class="mt-14 space-y-4">
                     <!-- FAQ 1: Corales -->
-                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
-                        <button type="button" 
-                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
-                                @click="activeFaq = (activeFaq === 1 ? null : 1)">
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
                             <span>¿eBand es compatible con Corales y Coros además de Bandas?</span>
-                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
-                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 1 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </span>
-                        </button>
-                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
-                             x-show="activeFaq === 1"
-                             :class="activeFaq === 1 ? 'block' : 'hidden'">
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
                             Absolutamente. Puedes clasificar a los integrantes tanto por instrumentos (en el caso de bandas y agrupaciones instrumentales) como por <strong>cuerdas vocales (sopranos, contraltos, tenores y bajos)</strong> en coros y agrupaciones vocales. Las convocatorias, disponibilidad y actividades se gestionan perfectamente según la voz de cada corista.
                         </div>
-                    </div>
+                    </details>
 
                     <!-- FAQ 2: Control Parental -->
-                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
-                        <button type="button" 
-                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
-                                @click="activeFaq = (activeFaq === 2 ? null : 2)">
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
                             <span>¿Cómo funciona el Control Parental para familias con hijos menores?</span>
-                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
-                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 2 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </span>
-                        </button>
-                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
-                             x-show="activeFaq === 2"
-                             :class="activeFaq === 2 ? 'block' : 'hidden'">
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
                             Muchos músicos de bandas y escuelas de música son menores de edad. Los padres o tutores disponen de una vista familiar donde pueden consultar las convocatorias, ensayos, uniformes y actividades de sus hijos, marcar su disponibilidad (Disponible / No disponible) e inscribirlos en salidas o actividades extra sin necesidad de que el menor gestione un usuario independiente.
                         </div>
-                    </div>
+                    </details>
 
                     <!-- FAQ 3: iPhone y Android -->
-                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
-                        <button type="button" 
-                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
-                                @click="activeFaq = (activeFaq === 3 ? null : 3)">
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
                             <span>¿Cómo se instala en iPhone y teléfonos Android?</span>
-                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
-                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 3 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </span>
-                        </button>
-                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
-                             x-show="activeFaq === 3"
-                             :class="activeFaq === 3 ? 'block' : 'hidden'">
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
                             eBand funciona como una <strong>Progressive Web App (PWA)</strong>. No requiere pasar por la App Store ni Google Play. Al abrir el enlace de tu banda en el navegador del móvil, basta con pulsar <em>"Añadir a pantalla de inicio"</em> (en Safari de iOS o Chrome de Android). Se creará un icono idéntico al de una aplicación nativa, con navegación a pantalla completa y acceso rápido.
                         </div>
-                    </div>
+                    </details>
 
                     <!-- FAQ 4: Tarifa -->
-                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
-                        <button type="button" 
-                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
-                                @click="activeFaq = (activeFaq === 4 ? null : 4)">
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
                             <span>¿Qué incluye exactamente la tarifa plana de 150€/año?</span>
-                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
-                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 4 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </span>
-                        </button>
-                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
-                             x-show="activeFaq === 4"
-                             :class="activeFaq === 4 ? 'block' : 'hidden'">
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
                             Incluye el 100% de la plataforma: músicos y familias ilimitados, actuaciones, ensayos y actividades extra sin límite, control de disponibilidad, inventario de uniformes y material de la banda, módulo de liquidación económica por bolo, soporte por email o WhatsApp, copias de seguridad continuas y todas las actualizaciones de la versión 3.0.
                         </div>
-                    </div>
+                    </details>
 
                     <!-- FAQ 5: Acceso -->
-                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
-                        <button type="button" 
-                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
-                                @click="activeFaq = (activeFaq === 5 ? null : 5)">
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
                             <span>¿Cómo acceden los integrantes a su espacio privado?</span>
-                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
-                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 5 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </span>
-                        </button>
-                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
-                             x-show="activeFaq === 5"
-                             :class="activeFaq === 5 ? 'block' : 'hidden'">
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
                             Cada agrupación dispone de una dirección web propia (por ejemplo <code>tubanda.eband.app</code>). Además, desde la página principal de <code>eband.app</code> en el botón <em>"Acceso a mi banda"</em>, los integrantes pueden introducir su código único y serán dirigidos automáticamente a su espacio privado.
                         </div>
-                    </div>
+                    </details>
 
                     <!-- FAQ 6: Demo -->
-                    <div class="faq-item rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition">
-                        <button type="button" 
-                                class="faq-btn flex w-full items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none"
-                                @click="activeFaq = (activeFaq === 6 ? null : 6)">
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
                             <span>¿Puedo probar la herramienta antes de contratar?</span>
-                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs">
-                                <svg class="faq-icon h-4 w-4 transform transition-transform" :class="activeFaq === 6 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </span>
-                        </button>
-                        <div class="faq-content mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3"
-                             x-show="activeFaq === 6"
-                             :class="activeFaq === 6 ? 'block' : 'hidden'">
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
                             Sí. Puedes acceder a nuestra demo interactiva en cualquier momento pulsando el botón <strong>"Probar Demo"</strong>. Podrás explorar el panel de administración, ver cómo se configuran las actuaciones y comprobar la agilidad de uso.
                         </div>
-                    </div>
+                    </details>
                 </div>
             </div>
         </section>
@@ -1123,25 +1084,21 @@
     </main>
 
     <!-- ============================================================== -->
-    <!-- DEMO ACCESS MODAL (ALPINE.JS + PURE JS RESILIENT)              -->
+    <!-- DEMO ACCESS MODAL                                              -->
     <!-- ============================================================== -->
     <div id="demo-modal"
-         x-show="demoModalOpen" 
-         :class="demoModalOpen ? 'flex' : 'hidden'"
          class="hidden fixed inset-0 z-50 items-center justify-center p-4 sm:p-6 overflow-y-auto"
          role="dialog" 
          aria-modal="true">
         <!-- Backdrop -->
         <div id="demo-modal-backdrop"
-             @click="demoModalOpen = false"
-             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
+             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity cursor-pointer"></div>
 
         <!-- Modal Card -->
         <div class="relative w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-2xl transition-all z-10">
             
             <button type="button" 
                     id="demo-modal-close"
-                    @click="demoModalOpen = false" 
                     class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none"
                     aria-label="Cerrar ventana">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1238,67 +1195,62 @@
 
     <!-- Fallback pure JS for bulletproof modal, FAQ accordion and mobile menu -->
     <script>
+        window.openDemoModal = function () {
+            const modal = document.getElementById('demo-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            }
+        };
+
+        window.closeDemoModal = function () {
+            const modal = document.getElementById('demo-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }
+        };
+
         document.addEventListener('DOMContentLoaded', function () {
             // Demo Modal open / close handlers
-            const demoModal = document.getElementById('demo-modal');
             const demoButtons = document.querySelectorAll('[data-demo-trigger]');
             const demoClose = document.getElementById('demo-modal-close');
             const demoBackdrop = document.getElementById('demo-modal-backdrop');
 
-            function openModal() {
-                if (demoModal) {
-                    demoModal.classList.remove('hidden');
-                    demoModal.classList.add('flex');
-                }
-            }
-
-            function closeModal() {
-                if (demoModal) {
-                    demoModal.classList.add('hidden');
-                    demoModal.classList.remove('flex');
-                }
-            }
-
             demoButtons.forEach(function (btn) {
                 btn.addEventListener('click', function (e) {
                     e.preventDefault();
-                    openModal();
+                    window.openDemoModal();
                 });
             });
 
             if (demoClose) {
-                demoClose.addEventListener('click', closeModal);
+                demoClose.addEventListener('click', window.closeDemoModal);
             }
             if (demoBackdrop) {
-                demoBackdrop.addEventListener('click', closeModal);
+                demoBackdrop.addEventListener('click', window.closeDemoModal);
             }
 
-            // FAQ accordion toggle handlers
-            const faqItems = document.querySelectorAll('.faq-item');
-            faqItems.forEach(function (item) {
-                const btn = item.querySelector('.faq-btn');
-                const content = item.querySelector('.faq-content');
-                const icon = item.querySelector('.faq-icon');
-
-                if (btn && content) {
-                    btn.addEventListener('click', function () {
-                        const isOpen = !content.classList.contains('hidden');
-                        
-                        // Close all others
-                        faqItems.forEach(function (otherItem) {
-                            const otherContent = otherItem.querySelector('.faq-content');
-                            const otherIcon = otherItem.querySelector('.faq-icon');
-                            if (otherContent) otherContent.classList.add('hidden');
-                            if (otherIcon) otherIcon.classList.remove('rotate-180');
-                        });
-
-                        // Toggle current
-                        if (!isOpen) {
-                            content.classList.remove('hidden');
-                            if (icon) icon.classList.add('rotate-180');
-                        }
-                    });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    window.closeDemoModal();
                 }
+            });
+
+            // Accordion: cerrar otros <details> al abrir uno
+            const allDetails = document.querySelectorAll('details[name="faq"]');
+            allDetails.forEach(function (targetDetail) {
+                targetDetail.addEventListener('toggle', function () {
+                    if (targetDetail.open) {
+                        allDetails.forEach(function (otherDetail) {
+                            if (otherDetail !== targetDetail && otherDetail.open) {
+                                otherDetail.open = false;
+                            }
+                        });
+                    }
+                });
             });
 
             // Mobile menu toggle
@@ -1309,6 +1261,10 @@
                     mobileMenu.classList.toggle('hidden');
                 });
             }
+
+            @if($errors->demoAccess->any())
+                window.openDemoModal();
+            @endif
         });
     </script>
 </body>
