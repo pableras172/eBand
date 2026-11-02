@@ -48,11 +48,20 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             $centralDomains = config('tenancy.central_domains', []);
+            $primaryDomain = $centralDomains[0] ?? (parse_url((string) config('app.url'), PHP_URL_HOST) ?: 'localhost');
 
-            foreach ($centralDomains as $centralDomain) {
+            Route::middleware('web')
+                ->domain($primaryDomain)
+                ->group(base_path('routes/central.php'));
+
+            foreach (array_slice($centralDomains, 1) as $additionalDomain) {
                 Route::middleware('web')
-                    ->domain($centralDomain)
-                    ->group(base_path('routes/central.php'));
+                    ->domain($additionalDomain)
+                    ->group(function () use ($primaryDomain) {
+                        Route::fallback(function () use ($primaryDomain) {
+                            return redirect()->to((request()->isSecure() ? 'https://' : 'http://').$primaryDomain.request()->getRequestUri());
+                        });
+                    });
             }
         });
     }

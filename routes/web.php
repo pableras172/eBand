@@ -5,9 +5,7 @@ use App\Http\Controllers\ActuacionController;
 use App\Http\Controllers\BandSettingController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ConcertProgramController;
-use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContratosController;
-use App\Http\Controllers\DemoAccessController;
 use App\Http\Controllers\DemoAutologinController;
 use App\Http\Controllers\DemoInformationRequestController;
 use App\Http\Controllers\InventoryExportController;
@@ -86,13 +84,7 @@ Route::get('/', function () {
     }
 
     return view('welcome');
-})->name('welcome');
-
-// Ruta pública para el formulario de contacto
-Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
-Route::post('/demo-access', [DemoAccessController::class, 'store'])
-    ->middleware(['guest', 'throttle:demo-access'])
-    ->name('demo.access');
+})->name('tenant.home');
 
 Route::get('/demo/autologin', [DemoAutologinController::class, 'autologin'])
     ->name('demo.autologin');
