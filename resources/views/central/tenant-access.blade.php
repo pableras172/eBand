@@ -10,7 +10,10 @@
                             Introduce el código de tu banda o conjunto para acceder a su espacio privado.
                         </p>
                     </div>
-                    <p class="mt-6 text-xs text-cyan-100/90">El código solo se usa para localizar tu dominio de acceso inicial.</p>
+                    <div class="mt-6 flex items-center justify-between">
+                        <p class="text-xs text-cyan-100/90">El código solo se usa para localizar tu dominio de acceso inicial.</p>
+                        <a href="{{ url('/') }}" class="text-xs text-cyan-100 hover:text-white underline">← Volver</a>
+                    </div>
                 </div>
 
                 <div class="flex items-center">

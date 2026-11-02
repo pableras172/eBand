@@ -74,6 +74,11 @@ Route::get('/', function () {
         return redirect()->route('dashboard');
     }
 
+    // Si estamos en un tenant (xxx.eband.app), redirigir directamente al login de la banda
+    if (function_exists('tenant') && tenant()) {
+        return redirect()->route('login');
+    }
+
     // Si enable_features_page no está activo, redirigir a login
     if (! config('app.enable_features_page')) {
         return redirect()->route('login');
