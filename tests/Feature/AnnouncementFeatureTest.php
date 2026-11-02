@@ -18,10 +18,10 @@ class AnnouncementFeatureTest extends TestCase
 
     protected function ensureBaseRoles(): void
     {
-        Role::query()->insert([
+        Role::query()->upsert([
             ['id' => 1, 'title' => 'Admin', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 2, 'title' => 'User', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        ], ['id'], ['title', 'updated_at']);
     }
 
     public function test_targeted_user_sees_announcement_on_dashboard(): void
@@ -67,9 +67,9 @@ class AnnouncementFeatureTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->actingAs($user)
-            ->get(route('dashboard'))
-            ->assertOk()
+        Livewire::actingAs($user)
+            ->test(AnnouncementPopup::class)
+            ->assertSet('showModal', false)
             ->assertDontSee($announcement->title);
     }
 

@@ -1,17 +1,29 @@
 <?php
 
+use App\Http\Controllers\ActividadExportController;
 use App\Http\Controllers\ActuacionController;
+use App\Http\Controllers\BandSettingController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ConcertProgramController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContratosController;
+use App\Http\Controllers\DemoAccessController;
+use App\Http\Controllers\DemoInformationRequestController;
 use App\Http\Controllers\InventoryExportController;
 use App\Http\Controllers\ListaController;
 use App\Http\Controllers\ListasUsersController;
+use App\Http\Controllers\MasInfoController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\TasksController;
 use App\Http\Controllers\TipoActuacionController;
 use App\Http\Controllers\UsersController;
 use App\Jobs\SendDailyCommentsNotification;
+use App\Livewire\Actividades\ActividadDetalle;
+use App\Livewire\Actividades\ActividadesIndex;
+use App\Livewire\Actividades\Admin\ActividadAdminDetail;
+use App\Livewire\Actividades\Admin\ActividadAdminForm;
+use App\Livewire\Actividades\Admin\ActividadAdminIndex;
+use App\Livewire\Actuaciones\ContratoActuaciones;
 use App\Livewire\Announcement\AnnouncementCreate;
 use App\Livewire\Announcement\AnnouncementEdit;
 use App\Livewire\Announcement\AnnouncementIndex;
@@ -72,8 +84,18 @@ Route::get('/', function () {
 
 // Ruta pública para el formulario de contacto
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+Route::post('/demo-access', [DemoAccessController::class, 'store'])
+    ->middleware(['guest', 'throttle:demo-access'])
+    ->name('demo.access');
 
-Route::middleware(['auth', config('jetstream.auth_session'), 'verified', 'can:admin'])->group(function () {
+Route::get('/masinfo', [MasInfoController::class, 'create'])->name('masinfo.create');
+Route::post('/masinfo', [MasInfoController::class, 'store'])->name('masinfo.store');
+Route::get('/programa', [ConcertProgramController::class, 'publicProgram'])->name('concert-programs.public');
+Route::get('/concierto', [ConcertProgramController::class, 'publicProgram'])->name('concert.public');
+Route::get('/programa/cartel', [ConcertProgramController::class, 'publicPoster'])->name('concert-programs.poster');
+Route::get('/concierto/cartel', [ConcertProgramController::class, 'publicPoster'])->name('concert.poster');
+
+Route::middleware(['auth', config('jetstream.auth_session'), 'verified', 'demo.readonly', 'can:admin'])->group(function () {
     Route::resource('contratos', ListadoContratos::class);
     Route::get('/contratos/year/{year}', [ListadoContratos::class, 'contratosPorAnyo'])->name('contratos.anyo');
     // Nueva ruta para duplicar contrato
@@ -87,6 +109,13 @@ Route::middleware(['auth', config('jetstream.auth_session'), 'verified', 'can:ad
     Route::resource('users', UsersController::class);
 
     Route::resource('tipoactuacion', TipoActuacionController::class);
+    Route::resource('concert-programs', ConcertProgramController::class)->except(['show']);
+    Route::post('concert-programs/download-qr', [ConcertProgramController::class, 'downloadPublicQr'])->name('concert-programs.download-qr');
+    Route::get('concert-programs/{concert_program}/poster', [ConcertProgramController::class, 'poster'])->name('concert-programs.poster.preview');
+
+    Route::get('/band-settings', [BandSettingController::class, 'edit'])->name('band-settings.edit');
+    Route::put('/band-settings', [BandSettingController::class, 'update'])->name('band-settings.update');
+    Route::post('/band-settings/generate-contact-qr', [BandSettingController::class, 'generateContactQr'])->name('band-settings.generate-contact-qr');
 
     Route::livewire('/configurations', ConfigurationIndex::class)->name('configurations.index');
     Route::livewire('/configurations/create', ConfigurationCreate::class)->name('configurations.create');
@@ -116,10 +145,21 @@ Route::middleware(['auth', config('jetstream.auth_session'), 'verified', 'can:ad
     Route::livewire('/inventory/{item}/edit', InventoryEdit::class)->name('inventory.edit');
     Route::get('/inventory/export/excel', [InventoryExportController::class, 'excel'])->name('inventory.export.excel');
     Route::get('/inventory/export/pdf', [InventoryExportController::class, 'pdf'])->name('inventory.export.pdf');
+
+    // Actividades Internas (admin)
+    Route::get('/admin/actividades', ActividadAdminIndex::class)->name('admin.actividades.index');
+    Route::get('/admin/actividades/create', ActividadAdminForm::class)->name('admin.actividades.create');
+    Route::get('/admin/actividades/{actividadId}/edit', ActividadAdminForm::class)->name('admin.actividades.edit');
+    Route::get('/admin/actividades/{actividadId}', ActividadAdminDetail::class)->name('admin.actividades.detail');
+    Route::get('/admin/actividades/{actividad}/export', [ActividadExportController::class, 'export'])->name('admin.actividades.export');
 });
 
-Route::middleware(['auth', config('jetstream.auth_session'), 'verified'])->group(
+Route::middleware(['auth', config('jetstream.auth_session'), 'verified', 'demo.readonly'])->group(
     function () {
+
+        // Actividades Internas (músicos)
+        Route::get('/actividades', ActividadesIndex::class)->name('actividades.index');
+        Route::get('/actividades/{actividadId}', ActividadDetalle::class)->name('actividades.show');
 
         // Suggestions - available for all authenticated users
         Route::livewire('/suggestions', SuggestionIndex::class)->name('suggestions.index');
@@ -149,6 +189,9 @@ Route::middleware(['auth', config('jetstream.auth_session'), 'verified'])->group
         Route::get('/dashboard', function () {
             return view('dashboard');
         })->name('dashboard');
+
+        Route::get('/demo/informacion', [DemoInformationRequestController::class, 'create'])->name('demo.info.create');
+        Route::post('/demo/informacion', [DemoInformationRequestController::class, 'store'])->name('demo.info.store');
 
         Route::resource('tasks', TasksController::class);
         // Route::resource('users', \App\Http\Controllers\UsersController::class);
@@ -185,9 +228,13 @@ Route::middleware(['auth', config('jetstream.auth_session'), 'verified'])->group
         Route::post('/notificaractuacion', [ActuacionController::class, 'notificarActuacion']);
 
         Route::get('/api/user-stats', [ActuacionController::class, 'getUserStats'])->name('user.stats');
+        Route::get('/api/tipo-actuacion-stats', [ActuacionController::class, 'getStatsByTipoYear'])->name('stats.tipo.year');
         Route::get('/api/tipoactuacions', [TipoActuacionController::class, 'getTipos'])->name('tipoactuacions.list');
+        Route::get('/api/instrument-musicians-stats', [UsersController::class, 'getInstrumentMusiciansStats'])->name('instrument.musicians.stats');
 
         Route::resource('actuacion', ActuacionController::class);
+        Route::livewire('/contratos/{contrato}/actuaciones', ContratoActuaciones::class)
+            ->name('contratos.actuaciones.index');
         Route::get('/api/ubicaciones-contratos', [ActuacionController::class, 'ubicacionesContratos']);
 
         // Route::resource('contratos',ListadoContratos::class);
@@ -297,8 +344,15 @@ Route::get('/greeting/{locale}', function (string $locale) {
         abort(400);
     }
 
-    // Establecer la cookie de preferencia de idioma
-    $response = redirect()->route('dashboard')->withCookie(cookie('locale', $locale, 30 * 24 * 60));
+    $previousUrl = url()->previous();
+    $fallbackUrl = route('concert-programs.public');
+
+    if (! $previousUrl || $previousUrl === url()->current()) {
+        $previousUrl = $fallbackUrl;
+    }
+
+    // Establecer la cookie de preferencia de idioma y volver a la página actual
+    $response = redirect()->to($previousUrl)->withCookie(cookie('locale', $locale, 30 * 24 * 60));
 
     return $response;
 });

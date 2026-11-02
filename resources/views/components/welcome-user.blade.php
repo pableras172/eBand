@@ -82,7 +82,7 @@
         </a>
     </div>
 
-    <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
+    <div id="dashboard-messages" class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         @include('components.carousel-mensajes')
     </div>
     @php
@@ -90,7 +90,7 @@
         $esPadre = Auth::user()?->hijos()->exists() ?? false;
     @endphp
 
-    <div class="w-full mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1">
+    <div id="dashboard-planning" class="w-full mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1">
         <div class="flex items-center justify-center gap-2 mb-3">
             <x-agenda w="24" h="24" />
             <h3 class="text-lg font-semibold text-gray-800">{{ __('Planning') }}</h3>
@@ -102,20 +102,90 @@
             @include('components.proxima-actuacion')
         @endif
     </div>
-    <div class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
+
+    <div id="dashboard-nextconcert">
+        <x-program />
+    </div>
+
+    <div id="dashboard-activities" class="w-full mx-auto mt-1 mb-1">
+        <livewire:actividades.actividades-highlights />
+    </div>
+
+
+    
+    <div id="dashboard-stats" class="w-full  mx-auto bg-white shadow-l rounded-lg p-4 mt-1 mb-1 flex justify-center items-center">
         <x-animated-estadisticas />
     </div>
-    <div class="w-full mx-auto mt-1 mb-1">
+    <div id="dashboard-announcements" class="w-full mx-auto mt-1 mb-1">
         <livewire:announcement.announcement-highlights />
     </div>
-    <div class="w-full mx-auto bg-white shadow-l rounded-lg p-2 mt-1 mb-1">
+
+    <div id="dashboard-funfacts" class="w-full mx-auto mt-1 mb-1" x-data="{ slide: 0, total: 2 }">
+        <div class="bg-white dark:bg-gray-800 shadow-l rounded-lg p-4">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">{{ __('Dades curioses') }}</h3>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    {{-- Flechas --}}
+                    <button @click="slide = (slide - 1 + total) % total"
+                        class="p-1.5 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-gray-600 dark:text-gray-300 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button @click="slide = (slide + 1) % total"
+                        class="p-1.5 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-gray-600 dark:text-gray-300 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            {{-- Indicadores --}}
+            <div class="flex justify-center gap-2 mb-4">
+                <template x-for="i in total" :key="i">
+                    <button @click="slide = i - 1"
+                        :class="slide === i - 1
+                            ? 'w-6 bg-indigo-500'
+                            : 'w-2 bg-gray-300 dark:bg-gray-600 hover:bg-indigo-300'"
+                        class="h-2 rounded-full transition-all duration-300">
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        {{-- Slides --}}
+        <div x-show="slide === 0" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-x-0" x-transition:leave-end="opacity-0 -translate-x-4">
+            <x-statistics.instruments :userId="null" />
+        </div>
+
+        <div x-show="slide === 1" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-x-0" x-transition:leave-end="opacity-0 -translate-x-4">
+            <x-statistics.tipoactuaciones />
+        </div>
+    </div>
+
+    <div id="dashboard-map" class="w-full mx-auto bg-white shadow-l rounded-lg p-2 mt-1 mb-1">
         <div class="flex items-center gap-3 mb-2">
             <x-lottie style="width: 100px; height: 100px;" path="{{ asset('storage/location.json') }}"
                         loop="true" autoplay="true" />
             <h3 class="text-lg font-semibold text-gray-800 mb-0">{{ __('Mapa de Actuaciones') }}</h3>
         </div>
-        <div class="relative w-full min-h-[300px] rounded-md overflow-hidden">
-            <livewire:location-map :height="300" />         
+        <div class="relative w-full min-h-[300px] rounded-md overflow-hidden isolate">
+            <livewire:location-map :height="300" />
         </div>
     </div>
 
@@ -123,28 +193,42 @@
 
 </div>
 
+@php
+    $logoUrl = $bandSetting?->logo ? asset('storage/'.$bandSetting->logo) : URL::to('/') . '/imagenes/logo.png';
+@endphp
+
 <footer class="bg-white dark:bg-gray-900">
     <div class="container flex flex-col items-center justify-between p-6 mx-auto space-y-4 sm:space-y-0 sm:flex-row">
-        <a href="/">
-            <img style="width: 75px;" src="{{ URL::to('/') }}/imagenes/logo.png" />
+        <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+            <img style="width: 75px;" src="{{ $logoUrl }}" alt="{{ $bandSetting?->nombre ?? 'eBand' }}" />
+            <div class="text-left">
+                <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ $bandSetting?->nombre ?? config('app.name', 'eBand') }}</p>
+                @if ($bandSetting?->direccion)
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $bandSetting->direccion }}</p>
+                @endif
+            </div>
         </a>
 
-        <p class="text-sm text-gray-600 dark:text-gray-300">© Copyright 2025.</p>
+        <p class="text-sm text-gray-600 dark:text-gray-300">© {{ now()->year }} {{ $bandSetting?->nombre ?? config('app.name', 'eBand') }}</p>
 
         <div class="flex -mx-2">
 
-            <a href="#"
-                class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                aria-label="Facebook">
+            @if ($bandSetting?->urlfacebook)
+                <a href="{{ $bandSetting->urlfacebook }}" target="_blank" rel="noopener noreferrer"
+                    class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                    aria-label="Facebook">
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M2.00195 12.002C2.00312 16.9214 5.58036 21.1101 10.439 21.881V14.892H7.90195V12.002H10.442V9.80204C10.3284 8.75958 10.6845 7.72064 11.4136 6.96698C12.1427 6.21332 13.1693 5.82306 14.215 5.90204C14.9655 5.91417 15.7141 5.98101 16.455 6.10205V8.56104H15.191C14.7558 8.50405 14.3183 8.64777 14.0017 8.95171C13.6851 9.25566 13.5237 9.68693 13.563 10.124V12.002H16.334L15.891 14.893H13.563V21.881C18.8174 21.0506 22.502 16.2518 21.9475 10.9611C21.3929 5.67041 16.7932 1.73997 11.4808 2.01722C6.16831 2.29447 2.0028 6.68235 2.00195 12.002Z">
                     </path>
                 </svg>
-            </a>
-            <a href="#"
-                class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                aria-label="Instagram">
+                </a>
+            @endif
+
+            @if ($bandSetting?->urlinstagram)
+                <a href="{{ $bandSetting->urlinstagram }}" target="_blank" rel="noopener noreferrer"
+                    class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-pink-500 dark:hover:text-pink-400"
+                    aria-label="Instagram">
                 <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -155,7 +239,22 @@
                             fill="#4a4f54"></path>
                     </g>
                 </svg>
-            </a>
+                </a>
+            @endif
+
+            @if ($bandSetting?->urltiktok)
+                <a href="{{ $bandSetting->urltiktok }}" target="_blank" rel="noopener noreferrer"
+                    class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white"
+                    aria-label="TikTok">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.35V2h-3.33v13.2a2.8 2.8 0 11-2.8-2.8c.31 0 .61.05.89.14V9.15a6.14 6.14 0 00-.89-.07A6.14 6.14 0 1015.82 15V8.57a8.16 8.16 0 004.77 1.54V6.69z" />
+                    </svg>
+                </a>
+            @endif
+
+            @if (! $bandSetting?->urlfacebook && ! $bandSetting?->urlinstagram && ! $bandSetting?->urltiktok)
+                <span class="mx-2 text-xs text-gray-400">{{ __('Sin redes sociales configuradas') }}</span>
+            @endif
 
         </div>
     </div>

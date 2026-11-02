@@ -12,7 +12,7 @@
 
     <div class="bg-white border border-gray-200 divide-y divide-gray-200  m-2">
         <details class="p-2 group" @isset($filtroFecha) open @else close @endisset>
-            <summary class="flex items-center justify-between cursor-pointer">
+            <summary id="driver-actuaciones-filter" class="flex items-center justify-between cursor-pointer">
                 <h5 class="text-lg font-medium text-gray-900">
                     {{ __('Filtrar per data') }}: @isset($filtroFecha)
                         {{ $filtroFecha }}
@@ -54,16 +54,15 @@
                 <p class="text-sm text-gray-600 mb-3">
                     {{__('Pots veure actuacions dels últims 3 mesos. Selecciona una data per veure totes les actuacions des d\'eixe dia fins avui.')}}
                 </p>
+                <p class="text-sm text-gray-500">
+                    {{ __('Puedes usar los filtros para acotar la lista de actuaciones') }}
+                </p>
                 <form action="{{ route('actuaciones-fecha') }}" method="GET" class="flex items-center gap-2">
                     <label for="fecha" class="text-sm font-medium text-gray-700">{{__('Selecciona data')}}</label>
                     <input type="date" id="fecha" name="fecha" 
                         class="border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500"
                         min="{{ now()->subMonths(3)->format('Y-m-d') }}"
-                        max="{{ now()->format('Y-m-d') }}"
-                        value="{{ $filtroFecha ?? '' }}"
-                        onchange="this.form.submit()">
-                </form>
-            </div>
+                        max="{{ now()->format('Y-m-d') }}">
         </details>
         <details class="p-2 group" @isset($filtrotipo) open @else close @endisset>
             <summary class="flex items-center justify-between cursor-pointer">
@@ -237,10 +236,8 @@
                         }
                     @endphp
 
-                    <div
-                        class="relative flex flex-col shadow-md rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 max-w-sm {{ $cardBorderClass }}">
-                        <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}"
-                            class="z-20 absolute h-full w-full top-0 left-0">&nbsp;</a>
+                    <div @if($loop->first) id="driver-actuacion-first" @endif class="relative flex flex-col shadow-md rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 max-w-sm {{ $cardBorderClass }}">
+                        <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}" class="z-20 absolute h-full w-full top-0 left-0">&nbsp;</a>
 
 
                         <div class="h-auto overflow-hidden">
@@ -280,8 +277,12 @@
                                                 <x-disponible w="24" h="24" />
                                             @else
                                                 {{-- Está en la lista --}}
+                                                @if ($pivot && (int) $pivot->coche === 1)
+                                                    <x-coche w="24" h="24" />
+                                                @endif
                                                 <x-verificado w="24" h="24" />
                                             @endif
+
                                         </div>
                                     @endif                                    
                                 </div>
@@ -449,4 +450,38 @@
             }
         </script>
     @endcan
+    @php
+        $driverSteps = [
+            ['element' => '#driver-actuaciones-filter', 'popover' => ['title' => __('Filtrar'), 'description' => __('Usa los filtros para acotar la lista de actuaciones.'), 'position' => 'bottom']],
+            ['element' => '#driver-actuacion-first', 'popover' => ['title' => __('Actuación'), 'description' => __('Haz clic para ver detalles de la actuación.'), 'position' => 'right']],
+        ];
+    @endphp
+
+    <script>
+        (function () {
+            const STORAGE_KEY = 'eband_driver_tour_shown_actuaciones_v1';
+            try {
+                if (localStorage.getItem(STORAGE_KEY)) return;
+            } catch (e) {
+                return;
+            }
+
+            const driverSteps = @json($driverSteps);
+
+            function tryStart() {
+                if (window.startDriverTour && typeof window.startDriverTour === 'function') {
+                    try {
+                        window.startDriverTour(driverSteps);
+                        localStorage.setItem(STORAGE_KEY, '1');
+                    } catch (err) {
+                        console.error('Error starting driver tour:', err);
+                    }
+                } else {
+                    setTimeout(tryStart, 500);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', tryStart);
+        })();
+    </script>
 </x-app-layout>

@@ -148,11 +148,13 @@ class PaymentCreate extends Component
 
                                 $totalActuacion = $actuacion->preciomusico * $porcentaje;
                                 $totalCoche = $actuacion->preciocoche * $listaUser->coche;
-                                $totalActo = $totalActuacion + $totalCoche;
+                                $totalFurgo = $actuacion->preciofurgona * $listaUser->furgona;
+                                $totalActo = $totalActuacion + $totalCoche + $totalFurgo;
 
                                 $listaUser->totalActuacion = $totalActuacion;
                                 $listaUser->totalActo = $totalActo;
                                 $listaUser->totalCoche = $totalCoche;
+                                $listaUser->totalFurgo = $totalFurgo;
                                 $listaUser->cuentas = 1;
                                 // Guardar los cambios en la base de datos
                                 $listaUser->save();

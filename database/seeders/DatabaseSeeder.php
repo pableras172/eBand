@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             ActuacionSeeder::class,
             ListaSeeder::class,
             CommentSeeder::class,
+            AnnouncementSeeder::class,
             ConfigurationSeeder::class,
             ListaUserSeeder::class,
             InventorySeeder::class,

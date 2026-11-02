@@ -139,7 +139,7 @@
                                                 <a href="{{ route('contratos.edit', $contrato->id) }}" class="rounded-xl p-1 transition hover:bg-gray-100">
                                                     <x-editar w="24" h="24" />
                                                 </a>
-                                                <a href="{{ route('actuacion.createtocontract', $contrato->id) }}"
+                                                <a href="{{ route('contratos.actuaciones.index', ['contrato' => $contrato->id]) }}"
                                                     class="rounded-xl p-1 transition hover:bg-gray-100">
                                                     <x-calendario w="24" h="24" />
                                                 </a>

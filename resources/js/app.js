@@ -1,5 +1,6 @@
 import './bootstrap';
 import { initSafariPwaSupport } from './pwa-safari';
+import './driver-init';
 
 // Clave persistente para recordar si el usuario oculto el aviso de instalacion PWA.
 const INSTALL_PROMPT_STORAGE_KEY = 'eband_install_prompt_hidden';

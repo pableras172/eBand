@@ -2,26 +2,25 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use App\Models\Listas;
-use App\Models\User;
 use App\Models\Actuacion;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Listas;
 use App\Models\ListasUser;
-use DateTime;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class PreviewListas extends Component
 {
-
     public $displayingPreviewListas = false;
+
     public $id;
+
     public $floatButon = false;
 
     public $showingModal = false;
 
     public $listeners = [
-        'hideMe' => 'hideModal'
+        'hideMe' => 'hideModal',
     ];
 
     public $detallesLista = [
@@ -63,33 +62,37 @@ class PreviewListas extends Component
 
         if (
             $lista && $lista->users && $lista->users->contains(Auth::user()->id)
-            && !$lista->users()->where('users.id', (Auth::user()->id))->first()->pivot->disponible
+            && ! $lista->users()->where('users.id', (Auth::user()->id))->first()->pivot->disponible
         ) {
             $usuarioDisponible = false;
         }
 
         // Obtener todos los usuarios
         $usuarios = User::where('activo', 1)
-            ->whereNotNull('instrument_id') 
+            ->whereNotNull('instrument_id')
             ->whereDoesntHave('hijos') // no es padre
             ->get();
-
 
         // Marcar los usuarios seleccionados y con coche
         foreach ($usuarios as $usuario) {
             $usuario->seleccionado = false; // Por defecto, no seleccionado
             $usuario->coche = false; // Por defecto, no marcado
+            $usuario->furgona = false; // Por defecto, no marcado
             $usuario->disponible = true;
             // Verificar si el usuario está en la lista
             if ($lista && $lista->users && $lista->users->contains($usuario->id)) {
-                if (!$lista->users()->where('users.id', $usuario->id)->first()->pivot->disponible) {
+                if (! $lista->users()->where('users.id', $usuario->id)->first()->pivot->disponible) {
                     $usuario->disponible = false;
+
                     continue;
                 }
                 $usuario->seleccionado = true;
                 // Verificar si el usuario tiene marcado el campo coche en la lista
                 if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->coche) {
                     $usuario->coche = true;
+                }
+                if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->furgona) {
+                    $usuario->furgona = true;
                 }
             }
         }

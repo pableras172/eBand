@@ -5,6 +5,7 @@ namespace App\Http;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthGates;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\EnsureReadOnlyDemo;
 use App\Http\Middleware\EstablecerUsuarioActivo;
 use App\Http\Middleware\PreventRequestForgery;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
@@ -96,5 +97,6 @@ class Kernel extends HttpKernel
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'usuario.activo' => EstablecerUsuarioActivo::class,
+        'demo.readonly' => EnsureReadOnlyDemo::class,
     ];
 }

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Actuacion;
 use App\Models\Contratos;
+use App\Models\Role;
 use App\Models\Tipoactuacion;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,7 +24,9 @@ class ActuacionDraftFeatureTest extends TestCase
     {
         parent::setUp();
 
+        $role = Role::firstOrCreate(['id' => 1], ['title' => 'Admin']);
         $this->admin = User::factory()->create();
+        $this->admin->roles()->sync([$role->id]);
         $this->tipoActuacion = Tipoactuacion::factory()->create(['nombre' => 'Concierto']);
         $this->contrato = Contratos::factory()->create();
     }
@@ -97,7 +100,7 @@ class ActuacionDraftFeatureTest extends TestCase
         ]);
 
         $data = [
-            'fechaActuacion' => $actuacion->fechaActuacion,
+            'fechaActuacion' => $actuacion->fechaActuacion instanceof \DateTimeInterface ? $actuacion->fechaActuacion->format('Y-m-d') : (string) $actuacion->fechaActuacion,
             'descripcion' => $actuacion->descripcion,
             'tipoactuacions_id' => $actuacion->tipoactuacions_id,
             'contratos_id' => $actuacion->contratos_id,

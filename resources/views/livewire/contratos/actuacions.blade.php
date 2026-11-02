@@ -97,6 +97,19 @@
                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                 </div>
 
+                <div class="mb-4">
+                    <label for="furgonas" class="block text-sm font-medium text-gray-700">{{__('Numero furgones')}}</label>
+                    <input type="number" id="furgonas" name="furgonas"
+                        value="{{ isset($actuacion) ? $actuacion->furgonas : '' }}"
+                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                </div>
+                <div class="mb-4">
+                    <label for="preciofurgona" class="block text-sm font-medium text-gray-700">{{__('Preu furgona')}}</label>
+                    <input type="number" id="preciofurgona" name="preciofurgona" step="0.01"
+                        value="{{ isset($actuacion) ? $actuacion->preciofurgona : '' }}"
+                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                </div>
+
 
             </div>
 

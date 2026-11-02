@@ -26,7 +26,7 @@
         </div>
     @endif
 
-    <div class="max-w-7xl mx-auto py-2 px-2 pb-28 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto py-2 px-2 m:px-6 lg:px-8">
 
         {{-- FILTROS --}}
         <div class="bg-white dark:bg-gray-800 shadow-sm rounded-xl p-4 mb-4">
@@ -320,7 +320,7 @@
             </form>
         </div>
     </div>
-
+    <x-statistics.instruments />
     {{-- FOOTER --}}
     <footer class="fixed bottom-0 left-0 z-20 w-full bg-white border-t border-gray-300 shadow dark:bg-gray-800 dark:border-gray-600">
         <div class="flex justify-around items-center px-6 py-3">

@@ -7,17 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class ListasUser extends Model
 {
-    protected $table = "listas_user";   
+    protected $table = 'listas_user';
 
     protected $fillable = [
         'disponible',
         'payment_id',
         'totalActuacion',
         'totalActo',
-        'totalCoche'
+        'totalCoche',
+        'coche',
+        'furgona',
     ];
 
-    
     use HasFactory;
 
     public function user()

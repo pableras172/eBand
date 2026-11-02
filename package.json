@@ -16,6 +16,7 @@
         "vite": "^5.0.13"
     },
     "dependencies": {
-        "flag-icons": "^7.2.1"
+        "flag-icons": "^7.2.1",
+        "driver.js": "^0.9.8"
     }
 }

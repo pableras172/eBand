@@ -26,7 +26,7 @@
         </div>
     @endif
 
-    <div class="container mx-auto px-2 py-1 pb-28">
+    <div class="container mx-auto px-2 py-1 pb-2">
         <div class="flex flex-col">
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -89,6 +89,7 @@
             </div>
         </div>
     </div>
+    <x-statistics.instruments />
     <footer
         class="fixed bottom-0 left-0 z-20 w-full bg-white border-t border-gray-300 shadow-t-md dark:bg-gray-800 dark:border-gray-600 shadow-inner">
         <div class="flex justify-around items-center px-6 py-3">

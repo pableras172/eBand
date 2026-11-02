@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class InventoryCategoryFactory extends Factory
 {
+    protected $model = InventoryCategory::class;
+
     /**
      * Define the model's default state.
      *

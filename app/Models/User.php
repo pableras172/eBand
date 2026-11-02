@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
@@ -41,6 +42,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'activo',
         'uuid',
         'email_verified_at',
+        'tienefurgo',
+        'tienecoche',
     ];
 
     /**
@@ -55,13 +58,17 @@ class User extends Authenticatable implements MustVerifyEmail
         'two_factor_secret',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
+    protected $attributes = [
+        'tienefurgo' => false,
+        'tienecoche' => false,
+    ];
+
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'tienefurgo' => 'boolean',
+        'tienecoche' => 'boolean',
+        'activo' => 'boolean',
+        'forastero' => 'boolean',
     ];
 
     /**
@@ -96,7 +103,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function listas()
     {
         return $this->belongsToMany(Listas::class, 'listas_user', 'user_id', 'listas_id')
-            ->withPivot('coche', 'pagada', 'cuentas', 'disponible'); // También puedes incluir timestamps si los tienes en la tabla pivot
+            ->withPivot('coche', 'pagada', 'cuentas', 'disponible', 'furgona'); // También puedes incluir timestamps si los tienes en la tabla pivot
     }
 
     public function hasRole($role)
@@ -140,5 +147,13 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(InventoryItem::class, 'inventory_item_user')
             ->withPivot('asignado_en');
+    }
+
+    /**
+     * @return HasMany<ActividadInscripcion>
+     */
+    public function actividadInscripciones(): HasMany
+    {
+        return $this->hasMany(ActividadInscripcion::class, 'user_id');
     }
 }

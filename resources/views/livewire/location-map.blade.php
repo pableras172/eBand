@@ -5,6 +5,30 @@
     style="height: {{ $height }}px;"
 	data-municipios='@json($municipios ?? [])'>
 </div>
+<style>
+	 #map {
+		 position: relative;
+		 z-index: 0;
+		 isolation: isolate;
+		 overflow: hidden;
+	 }
+
+	 /* Contain Leaflet z-indexes inside the map stacking context so they
+		 don't bleed over modals/popups rendered outside the map container */
+	 #map .leaflet-pane,
+	 #map .leaflet-control {
+		 z-index: 1 !important;
+	 }
+
+	 #map .leaflet-tile-pane     { z-index: 2 !important; }
+	 #map .leaflet-shadow-pane   { z-index: 3 !important; }
+	 #map .leaflet-overlay-pane  { z-index: 4 !important; }
+	 #map .leaflet-marker-pane   { z-index: 5 !important; }
+	 #map .leaflet-tooltip-pane  { z-index: 6 !important; }
+	 #map .leaflet-popup-pane    { z-index: 7 !important; }
+	 #map .leaflet-top,
+	 #map .leaflet-bottom        { z-index: 8 !important; }
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {

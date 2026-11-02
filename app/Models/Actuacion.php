@@ -27,6 +27,8 @@ class Actuacion extends Model
         'observaciones',
         'porcentajepersonal',
         'is_draft',
+        'furgonas',
+        'preciofurgona',
     ];
 
     protected $casts = [

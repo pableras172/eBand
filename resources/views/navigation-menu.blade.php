@@ -29,6 +29,12 @@
                     </x-nav-link>
                 </div>
 
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('actividades.index') }}" :active="request()->routeIs('actividades.*')">
+                        {{ __('actividades.nav') }}
+                    </x-nav-link>
+                </div>
+
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex items-center">
                     <x-dropdown align="right" width="60">
                         <x-slot name="trigger">
@@ -101,7 +107,7 @@
                             <x-slot name="trigger">
                                 <span class="inline-flex rounded-md">
                                     <button type="button"
-                                        class="inline-flex items-center rounded-md px-3 py-2 text-sm leading-4 font-medium transition ease-in-out duration-150 {{ request()->routeIs('tipoactuacion.*', 'instrument.*', 'users.*', 'contratos.*', 'payments.*', 'paymentresumes.*', 'comments.*', 'configurations*', 'announcements.*') ? 'border border-cyan-200 bg-cyan-50 text-cyan-700' : 'border border-transparent bg-white text-gray-500 hover:text-gray-700 focus:bg-gray-50 active:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:bg-gray-700 dark:active:bg-gray-700' }}">
+                                        class="inline-flex items-center rounded-md px-3 py-2 text-sm leading-4 font-medium transition ease-in-out duration-150 {{ request()->routeIs('tipoactuacion.*', 'instrument.*', 'users.*', 'band-settings.*', 'contratos.*', 'payments.*', 'paymentresumes.*', 'comments.*', 'configurations*', 'announcements.*', 'concert-programs.*') ? 'border border-cyan-200 bg-cyan-50 text-cyan-700' : 'border border-transparent bg-white text-gray-500 hover:text-gray-700 focus:bg-gray-50 active:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:bg-gray-700 dark:active:bg-gray-700' }}">
                                         {{ __('Administracion') }}
                                         <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -140,6 +146,16 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                             </svg>
                                             <span>{{ __('Musics') }}</span>
+                                        </div>
+                                    </x-nav-link>
+                                </div>
+                                <div class="w-60 px-4 m-2">
+                                    <x-nav-link href="{{ route('band-settings.edit') }}" :active="request()->routeIs('band-settings.*')">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 9h6M9 13h6M9 17h3" />
+                                            </svg>
+                                            <span>{{ __('Datos banda') }}</span>
                                         </div>
                                     </x-nav-link>
                                 </div>
@@ -205,6 +221,28 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17h6m-6 3h6" />
                                             </svg>
                                             <span>{{ __('Anuncios') }}</span>
+                                        </div>
+                                    </x-nav-link>
+                                </div>
+
+                                <div class="w-60 px-4 m-2">
+                                    <x-nav-link href="{{ route('admin.actividades.index') }}" :active="request()->routeIs('admin.actividades.*')">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <span>{{ __('actividades.nav') }}</span>
+                                        </div>
+                                    </x-nav-link>
+                                </div>
+
+                                <div class="w-60 px-4 m-2">
+                                    <x-nav-link href="{{ route('concert-programs.index') }}" :active="request()->routeIs('concert-programs.*')">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                                            </svg>
+                                            <span>{{ __('Programa concierto') }}</span>
                                         </div>
                                     </x-nav-link>
                                 </div>
@@ -520,6 +558,15 @@
                     </div>
                 </x-responsive-nav-link>
 
+                <x-responsive-nav-link href="{{ route('actividades.index') }}" :active="request()->routeIs('actividades.*')">
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{{ __('actividades.nav') }}</span>
+                    </div>
+                </x-responsive-nav-link>
+
                 <x-responsive-nav-link href="{{ route('suggestions.index') }}" :active="request()->routeIs('suggestions.index')">
                     <div class="flex items-center space-x-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -574,6 +621,15 @@
                             </div>
                         </x-responsive-nav-link>
 
+                        <x-responsive-nav-link href="{{ route('band-settings.edit') }}" :active="request()->routeIs('band-settings.*')">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 9h6M9 13h6M9 17h3" />
+                                </svg>
+                                <span>{{ __('Datos banda') }}</span>
+                            </div>
+                        </x-responsive-nav-link>
+
                         <x-responsive-nav-link href="{{ route('tipoactuacion.index') }}" :active="request()->routeIs('tipoactuacion.index')">
                             <div class="flex items-center space-x-3">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -590,6 +646,24 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17h6m-6 3h6" />
                                 </svg>
                                 <span>{{ __('Anuncios') }}</span>
+                            </div>
+                        </x-responsive-nav-link>
+
+                        <x-responsive-nav-link href="{{ route('admin.actividades.index') }}" :active="request()->routeIs('admin.actividades.*')">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>{{ __('actividades.nav_admin') }}</span>
+                            </div>
+                        </x-responsive-nav-link>
+
+                        <x-responsive-nav-link href="{{ route('concert-programs.index') }}" :active="request()->routeIs('concert-programs.*')">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                                </svg>
+                                <span>{{ __('Programa concierto') }}</span>
                             </div>
                         </x-responsive-nav-link>
 

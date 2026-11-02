@@ -12,6 +12,7 @@ use App\Services\TenantOneSignalService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -99,16 +100,7 @@ class ActuacionController extends Controller
     {
         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $actuaciones = Actuacion::with('contrato', 'lista')
-            ->where('contratos_id', '=', $contratosId)
-            ->orderBy('fechaActuacion', 'asc')
-            ->get();
-
-        $tipoActuacion = Tipoactuacion::all();
-
-        $contrato = Contratos::find($contratosId);
-
-        return view('livewire.contratos.actuacions', compact('actuaciones', 'tipoActuacion', 'contrato'));
+        return redirect()->route('contratos.actuaciones.index', ['contrato' => $contratosId]);
     }
 
     /**
@@ -151,14 +143,14 @@ class ActuacionController extends Controller
             $actuacion->totalmusicos = $request->totalmusicos;
             $actuacion->totalactuacion = $request->totalactuacion;
             $actuacion->contratos_id = $request->contratos_id;
-            $actuacion->pagado = $request->pagado;
-            $actuacion->aplicaporcentaje = $request->aplicaporcentaje;
-            $actuacion->noaplicapago = $request->noaplicapago;
+            $actuacion->pagado = $request->boolean('pagado');
+            $actuacion->aplicaporcentaje = $request->boolean('aplicaporcentaje');
+            $actuacion->noaplicapago = $request->boolean('noaplicapago');
             $actuacion->observaciones = $request->observaciones;
             $actuacion->porcentajepersonal = $request->porcentajepersonal;
-            $actuacion->visible = $request->visible ?? true; // Establecer el valor predeterminado de visible en true
-            $actuacion->oficial = $request->oficial ?? true; // Establecer el valor predeterminado de oficial en true
-            $actuacion->is_draft = $request->is_draft ?? false; // Establecer el valor predeterminado de is_draft en false
+            $actuacion->visible = $request->has('visible') ? $request->boolean('visible') : true;
+            $actuacion->oficial = $request->has('oficial') ? $request->boolean('oficial') : true;
+            $actuacion->is_draft = $request->boolean('is_draft');
             // Guardar la actuación en la base de datos
             $actuacion->save();
 
@@ -181,8 +173,14 @@ class ActuacionController extends Controller
                 'contrato' => $contrato,
                 'message' => 'Actuación guardada con éxito.',
             ]);
-        } catch (Exception $e) {
-            // Manejar cualquier excepción
+        } catch (\Throwable $e) {
+            $contrato = Contratos::find($request->contratos_id);
+
+            return view('livewire.contratos.actuacions', [
+                'contrato' => $contrato,
+                'message' => 'Ha ocurrido un error al guardar la actuación: '.$e->getMessage(),
+            ]);
+
             return view('livewire.contratos.actuacions', [
                 'message' => 'Ha ocurrido un error al guardar la actuación: '.$e->getMessage(),
             ]);
@@ -361,14 +359,10 @@ class ActuacionController extends Controller
     {
         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $actuaciones = Actuacion::with('contrato', 'lista')
-            ->where('contratos_id', '=', $actuacion->contratos_id)
-            ->get();
-
-        $contrato = Contratos::find($actuacion->contratos_id);
-        $tipoActuacion = Tipoactuacion::all();
-
-        return view('livewire.contratos.actuacions', compact('actuaciones', 'actuacion', 'tipoActuacion', 'contrato'));
+        return redirect()->route('contratos.actuaciones.index', [
+            'contrato' => $actuacion->contratos_id,
+            'edit' => $actuacion->id,
+        ]);
     }
 
     /**
@@ -406,14 +400,14 @@ class ActuacionController extends Controller
         $actuacion->totalmusicos = $request->totalmusicos;
         $actuacion->totalactuacion = $request->totalactuacion;
         $actuacion->contratos_id = $request->contratos_id;
-        $actuacion->pagado = $request->pagado;
-        $actuacion->aplicaporcentaje = $request->aplicaporcentaje;
-        $actuacion->noaplicapago = $request->noaplicapago;
+        $actuacion->pagado = $request->boolean('pagado');
+        $actuacion->aplicaporcentaje = $request->boolean('aplicaporcentaje');
+        $actuacion->noaplicapago = $request->boolean('noaplicapago');
         $actuacion->observaciones = $request->observaciones;
         $actuacion->porcentajepersonal = $request->porcentajepersonal;
-        $actuacion->visible = $request->visible ?? true;
-        $actuacion->oficial = $request->oficial ?? true;
-        $actuacion->is_draft = $request->is_draft ?? false;
+        $actuacion->visible = $request->has('visible') ? $request->boolean('visible') : true;
+        $actuacion->oficial = $request->has('oficial') ? $request->boolean('oficial') : true;
+        $actuacion->is_draft = $request->boolean('is_draft');
 
         $actuacion->calendar = $this->generateICSFile($actuacion);
 
@@ -439,27 +433,23 @@ class ActuacionController extends Controller
 
         abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        $cid = $actuacion->contratos_id;
+
         try {
             // Verificar si la actuación existe
             if ($actuacion) {
                 $actuacion->delete();
-
-                $cid = $actuacion->contratos_id;
-                // Redireccionar a una página o devolver una respuesta JSON según tus necesidades
-                $actuaciones = Actuacion::with('contrato', 'lista')
-                    ->where('contratos_id', '=', $cid)
-                    ->get();
-
-                $contrato = Contratos::find($cid);
-                $tipoActuacion = Tipoactuacion::all();
             }
         } catch (QueryException $exception) {
             // Manejar la excepción de integridad referencial
-            return redirect()->back()->with('error', 'No puedes eliminar esta actuación porque tiene listas relacionadas');
+            return redirect()
+                ->route('contratos.actuaciones.index', ['contrato' => $cid])
+                ->with('error', 'No puedes eliminar esta actuación porque tiene listas relacionadas');
         }
-        $eliminado = true;
 
-        return view('livewire.contratos.actuacions', compact('actuaciones', 'tipoActuacion', 'contrato', 'eliminado'));
+        return redirect()
+            ->route('contratos.actuaciones.index', ['contrato' => $cid])
+            ->with('deletesuccess', __('Actuación eliminada correctamente.'));
     }
 
     public function getTotalActuacionesUsuario(User $user, $year = null)
@@ -1056,6 +1046,65 @@ class ActuacionController extends Controller
             'total' => $totalActuaciones,
             'usuario' => $actuacionesUsuario,
             'porcentaje' => $porcentaje,
+        ]);
+    }
+
+    public function getStatsByTipoYear(Request $request): JsonResponse
+    {
+        $year = (int) $request->input('year', date('Y'));
+
+        $availableYears = Actuacion::query()
+            ->join('listas', 'actuacions.id', '=', 'listas.actuacions_id')
+            ->join('listas_user', 'listas.id', '=', 'listas_user.listas_id')
+            ->join('users', 'listas_user.user_id', '=', 'users.id')
+            ->where('users.activo', 1)
+            ->where('users.forastero', 0)
+            ->selectRaw('DISTINCT YEAR(actuacions.fechaActuacion) as year')
+            ->orderByDesc('year')
+            ->pluck('year')
+            ->map(fn ($value) => (int) $value)
+            ->values();
+
+        if ($availableYears->isEmpty()) {
+            $currentYear = (int) date('Y');
+            $availableYears = collect([$currentYear, $currentYear - 1, $currentYear - 2]);
+        }
+
+        if (! $availableYears->contains($year)) {
+            $year = (int) $availableYears->first();
+        }
+
+        $statsByTipo = Actuacion::query()
+            ->join('listas', 'actuacions.id', '=', 'listas.actuacions_id')
+            ->join('listas_user', 'listas.id', '=', 'listas_user.listas_id')
+            ->join('users', 'listas_user.user_id', '=', 'users.id')
+            ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
+            ->where('users.activo', 1)
+            ->where('users.forastero', 0)
+            ->whereYear('actuacions.fechaActuacion', $year)
+            ->selectRaw('tipoactuacions.id, tipoactuacions.nombre, COUNT(DISTINCT actuacions.id) as total')
+            ->groupBy('tipoactuacions.id', 'tipoactuacions.nombre')
+            ->orderByDesc('total')
+            ->get();
+
+        $totalActuaciones = (int) $statsByTipo->sum('total');
+
+        $tipos = $statsByTipo->map(function ($item) use ($totalActuaciones): array {
+            $total = (int) $item->total;
+
+            return [
+                'id' => (int) $item->id,
+                'name' => $item->nombre,
+                'total' => $total,
+                'percentage' => $totalActuaciones > 0 ? round(($total / $totalActuaciones) * 100, 1) : 0,
+            ];
+        })->values();
+
+        return response()->json([
+            'year' => $year,
+            'years' => $availableYears,
+            'total' => $totalActuaciones,
+            'tipos' => $tipos,
         ]);
     }
 }
