@@ -46,17 +46,9 @@ class RouteServiceProvider extends ServiceProvider
 
             $centralDomains = config('tenancy.central_domains', []);
 
-            if ($centralDomains !== []) {
-                $escapedDomains = array_map(
-                    static fn (string $domain): string => preg_quote($domain, '/'),
-                    $centralDomains,
-                );
-
+            foreach ($centralDomains as $centralDomain) {
                 Route::middleware('web')
-                    ->domain('{central_domain}')
-                    ->where([
-                        'central_domain' => implode('|', $escapedDomains),
-                    ])
+                    ->domain($centralDomain)
                     ->group(base_path('routes/central.php'));
             }
         });
