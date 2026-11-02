@@ -285,7 +285,7 @@
                                     <span class="piece-author"> - {{ $piece->author }}</span>
                                 @endif
                                 @if ($piece->details)
-                                    <span class="piece-details">{{ $piece->details }}</span>
+                                    <div class="piece-details">{!! $piece->details !!}</div>
                                 @endif
                             </li>
                         @endforeach

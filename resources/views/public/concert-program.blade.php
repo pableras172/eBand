@@ -131,7 +131,9 @@
                                     @endif
                                     @if ($piece->details)
                                     <hr class="my-2 border-slate-200">
-                                        <p class="mt-2 text-sm text-slate-700">{{ $piece->details }}</p>
+                                        <div class="mt-2 text-sm text-slate-700">
+                                            {!! $piece->details !!}
+                                        </div>
                                     @endif
                                     @if ($piece->url)
                                     <hr class="my-2 border-slate-200">

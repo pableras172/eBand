@@ -277,8 +277,12 @@
                                                 <x-disponible w="24" h="24" />
                                             @else
                                                 {{-- Está en la lista --}}
+                                                @if ($pivot && (int) $pivot->coche === 1)
+                                                    <x-coche w="24" h="24" />
+                                                @endif
                                                 <x-verificado w="24" h="24" />
                                             @endif
+
                                         </div>
                                     @endif                                    
                                 </div>

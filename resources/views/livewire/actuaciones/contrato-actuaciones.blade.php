@@ -249,7 +249,7 @@
 
                         <div>
                             <label class="mb-1 block text-sm font-medium text-gray-700">{{ __('Preu music') }}</label>
-                            <input type="number" wire:model="preciomusico" min="0" step="0.01" class="w-full rounded-md border-gray-300">
+                            <input type="number" wire:model="preciomusico"  step="0.01" class="w-full rounded-md border-gray-300">
                             @error('preciomusico') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                         </div>
 
