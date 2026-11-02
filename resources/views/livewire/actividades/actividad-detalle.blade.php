@@ -1,42 +1,42 @@
-<div class="max-w-4xl mx-auto py-4 px-2 pb-24 sm:px-6 lg:px-8 space-y-6">
-    <x-slot name="header">
-        <div class="flex items-center justify-between gap-4">
-            <div class="flex items-center gap-2 text-sm text-gray-500">
-                <a href="{{ route('actividades.index') }}" class="hover:text-cyan-600 transition flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                    {{ __('actividades.back') }}
-                </a>
-            </div>
-            @can('admin')
-                <a href="{{ route('admin.actividades.detail', $actividad) }}"
-                    class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
-                    {{ __('actividades.dashboard_title') }}
-                </a>
-            @endcan
-        </div>
-    </x-slot>
+<div class="max-w-4xl mx-auto py-6 px-4 pb-28 sm:px-6 lg:px-8 space-y-6">
+    <!-- Header de navegación y retorno -->
+    <div class="flex items-center justify-between">
+        <a href="{{ route('actividades.index') }}"
+            class="inline-flex items-center text-xs font-semibold text-gray-500 hover:text-cyan-600 transition">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            {{ __('actividades.nav') }}
+        </a>
+
+        @can('admin')
+            <a href="{{ route('admin.actividades.detail', $actividad) }}"
+                class="inline-flex items-center text-xs font-semibold text-cyan-700 hover:text-cyan-800 bg-cyan-50 px-3 py-1.5 rounded-lg border border-cyan-200 transition">
+                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                {{ __('actividades.dashboard_title') }}
+            </a>
+        @endcan
+    </div>
 
     @if (session()->has('success'))
-        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800 flex items-center gap-3 shadow-sm">
-            <span class="text-2xl">🎉</span>
-            <div>
-                <p class="font-bold">{{ session('success') }}</p>
-                <p class="text-xs text-emerald-700 mt-0.5">{{ __('actividades.registration_success_sub') }}</p>
-            </div>
+        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800 flex items-center gap-2 shadow-sm">
+            <svg class="w-5 h-5 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ session('success') }}</span>
         </div>
     @endif
 
-    <!-- Cabecera de la Actividad -->
-    <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-gray-100 space-y-5">
+    <!-- Tarjeta Principal con Información del Evento -->
+    <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-gray-100 space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div class="flex items-start gap-4">
-                <span class="text-4xl p-3.5 rounded-2xl bg-cyan-50/70 border border-cyan-100 shadow-xs">
-                    {{ $actividad->icono }}
-                </span>
-                <div>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gray-100 text-gray-700 mb-2">
+                <span class="text-4xl p-3 bg-gray-50 rounded-2xl shadow-xs">{{ $actividad->icono }}</span>
+                <div class="space-y-1">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
                         {{ __('actividades.types.' . $actividad->tipo) }}
                     </span>
                     <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
@@ -46,9 +46,15 @@
             </div>
 
             @if ($miInscripcion)
-                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 self-start">
-                    <span>✓ {{ __('actividades.already_inscribed') }}</span>
-                </div>
+                @if ($miInscripcion->asiste)
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 self-start">
+                        <span>✓ {{ __('actividades.already_inscribed') }}</span>
+                    </div>
+                @else
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 self-start border border-slate-200">
+                        <span>✗ {{ __('actividades.not_attending_badge') }}</span>
+                    </div>
+                @endif
             @endif
         </div>
 
@@ -78,8 +84,8 @@
         </div>
     </div>
 
-    <!-- CASO 1: EL MÚSICO YA ESTÁ INSCRITO (Vista Resumen e Instrucciones) -->
-    @if ($miInscripcion)
+    <!-- CASO 1: EL MÚSICO ASISTE (Resumen e Instrucciones) -->
+    @if ($miInscripcion && $miInscripcion->asiste && ! $cambiandoRespuesta)
         <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-emerald-100 space-y-6">
             <div class="flex items-center justify-between border-b border-gray-100 pb-4">
                 <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -158,16 +164,51 @@
                 </div>
             @endif
 
-            <!-- Aviso de no modificación directa -->
-            <div class="text-xs text-gray-500 bg-gray-50 p-4 rounded-xl border border-gray-100 flex items-start gap-2">
-                <span class="text-base leading-none">ℹ️</span>
-                <span>
-                    {{ __('actividades.no_direct_edit_notice') }}
-                </span>
-            </div>
+            <!-- Botón para indicar que finalmente no va si está dentro del plazo y no ha pagado -->
+            @if ($actividad->puedeInscribirse() && ! $miInscripcion->pagado)
+                <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
+                    <span class="text-xs text-gray-500">{{ __('actividades.no_direct_edit_notice') }}</span>
+                    <button type="button" wire:click="indicarNoVoy"
+                        wire:confirm="{{ __('actividades.confirm_decline') }}"
+                        class="text-xs font-semibold text-rose-600 hover:text-rose-800 transition flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-rose-200 hover:bg-rose-50">
+                        <span>❌</span>
+                        <span>{{ __('actividades.change_to_not_attending') }}</span>
+                    </button>
+                </div>
+            @else
+                <div class="text-xs text-gray-500 bg-gray-50 p-4 rounded-xl border border-gray-100 flex items-start gap-2">
+                    <span class="text-base leading-none">ℹ️</span>
+                    <span>
+                        {{ __('actividades.no_direct_edit_notice') }}
+                    </span>
+                </div>
+            @endif
         </div>
 
-    <!-- CASO 2: EL MÚSICO NO ESTÁ INSCRITO -->
+    <!-- CASO 2: EL MÚSICO INDICÓ "NO VOY" -->
+    @elseif ($miInscripcion && ! $miInscripcion->asiste && ! $cambiandoRespuesta)
+        <div class="rounded-3xl bg-white p-8 shadow-sm border border-slate-200 text-center space-y-4">
+            <span class="text-5xl block">🙅‍♂️</span>
+            <h2 class="text-xl font-bold text-gray-900">{{ __('actividades.declined_card_title') }}</h2>
+            <p class="text-xs text-gray-500 max-w-md mx-auto leading-relaxed">
+                {{ __('actividades.declined_card_sub') }}
+            </p>
+
+            @if ($actividad->puedeInscribirse())
+                <div class="pt-3">
+                    <button type="button" wire:click="toggleCambiarRespuesta"
+                        class="rounded-xl bg-cyan-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-cyan-500 transition">
+                        {{ __('actividades.change_opinion_inscribe') }}
+                    </button>
+                </div>
+            @else
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 mt-2">
+                    {{ __('actividades.status.plazo_finalizado') }}
+                </span>
+            @endif
+        </div>
+
+    <!-- CASO 3: FORMULARIO DE INSCRIPCIÓN (O CAMBIO DE RESPUESTA) -->
     @else
         @if (! $actividad->puedeInscribirse())
             <div class="rounded-3xl bg-white p-8 text-center shadow-sm border border-gray-100 space-y-3">
@@ -180,13 +221,22 @@
         @else
             <!-- FORMULARIO DE INSCRIPCIÓN REACTIVO -->
             <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-sm border border-gray-100 space-y-6">
-                <div class="border-b border-gray-100 pb-3">
-                    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-                        <span>📝</span> {{ __('actividades.registration_form') }}
-                    </h2>
-                    <p class="text-xs text-gray-500 mt-1">
-                        {{ __('actividades.registration_form_sub') }}
-                    </p>
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <span>📝</span> {{ __('actividades.registration_form') }}
+                        </h2>
+                        <p class="text-xs text-gray-500 mt-1">
+                            {{ __('actividades.registration_form_sub') }}
+                        </p>
+                    </div>
+
+                    @if ($cambiandoRespuesta)
+                        <button type="button" wire:click="toggleCambiarRespuesta"
+                            class="text-xs font-semibold text-gray-500 hover:text-gray-800 transition">
+                            {{ __('actividades.cancel') }}
+                        </button>
+                    @endif
                 </div>
 
                 @error('error')
@@ -265,7 +315,7 @@
                     </div>
                 @endif
 
-                <!-- Total Dinámico y Botón Confirmar -->
+                <!-- Total Dinámico y Botones de Acción -->
                 <div class="pt-6 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                         <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">{{ __('actividades.total_amount') }}</span>
@@ -274,15 +324,31 @@
                         </span>
                     </div>
 
-                    <button type="button" wire:click="inscribirme"
-                        wire:loading.attr="disabled"
-                        {{ $totalCalculado <= 0 ? 'disabled' : '' }}
-                        class="rounded-xl bg-cyan-600 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-cyan-500 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span>{{ __('actividades.confirm_registration') }}</span>
-                    </button>
+                    <div class="flex flex-col sm:flex-row items-center gap-3">
+                        @if ($cambiandoRespuesta)
+                            <button type="button" wire:click="toggleCambiarRespuesta"
+                                class="w-full sm:w-auto rounded-xl border border-gray-300 bg-white px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">
+                                {{ __('actividades.cancel') }}
+                            </button>
+                        @else
+                            <button type="button" wire:click="indicarNoVoy"
+                                wire:confirm="{{ __('actividades.confirm_decline') }}"
+                                class="w-full sm:w-auto rounded-xl border border-rose-200 bg-rose-50 px-5 py-3 text-sm font-bold text-rose-700 hover:bg-rose-100 transition flex items-center justify-center gap-2">
+                                <span>❌</span>
+                                <span>{{ __('actividades.btn_not_attending') }}</span>
+                            </button>
+                        @endif
+
+                        <button type="button" wire:click="inscribirme"
+                            wire:loading.attr="disabled"
+                            {{ $totalCalculado <= 0 ? 'disabled' : '' }}
+                            class="w-full sm:w-auto rounded-xl bg-cyan-600 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-cyan-500 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>{{ __('actividades.confirm_registration') }}</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         @endif

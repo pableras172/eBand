@@ -95,9 +95,16 @@
                 </h2>
                 <p class="text-xs text-gray-500">{{ __('actividades.metrics_provider_sub') }}</p>
             </div>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-cyan-50 text-cyan-700">
-                {{ $totalPersonasInscritas }} {{ __('actividades.total_inscriptions') }}
-            </span>
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-cyan-50 text-cyan-700">
+                    {{ $totalPersonasInscritas }} {{ __('actividades.total_inscriptions') }}
+                </span>
+                @if ($totalNoAsisten > 0)
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700">
+                        {{ $totalNoAsisten }} {{ __('actividades.total_not_attending') }}
+                    </span>
+                @endif
+            </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -179,6 +186,8 @@
                 <select wire:model.live="filtroPago"
                     class="rounded-lg border-gray-300 text-xs shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                     <option value="">{{ __('actividades.status.all') }}</option>
+                    <option value="asiste">{{ __('actividades.filter_attending') }}</option>
+                    <option value="no_asiste">{{ __('actividades.filter_not_attending') }}</option>
                     <option value="pendiente">{{ __('actividades.only_pending') }}</option>
                     <option value="pagado">{{ __('actividades.only_paid') }}</option>
                 </select>
@@ -199,11 +208,15 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100 bg-white">
                     @forelse ($inscritos as $ins)
-                        <tr wire:key="inscrito-{{ $ins->id }}" class="hover:bg-gray-50/60 transition">
+                        <tr wire:key="inscrito-{{ $ins->id }}" class="hover:bg-gray-50/60 transition {{ !$ins->asiste ? 'bg-slate-50/50 opacity-80' : '' }}">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center gap-2">
-                                    <span class="font-semibold text-sm text-gray-900">{{ $ins->nombre_completo }}</span>
-                                    @if (!$ins->user_id)
+                                    <span class="font-semibold text-sm {{ $ins->asiste ? 'text-gray-900' : 'text-gray-600 line-through decoration-rose-400' }}">{{ $ins->nombre_completo }}</span>
+                                    @if (!$ins->asiste)
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">
+                                            ✗ {{ __('actividades.not_attending_badge') }}
+                                        </span>
+                                    @elseif (!$ins->user_id)
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
                                             {{ __('actividades.external_or_no_account') }}
                                         </span>
@@ -219,35 +232,47 @@
                             </td>
 
                             <td class="px-6 py-4">
-                                <div class="space-y-1">
-                                    @foreach ($ins->items as $item)
-                                        <div class="text-xs text-gray-800 flex items-center gap-1.5">
-                                            <span class="inline-flex items-center justify-center font-bold px-1.5 py-0.5 rounded-sm bg-gray-100 text-gray-700">
-                                                {{ $item->cantidad }}x
-                                            </span>
-                                            <span>{{ $item->opcion->titulo ?? 'Opción' }}</span>
-                                            <span class="text-gray-400">({{ number_format((float) $item->subtotal, 2, ',', '.') }} €)</span>
-                                        </div>
-                                    @endforeach
-                                </div>
+                                @if ($ins->asiste)
+                                    <div class="space-y-1">
+                                        @foreach ($ins->items as $item)
+                                            <div class="text-xs text-gray-800 flex items-center gap-1.5">
+                                                <span class="inline-flex items-center justify-center font-bold px-1.5 py-0.5 rounded-sm bg-gray-100 text-gray-700">
+                                                    {{ $item->cantidad }}x
+                                                </span>
+                                                <span>{{ $item->opcion->titulo ?? 'Opción' }}</span>
+                                                <span class="text-gray-400">({{ number_format((float) $item->subtotal, 2, ',', '.') }} €)</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-xs text-rose-600 font-semibold italic">
+                                        {{ __('actividades.not_attending_badge') }}
+                                    </span>
+                                @endif
                             </td>
 
                             <td class="px-6 py-4">
-                                @if ($ins->observaciones_alergias)
+                                @if ($ins->asiste && $ins->observaciones_alergias)
                                     <div class="p-2 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 max-w-xs">
                                         ⚠️ {{ $ins->observaciones_alergias }}
                                     </div>
+                                @elseif (!$ins->asiste)
+                                    <span class="text-xs text-gray-400 italic">-</span>
                                 @else
                                     <span class="text-xs text-gray-400 italic">{{ __('actividades.no_allergies') }}</span>
                                 @endif
                             </td>
 
-                            <td class="px-6 py-4 whitespace-nowrap text-center font-bold text-sm text-gray-900">
+                            <td class="px-6 py-4 whitespace-nowrap text-center font-bold text-sm {{ $ins->asiste ? 'text-gray-900' : 'text-gray-400' }}">
                                 {{ number_format((float) $ins->total, 2, ',', '.') }} €
                             </td>
 
                             <td class="px-6 py-4 whitespace-nowrap text-center">
-                                @if ($ins->pagado)
+                                @if (!$ins->asiste)
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+                                        {{ __('actividades.not_attending_badge') }}
+                                    </span>
+                                @elseif ($ins->pagado)
                                     <button type="button" wire:click="marcarPendiente({{ $ins->id }})"
                                         title="{{ __('Pulsar para desmarcar') }}"
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 hover:bg-emerald-200 transition">

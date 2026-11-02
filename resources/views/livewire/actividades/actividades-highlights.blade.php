@@ -44,9 +44,15 @@
                         <div class="flex items-start justify-between gap-2">
                             <span class="text-2xl p-1.5 rounded-lg bg-gray-50 border border-gray-100">{{ $act->icono }}</span>
                             @if ($miInscripcion)
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">
-                                    ✓ {{ __('actividades.already_inscribed') }}
-                                </span>
+                                @if ($miInscripcion->asiste)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">
+                                        ✓ {{ __('actividades.already_inscribed') }}
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                                        ✗ {{ __('actividades.not_attending_badge') }}
+                                    </span>
+                                @endif
                             @elseif ($puedeApuntarse)
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-100 text-cyan-800">
                                     {{ __('actividades.status.abierta') }}
@@ -81,8 +87,10 @@
 
                     <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
                         <span class="text-xs font-semibold text-gray-700">
-                            @if ($miInscripcion)
+                            @if ($miInscripcion && $miInscripcion->asiste)
                                 <span class="text-emerald-700 font-bold">{{ number_format((float) $miInscripcion->total, 2, ',', '.') }} €</span>
+                            @elseif ($miInscripcion && ! $miInscripcion->asiste)
+                                <span class="text-slate-500 font-medium italic">{{ __('actividades.not_attending_badge') }}</span>
                             @else
                                 {{ $act->opciones->count() }} {{ __('opcions') }}
                             @endif

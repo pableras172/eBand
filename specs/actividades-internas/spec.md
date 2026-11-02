@@ -36,7 +36,8 @@ Como músico de la banda, quiero seleccionar las opciones de menú/asistencia de
   2. **Dado** que el tipo de actividad es `comida` o `cena`, **cuando** el músico se inscribe, **entonces** se muestra el campo de texto de observaciones/alergias para detallar necesidades alimentarias de los asistentes.
   3. **Dado** que el tipo de actividad es `excursion` u `otro`, **cuando** el músico se inscribe, **entonces** el campo de observaciones/alergias no se solicita o permanece oculto/deshabilitado.
   4. **Dado** que el músico confirma su inscripción, **cuando** la envía con éxito, **entonces** queda registrada como única para ese usuario y pasa a ver una pantalla de resumen con su selección, importe total, estado de pago e instrucciones de pago (Bizum/cuenta bancaria).
-  5. **Dado** que un músico ya se ha inscrito, **cuando** vuelve a acceder a la actividad, **entonces** no puede volver a inscribirse ni modificarla por sí mismo, y se le indica que debe contactar con un administrador para cambios o cancelaciones.
+  5. **Dado** que un músico no desea o no puede acudir a la actividad, **cuando** pulsa en el botón "No voy", **entonces** se registra su respuesta de no asistencia (`asiste = false`, total 0.00 €), informando a la organización y permitiéndole cambiar de opinión mientras el plazo esté abierto.
+  6. **Dado** que un músico ya se ha inscrito, **cuando** vuelve a acceder a la actividad, **entonces** ve el resumen de su reserva; si aún no ha pagado y el plazo sigue abierto, puede indicar que finalmente no acude ("No voy") o contactar con la administración para cambios.
 
 ---
 

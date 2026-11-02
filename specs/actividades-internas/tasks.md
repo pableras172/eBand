@@ -65,6 +65,7 @@
 - [x] T026 [US4] Permitir al administrador editar o dar de baja una inscripción a petición de un músico
 - [x] T031 [US4] Permitir al administrador inscribir directamente a miembros de la banda o personas externas/sin cuenta seleccionando platos/opciones y cobro inicial
 - [x] T032 [US4] Permitir al administrador editar inscripciones existentes directamente desde la tabla nominal
+- [x] T033 [US2] Permitir a los músicos indicar explícitamente "No voy" (no asistencia), cambiar de opinión antes del plazo límite y filtrar no asistentes en administración
 
 ---
 

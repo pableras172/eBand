@@ -298,4 +298,54 @@ class ActividadInscripcionTest extends TestCase
 
         $this->assertEquals('Vicente Gómez (músico honorífico)', $inscripcion->nombre_completo);
     }
+
+    public function test_musician_can_indicate_not_attending(): void
+    {
+        $user = $this->createRegularUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Cena de Primavera',
+            'tipo' => 'cena',
+            'fecha' => Carbon::now()->addDays(10),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(5),
+            'estado' => 'abierta',
+        ]);
+
+        $opcion = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú',
+            'precio' => 20.00,
+            'orden' => 1,
+        ]);
+
+        // El músico indica que no va
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->call('indicarNoVoy')
+            ->assertHasNoErrors()
+            ->assertSee(__('actividades.declined_card_title'));
+
+        $this->assertDatabaseHas('actividad_inscripciones', [
+            'actividad_id' => $actividad->id,
+            'user_id' => $user->id,
+            'asiste' => false,
+            'total' => 0.00,
+        ]);
+
+        // Cambiar de opinión y apuntarse con un menú
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->call('toggleCambiarRespuesta')
+            ->set("cantidades.{$opcion->id}", 1)
+            ->call('inscribirme')
+            ->assertHasNoErrors()
+            ->assertSee(__('actividades.registration_summary'));
+
+        $this->assertDatabaseHas('actividad_inscripciones', [
+            'actividad_id' => $actividad->id,
+            'user_id' => $user->id,
+            'asiste' => true,
+            'total' => 20.00,
+        ]);
+    }
 }

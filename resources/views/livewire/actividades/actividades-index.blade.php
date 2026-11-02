@@ -54,9 +54,15 @@
                         <span class="text-3xl p-3 rounded-2xl bg-gray-50 shadow-xs">{{ $act->icono }}</span>
                         <div class="flex flex-col items-end gap-1">
                             @if ($miInscripcion)
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
-                                    ✓ {{ __('actividades.already_inscribed') }} ({{ number_format((float) $miInscripcion->total, 2, ',', '.') }} €)
-                                </span>
+                                @if ($miInscripcion->asiste)
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                                        ✓ {{ __('actividades.already_inscribed') }} ({{ number_format((float) $miInscripcion->total, 2, ',', '.') }} €)
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                                        ✗ {{ __('actividades.not_attending_badge') }}
+                                    </span>
+                                @endif
                             @elseif ($puedeApuntarse)
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-cyan-100 text-cyan-800">
                                     {{ __('actividades.status.abierta') }}

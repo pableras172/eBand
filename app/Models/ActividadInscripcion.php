@@ -22,6 +22,7 @@ class ActividadInscripcion extends Model
         'actividad_id',
         'user_id',
         'nombre_manual',
+        'asiste',
         'fecha_inscripcion',
         'total',
         'observaciones_alergias',
@@ -38,6 +39,7 @@ class ActividadInscripcion extends Model
     protected function casts(): array
     {
         return [
+            'asiste' => 'boolean',
             'fecha_inscripcion' => 'datetime',
             'fecha_pago' => 'datetime',
             'total' => 'decimal:2',

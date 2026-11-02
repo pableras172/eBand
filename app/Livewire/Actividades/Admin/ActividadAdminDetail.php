@@ -197,6 +197,7 @@ class ActividadAdminDetail extends Component
                 $inscripcion->update([
                     'user_id' => $this->tipoAsistente === 'miembro' ? $this->selectedUserId : null,
                     'nombre_manual' => $this->tipoAsistente === 'manual' ? trim($this->nombreManual) : null,
+                    'asiste' => true,
                     'total' => $this->totalCalculado,
                     'observaciones_alergias' => trim($this->observaciones_alergias) ?: null,
                     'pagado' => $this->marcarPagado,
@@ -210,6 +211,7 @@ class ActividadAdminDetail extends Component
                     'actividad_id' => $this->actividad->id,
                     'user_id' => $this->tipoAsistente === 'miembro' ? $this->selectedUserId : null,
                     'nombre_manual' => $this->tipoAsistente === 'manual' ? trim($this->nombreManual) : null,
+                    'asiste' => true,
                     'fecha_inscripcion' => Carbon::now(),
                     'total' => $this->totalCalculado,
                     'observaciones_alergias' => trim($this->observaciones_alergias) ?: null,
@@ -327,10 +329,13 @@ class ActividadAdminDetail extends Component
         // Recargar datos y relaciones
         $this->actividad->loadMissing('opciones');
 
-        // Recuento por cada opción configurada
+        // Recuento por cada opción configurada (solo de comensales que asisten)
         $recuentoOpciones = $this->actividad->opciones->map(function ($opcion): array {
-            $totalCantidad = (int) $opcion->inscripcionItems()->sum('cantidad');
-            $totalImporte = (float) $opcion->inscripcionItems()->sum('subtotal');
+            $itemsQuery = $opcion->inscripcionItems()
+                ->whereHas('inscripcion', fn ($q) => $q->where('asiste', true));
+
+            $totalCantidad = (int) $itemsQuery->sum('cantidad');
+            $totalImporte = (float) $itemsQuery->sum('subtotal');
 
             return [
                 'id' => $opcion->id,
@@ -341,11 +346,12 @@ class ActividadAdminDetail extends Component
             ];
         });
 
-        // Totales financieros
+        // Totales financieros y de asistencia
         $inscripcionesQuery = $this->actividad->inscripciones();
-        $totalPersonasInscritas = (int) $inscripcionesQuery->count();
-        $totalPrevisto = (float) $inscripcionesQuery->sum('total');
-        $totalCobrado = (float) (clone $inscripcionesQuery)->where('pagado', true)->sum('total');
+        $totalPersonasInscritas = (int) (clone $inscripcionesQuery)->where('asiste', true)->count();
+        $totalNoAsisten = (int) (clone $inscripcionesQuery)->where('asiste', false)->count();
+        $totalPrevisto = (float) (clone $inscripcionesQuery)->where('asiste', true)->sum('total');
+        $totalCobrado = (float) (clone $inscripcionesQuery)->where('asiste', true)->where('pagado', true)->sum('total');
         $totalPendiente = $totalPrevisto - $totalCobrado;
 
         // Lista de inscritos con filtros
@@ -361,12 +367,19 @@ class ActividadAdminDetail extends Component
                     })->orWhere('nombre_manual', 'like', "%{$term}%");
                 });
             })
+            ->when($this->filtroPago === 'asiste', function ($q): void {
+                $q->where('asiste', true);
+            })
+            ->when($this->filtroPago === 'no_asiste', function ($q): void {
+                $q->where('asiste', false);
+            })
             ->when($this->filtroPago === 'pagado', function ($q): void {
-                $q->where('pagado', true);
+                $q->where('asiste', true)->where('pagado', true);
             })
             ->when($this->filtroPago === 'pendiente', function ($q): void {
-                $q->where('pagado', false);
+                $q->where('asiste', true)->where('pagado', false);
             })
+            ->orderBy('asiste', 'desc')
             ->orderBy('fecha_inscripcion', 'asc')
             ->get();
 
@@ -378,6 +391,7 @@ class ActividadAdminDetail extends Component
         return view('livewire.actividades.admin.actividad-admin-detail', [
             'recuentoOpciones' => $recuentoOpciones,
             'totalPersonasInscritas' => $totalPersonasInscritas,
+            'totalNoAsisten' => $totalNoAsisten,
             'totalPrevisto' => $totalPrevisto,
             'totalCobrado' => $totalCobrado,
             'totalPendiente' => $totalPendiente,

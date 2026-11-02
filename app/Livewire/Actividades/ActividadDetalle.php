@@ -19,6 +19,8 @@ class ActividadDetalle extends Component
 
     public ?ActividadInscripcion $miInscripcion = null;
 
+    public bool $cambiandoRespuesta = false;
+
     /**
      * Array asociativo: [ opcion_id => cantidad ]
      *
@@ -42,7 +44,7 @@ class ActividadDetalle extends Component
 
         $userId = Auth::id();
 
-        // Comprobar si el usuario ya está inscrito
+        // Comprobar si el usuario ya está inscrito o ha indicado no asistir
         $this->miInscripcion = ActividadInscripcion::query()
             ->with(['items.opcion'])
             ->where('actividad_id', $this->actividad->id)
@@ -50,11 +52,22 @@ class ActividadDetalle extends Component
             ->first();
 
         // Inicializar cantidades a 0 para cada opción si no está inscrito
-        if (! $this->miInscripcion) {
-            foreach ($this->actividad->opciones as $opcion) {
-                $this->cantidades[$opcion->id] = 0;
-            }
+        foreach ($this->actividad->opciones as $opcion) {
+            $this->cantidades[$opcion->id] = 0;
         }
+
+        if ($this->miInscripcion && $this->miInscripcion->asiste) {
+            foreach ($this->miInscripcion->items as $item) {
+                $this->cantidades[$item->actividad_opcion_id] = (int) $item->cantidad;
+            }
+            $this->observaciones_alergias = $this->miInscripcion->observaciones_alergias ?? '';
+            $this->calcularTotal();
+        }
+    }
+
+    public function toggleCambiarRespuesta(): void
+    {
+        $this->cambiandoRespuesta = ! $this->cambiandoRespuesta;
     }
 
     public function incrementarCantidad(int $opcionId): void
@@ -90,6 +103,49 @@ class ActividadDetalle extends Component
         $this->totalCalculado = $total;
     }
 
+    public function indicarNoVoy(): void
+    {
+        if (! $this->actividad->puedeInscribirse()) {
+            $this->addError('error', __('actividades.error_closed'));
+
+            return;
+        }
+
+        $userId = Auth::id();
+
+        if ($this->miInscripcion && $this->miInscripcion->pagado) {
+            $this->addError('error', __('actividades.error_paid_cannot_cancel'));
+
+            return;
+        }
+
+        DB::transaction(function () use ($userId): void {
+            if ($this->miInscripcion) {
+                $this->miInscripcion->items()->delete();
+                $this->miInscripcion->update([
+                    'asiste' => false,
+                    'total' => 0.0,
+                    'observaciones_alergias' => null,
+                    'fecha_inscripcion' => Carbon::now(),
+                ]);
+            } else {
+                $this->miInscripcion = ActividadInscripcion::query()->create([
+                    'actividad_id' => $this->actividad->id,
+                    'user_id' => $userId,
+                    'asiste' => false,
+                    'fecha_inscripcion' => Carbon::now(),
+                    'total' => 0.0,
+                    'pagado' => false,
+                ]);
+            }
+
+            $this->miInscripcion = $this->miInscripcion->fresh(['items.opcion']);
+        });
+
+        $this->cambiandoRespuesta = false;
+        session()->flash('success', __('actividades.declined_success'));
+    }
+
     public function inscribirme(): void
     {
         $userId = Auth::id();
@@ -101,13 +157,8 @@ class ActividadDetalle extends Component
             return;
         }
 
-        // Verificar si ya existe inscripción (evitar doble post)
-        $existe = ActividadInscripcion::query()
-            ->where('actividad_id', $this->actividad->id)
-            ->where('user_id', $userId)
-            ->exists();
-
-        if ($existe) {
+        // Si ya está inscrito con confirmación activa (asiste = true)
+        if ($this->miInscripcion && $this->miInscripcion->asiste && ! $this->cambiandoRespuesta) {
             $this->addError('error', __('actividades.error_already_registered'));
 
             return;
@@ -139,14 +190,26 @@ class ActividadDetalle extends Component
 
         // Persistir inscripción
         DB::transaction(function () use ($userId, $totalFinal, $itemsAInsertar): void {
-            $inscripcion = ActividadInscripcion::query()->create([
-                'actividad_id' => $this->actividad->id,
-                'user_id' => $userId,
-                'fecha_inscripcion' => Carbon::now(),
-                'total' => $totalFinal,
-                'observaciones_alergias' => $this->actividad->requiereAlergias() ? ($this->observaciones_alergias ?: null) : null,
-                'pagado' => false,
-            ]);
+            if ($this->miInscripcion) {
+                $this->miInscripcion->update([
+                    'asiste' => true,
+                    'fecha_inscripcion' => Carbon::now(),
+                    'total' => $totalFinal,
+                    'observaciones_alergias' => $this->actividad->requiereAlergias() ? ($this->observaciones_alergias ?: null) : null,
+                ]);
+                $this->miInscripcion->items()->delete();
+                $inscripcion = $this->miInscripcion;
+            } else {
+                $inscripcion = ActividadInscripcion::query()->create([
+                    'actividad_id' => $this->actividad->id,
+                    'user_id' => $userId,
+                    'asiste' => true,
+                    'fecha_inscripcion' => Carbon::now(),
+                    'total' => $totalFinal,
+                    'observaciones_alergias' => $this->actividad->requiereAlergias() ? ($this->observaciones_alergias ?: null) : null,
+                    'pagado' => false,
+                ]);
+            }
 
             foreach ($itemsAInsertar as $item) {
                 ActividadInscripcionItem::query()->create([
@@ -158,9 +221,10 @@ class ActividadDetalle extends Component
                 ]);
             }
 
-            $this->miInscripcion = $inscripcion->load(['items.opcion']);
+            $this->miInscripcion = $inscripcion->fresh(['items.opcion']);
         });
 
+        $this->cambiandoRespuesta = false;
         session()->flash('success', __('actividades.registration_success'));
     }
 
