@@ -1,6 +1,6 @@
 <x-form-section submit="updatePassword">
     <x-slot name="title">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+        <div class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
             <div class="flex items-center space-x-3">
                 <div class="bg-gradient-to-br from-green-500 to-emerald-600 p-2.5 rounded-lg shadow-lg">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -16,7 +16,7 @@
     </x-slot>
 
     <x-slot name="description">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 space-y-2">
+        <div class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 space-y-2">
             <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                 {{ __('Asegúrese de que su cuenta utilice una contraseña larga y aleatoria para mantenerse segura.') }}
             </p>
