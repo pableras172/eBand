@@ -103,7 +103,7 @@
         @endif
     </div>
 
-    <div id="dashboard-nextconcert">
+    <div id="dashboard-nextconcert" class="w-full mx-auto">
         <x-program />
     </div>
 
