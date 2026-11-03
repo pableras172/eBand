@@ -1,4 +1,8 @@
-@props(['userId'])
+@props([
+    'userId',
+    'showTitle' => true,
+    'card' => true,
+])
 
 <div x-data="{
     userId: {{ $userId }},
@@ -116,19 +120,19 @@
         return [this.currentYear, this.currentYear - 1, this.currentYear - 2];
     }
 }" 
-
-
-class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+class="{{ $card ? 'max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-200 dark:border-gray-700' : 'w-full space-y-6' }}">
     
-    <!-- Título con icono -->
-    <div class="flex items-center space-x-2 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
+    @if ($showTitle)
+        <!-- Título con icono -->
+        <div class="flex items-center space-x-2 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ __('Estadístiques') }}</h3>
         </div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ __('Estadístiques') }}</h3>
-    </div>
+    @endif
     
     <!-- Selectores -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

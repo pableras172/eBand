@@ -32,6 +32,6 @@
     </x-slot>
     
     <x-slot name="content">
-        <x-usermetrics :userId="Auth::user()->id" />
+        <x-usermetrics :userId="Auth::user()->id" :showTitle="false" :card="false" />
     </x-slot>
 </x-action-section>
