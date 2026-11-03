@@ -984,9 +984,9 @@ class ActuacionController extends Controller
             return redirect()->route('actuacion.index');
         }
 
-        $fechaSeleccionada = Carbon::parse($fecha);
-        $fechaMinima = now()->subMonths(3);
-        $fechaMaxima = now();
+        $fechaSeleccionada = Carbon::parse($fecha)->startOfDay();
+        $fechaMinima = now()->subMonths(3)->startOfDay();
+        $fechaMaxima = now()->endOfDay();
 
         // Validar que la fecha esté en el rango permitido
         if ($fechaSeleccionada->lt($fechaMinima) || $fechaSeleccionada->gt($fechaMaxima)) {

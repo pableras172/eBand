@@ -57,12 +57,27 @@
                 <p class="text-sm text-gray-500">
                     {{ __('Puedes usar los filtros para acotar la lista de actuaciones') }}
                 </p>
-                <form action="{{ route('actuaciones-fecha') }}" method="GET" class="flex items-center gap-2">
+                <form action="{{ route('actuaciones-fecha') }}" method="GET" class="flex flex-wrap items-center gap-2 mt-2">
                     <label for="fecha" class="text-sm font-medium text-gray-700">{{__('Selecciona data')}}</label>
                     <input type="date" id="fecha" name="fecha" 
-                        class="border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                        value="{{ request('fecha', $filtroFecha ?? '') }}"
+                        onchange="if(this.value) this.form.submit()"
+                        class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:ring-indigo-500 focus:border-indigo-500"
                         min="{{ now()->subMonths(3)->format('Y-m-d') }}"
                         max="{{ now()->format('Y-m-d') }}">
+                    <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md shadow-sm transition-colors">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        {{ __('Filtrar') }}
+                    </button>
+                    @isset($filtroFecha)
+                        <a href="{{ route('actuacion.index') }}" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-md transition-colors">
+                            {{ __('Netejar') }}
+                        </a>
+                    @endisset
+                </form>
+            </div>
         </details>
         <details class="p-2 group" @isset($filtrotipo) open @else close @endisset>
             <summary class="flex items-center justify-between cursor-pointer">
