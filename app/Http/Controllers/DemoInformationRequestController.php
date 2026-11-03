@@ -18,7 +18,16 @@ class DemoInformationRequestController extends Controller
         }
 
         $user = request()->user();
-        $lead = DemoAccessLead::query()->find(request()->session()->get('demo_lead_id'));
+        $lead = null;
+        $leadId = request()->session()->get('demo_lead_id');
+
+        if ($leadId) {
+            try {
+                $lead = DemoAccessLead::query()->find($leadId);
+            } catch (\Throwable) {
+                $lead = null;
+            }
+        }
 
         return view('demo.information-request', [
             'defaultNombreApellidos' => trim((string) ($lead?->nombre.' '.$lead?->apellidos)) ?: (string) ($user?->name ?? ''),
