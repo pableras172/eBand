@@ -2,7 +2,7 @@
     use App\Helpers\ConfigHelper;
 @endphp
 
-<nav x-data="{ open: false, mobileAdminOpen: {{ request()->routeIs('tipoactuacion.*', 'instrument.*', 'users.*', 'band-settings.*', 'contratos.*', 'payments.*', 'paymentresumes.*', 'comments.*', 'configurations*', 'announcements.*', 'concert-programs.*', 'admin.actividades.*') ? 'true' : 'false' }}, mobileActivityOpen: true }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 shadow-md">
+<nav x-data="{ open: false, mobileAdminOpen: false, mobileActivityOpen: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 shadow-md">
     
 
     <!-- Primary Navigation Menu -->
@@ -477,8 +477,20 @@
         </div>
     </div>
 
+    <!-- Backdrop oscurecido y borroso al abrir el menú móvil -->
+    <div x-show="open"
+        x-transition:enter="transition-opacity ease-out duration-200"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition-opacity ease-in duration-150"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        @click="open = false"
+        class="fixed inset-0 top-[72px] bg-slate-900/60 backdrop-blur-sm z-40 sm:hidden"
+        style="display: none;"></div>
+
     <!-- Responsive Navigation Menu -->
-    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden bg-white dark:bg-gray-800 max-h-[80vh] overflow-y-auto">
+    <div :class="{ 'block': open, 'hidden': !open }" class="relative z-50 hidden sm:hidden bg-white dark:bg-gray-800 max-h-[85vh] overflow-y-auto border-b border-gray-200 dark:border-gray-700 shadow-2xl">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 <div class="flex items-center space-x-3">
@@ -536,6 +548,23 @@
                         @endif
                     </a>
                 @endauth
+            </div>
+
+            <!-- Cambio de idioma debajo del nombre -->
+            <div class="mt-2.5 px-4 flex items-center gap-2">
+                <span class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ __('Idioma') }}:</span>
+                <div class="inline-flex items-center gap-1 bg-gray-100 dark:bg-gray-700/60 p-1 rounded-xl">
+                    <a href="/greeting/ca_VL"
+                        class="px-2.5 py-1 text-xs font-semibold rounded-lg transition flex items-center gap-1.5 {{ App::getLocale() == 'ca_VL' ? 'bg-white dark:bg-gray-800 text-cyan-700 dark:text-cyan-400 shadow-xs' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">
+                        <span class="fi fi-es-ct"></span>
+                        <span>Valencià</span>
+                    </a>
+                    <a href="/greeting/es"
+                        class="px-2.5 py-1 text-xs font-semibold rounded-lg transition flex items-center gap-1.5 {{ App::getLocale() == 'es' ? 'bg-white dark:bg-gray-800 text-cyan-700 dark:text-cyan-400 shadow-xs' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">
+                        <span class="fi fi-es"></span>
+                        <span>Castellano</span>
+                    </a>
+                </div>
             </div>
 
             <div class="mt-3 space-y-1">
@@ -719,25 +748,7 @@
                     </div>
                 @endcan
 
-                <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
-                <div class="block px-4 py-2 text-xs text-gray-400">
-                    {{ __('selecciona idioma') }}
-                </div>
 
-                <div class="grid grid-cols-2 justify-center items-center gap-4">
-                    @if (App::getLocale() != 'ca_VL')
-                        <x-responsive-nav-link href="/greeting/ca_VL">
-                            <span class="fi fi-es-ct"></span>
-                        </x-responsive-nav-link>
-                    @endif
-
-                    @if (App::getLocale() != 'es')
-                        <x-responsive-nav-link href="/greeting/es">
-                            <span class="fi fi-es"></span>
-                        </x-responsive-nav-link>
-                    @endif
-
-                </div>
 
 
                 <!-- Team Management -->
