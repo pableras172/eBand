@@ -1,4 +1,4 @@
-<div class="max-w-7xl mx-auto py-4 px-3 pb-24 sm:px-6 lg:px-8 space-y-6">
+<div class="max-w-7xl mx-auto py-4 px-3 pb-8 sm:px-6 lg:px-8 space-y-6">
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
@@ -164,16 +164,5 @@
     {{-- Paginación limpia --}}
     <div class="pt-2">
         {{ $suggestions->links() }}
-    </div>
-
-    {{-- Botón flotante para móviles --}}
-    <div class="sm:hidden fixed bottom-6 right-6 z-30">
-        <a href="{{ route('suggestions.create') }}"
-            class="flex items-center justify-center w-14 h-14 rounded-full bg-cyan-600 text-white shadow-lg hover:bg-cyan-700 active:scale-95 transition focus:outline-none focus:ring-4 focus:ring-cyan-300"
-            title="{{ __('Nou suggeriment') }}">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-            </svg>
-        </a>
     </div>
 </div>
