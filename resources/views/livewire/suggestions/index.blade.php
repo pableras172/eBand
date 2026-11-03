@@ -1,162 +1,179 @@
-<div class="max-w-7xl mx-auto py-2 sm:px-6 lg:px-8 space-y-4">
+<div class="max-w-7xl mx-auto py-4 px-3 pb-24 sm:px-6 lg:px-8 space-y-6">
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('crud.suggestions.collectionTitle') }}
-        </h2>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <span>💡</span> {{ __('crud.suggestions.collectionTitle') }}
+                </h1>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    {{ __('Comparteix idees, propostes i suggeriments per a millorar la nostra banda') }}
+                </p>
+            </div>
+
+            <a href="{{ route('suggestions.create') }}"
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 transition focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>{{ __('Nou suggeriment') }}</span>
+            </a>
+        </div>
     </x-slot>
 
-    <div class="flex justify-between align-top py-1">
-        <x-ui.input wire:model.live="search" type="text"
-            placeholder="Search {{ __('crud.suggestions.collectionTitle') }}..." />
-    </div>
-
-    {{-- Delete Modal --}}
+    {{-- Modal de confirmación de eliminación --}}
     <x-ui.modal.confirm wire:model="confirmingDeletion">
-        <x-slot name="title"> {{ __('Delete') }} </x-slot>
+        <x-slot name="title"> {{ __('Eliminar suggeriment') }} </x-slot>
 
-        <x-slot name="content"> {{ __('Are you sure?') }} </x-slot>
+        <x-slot name="content">
+            {{ __('Estàs segur que vols eliminar este suggeriment? Esta acció no es pot desfer.') }}
+        </x-slot>
 
         <x-slot name="footer">
             <x-ui.button wire:click="$toggle('confirmingDeletion')" wire:loading.attr="disabled">
-                {{ __('Cancel') }}
+                {{ __('Cancel·lar') }}
             </x-ui.button>
 
             <x-ui.button.danger class="ml-3" wire:click="delete({{ $deletingSuggestion }})"
                 wire:loading.attr="disabled">
-                {{ __('Delete') }}
+                {{ __('Eliminar') }}
             </x-ui.button.danger>
         </x-slot>
     </x-ui.modal.confirm>
 
-    {{-- Index Table --}}
-    <x-ui.container.table>
-        <x-ui.table>
-            <x-slot name="head">
-                <x-ui.table.header for-crud class="w-1/6"
-                    wire:click="sortBy('fechacreacion')">{{ __('crud.suggestions.inputs.fechacreacion.label') }}</x-ui.table.header>
-                <x-ui.table.header for-crud class="w-2/5"
-                    wire:click="sortBy('titulo')">{{ __('crud.suggestions.inputs.titulo.label') }}</x-ui.table.header>
-                <x-ui.table.header for-crud class="w-1/4"
-                    wire:click="sortBy('users_id')">{{ __('crud.suggestions.inputs.iduser.label') }}</x-ui.table.header>
-            </x-slot>
+    {{-- Barra de búsqueda y contador --}}
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div class="relative flex-1 max-w-md">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <input type="text" wire:model.live.debounce.300ms="search"
+                placeholder="{{ __('Cercar per títol o contingut...') }}"
+                class="w-full rounded-xl border border-gray-200 bg-gray-50 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-200 pl-10 pr-4 py-2 text-sm shadow-xs focus:border-cyan-500 focus:bg-white dark:focus:bg-gray-900 focus:ring-cyan-500 transition" />
+        </div>
 
-            <x-slot name="body">
-                @forelse ($suggestions as $suggestion)
-                    @can('view', $suggestion)
-                    <x-ui.table.row 
-                        wire:loading.class.delay="opacity-75"
-                        wire:navigate
-                        class="cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-150"
-                        onclick="window.location.href='{{ route('suggestions.edit', $suggestion) }}'">
-                        
-                        <x-ui.table.column for-crud class="w-1/6">
-                            <div class="flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span class="text-sm">{{ $suggestion->fechacreacion ? \Carbon\Carbon::parse($suggestion->fechacreacion)->format('d/m/Y') : '' }}</span>
-                            </div>
-                        </x-ui.table.column>
-                        
-                        <x-ui.table.column for-crud class="w-2/5">
-                            <div class="flex items-start">
-                                <svg class="w-4 h-4 mr-2 mt-1 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                                </svg>
-                                <span class="font-medium text-gray-900 dark:text-gray-100 line-clamp-2">{{ $suggestion->titulo }}</span>
-                            </div>
-                        </x-ui.table.column>
+        <div class="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 self-end sm:self-center">
+            <span>{{ __('Total suggeriments') }}: <strong class="text-gray-900 dark:text-gray-100 font-bold">{{ $suggestions->total() }}</strong></span>
+        </div>
+    </div>
 
-                        <x-ui.table.column for-crud class="w-1/4">
-                            <div class="flex items-center">
+    {{-- Grid de tarjetas de sugerencias estilo Actividades --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @forelse ($suggestions as $suggestion)
+            @can('view', $suggestion)
+                <div wire:key="card-suggestion-{{ $suggestion->id }}"
+                    class="rounded-2xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <span class="text-2xl p-3 rounded-2xl bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 shadow-xs">
+                                💡
+                            </span>
+                            <div class="flex flex-col items-end gap-1">
                                 @if($suggestion->anonimo == false && $suggestion->user)
-                                    <svg class="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                    </svg>
-                                    <span class="text-sm truncate">{{ $suggestion->user->name ?? $suggestion->user->email }}</span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-cyan-50 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 border border-cyan-100 dark:border-cyan-800/40">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                        <span class="truncate max-w-[130px]">{{ $suggestion->user->name ?? $suggestion->user->email }}</span>
+                                    </span>
                                 @else
-                                    <svg class="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span class="text-sm italic text-gray-500">{{ __('crud.suggestions.anonymous') }}</span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>{{ __('crud.suggestions.anonymous') ?: 'Anònim' }}</span>
+                                    </span>
                                 @endif
                             </div>
-                        </x-ui.table.column>
-                    </x-ui.table.row>
-                    @endcan
-                @empty
-                    <x-ui.table.row>
-                        <x-ui.table.column colspan="3" class="text-center py-8">
-                            <div class="flex flex-col items-center justify-center text-gray-500">
-                                <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                                </svg>
-                                <p class="text-sm">{{ __('No hi ha suggeriments') }}</p>
+                        </div>
+
+                        <div>
+                            <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 leading-snug line-clamp-2">
+                                {{ $suggestion->titulo }}
+                            </h2>
+                            @if ($suggestion->texto)
+                                <p class="text-xs text-gray-600 dark:text-gray-300 line-clamp-3 mt-2 leading-relaxed whitespace-pre-line">
+                                    {{ $suggestion->texto }}
+                                </p>
+                            @endif
+                        </div>
+
+                        @if (! empty($suggestion->observaciones))
+                            <div class="rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 p-3 text-xs text-amber-900 dark:text-amber-200 space-y-1">
+                                <p class="font-bold flex items-center gap-1.5 text-amber-800 dark:text-amber-300">
+                                    <span>📋</span> {{ __('Nota de la directiva') }}
+                                </p>
+                                <p class="text-xs leading-relaxed">{{ $suggestion->observaciones }}</p>
                             </div>
-                        </x-ui.table.column>
-                    </x-ui.table.row>
-                @endforelse
-            </x-slot>            
-        </x-ui.table>        
-    </x-ui.container.table>
-    <div style="display: block; margin-bottom:100px" class="mt-5 mb-100">{{ $suggestions->links() }}</div>
-    <footer
-        class="fixed bottom-0 left-0 z-20 w-full bg-white border-t border-gray-300 shadow-t-md dark:bg-gray-800 dark:border-gray-600">
-        <div class="flex justify-center items-center py-3">
-            <!-- Botón Nou Contracte -->
-            <a href="{{ route('suggestions.create') }}"
-                class="flex flex-col items-center text-gray-700 hover:text-green-600 dark:text-gray-300 dark:hover:text-green-400 transition">
-                <svg height="64px" width="64px" version="1.1" id="_x35_" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"
-                    fill="#000000">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <g>
-                            <g>
-                                <g>
-                                    <circle style="fill:#FDF4DE;" cx="255.693" cy="134.136" r="134.136"></circle>
-                                    <path style="fill:#EFE0AD;"
-                                        d="M257.535,79.113H182.64c-6.078,0-11.05-4.973-11.05-11.05l0,0c0-6.077,4.973-11.05,11.05-11.05 h74.895c6.078,0,11.05,4.973,11.05,11.05l0,0C268.585,74.14,263.612,79.113,257.535,79.113z">
-                                    </path>
-                                    <path style="fill:#EFE0AD;"
-                                        d="M244.643,126.076h-74.895c-6.077,0-11.05-4.973-11.05-11.05l0,0c0-6.077,4.973-11.05,11.05-11.05 h74.895c6.077,0,11.05,4.973,11.05,11.05l0,0C255.693,121.103,250.72,126.076,244.643,126.076z">
-                                    </path>
-                                    <path style="fill:#EFE0AD;"
-                                        d="M351.461,176.722H169.748c-6.077,0-11.05-4.973-11.05-11.05l0,0c0-6.078,4.973-11.05,11.05-11.05 h181.713c6.077,0,11.05,4.973,11.05,11.05l0,0C362.511,171.749,357.538,176.722,351.461,176.722z">
-                                    </path>
-                                    <path style="fill:#EFE0AD;"
-                                        d="M270.887,212.635h-86.866c-6.078,0-11.05-4.973-11.05-11.05l0,0c0-6.078,4.973-11.05,11.05-11.05 h86.866c6.078,0,11.05,4.973,11.05,11.05l0,0C281.937,207.662,276.965,212.635,270.887,212.635z">
-                                    </path>
-                                    <path style="fill:#EFE0AD;"
-                                        d="M349.619,126.076h-74.895c-6.078,0-11.05-4.973-11.05-11.05l0,0c0-6.077,4.972-11.05,11.05-11.05 h74.895c6.077,0,11.05,4.973,11.05,11.05l0,0C360.669,121.103,355.696,126.076,349.619,126.076z">
-                                    </path>
-                                    <polygon style="fill:#FDF4DE;"
-                                        points="209.185,252.621 282.019,241.572 284.185,311.096 "></polygon>
-                                </g>
-                                <path style="fill:#EFE0AD;"
-                                    d="M186.636,272.351c-14.07,14.07-31.953,24.347-51.991,29.117l-48.584,37.883l1.16-37.11 C37.441,292.039,0,247.986,0,195.203C0,134.851,48.933,85.918,109.285,85.918h0.055c-4.199,14.328-6.446,29.485-6.446,45.177 C102.895,191.999,136.727,245.021,186.636,272.351z">
-                                </path>
-                                <path style="fill:#EFE0AD;"
-                                    d="M325.364,272.351c14.07,14.07,31.953,24.347,51.991,29.117l48.584,37.883l-1.16-37.11 C474.559,292.039,512,247.986,512,195.203c0-60.352-48.934-109.285-109.285-109.285h-0.055 c4.199,14.328,6.446,29.485,6.446,45.177C409.105,191.999,375.273,245.021,325.364,272.351z">
-                                </path>
-                            </g>
-                            <g style="opacity:0.04;">
-                                <path style="fill:#070405;"
-                                    d="M389.829,134.136c0-27.879-8.515-53.763-23.072-75.216L180.623,245.053 c13.122,8.877,27.842,15.574,43.714,19.382l59.847,46.661l-1.419-45.56C343.869,253.013,389.829,198.943,389.829,134.136z">
-                                </path>
-                                <path style="fill:#070405;"
-                                    d="M87.256,338.42l47.389-36.952c20.037-4.77,37.92-15.046,51.991-29.117 c-7.07-3.871-13.774-8.311-20.148-13.163L87.256,338.42z">
-                                </path>
-                                <path style="fill:#070405;"
-                                    d="M512,195.203c0-60.352-48.934-109.286-109.286-109.286h-0.055 c4.199,14.328,6.446,29.485,6.446,45.177c0,60.904-33.832,113.926-83.741,141.257c14.07,14.07,31.953,24.347,51.991,29.117 l48.584,37.884l-1.16-37.11C474.559,292.039,512,247.986,512,195.203z">
-                                </path>
-                            </g>
-                        </g>
-                    </g>
-                </svg>
-                <span class="text-xs mt-1 font-bold">{{ __('Nou sugeriment') }}</span>
-            </a>
-        </div>
-    </footer>
+                        @endif
+                    </div>
+
+                    <div class="px-6 py-3.5 bg-gray-50/70 dark:bg-gray-800/80 border-t border-gray-100 dark:border-gray-700/80 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                        <span class="inline-flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            {{ $suggestion->fechacreacion ? \Carbon\Carbon::parse($suggestion->fechacreacion)->translatedFormat('d M Y') : '' }}
+                        </span>
+
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('suggestions.edit', $suggestion) }}"
+                                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-200 font-semibold transition">
+                                <span>{{ __('Veure') }}</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+
+                            @can('delete', $suggestion)
+                                <button type="button" wire:click="confirmDeletion('{{ $suggestion->id }}')"
+                                    class="p-1.5 rounded-lg text-gray-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition"
+                                    title="{{ __('Eliminar') }}">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            @endcan
+                        </div>
+                    </div>
+                </div>
+            @endcan
+        @empty
+            <div class="col-span-full py-16 text-center bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 text-3xl mb-4">
+                    💡
+                </div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 mb-1">
+                    {{ __('No hi ha cap suggeriment') }}
+                </h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto mb-6">
+                    {{ __('Sigues el primer en proposar una idea per a millorar la banda.') }}
+                </p>
+                <a href="{{ route('suggestions.create') }}"
+                    class="inline-flex items-center gap-2 rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>{{ __('Proposar suggeriment') }}</span>
+                </a>
+            </div>
+        @endforelse
+    </div>
+
+    {{-- Paginación limpia --}}
+    <div class="pt-2">
+        {{ $suggestions->links() }}
+    </div>
+
+    {{-- Botón flotante para móviles --}}
+    <div class="sm:hidden fixed bottom-6 right-6 z-30">
+        <a href="{{ route('suggestions.create') }}"
+            class="flex items-center justify-center w-14 h-14 rounded-full bg-cyan-600 text-white shadow-lg hover:bg-cyan-700 active:scale-95 transition focus:outline-none focus:ring-4 focus:ring-cyan-300"
+            title="{{ __('Nou suggeriment') }}">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+            </svg>
+        </a>
+    </div>
 </div>
