@@ -25,14 +25,24 @@ class AppServiceProvider extends ServiceProvider
         ConfigHelper::loadConfigurations();
 
         View::composer('*', function ($view): void {
-            static $bandSettingLoaded = false;
+            if ($view->offsetExists('bandSetting') && $view->offsetGet('bandSetting') !== null) {
+                return;
+            }
+
             static $bandSetting = null;
+            static $bandSettingLoadedForTenant = null;
 
-            if (! $bandSettingLoaded) {
-                $bandSettingLoaded = true;
+            $currentTenantId = function_exists('tenant') && tenant() ? tenant('id') : 'central';
 
-                if (Schema::hasTable('band_settings')) {
-                    $bandSetting = BandSetting::query()->first();
+            if ($bandSettingLoadedForTenant !== $currentTenantId) {
+                $bandSettingLoadedForTenant = $currentTenantId;
+
+                try {
+                    $bandSetting = Schema::hasTable('band_settings')
+                        ? (BandSetting::query()->first() ?? new BandSetting(['activarcontactoinfo' => false]))
+                        : new BandSetting(['activarcontactoinfo' => false]);
+                } catch (\Throwable) {
+                    $bandSetting = new BandSetting(['activarcontactoinfo' => false]);
                 }
             }
 

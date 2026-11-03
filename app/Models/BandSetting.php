@@ -26,6 +26,10 @@ class BandSetting extends Model
         'qr_contacto_masinfo',
     ];
 
+    protected $attributes = [
+        'activarcontactoinfo' => false,
+    ];
+
     protected $casts = [
         'activarcontactoinfo' => 'boolean',
     ];

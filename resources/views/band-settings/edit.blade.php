@@ -25,7 +25,7 @@
                 {{ session('error_message') }}
             </div>
         @endif
-<section>@if ($bandSetting->activarcontactoinfo)
+<section>@if ($bandSetting?->activarcontactoinfo)
                     <div class="mt-4 rounded-xl border border-cyan-200 bg-cyan-50 p-4">
                         <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                             <div>
@@ -41,7 +41,7 @@
                                 </form>
                             </div>
 
-                            @if ($bandSetting->qr_contacto_masinfo)
+                            @if ($bandSetting?->qr_contacto_masinfo)
                                 <div class="flex flex-col items-center gap-2">
                                     <img src="{{ asset('storage/' . $bandSetting->qr_contacto_masinfo) }}"
                                         alt="QR /masinfo"
@@ -71,7 +71,7 @@
                     <div>
                         <label for="nombre" class="block text-sm font-medium text-gray-700">{{ __('Nombre') }}</label>
                         <input type="text" name="nombre" id="nombre"
-                            value="{{ old('nombre', $bandSetting->nombre) }}"
+                            value="{{ old('nombre', $bandSetting?->nombre) }}"
                             class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500"
                             required>
                         @error('nombre')
@@ -82,7 +82,7 @@
                     <div>
                         <label for="nif_cif" class="block text-sm font-medium text-gray-700">{{ __('NIF / CIF') }}</label>
                         <input type="text" name="nif_cif" id="nif_cif"
-                            value="{{ old('nif_cif', $bandSetting->nif_cif) }}"
+                            value="{{ old('nif_cif', $bandSetting?->nif_cif) }}"
                             class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                         @error('nif_cif')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -92,7 +92,7 @@
                     <div class="md:col-span-2">
                         <label for="direccion" class="block text-sm font-medium text-gray-700">{{ __('Dirección') }}</label>
                         <input type="text" name="direccion" id="direccion"
-                            value="{{ old('direccion', $bandSetting->direccion) }}"
+                            value="{{ old('direccion', $bandSetting?->direccion) }}"
                             class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                         @error('direccion')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -102,7 +102,7 @@
                     <div>
                         <label for="telefono" class="block text-sm font-medium text-gray-700">{{ __('Teléfono') }}</label>
                         <input type="text" name="telefono" id="telefono"
-                            value="{{ old('telefono', $bandSetting->telefono) }}"
+                            value="{{ old('telefono', $bandSetting?->telefono) }}"
                             class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                         @error('telefono')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -112,7 +112,7 @@
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">{{ __('Email') }}</label>
                         <input type="email" name="email" id="email"
-                            value="{{ old('email', $bandSetting->email) }}"
+                            value="{{ old('email', $bandSetting?->email) }}"
                             class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                         @error('email')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -122,7 +122,7 @@
                     <div class="md:col-span-2">
                         <label for="website" class="block text-sm font-medium text-gray-700">{{ __('Sitio web') }}</label>
                         <input type="url" name="website" id="website"
-                            value="{{ old('website', $bandSetting->website) }}"
+                            value="{{ old('website', $bandSetting?->website) }}"
                             placeholder="https://"
                             class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                         @error('website')
@@ -146,7 +146,7 @@
                                 class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                                 <option value="">{{ __('Selecciona un usuario') }}</option>
                                 @foreach ($users as $user)
-                                    <option value="{{ $user->id }}" @selected((string) old('iduserpresidente', $bandSetting->iduserpresidente) === (string) $user->id)>
+                                    <option value="{{ $user->id }}" @selected((string) old('iduserpresidente', $bandSetting?->iduserpresidente) === (string) $user->id)>
                                         {{ $user->name }} ({{ $user->email }})
                                     </option>
                                 @endforeach
@@ -169,7 +169,7 @@
 
                     <div class="flex items-center justify-center">
                         <div class="h-28 w-28 rounded-2xl border border-gray-200 bg-gray-50 overflow-hidden flex items-center justify-center">
-                            @if ($bandSetting->logo)
+                            @if ($bandSetting?->logo)
                                 <img src="{{ asset('storage/'.$bandSetting->logo) }}" alt="Logo banda" class="h-full w-full object-contain">
                             @else
                                 <span class="text-xs text-gray-400 text-center px-2">{{ __('Sin logo') }}</span>
@@ -189,7 +189,7 @@
                     <div>
                         <label for="urlinstagram" class="block text-sm font-medium text-gray-700">{{ __('Instagram') }}</label>
                         <input type="url" name="urlinstagram" id="urlinstagram"
-                            value="{{ old('urlinstagram', $bandSetting->urlinstagram) }}"
+                            value="{{ old('urlinstagram', $bandSetting?->urlinstagram) }}"
                             placeholder="https://instagram.com/..."
                             class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                         @error('urlinstagram')
@@ -200,7 +200,7 @@
                     <div>
                         <label for="urlfacebook" class="block text-sm font-medium text-gray-700">{{ __('Facebook') }}</label>
                         <input type="url" name="urlfacebook" id="urlfacebook"
-                            value="{{ old('urlfacebook', $bandSetting->urlfacebook) }}"
+                            value="{{ old('urlfacebook', $bandSetting?->urlfacebook) }}"
                             placeholder="https://facebook.com/..."
                             class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                         @error('urlfacebook')
@@ -211,7 +211,7 @@
                     <div>
                         <label for="urltiktok" class="block text-sm font-medium text-gray-700">{{ __('TikTok') }}</label>
                         <input type="url" name="urltiktok" id="urltiktok"
-                            value="{{ old('urltiktok', $bandSetting->urltiktok) }}"
+                            value="{{ old('urltiktok', $bandSetting?->urltiktok) }}"
                             placeholder="https://tiktok.com/@..."
                             class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
                         @error('urltiktok')
@@ -239,7 +239,7 @@
                             name="activarcontactoinfo"
                             id="activarcontactoinfo"
                             value="1"
-                            @checked((bool) old('activarcontactoinfo', $bandSetting->activarcontactoinfo))
+                            @checked((bool) old('activarcontactoinfo', $bandSetting?->activarcontactoinfo))
                             class="h-5 w-5 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500">
                         <label for="activarcontactoinfo" class="text-sm text-gray-700">{{ __('Activo') }}</label>
                     </div>
