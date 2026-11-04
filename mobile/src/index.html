@@ -41,6 +41,9 @@
           <div class="spinner" id="btn-spinner"></div>
         </button>
       </form>
+
+      <!-- Caja de depuración / logs -->
+      <div id="debug-log" style="display: none; margin-top: 16px; padding: 10px; background: rgba(0,0,0,0.05); border-radius: 8px; font-family: monospace; font-size: 11px; max-height: 120px; overflow-y: auto; text-align: left; word-break: break-all;"></div>
     </section>
 
     <!-- Paso 2: Confirmar Agrupación (Oculto inicialmente) -->
@@ -68,6 +71,18 @@
     </p>
     <button type="button" class="btn btn-primary" style="max-width: 240px;" onclick="window.app.retryConnection();">
       <span>Reintentar conexión</span>
+    </button>
+  </div>
+
+  <!-- Pantalla de Desbloqueo Biométrico -->
+  <div id="biometric-screen" class="offline-screen">
+    <div class="offline-icon">🔒</div>
+    <h2>Acceso protegido</h2>
+    <p style="color: var(--text-muted); margin: 8px 0 24px 0; font-size: 14px;">
+      Identifícate con tu huella o rostro para continuar a tu agrupación.
+    </p>
+    <button type="button" class="btn btn-primary" style="max-width: 240px;" onclick="window.app.retryBiometrics();">
+      <span>Desbloquear con Biometría</span>
     </button>
   </div>
 

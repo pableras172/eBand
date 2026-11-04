@@ -77,10 +77,10 @@
 
 **Objetivo**: Gestionar la falta de conexión a internet y permitir cambiar o desvincular la agrupación.
 
-- [ ] T017 [P] [US5] Implementar detección de estado de red con `@capacitor/network` en `mobile/src/js/app.js`
+- [x] T017 [P] [US5] Implementar detección de estado de red con `@capacitor/network` en `mobile/src/js/app.js`
 - [x] T018 [P] [US5] Diseñar la vista de contingencia "Sin conexión a internet" con botón de reintentar conexión en `mobile/src/index.html`
 - [x] T019 [US4] Implementar función de desvinculación `desvincularBanda()` que limpie `Preferences` y devuelva al usuario a la pantalla de código
-- [ ] T020 [US4] Interceptar enlaces salientes con `@capacitor/browser` para que URLs externas se abran en el navegador nativo del sistema
+- [x] T020 [US4] Interceptar enlaces salientes con `@capacitor/browser` para que URLs externas se abran en el navegador nativo del sistema
 
 ---
 
@@ -90,7 +90,7 @@
 
 - [x] T021 Añadir la plataforma Android con `@capacitor/android` (`npx cap add android`)
 - [x] T022 Añadir la plataforma iOS con workflow de GitHub Actions en macOS (`.github/workflows/build-ios.yml`)
-- [ ] T023 Configurar permisos e iconos de app en `mobile/android` y `mobile/ios`
+- [x] T023 Configurar permisos e iconos de app en `mobile/android` (Cámara, Biometría, OneSignal Push y Botón Atrás)
 - [x] T024 Crear la guía rápida `specs/mobile-app-wrapper/quickstart.md` con los comandos de sincronización (`npx cap sync`) y ejecución en emulador o dispositivo real
 
 ---
