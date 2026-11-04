@@ -102,10 +102,35 @@ class MobileTenantResolverController extends Controller
                 'urlinstagram' => $bandSetting?->urlinstagram,
             ]);
         } catch (\Throwable $e) {
-            Log::error('[MobileTenantResolver] Error retrieving BandSetting', [
+            Log::warning('[MobileTenantResolver] Initial attempt retrieving BandSetting failed, trying database fallbacks', [
                 'tenant_id' => $tenant->id,
                 'error' => $e->getMessage(),
             ]);
+
+            $fallbackDbNames = array_unique(array_filter([
+                'eband_' . $tenant->id,
+                'eband_' . strtolower((string) $tenant->code),
+                'tenant_' . $tenant->id,
+                'tenant' . $tenant->id,
+            ]));
+
+            foreach ($fallbackDbNames as $candidateDb) {
+                $originalDb = $tenant->getInternal('db_name');
+                try {
+                    $tenant->setInternal('db_name', $candidateDb);
+                    $bandSetting = $tenant->run(function () {
+                        return \App\Models\BandSetting::query()->first();
+                    });
+                    if ($bandSetting) {
+                        Log::info('[MobileTenantResolver] BandSetting resolved with database: ' . $candidateDb, [
+                            'nombre' => $bandSetting->nombre,
+                        ]);
+                        break;
+                    }
+                } catch (\Throwable) {
+                    $tenant->setInternal('db_name', $originalDb);
+                }
+            }
         }
 
         $resourceData = (new MobileTenantResource($tenant, $bandSetting))->resolve();
