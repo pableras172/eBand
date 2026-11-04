@@ -179,15 +179,6 @@ class EBandMobileApp {
     } else {
       console.log(`${tag} [${timestamp}] ${message}`);
     }
-
-    const debugBox = document.getElementById('debug-log');
-    if (debugBox) {
-      debugBox.style.display = 'block';
-      const line = document.createElement('div');
-      line.textContent = data ? `[${timestamp}] ${message}: ${JSON.stringify(data)}` : `[${timestamp}] ${message}`;
-      debugBox.appendChild(line);
-      debugBox.scrollTop = debugBox.scrollHeight;
-    }
   }
 
   get Preferences() {
