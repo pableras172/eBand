@@ -29,6 +29,7 @@
     "@capacitor/splash-screen": "^6.0.0",
     "@capacitor/status-bar": "^6.0.0",
     "@capgo/capacitor-native-biometric": "^6.0.4",
+    "jsqr": "^1.4.0",
     "onesignal-cordova-plugin": "^5.6.2"
   },
   "devDependencies": {

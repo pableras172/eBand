@@ -76,6 +76,21 @@
             <span class="btn-text" data-i18n="btn_continue">Continuar</span>
             <div class="spinner" id="btn-spinner"></div>
           </button>
+
+          <!-- Botón Escanear Código QR -->
+          <button type="button" id="btn-scan-qr" class="btn btn-secondary btn-qr" onclick="window.app.startQrScanner();">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+              <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              <line x1="17" y1="7" x2="17.01" y2="7"></line>
+              <line x1="7" y1="17" x2="7.01" y2="17"></line>
+              <line x1="17" y1="17" x2="17.01" y2="17"></line>
+            </svg>
+            <span data-i18n="btn_scan_qr">Escanear Código QR</span>
+          </button>
         </form>
 
         <div class="divider">
@@ -102,7 +117,7 @@
           <h3 class="promo-title" data-i18n="not_registered_title">¿Tu banda aún no usa eBand?</h3>
         </div>
         <p class="promo-desc" data-i18n="not_registered_desc">
-          Digitaliza partituras, asistencias, eventos, biblioteca musical y avisos para tus músicos.
+          Gestiona actividades, asistencias, convocatorias y avisos inmediatos para tus músicos.
         </p>
         <button type="button" class="btn btn-outline" onclick="window.app.openExternalUrl('https://eband.app/#contact');">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
@@ -113,6 +128,33 @@
           <span data-i18n="btn_more_info">Solicitar información / Registrar banda</span>
         </button>
       </div>
+
+      <!-- 3 Píldoras de Valor en el Footer de la Pantalla -->
+      <footer class="value-pills-footer">
+        <div class="value-pill">
+          <div class="value-pill-icon">📅</div>
+          <div class="value-pill-body">
+            <span class="value-pill-title" data-i18n="pill_activities_title">Actividades</span>
+            <span class="value-pill-desc" data-i18n="pill_activities_desc">Ensayos, conciertos y actuaciones</span>
+          </div>
+        </div>
+
+        <div class="value-pill">
+          <div class="value-pill-icon">👥</div>
+          <div class="value-pill-body">
+            <span class="value-pill-title" data-i18n="pill_attendance_title">Asistencias</span>
+            <span class="value-pill-desc" data-i18n="pill_attendance_desc">Control y confirmación en tiempo real</span>
+          </div>
+        </div>
+
+        <div class="value-pill">
+          <div class="value-pill-icon">🔔</div>
+          <div class="value-pill-body">
+            <span class="value-pill-title" data-i18n="pill_communication_title">Comunicación</span>
+            <span class="value-pill-desc" data-i18n="pill_communication_desc">Avisos y notificaciones al móvil</span>
+          </div>
+        </div>
+      </footer>
     </section>
 
     <!-- Paso 2: Confirmar Agrupación (Oculto inicialmente) -->
@@ -212,6 +254,51 @@
     </button>
   </div>
 
+  <!-- Modal Escáner de Código QR -->
+  <div id="qr-modal" class="modal-backdrop qr-modal-backdrop">
+    <div class="qr-scanner-card">
+      <div class="qr-scanner-header">
+        <div class="qr-header-text">
+          <h3 class="qr-scanner-title" data-i18n="qr_modal_title">Escanear Código QR</h3>
+          <p class="qr-scanner-subtitle" data-i18n="qr_modal_desc">Enfoca el código QR de tu banda</p>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="window.app.stopQrScanner();">&times;</button>
+      </div>
+
+      <div class="qr-viewport-wrapper">
+        <video id="qr-video" class="qr-video" playsinline muted autoplay></video>
+        <canvas id="qr-canvas" style="display:none;"></canvas>
+
+        <div class="qr-overlay">
+          <div class="qr-target-box">
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+            <div class="qr-scan-line"></div>
+          </div>
+        </div>
+
+        <div id="qr-error-msg" class="qr-error-banner" style="display: none;"></div>
+      </div>
+
+      <div class="qr-scanner-footer">
+        <button type="button" class="btn btn-outline btn-gallery-scan" onclick="window.app.scanQrFromGallery();">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <span data-i18n="btn_scan_gallery">Escanear desde foto o galería</span>
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="window.app.stopQrScanner();">
+          <span data-i18n="help_modal_close">Cancelar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/vendor/jsQR.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

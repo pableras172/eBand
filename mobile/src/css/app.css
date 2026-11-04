@@ -316,6 +316,28 @@ body {
   background: var(--primary-light);
 }
 
+/* Botón Escanear QR */
+.btn-qr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1.5px solid var(--border-color);
+  font-weight: 600;
+}
+
+.btn-qr:active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-qr .btn-icon {
+  color: var(--primary);
+}
+
 /* Botón Demo Especial */
 .btn-demo {
   display: flex;
@@ -654,6 +676,213 @@ body {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Píldoras de Valor (Footer de la pantalla)
+   ========================================================================== */
+.value-pills-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 24px;
+}
+
+.value-pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 12px 16px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, background-color 0.25s ease;
+}
+
+.value-pill-icon {
+  font-size: 22px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.value-pill-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.value-pill-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.value-pill-desc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+/* ==========================================================================
+   Modal Escáner de Código QR
+   ========================================================================== */
+.qr-modal-backdrop {
+  z-index: 1050;
+}
+
+.qr-scanner-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  max-width: 440px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.25s ease-out;
+}
+
+.qr-scanner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.qr-scanner-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.qr-scanner-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.qr-viewport-wrapper {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background: #000000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qr-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.qr-target-box {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+  border-radius: 12px;
+}
+
+.corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-color: #38bdf8;
+  border-style: solid;
+}
+
+.top-left {
+  top: 0;
+  left: 0;
+  border-width: 4px 0 0 4px;
+  border-top-left-radius: 8px;
+}
+
+.top-right {
+  top: 0;
+  right: 0;
+  border-width: 4px 4px 0 0;
+  border-top-right-radius: 8px;
+}
+
+.bottom-left {
+  bottom: 0;
+  left: 0;
+  border-width: 0 0 4px 4px;
+  border-bottom-left-radius: 8px;
+}
+
+.bottom-right {
+  bottom: 0;
+  right: 0;
+  border-width: 0 4px 4px 0;
+  border-bottom-right-radius: 8px;
+}
+
+.qr-scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #38bdf8, transparent);
+  box-shadow: 0 0 8px #38bdf8;
+  animation: scanLine 2s linear infinite;
+}
+
+@keyframes scanLine {
+  0% { top: 0%; opacity: 0.8; }
+  50% { top: 96%; opacity: 1; }
+  100% { top: 0%; opacity: 0.8; }
+}
+
+.qr-error-banner {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.qr-scanner-footer {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-gallery-scan {
+  font-size: 13.5px;
 }
 
 @keyframes fadeIn {

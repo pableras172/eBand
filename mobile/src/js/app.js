@@ -1,7 +1,7 @@
 /**
  * eBand Mobile Controller
- * Soporte: Onboarding, Multidioma (ES/VAL/EN), Modo Día/Noche, Demo Band,
- * WebView, OneSignal Push, Biometría, Cámara y Navegación
+ * Soporte: Onboarding, Multidioma (ES/VAL/EN), Modo Día/Noche, Escáner QR, Demo Band,
+ * Píldoras de Valor, WebView, OneSignal Push, Biometría, Cámara y Navegación
  */
 
 // URL del dominio central de producción de eBand
@@ -14,19 +14,31 @@ const TRANSLATIONS = {
     code_label: 'Código de tu agrupación',
     code_placeholder: 'EJ: BANDA-VALENCIA',
     btn_continue: 'Continuar',
+    btn_scan_qr: 'Escanear Código QR',
+    btn_scan_gallery: 'Escanear desde foto o galería',
     divider_or: 'o bien',
     btn_demo: 'Probar Banda Demo',
     btn_demo_sub: 'Explora una banda de ejemplo sin registrarte',
     help_link: '¿No sabes el código de tu agrupación?',
     not_registered_title: '¿Tu banda aún no usa eBand?',
-    not_registered_desc: 'Digitaliza partituras, asistencias, eventos, biblioteca musical y avisos para tus músicos.',
+    not_registered_desc: 'Gestiona actividades, asistencias, convocatorias y avisos inmediatos para tus músicos.',
     btn_more_info: 'Solicitar información / Registrar banda',
+    pill_activities_title: 'Actividades',
+    pill_activities_desc: 'Ensayos, conciertos y actuaciones',
+    pill_attendance_title: 'Asistencias',
+    pill_attendance_desc: 'Confirmación y control en tiempo real',
+    pill_communication_title: 'Comunicación',
+    pill_communication_desc: 'Avisos y notificaciones al móvil',
     help_modal_title: '¿Dónde encuentro mi código?',
     help_modal_p1: 'El código de agrupación es un identificador único asignado a cada sociedad musical o banda registrada en eBand.',
     help_modal_step1: '<strong>Consulta a tu directiva o secretaría:</strong> Ellos tienen el código oficial de acceso para los músicos.',
     help_modal_step2: '<strong>Revisa tu correo de bienvenida:</strong> Si recibiste una invitación de eBand, el código aparece indicado en el mensaje.',
     help_modal_step3: '<strong>¿Eres director o responsable?</strong> Si tu banda aún no está en eBand, puedes solicitar el alta y comenzar a probarla hoy mismo.',
     help_modal_close: 'Entendido',
+    qr_modal_title: 'Escanear Código QR',
+    qr_modal_desc: 'Enfoca el código QR de tu banda',
+    qr_camera_error: 'No se pudo iniciar la cámara. Comprueba los permisos en los ajustes del dispositivo.',
+    qr_not_found_in_image: 'No se encontró ningún código QR en la imagen seleccionada.',
     access_band: 'Acceder a mi banda',
     enter_other_code: 'Introducir otro código',
     offline_title: 'Sin conexión a internet',
@@ -45,19 +57,31 @@ const TRANSLATIONS = {
     code_label: 'Codi de la teua agrupació',
     code_placeholder: 'EX: BANDA-VALENCIA',
     btn_continue: 'Continuar',
+    btn_scan_qr: 'Escanar Codi QR',
+    btn_scan_gallery: 'Escanar des de foto o galeria',
     divider_or: 'o bé',
     btn_demo: 'Provar Banda Demo',
     btn_demo_sub: 'Explora una agrupació d\'exemple sense registrar-te',
     help_link: 'No saps el codi de la teua agrupació?',
     not_registered_title: 'La teua banda encara no utilitza eBand?',
-    not_registered_desc: 'Digitalitza partitures, assistències, esdeveniments, biblioteca musical i avisos per als teus músics.',
+    not_registered_desc: 'Gestiona activitats, assistències, convocatòries i avisos immediats per als teus músics.',
     btn_more_info: 'Demanar informació / Registrar banda',
+    pill_activities_title: 'Activitats',
+    pill_activities_desc: 'Assajos, concerts i actuacions',
+    pill_attendance_title: 'Assistències',
+    pill_attendance_desc: 'Confirmació i control en temps real',
+    pill_communication_title: 'Comunicació',
+    pill_communication_desc: 'Avisos i notificacions al mòbil',
     help_modal_title: 'On trobe el meu codi?',
     help_modal_p1: 'El codi d\'agrupació és un identificador únic assignat a cada societat musical o banda registrada en eBand.',
     help_modal_step1: '<strong>Consulta a la teua directiva o secretaria:</strong> Ells tenen el codi oficial d\'accés per als músics.',
     help_modal_step2: '<strong>Revisa el teu correu de benvinguda:</strong> Si vas rebre una invitació d\'eBand, el codi ve indicat en el missatge.',
     help_modal_step3: '<strong>Ets director o responsable?</strong> Si la teua banda encara no està en eBand, pots sol·licitar l\'alta i començar a provar-la.',
     help_modal_close: 'Entés',
+    qr_modal_title: 'Escanar Codi QR',
+    qr_modal_desc: 'Enfoca el codi QR de la teua banda',
+    qr_camera_error: 'No s\'ha pogut iniciar la càmera. Comprova els permisos als ajustos del dispositiu.',
+    qr_not_found_in_image: 'No s\'ha trobat cap codi QR a la imatge seleccionada.',
     access_band: 'Accedir a la meua agrupació',
     enter_other_code: 'Introduir un altre codi',
     offline_title: 'Sense connexió a internet',
@@ -76,19 +100,31 @@ const TRANSLATIONS = {
     code_label: 'Your ensemble code',
     code_placeholder: 'E.G. BAND-NAME',
     btn_continue: 'Continue',
+    btn_scan_qr: 'Scan QR Code',
+    btn_scan_gallery: 'Scan from photo or gallery',
     divider_or: 'or',
     btn_demo: 'Try Demo Band',
     btn_demo_sub: 'Explore a demo band without registering',
     help_link: 'Don\'t know your ensemble code?',
     not_registered_title: 'Does your band not use eBand yet?',
-    not_registered_desc: 'Digitalize sheet music, attendance, events, music library and notifications for your musicians.',
+    not_registered_desc: 'Manage activities, attendance, calls and instant notifications for your musicians.',
     btn_more_info: 'Request info / Register band',
+    pill_activities_title: 'Activities',
+    pill_activities_desc: 'Rehearsals, concerts and events',
+    pill_attendance_title: 'Attendance',
+    pill_attendance_desc: 'Real-time tracking and confirmation',
+    pill_communication_title: 'Communication',
+    pill_communication_desc: 'Instant announcements and push alerts',
     help_modal_title: 'Where do I find my code?',
     help_modal_p1: 'The ensemble code is a unique identifier assigned to each music society or band registered on eBand.',
     help_modal_step1: '<strong>Ask your board of directors or secretary:</strong> They have the official access code for musicians.',
     help_modal_step2: '<strong>Check your welcome email:</strong> If you received an invitation from eBand, the code is specified in the message.',
     help_modal_step3: '<strong>Are you a director or manager?</strong> If your band is not yet on eBand, you can request registration and try it out today.',
     help_modal_close: 'Got it',
+    qr_modal_title: 'Scan QR Code',
+    qr_modal_desc: 'Point your camera at your band\'s QR code',
+    qr_camera_error: 'Could not access the camera. Please check app permissions in system settings.',
+    qr_not_found_in_image: 'No QR code was found in the selected image.',
     access_band: 'Access my band',
     enter_other_code: 'Enter another code',
     offline_title: 'No internet connection',
@@ -110,8 +146,19 @@ class EBandMobileApp {
     this.pendingDestinationUrl = null;
     this.currentLanguage = 'es';
     this.currentTheme = 'auto'; // 'auto' | 'light' | 'dark'
+    this.qrStream = null;
+    this.qrScanActive = false;
+    this.barcodeDetector = null;
     this.centralApiBase = this.detectCentralApiBase();
     this.log(`Iniciado eBand Mobile. API Central: ${this.centralApiBase}`);
+
+    if ('BarcodeDetector' in window) {
+      try {
+        this.barcodeDetector = new window.BarcodeDetector({ formats: ['qr_code'] });
+      } catch (e) {
+        this.barcodeDetector = null;
+      }
+    }
   }
 
   detectCentralApiBase() {
@@ -306,12 +353,10 @@ class EBandMobileApp {
     if (savedTheme === 'dark' || savedTheme === 'light') {
       this.applyTheme(savedTheme);
     } else {
-      // Auto: detectar según preferencia del sistema
       const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       this.applyTheme(isDark ? 'dark' : 'light', false);
     }
 
-    // Escuchar cambios de sistema si no hay preferencia manual
     if (window.matchMedia) {
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
         if (this.currentTheme === 'auto') {
@@ -343,7 +388,7 @@ class EBandMobileApp {
           await this.StatusBar.setBackgroundColor({ color: '#f8fafc' });
         }
       } catch (e) {
-        // StatusBar puede fallar en web
+        // ignore on web
       }
     }
 
@@ -354,6 +399,185 @@ class EBandMobileApp {
         // ignore
       }
     }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*  ESCÁNER DE CÓDIGO QR                                                      */
+  /* -------------------------------------------------------------------------- */
+  extractBandCodeFromQr(scannedText) {
+    if (!scannedText) return '';
+    let text = scannedText.trim();
+
+    // 1. Si es una URL completa (ej: https://bacm.eband.app o https://eband.app/join?code=BACM)
+    try {
+      if (text.startsWith('http://') || text.startsWith('https://')) {
+        const url = new URL(text);
+        if (url.searchParams.has('code')) {
+          return url.searchParams.get('code').toUpperCase();
+        }
+        // Si el subdominio es el código (ej: bacm.eband.app)
+        const parts = url.hostname.split('.');
+        if (parts.length >= 3 && (parts[1] === 'eband' || parts[1] === 'localhost')) {
+          const sub = parts[0];
+          if (sub !== 'www' && sub !== 'api') {
+            return sub.toUpperCase();
+          }
+        }
+      }
+    } catch (e) {
+      // no es URL válida, usar fallback
+    }
+
+    // 2. Extraer caracteres alfanuméricos y guiones
+    const cleaned = text.replace(/[^A-Za-z0-9_-]/g, '').toUpperCase();
+    return cleaned;
+  }
+
+  async startQrScanner() {
+    this.log('Iniciando escáner QR...');
+    const modal = document.getElementById('qr-modal');
+    const video = document.getElementById('qr-video');
+    const errorBanner = document.getElementById('qr-error-msg');
+
+    if (errorBanner) errorBanner.style.display = 'none';
+    if (modal) modal.classList.add('is-open');
+
+    try {
+      this.qrStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
+      });
+
+      if (video) {
+        video.srcObject = this.qrStream;
+        await video.play();
+        this.qrScanActive = true;
+        this.runQrScanLoop();
+      }
+    } catch (err) {
+      this.log('Error accediendo a la cámara:', err?.message || err);
+      if (errorBanner) {
+        errorBanner.textContent = this.t('qr_camera_error');
+        errorBanner.style.display = 'block';
+      }
+    }
+  }
+
+  async runQrScanLoop() {
+    if (!this.qrScanActive) return;
+
+    const video = document.getElementById('qr-video');
+    const canvas = document.getElementById('qr-canvas');
+
+    if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+      // 1. Intentar con BarcodeDetector nativo (ultra-rápido en Chromium/Android)
+      if (this.barcodeDetector) {
+        try {
+          const barcodes = await this.barcodeDetector.detect(video);
+          if (barcodes && barcodes.length > 0 && barcodes[0].rawValue) {
+            this.handleQrScanned(barcodes[0].rawValue);
+            return;
+          }
+        } catch (e) {
+          // fallback a jsQR
+        }
+      }
+
+      // 2. Fallback a jsQR
+      if (window.jsQR && canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = window.jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: 'dontInvert',
+        });
+
+        if (code && code.data) {
+          this.handleQrScanned(code.data);
+          return;
+        }
+      }
+    }
+
+    if (this.qrScanActive) {
+      requestAnimationFrame(() => this.runQrScanLoop());
+    }
+  }
+
+  handleQrScanned(rawData) {
+    this.log(`QR detectado: ${rawData}`);
+    if (navigator.vibrate) {
+      try {
+        navigator.vibrate(100);
+      } catch (e) {}
+    }
+
+    const bandCode = this.extractBandCodeFromQr(rawData);
+    this.stopQrScanner();
+
+    if (bandCode) {
+      const codeInput = document.getElementById('band-code');
+      if (codeInput) {
+        codeInput.value = bandCode;
+      }
+      this.handleValidateCode();
+    } else {
+      this.showError('El código QR escaneado no contiene un identificador válido.');
+    }
+  }
+
+  stopQrScanner() {
+    this.qrScanActive = false;
+    if (this.qrStream) {
+      this.qrStream.getTracks().forEach((track) => track.stop());
+      this.qrStream = null;
+    }
+    const modal = document.getElementById('qr-modal');
+    if (modal) {
+      modal.classList.remove('is-open');
+    }
+  }
+
+  async scanQrFromGallery() {
+    this.log('Escaneando QR desde imagen de galería...');
+    const photoUrl = await this.takePhoto();
+    if (!photoUrl) return;
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.getElementById('qr-canvas') || document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      ctx.drawImage(img, 0, 0);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      if (window.jsQR) {
+        const code = window.jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: 'attemptBoth',
+        });
+        if (code && code.data) {
+          this.handleQrScanned(code.data);
+          return;
+        }
+      }
+
+      const errorBanner = document.getElementById('qr-error-msg');
+      if (errorBanner) {
+        errorBanner.textContent = this.t('qr_not_found_in_image');
+        errorBanner.style.display = 'block';
+      }
+    };
+    img.onerror = () => {
+      this.showError(this.t('qr_not_found_in_image'));
+    };
+    img.src = photoUrl;
   }
 
   /* -------------------------------------------------------------------------- */
@@ -405,14 +629,21 @@ class EBandMobileApp {
   initAppNavigationListener() {
     if (this.App) {
       this.App.addListener('backButton', ({ canGoBack }) => {
-        // Si el modal de ayuda está abierto, cerrarlo con atrás
+        // 1. Si el escáner QR está abierto, cerrarlo
+        const qrModal = document.getElementById('qr-modal');
+        if (qrModal && qrModal.classList.contains('is-open')) {
+          this.stopQrScanner();
+          return;
+        }
+
+        // 2. Si el modal de ayuda está abierto, cerrarlo
         const helpModal = document.getElementById('help-modal');
         if (helpModal && helpModal.classList.contains('is-open')) {
           this.closeHelpModal();
           return;
         }
 
-        // Si estamos en previsualización de banda, volver a introducir código
+        // 3. Si estamos en previsualización de banda, volver a introducir código
         if (this.currentResolvedTenant) {
           this.handleCancelPreview();
           return;
