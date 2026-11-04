@@ -27,14 +27,14 @@ async function generateAppIcon() {
   <svg width="${size}" height="${size}" viewBox="0 0 ${size}" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#1e1b4b" />
-        <stop offset="50%" stop-color="#0f172a" />
-        <stop offset="100%" stop-color="#020617" />
+        <stop offset="0%" stop-color="#3368a0" />
+        <stop offset="50%" stop-color="#1b324d" />
+        <stop offset="100%" stop-color="#0d1726" />
       </linearGradient>
       <radialGradient id="ambientGlow" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.25" />
-        <stop offset="40%" stop-color="#818cf8" stop-opacity="0.12" />
-        <stop offset="100%" stop-color="#0f172a" stop-opacity="0" />
+        <stop offset="0%" stop-color="#c8dfdb" stop-opacity="0.3" />
+        <stop offset="40%" stop-color="#66a3bf" stop-opacity="0.15" />
+        <stop offset="100%" stop-color="#0d1726" stop-opacity="0" />
       </radialGradient>
       <filter id="metroShadow" x="-15%" y="-15%" width="130%" height="130%">
         <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#000000" flood-opacity="0.55" />
@@ -48,8 +48,8 @@ async function generateAppIcon() {
     <circle cx="512" cy="512" r="420" fill="url(#ambientGlow)" />
 
     <!-- Tempo pulse subtle rings -->
-    <circle cx="512" cy="512" r="380" fill="none" stroke="#38bdf8" stroke-opacity="0.1" stroke-width="2" />
-    <circle cx="512" cy="512" r="440" fill="none" stroke="#a855f7" stroke-opacity="0.08" stroke-width="1.5" />
+    <circle cx="512" cy="512" r="380" fill="none" stroke="#66a3bf" stroke-opacity="0.15" stroke-width="2" />
+    <circle cx="512" cy="512" r="440" fill="none" stroke="#c8dfdb" stroke-opacity="0.1" stroke-width="1.5" />
 
     <!-- Metronome Graphic -->
     <g transform="translate(${metroOffset}, ${metroOffset}) scale(${metroSize / 481.6})" filter="url(#metroShadow)">
@@ -76,14 +76,14 @@ async function generateSplashScreen() {
   <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="splashBg" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stop-color="#1e1b4b" />
-        <stop offset="45%" stop-color="#0f172a" />
-        <stop offset="100%" stop-color="#020617" />
+        <stop offset="0%" stop-color="#1b324d" />
+        <stop offset="45%" stop-color="#0d1726" />
+        <stop offset="100%" stop-color="#060c14" />
       </linearGradient>
       <radialGradient id="splashGlow" cx="50%" cy="40%" r="50%">
-        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.22" />
-        <stop offset="50%" stop-color="#818cf8" stop-opacity="0.08" />
-        <stop offset="100%" stop-color="#0f172a" stop-opacity="0" />
+        <stop offset="0%" stop-color="#c8dfdb" stop-opacity="0.25" />
+        <stop offset="50%" stop-color="#66a3bf" stop-opacity="0.1" />
+        <stop offset="100%" stop-color="#0d1726" stop-opacity="0" />
       </radialGradient>
       <filter id="splashShadow" x="-20%" y="-20%" width="140%" height="140%">
         <feDropShadow dx="0" dy="24" stdDeviation="32" flood-color="#000000" flood-opacity="0.6" />
@@ -97,8 +97,8 @@ async function generateSplashScreen() {
     <circle cx="${width / 2}" cy="${metroY + metroSize / 2}" r="640" fill="url(#splashGlow)" />
 
     <!-- Concentric tempo sound rings -->
-    <circle cx="${width / 2}" cy="${metroY + metroSize / 2}" r="540" fill="none" stroke="#38bdf8" stroke-opacity="0.12" stroke-width="2.5" />
-    <circle cx="${width / 2}" cy="${metroY + metroSize / 2}" r="700" fill="none" stroke="#818cf8" stroke-opacity="0.08" stroke-width="2" />
+    <circle cx="${width / 2}" cy="${metroY + metroSize / 2}" r="540" fill="none" stroke="#66a3bf" stroke-opacity="0.15" stroke-width="2.5" />
+    <circle cx="${width / 2}" cy="${metroY + metroSize / 2}" r="700" fill="none" stroke="#c8dfdb" stroke-opacity="0.1" stroke-width="2" />
 
     <!-- Metronome -->
     <g transform="translate(${metroX}, ${metroY}) scale(${metroSize / 481.6})" filter="url(#splashShadow)">

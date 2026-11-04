@@ -1,7 +1,9 @@
 /**
  * eBand Mobile Controller
- * Soporte: Onboarding, Multidioma (ES/VAL/EN), Modo Día/Noche, Escáner QR, Demo Band,
- * Píldoras de Valor, WebView, OneSignal Push, Biometría, Cámara y Navegación
+ * Soporte: Onboarding Asistente (4 Slides + Decisión + Rutas SÍ/NO),
+ * Paleta Color Hunt (#3368a0, #66a3bf, #c8dfdb, #f2efe7),
+ * Multidioma (ES/VAL/EN), Modo Día/Noche, Escáner QR, Demo Band,
+ * Píldoras de Valor, OneSignal Push, Biometría, Cámara y Navegación
  */
 
 // URL del dominio central de producción de eBand
@@ -11,34 +13,72 @@ const DEFAULT_CENTRAL_API = 'https://eband.app';
 const TRANSLATIONS = {
   es: {
     subtitle: 'Tu agrupación musical siempre contigo',
+    btn_next: 'Siguiente',
+    btn_skip: 'Saltar presentación',
+    btn_start: 'Comenzar',
+    
+    // Carrusel / Slides
+    slide1_title: 'Tu banda, siempre conectada',
+    slide1_desc: 'Toda la información y actividad de tu sociedad musical en tu móvil: moderna, accesible y siempre al día.',
+    slide2_title: 'Actividades y Ensayos',
+    slide2_desc: 'Consulta el calendario de ensayos, conciertos y actuaciones con horarios y localizaciones en tiempo real.',
+    slide3_title: 'Control de Asistencia',
+    slide3_desc: 'Confirma tu presencia con un solo toque y facilita la planificación musical a tus directores y directiva.',
+    slide4_title: 'Avisos y Comunicación',
+    slide4_desc: 'Recibe notificaciones inmediatas de cambios de última hora, convocatorias y notas oficiales de tu agrupación.',
+
+    // Pregunta Asistente
+    question_badge: 'Asistente de inicio',
+    question_title: '¿Tu banda ya utiliza eBand?',
+    question_desc: 'Selecciona la opción que mejor describa tu caso para guiarte:',
+    option_yes_title: 'Sí, mi banda ya usa eBand',
+    option_yes_desc: 'Tengo el código de mi agrupación o un código QR',
+    option_no_title: 'No, aún no usamos eBand',
+    option_no_desc: 'Quiero probar una demo o solicitar información',
+
+    // Vista SÍ tiene banda
+    has_band_title: 'Conectar con tu agrupación',
+    has_band_subtitle: 'Introduce el código o escanea el QR de tu banda',
     code_label: 'Código de tu agrupación',
     code_placeholder: 'EJ: BANDA-VALENCIA',
     btn_continue: 'Continuar',
     btn_scan_qr: 'Escanear Código QR',
     btn_scan_gallery: 'Escanear desde foto o galería',
-    divider_or: 'o bien',
+    help_link: '¿No sabes el código de tu agrupación?',
+
+    // Vista NO tiene banda
+    no_band_badge: 'Descubre eBand',
+    no_band_title: 'Lleva tu banda al siguiente nivel',
+    no_band_subtitle: 'La plataforma diseñada especialmente para bandas de música, sociedades musicales y agrupaciones.',
     btn_demo: 'Probar Banda Demo',
     btn_demo_sub: 'Explora una banda de ejemplo sin registrarte',
-    help_link: '¿No sabes el código de tu agrupación?',
-    not_registered_title: '¿Tu banda aún no usa eBand?',
-    not_registered_desc: 'Gestiona actividades, asistencias, convocatorias y avisos inmediatos para tus músicos.',
+    no_band_cta_title: '¿Quieres eBand en tu agrupación?',
+    no_band_cta_desc: 'Si eres director, directivo o músico y quieres implantar eBand en tu sociedad musical, solicita información sin compromiso.',
     btn_more_info: 'Solicitar información / Registrar banda',
+
+    // Píldoras de valor
     pill_activities_title: 'Actividades',
     pill_activities_desc: 'Ensayos, conciertos y actuaciones',
     pill_attendance_title: 'Asistencias',
-    pill_attendance_desc: 'Confirmación y control en tiempo real',
+    pill_attendance_desc: 'Control y confirmación en tiempo real',
     pill_communication_title: 'Comunicación',
     pill_communication_desc: 'Avisos y notificaciones al móvil',
+
+    // Modal de Ayuda
     help_modal_title: '¿Dónde encuentro mi código?',
     help_modal_p1: 'El código de agrupación es un identificador único asignado a cada sociedad musical o banda registrada en eBand.',
     help_modal_step1: '<strong>Consulta a tu directiva o secretaría:</strong> Ellos tienen el código oficial de acceso para los músicos.',
     help_modal_step2: '<strong>Revisa tu correo de bienvenida:</strong> Si recibiste una invitación de eBand, el código aparece indicado en el mensaje.',
     help_modal_step3: '<strong>¿Eres director o responsable?</strong> Si tu banda aún no está en eBand, puedes solicitar el alta y comenzar a probarla hoy mismo.',
     help_modal_close: 'Entendido',
+
+    // Escáner QR
     qr_modal_title: 'Escanear Código QR',
     qr_modal_desc: 'Enfoca el código QR de tu banda',
     qr_camera_error: 'No se pudo iniciar la cámara. Comprueba los permisos en los ajustes del dispositivo.',
     qr_not_found_in_image: 'No se encontró ningún código QR en la imagen seleccionada.',
+
+    // Previsualización y estados
     access_band: 'Acceder a mi banda',
     enter_other_code: 'Introducir otro código',
     offline_title: 'Sin conexión a internet',
@@ -53,36 +93,75 @@ const TRANSLATIONS = {
     error_invalid_response: 'El servidor devolvió un formato no esperado.',
     splash_connecting: 'Conectando con tu agrupación...',
   },
+
   va: {
     subtitle: 'La teua agrupació musical sempre amb tu',
+    btn_next: 'Següent',
+    btn_skip: 'Saltar presentació',
+    btn_start: 'Començar',
+
+    // Carrusel / Slides
+    slide1_title: 'La teua banda, sempre connectada',
+    slide1_desc: 'Tota la informació i activitat de la teua societat musical al teu mòbil: moderna, accessible i sempre al dia.',
+    slide2_title: 'Activitats i Assajos',
+    slide2_desc: 'Consulta el calendari d\'assajos, concerts i actuacions amb horaris i localitzacions en temps real.',
+    slide3_title: 'Control d\'Assistència',
+    slide3_desc: 'Confirma la teua presència amb un sol toc i facilita la planificació musical als directors i directiva.',
+    slide4_title: 'Avisos i Comunicació',
+    slide4_desc: 'Reb notificacions immediates de canvis d\'última hora, convocatòries i notes oficials de la teua agrupació.',
+
+    // Pregunta Asistente
+    question_badge: 'Assistent d\'inici',
+    question_title: 'La teua banda ja utilitza eBand?',
+    question_desc: 'Selecciona l\'opció que millor descriga el teu cas per a guiar-te:',
+    option_yes_title: 'Sí, la meua banda ja usa eBand',
+    option_yes_desc: 'Tinc el codi de la meua agrupació o un codi QR',
+    option_no_title: 'No, encara no usem eBand',
+    option_no_desc: 'Vull provar una demo o demanar informació',
+
+    // Vista SÍ tiene banda
+    has_band_title: 'Connectar amb la teua agrupació',
+    has_band_subtitle: 'Introduïx el codi o escana el QR de la teua banda',
     code_label: 'Codi de la teua agrupació',
     code_placeholder: 'EX: BANDA-VALENCIA',
     btn_continue: 'Continuar',
     btn_scan_qr: 'Escanar Codi QR',
     btn_scan_gallery: 'Escanar des de foto o galeria',
-    divider_or: 'o bé',
+    help_link: 'No saps el codi de la teua agrupació?',
+
+    // Vista NO tiene banda
+    no_band_badge: 'Descobrix eBand',
+    no_band_title: 'Porta la teua banda al següent nivell',
+    no_band_subtitle: 'La plataforma dissenyada especialment per a bandes de música, societats musicals i agrupacions.',
     btn_demo: 'Provar Banda Demo',
     btn_demo_sub: 'Explora una agrupació d\'exemple sense registrar-te',
-    help_link: 'No saps el codi de la teua agrupació?',
-    not_registered_title: 'La teua banda encara no utilitza eBand?',
-    not_registered_desc: 'Gestiona activitats, assistències, convocatòries i avisos immediats per als teus músics.',
+    no_band_cta_title: 'Vols eBand a la teua agrupació?',
+    no_band_cta_desc: 'Si ets director, directiu o músic i vols implantar eBand a la teua societat musical, demana informació.',
     btn_more_info: 'Demanar informació / Registrar banda',
+
+    // Píldoras de valor
     pill_activities_title: 'Activitats',
     pill_activities_desc: 'Assajos, concerts i actuacions',
     pill_attendance_title: 'Assistències',
     pill_attendance_desc: 'Confirmació i control en temps real',
     pill_communication_title: 'Comunicació',
     pill_communication_desc: 'Avisos i notificacions al mòbil',
+
+    // Modal de Ayuda
     help_modal_title: 'On trobe el meu codi?',
     help_modal_p1: 'El codi d\'agrupació és un identificador únic assignat a cada societat musical o banda registrada en eBand.',
     help_modal_step1: '<strong>Consulta a la teua directiva o secretaria:</strong> Ells tenen el codi oficial d\'accés per als músics.',
     help_modal_step2: '<strong>Revisa el teu correu de benvinguda:</strong> Si vas rebre una invitació d\'eBand, el codi ve indicat en el missatge.',
     help_modal_step3: '<strong>Ets director o responsable?</strong> Si la teua banda encara no està en eBand, pots sol·licitar l\'alta i començar a provar-la.',
     help_modal_close: 'Entés',
+
+    // Escáner QR
     qr_modal_title: 'Escanar Codi QR',
     qr_modal_desc: 'Enfoca el codi QR de la teua banda',
     qr_camera_error: 'No s\'ha pogut iniciar la càmera. Comprova els permisos als ajustos del dispositiu.',
     qr_not_found_in_image: 'No s\'ha trobat cap codi QR a la imatge seleccionada.',
+
+    // Previsualización y estados
     access_band: 'Accedir a la meua agrupació',
     enter_other_code: 'Introduir un altre codi',
     offline_title: 'Sense connexió a internet',
@@ -97,36 +176,75 @@ const TRANSLATIONS = {
     error_invalid_response: 'El servidor ha retornat un format no esperat.',
     splash_connecting: 'Connectant amb la teua agrupació...',
   },
+
   en: {
     subtitle: 'Your musical ensemble always with you',
+    btn_next: 'Next',
+    btn_skip: 'Skip intro',
+    btn_start: 'Get started',
+
+    // Carrusel / Slides
+    slide1_title: 'Your ensemble, always connected',
+    slide1_desc: 'All your music society activity and info on your mobile: modern, accessible and always up to date.',
+    slide2_title: 'Activities & Rehearsals',
+    slide2_desc: 'View rehearsals, concerts and events schedules with real-time locations and announcements.',
+    slide3_title: 'Attendance Tracking',
+    slide3_desc: 'Confirm your attendance with a single tap and assist your musical directors in rehearsals planning.',
+    slide4_title: 'Instant Announcements',
+    slide4_desc: 'Receive immediate push notifications about last-minute changes, official calls and band notes.',
+
+    // Pregunta Asistente
+    question_badge: 'Getting started',
+    question_title: 'Does your band use eBand?',
+    question_desc: 'Select the option that best describes your situation:',
+    option_yes_title: 'Yes, my band uses eBand',
+    option_yes_desc: 'I have my ensemble code or a QR code',
+    option_no_title: 'No, we don\'t use eBand yet',
+    option_no_desc: 'I want to try a demo or request information',
+
+    // Vista SÍ tiene banda
+    has_band_title: 'Connect with your ensemble',
+    has_band_subtitle: 'Enter your code or scan your band\'s QR code',
     code_label: 'Your ensemble code',
     code_placeholder: 'E.G. BAND-NAME',
     btn_continue: 'Continue',
     btn_scan_qr: 'Scan QR Code',
     btn_scan_gallery: 'Scan from photo or gallery',
-    divider_or: 'or',
+    help_link: 'Don\'t know your ensemble code?',
+
+    // Vista NO tiene banda
+    no_band_badge: 'Discover eBand',
+    no_band_title: 'Take your band to the next level',
+    no_band_subtitle: 'The all-in-one management platform designed for bands and musical societies.',
     btn_demo: 'Try Demo Band',
     btn_demo_sub: 'Explore a demo band without registering',
-    help_link: 'Don\'t know your ensemble code?',
-    not_registered_title: 'Does your band not use eBand yet?',
-    not_registered_desc: 'Manage activities, attendance, calls and instant notifications for your musicians.',
+    no_band_cta_title: 'Want eBand in your ensemble?',
+    no_band_cta_desc: 'If you are a director, board member or musician and want eBand in your society, request info.',
     btn_more_info: 'Request info / Register band',
+
+    // Píldoras de valor
     pill_activities_title: 'Activities',
     pill_activities_desc: 'Rehearsals, concerts and events',
     pill_attendance_title: 'Attendance',
     pill_attendance_desc: 'Real-time tracking and confirmation',
     pill_communication_title: 'Communication',
     pill_communication_desc: 'Instant announcements and push alerts',
+
+    // Modal de Ayuda
     help_modal_title: 'Where do I find my code?',
     help_modal_p1: 'The ensemble code is a unique identifier assigned to each music society or band registered on eBand.',
     help_modal_step1: '<strong>Ask your board of directors or secretary:</strong> They have the official access code for musicians.',
     help_modal_step2: '<strong>Check your welcome email:</strong> If you received an invitation from eBand, the code is specified in the message.',
     help_modal_step3: '<strong>Are you a director or manager?</strong> If your band is not yet on eBand, you can request registration and try it out today.',
     help_modal_close: 'Got it',
+
+    // Escáner QR
     qr_modal_title: 'Scan QR Code',
     qr_modal_desc: 'Point your camera at your band\'s QR code',
     qr_camera_error: 'Could not access the camera. Please check app permissions in system settings.',
     qr_not_found_in_image: 'No QR code was found in the selected image.',
+
+    // Previsualización y estados
     access_band: 'Access my band',
     enter_other_code: 'Enter another code',
     offline_title: 'No internet connection',
@@ -149,6 +267,9 @@ class EBandMobileApp {
     this.pendingDestinationUrl = null;
     this.currentLanguage = 'es';
     this.currentTheme = 'auto'; // 'auto' | 'light' | 'dark'
+    this.currentView = 'intro-slides'; // 'intro-slides' | 'question' | 'has-band' | 'no-band'
+    this.currentSlide = 1;
+    this.totalSlides = 4;
     this.qrStream = null;
     this.qrScanActive = false;
     this.barcodeDetector = null;
@@ -234,10 +355,6 @@ class EBandMobileApp {
       splash.classList.add('fade-out');
       setTimeout(() => {
         splash.style.display = 'none';
-        const codeInput = document.getElementById('band-code');
-        if (codeInput) {
-          codeInput.focus();
-        }
       }, 450);
     }
   }
@@ -286,18 +403,117 @@ class EBandMobileApp {
           return;
         }
       }
-      this.log('No hay agrupación guardada. Mostrando pantalla de código.');
+      this.log('No hay agrupación guardada. Iniciando asistente de bienvenida.');
     } catch (err) {
       this.log('Aviso al leer configuración previa', err?.message || err);
     }
 
-    // Asegurar que el splash animado se muestre al menos ~1200ms para una experiencia visual pulida
+    // Inicializar carrusel en slide 1
+    this.goToSlide(1);
+    this.goToView('intro-slides', false);
+
+    // Asegurar que el splash animado del metrónomo se aprecie con fluidez
     const elapsed = Date.now() - initStartTime;
-    const remaining = Math.max(0, 1200 - elapsed);
+    const remaining = Math.max(0, 1100 - elapsed);
 
     setTimeout(() => {
       this.dismissSplash();
     }, remaining);
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*  CONTROL DE VISTAS Y ASISTENTE / ONBOARDING                                */
+  /* -------------------------------------------------------------------------- */
+  goToView(viewId, updateNav = true) {
+    this.currentView = viewId;
+    document.querySelectorAll('.view-section').forEach((sec) => {
+      sec.classList.remove('active');
+    });
+
+    const target = document.getElementById(`view-${viewId}`);
+    if (target) {
+      target.classList.add('active');
+    }
+
+    // Botón Atrás en la barra superior
+    const backBtn = document.getElementById('nav-back-btn');
+    if (backBtn) {
+      if (viewId === 'intro-slides' && this.currentSlide === 1) {
+        backBtn.style.display = 'none';
+      } else {
+        backBtn.style.display = 'inline-flex';
+      }
+    }
+
+    if (viewId === 'has-band') {
+      const codeInput = document.getElementById('band-code');
+      if (codeInput) {
+        setTimeout(() => codeInput.focus(), 200);
+      }
+    }
+  }
+
+  goToSlide(slideNumber) {
+    this.currentSlide = slideNumber;
+    document.querySelectorAll('.carousel-slide').forEach((slide) => {
+      slide.classList.toggle('active', parseInt(slide.getAttribute('data-slide'), 10) === slideNumber);
+    });
+
+    document.querySelectorAll('.carousel-dots .dot').forEach((dot) => {
+      dot.classList.toggle('active', parseInt(dot.getAttribute('data-dot'), 10) === slideNumber);
+    });
+
+    // Actualizar texto del botón en la última diapositiva
+    const nextBtnText = document.getElementById('btn-slide-next-text');
+    if (nextBtnText) {
+      if (slideNumber === this.totalSlides) {
+        nextBtnText.textContent = this.t('btn_start');
+      } else {
+        nextBtnText.textContent = this.t('btn_next');
+      }
+    }
+
+    // Botón Atrás
+    const backBtn = document.getElementById('nav-back-btn');
+    if (backBtn && this.currentView === 'intro-slides') {
+      backBtn.style.display = slideNumber > 1 ? 'inline-flex' : 'none';
+    }
+  }
+
+  nextSlide() {
+    if (this.currentSlide < this.totalSlides) {
+      this.goToSlide(this.currentSlide + 1);
+    } else {
+      // Fin del carrusel: pasar a la pantalla de decisión
+      this.goToView('question');
+    }
+  }
+
+  skipIntroSlides() {
+    this.goToView('question');
+  }
+
+  handleBackNavigation() {
+    if (this.currentResolvedTenant) {
+      this.handleCancelPreview();
+      return;
+    }
+
+    if (this.currentView === 'has-band' || this.currentView === 'no-band') {
+      this.goToView('question');
+      return;
+    }
+
+    if (this.currentView === 'question') {
+      this.goToSlide(this.totalSlides);
+      this.goToView('intro-slides');
+      return;
+    }
+
+    if (this.currentView === 'intro-slides' && this.currentSlide > 1) {
+      this.goToSlide(this.currentSlide - 1);
+      return;
+    }
   }
 
   /* -------------------------------------------------------------------------- */
@@ -358,6 +574,12 @@ class EBandMobileApp {
       }
     });
 
+    // Actualizar botón de slide actual
+    const nextBtnText = document.getElementById('btn-slide-next-text');
+    if (nextBtnText) {
+      nextBtnText.textContent = this.currentSlide === this.totalSlides ? this.t('btn_start') : this.t('btn_next');
+    }
+
     if (persist) {
       try {
         await this.Preferences.set({ key: 'eband_lang', value: lang });
@@ -416,10 +638,10 @@ class EBandMobileApp {
       try {
         if (theme === 'dark') {
           await this.StatusBar.setStyle({ style: 'DARK' });
-          await this.StatusBar.setBackgroundColor({ color: '#0f172a' });
+          await this.StatusBar.setBackgroundColor({ color: '#0d1726' });
         } else {
           await this.StatusBar.setStyle({ style: 'LIGHT' });
-          await this.StatusBar.setBackgroundColor({ color: '#f8fafc' });
+          await this.StatusBar.setBackgroundColor({ color: '#f2efe7' });
         }
       } catch (e) {
         // ignore on web
@@ -442,14 +664,12 @@ class EBandMobileApp {
     if (!scannedText) return '';
     let text = scannedText.trim();
 
-    // 1. Si es una URL completa (ej: https://bacm.eband.app o https://eband.app/join?code=BACM)
     try {
       if (text.startsWith('http://') || text.startsWith('https://')) {
         const url = new URL(text);
         if (url.searchParams.has('code')) {
           return url.searchParams.get('code').toUpperCase();
         }
-        // Si el subdominio es el código (ej: bacm.eband.app)
         const parts = url.hostname.split('.');
         if (parts.length >= 3 && (parts[1] === 'eband' || parts[1] === 'localhost')) {
           const sub = parts[0];
@@ -459,10 +679,9 @@ class EBandMobileApp {
         }
       }
     } catch (e) {
-      // no es URL válida, usar fallback
+      // ignore
     }
 
-    // 2. Extraer caracteres alfanuméricos y guiones
     const cleaned = text.replace(/[^A-Za-z0-9_-]/g, '').toUpperCase();
     return cleaned;
   }
@@ -507,7 +726,6 @@ class EBandMobileApp {
     const canvas = document.getElementById('qr-canvas');
 
     if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
-      // 1. Intentar con BarcodeDetector nativo (ultra-rápido en Chromium/Android)
       if (this.barcodeDetector) {
         try {
           const barcodes = await this.barcodeDetector.detect(video);
@@ -516,11 +734,10 @@ class EBandMobileApp {
             return;
           }
         } catch (e) {
-          // fallback a jsQR
+          // fallback
         }
       }
 
-      // 2. Fallback a jsQR
       if (window.jsQR && canvas) {
         const ctx = canvas.getContext('2d');
         canvas.width = video.videoWidth;
@@ -632,6 +849,8 @@ class EBandMobileApp {
   }
 
   loadDemoBand() {
+    // Si estamos en otra vista, asegurar que abrimos has-band
+    this.goToView('has-band');
     const codeInput = document.getElementById('band-code');
     if (codeInput) {
       codeInput.value = 'DEMO';
@@ -680,6 +899,12 @@ class EBandMobileApp {
         // 3. Si estamos en previsualización de banda, volver a introducir código
         if (this.currentResolvedTenant) {
           this.handleCancelPreview();
+          return;
+        }
+
+        // 4. Retroceder en el asistente si no estamos en la primera slide
+        if (this.currentView !== 'intro-slides' || this.currentSlide > 1) {
+          this.handleBackNavigation();
           return;
         }
 
@@ -893,16 +1118,12 @@ class EBandMobileApp {
       this.log(`Respuesta HTTP: ${response.status} ${response.statusText}`);
 
       const rawText = await response.text();
-      console.log('[EBAND_DEBUG] <<< RAW RESPONSE RECIBIDO DEL SERVIDOR:');
-      console.log(rawText);
-
       let json = null;
 
       try {
         json = JSON.parse(rawText);
       } catch (parseError) {
         console.error('[EBAND_DEBUG] ERROR PARSEANDO JSON:', parseError);
-        this.log('Error parseando JSON. Contenido:', rawText.substring(0, 120));
         throw new Error(`${this.t('error_invalid_response')} (HTTP ${response.status})`);
       }
 
@@ -911,16 +1132,6 @@ class EBandMobileApp {
       if (!response.ok || !json.success) {
         throw new Error(json.message || `No se encontró la agrupación (HTTP ${response.status})`);
       }
-
-      console.log('[EBAND_DEBUG] Detalle de agrupación recibido:');
-      console.log('[EBAND_DEBUG] - ID Tenant:', json.data?.tenant_id);
-      console.log('[EBAND_DEBUG] - Nombre completo:', json.data?.name);
-      console.log('[EBAND_DEBUG] - Nombre corto:', json.data?.short_name);
-      console.log('[EBAND_DEBUG] - Logo URL:', json.data?.logo_url);
-      console.log('[EBAND_DEBUG] - Dirección:', json.data?.direccion);
-      console.log('[EBAND_DEBUG] - Web:', json.data?.website);
-      console.log('[EBAND_DEBUG] - Redes sociales:', json.data?.social);
-      console.log('[EBAND_DEBUG] ========================================');
 
       this.log('Agrupación resuelta:', json.data);
       this.currentResolvedTenant = json.data;
@@ -959,16 +1170,11 @@ class EBandMobileApp {
       console.warn('[EBAND_DEBUG] Error al cargar imagen del logo:', tenant.logo_url, '. Usando fallback.');
       previewLogo.src = 'img/logo.png';
     };
-    previewLogo.onload = () => {
-      console.log('[EBAND_DEBUG] Logo cargado con éxito en el elemento <img>:', previewLogo.src);
-    };
 
     if (tenant.logo_url) {
-      console.log('[EBAND_DEBUG] Asignando src a previewLogo:', tenant.logo_url);
       previewLogo.src = tenant.logo_url;
       previewLogo.style.display = 'block';
     } else {
-      console.log('[EBAND_DEBUG] No hay logo_url, usando logo local img/logo.png');
       previewLogo.src = 'img/logo.png';
       previewLogo.style.display = 'block';
     }

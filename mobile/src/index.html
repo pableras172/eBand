@@ -63,10 +63,19 @@
 
   <!-- Barra de utilidades superior: Selector de Idioma y Modo Día/Noche -->
   <header class="top-nav">
-    <div class="lang-selector" role="group" aria-label="Selector de idioma">
-      <button type="button" class="lang-btn active" data-lang="es" onclick="window.app.setLanguage('es')">ES</button>
-      <button type="button" class="lang-btn" data-lang="va" onclick="window.app.setLanguage('va')">VAL</button>
-      <button type="button" class="lang-btn" data-lang="en" onclick="window.app.setLanguage('en')">EN</button>
+    <div class="top-nav-left">
+      <button type="button" id="nav-back-btn" class="nav-back-btn" aria-label="Volver" style="display: none;" onclick="window.app.handleBackNavigation();">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
+
+      <div class="lang-selector" role="group" aria-label="Selector de idioma">
+        <button type="button" class="lang-btn active" data-lang="es" onclick="window.app.setLanguage('es')">ES</button>
+        <button type="button" class="lang-btn" data-lang="va" onclick="window.app.setLanguage('va')">VAL</button>
+        <button type="button" class="lang-btn" data-lang="en" onclick="window.app.setLanguage('en')">EN</button>
+      </div>
     </div>
 
     <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Cambiar tema diurno/nocturno" onclick="window.app.toggleTheme()">
@@ -90,64 +99,223 @@
   </header>
 
   <div class="container">
-    <!-- Cabecera de Marca -->
-    <header class="brand-header">
-      <img src="img/logo.png" alt="eBand" class="brand-logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' rx=\'20\' fill=\'%232563eb\'/><text x=\'50\' y=\'62\' font-size=\'42\' font-family=\'sans-serif\' font-weight=\'bold\' fill=\'white\' text-anchor=\'middle\'>eB</text></svg>'">
-      <h1 class="brand-title">eBand</h1>
-      <p class="brand-subtitle" data-i18n="subtitle">Tu agrupación musical siempre contigo</p>
-    </header>
 
-    <!-- Paso 1: Introducir Código -->
-    <section id="step-code">
-      <div class="card">
-        <div id="error-alert" class="alert-error"></div>
-
-        <form id="code-form" onsubmit="event.preventDefault(); window.app.handleValidateCode();">
-          <div class="form-group">
-            <label for="band-code" class="form-label" data-i18n="code_label">Código de tu agrupación</label>
-            <input 
-              type="text" 
-              id="band-code" 
-              class="form-input" 
-              placeholder="EJ: BANDA-VALENCIA" 
-              data-i18n-placeholder="code_placeholder"
-              autocomplete="off" 
-              autocorrect="off" 
-              autocapitalize="characters" 
-              spellcheck="false"
-              required
-            >
+    <!-- ====================================================================
+         VISTA 1: Carrusel / Onboarding de Ventajas de eBand (4 Pantallas)
+         ==================================================================== -->
+    <section id="view-intro-slides" class="view-section active">
+      <div class="carousel-card">
+        <div class="carousel-viewport">
+          
+          <!-- Slide 1: Conectividad y Agrupación -->
+          <div class="carousel-slide active" data-slide="1">
+            <div class="slide-graphic-box">
+              <span class="slide-icon">🎼</span>
+            </div>
+            <h2 class="slide-title" data-i18n="slide1_title">Tu banda, siempre conectada</h2>
+            <p class="slide-desc" data-i18n="slide1_desc">
+              Toda la información y actividad de tu sociedad musical en tu móvil: moderna, accesible y siempre al día.
+            </p>
           </div>
 
-          <div class="form-helper-link-wrapper">
-            <button type="button" class="link-btn" onclick="window.app.openHelpModal();" data-i18n="help_link">
-              ¿No sabes el código de tu agrupación?
-            </button>
+          <!-- Slide 2: Actividades y Ensayos -->
+          <div class="carousel-slide" data-slide="2">
+            <div class="slide-graphic-box">
+              <span class="slide-icon">📅</span>
+            </div>
+            <h2 class="slide-title" data-i18n="slide2_title">Actividades y Ensayos</h2>
+            <p class="slide-desc" data-i18n="slide2_desc">
+              Consulta el calendario de ensayos, conciertos y actuaciones con horarios y localizaciones en tiempo real.
+            </p>
           </div>
 
-          <button type="submit" id="btn-validate" class="btn btn-primary">
-            <span class="btn-text" data-i18n="btn_continue">Continuar</span>
-            <div class="spinner" id="btn-spinner"></div>
-          </button>
+          <!-- Slide 3: Control de Asistencias -->
+          <div class="carousel-slide" data-slide="3">
+            <div class="slide-graphic-box">
+              <span class="slide-icon">👥</span>
+            </div>
+            <h2 class="slide-title" data-i18n="slide3_title">Control de Asistencia</h2>
+            <p class="slide-desc" data-i18n="slide3_desc">
+              Confirma tu presencia con un solo toque y facilita la planificación musical a tus directores y directiva.
+            </p>
+          </div>
 
-          <!-- Botón Escanear Código QR -->
-          <button type="button" id="btn-scan-qr" class="btn btn-secondary btn-qr" onclick="window.app.startQrScanner();">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
-              <rect x="3" y="3" width="7" height="7"></rect>
-              <rect x="14" y="3" width="7" height="7"></rect>
-              <rect x="14" y="14" width="7" height="7"></rect>
-              <rect x="3" y="14" width="7" height="7"></rect>
-              <line x1="7" y1="7" x2="7.01" y2="7"></line>
-              <line x1="17" y1="7" x2="17.01" y2="7"></line>
-              <line x1="7" y1="17" x2="7.01" y2="17"></line>
-              <line x1="17" y1="17" x2="17.01" y2="17"></line>
+          <!-- Slide 4: Avisos y Notificaciones Push -->
+          <div class="carousel-slide" data-slide="4">
+            <div class="slide-graphic-box">
+              <span class="slide-icon">🔔</span>
+            </div>
+            <h2 class="slide-title" data-i18n="slide4_title">Avisos y Comunicación</h2>
+            <p class="slide-desc" data-i18n="slide4_desc">
+              Recibe notificaciones inmediatas de cambios de última hora, avisos oficiales y notas importantes sin perder nada.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Indicador de Puntos -->
+        <div class="carousel-dots">
+          <span class="dot active" data-dot="1" onclick="window.app.goToSlide(1);"></span>
+          <span class="dot" data-dot="2" onclick="window.app.goToSlide(2);"></span>
+          <span class="dot" data-dot="3" onclick="window.app.goToSlide(3);"></span>
+          <span class="dot" data-dot="4" onclick="window.app.goToSlide(4);"></span>
+        </div>
+
+        <div class="carousel-actions">
+          <button type="button" id="btn-slide-next" class="btn btn-primary" onclick="window.app.nextSlide();">
+            <span id="btn-slide-next-text" data-i18n="btn_next">Siguiente</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <span data-i18n="btn_scan_qr">Escanear Código QR</span>
           </button>
-        </form>
+          <button type="button" class="carousel-skip-btn" onclick="window.app.skipIntroSlides();" data-i18n="btn_skip">
+            Saltar presentación
+          </button>
+        </div>
+      </div>
+    </section>
 
-        <div class="divider">
-          <span class="divider-text" data-i18n="divider_or">o bien</span>
+    <!-- ====================================================================
+         VISTA 2: Pregunta "¿Tu banda ya usa eBand?"
+         ==================================================================== -->
+    <section id="view-question" class="view-section">
+      <div class="question-card">
+        <span class="badge-assistant" data-i18n="question_badge">Asistente de inicio</span>
+        <h2 class="question-title" data-i18n="question_title">¿Tu banda ya utiliza eBand?</h2>
+        <p class="question-desc" data-i18n="question_desc">
+          Selecciona la opción que mejor describa tu caso para guiarte:
+        </p>
+
+        <div class="decision-buttons">
+          <!-- Opción SÍ -->
+          <button type="button" class="decision-card-btn" onclick="window.app.goToView('has-band');">
+            <div class="decision-icon">🎺</div>
+            <div class="decision-body">
+              <div class="decision-title" data-i18n="option_yes_title">Sí, mi banda ya usa eBand</div>
+              <div class="decision-subtitle" data-i18n="option_yes_desc">Tengo el código de mi agrupación o un código QR</div>
+            </div>
+            <div class="decision-arrow">→</div>
+          </button>
+
+          <!-- Opción NO -->
+          <button type="button" class="decision-card-btn" onclick="window.app.goToView('no-band');">
+            <div class="decision-icon">✨</div>
+            <div class="decision-body">
+              <div class="decision-title" data-i18n="option_no_title">No, aún no usamos eBand</div>
+              <div class="decision-subtitle" data-i18n="option_no_desc">Quiero probar una demo o solicitar información</div>
+            </div>
+            <div class="decision-arrow">→</div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         VISTA 3A: Si la banda YA usa eBand (Introducir Código o QR)
+         ==================================================================== -->
+    <section id="view-has-band" class="view-section">
+      <header class="brand-header-mini">
+        <img src="img/logo.png" alt="eBand" class="brand-logo-mini">
+        <h2 class="brand-title-mini" data-i18n="has_band_title">Conectar con tu agrupación</h2>
+        <p class="brand-subtitle-mini" data-i18n="has_band_subtitle">Introduce el código o escanea el QR de tu banda</p>
+      </header>
+
+      <!-- Paso 1: Introducir Código -->
+      <div id="step-code">
+        <div class="card">
+          <div id="error-alert" class="alert-error"></div>
+
+          <form id="code-form" onsubmit="event.preventDefault(); window.app.handleValidateCode();">
+            <div class="form-group">
+              <label for="band-code" class="form-label" data-i18n="code_label">Código de tu agrupación</label>
+              <input 
+                type="text" 
+                id="band-code" 
+                class="form-input" 
+                placeholder="EJ: BANDA-VALENCIA" 
+                data-i18n-placeholder="code_placeholder"
+                autocomplete="off" 
+                autocorrect="off" 
+                autocapitalize="characters" 
+                spellcheck="false"
+                required
+              >
+            </div>
+
+            <div class="form-helper-link-wrapper">
+              <button type="button" class="link-btn" onclick="window.app.openHelpModal();" data-i18n="help_link">
+                ¿No sabes el código de tu agrupación?
+              </button>
+            </div>
+
+            <button type="submit" id="btn-validate" class="btn btn-primary">
+              <span class="btn-text" data-i18n="btn_continue">Continuar</span>
+              <div class="spinner" id="btn-spinner"></div>
+            </button>
+
+            <!-- Botón Escanear Código QR -->
+            <button type="button" id="btn-scan-qr" class="btn btn-secondary btn-qr" onclick="window.app.startQrScanner();">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                <line x1="17" y1="7" x2="17.01" y2="7"></line>
+                <line x1="7" y1="17" x2="7.01" y2="17"></line>
+                <line x1="17" y1="17" x2="17.01" y2="17"></line>
+              </svg>
+              <span data-i18n="btn_scan_qr">Escanear Código QR</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Paso 2: Confirmar Agrupación (Oculto inicialmente) -->
+      <section id="step-confirm" class="card band-preview">
+        <img id="preview-logo" src="" alt="Escudo de la banda" class="band-preview-logo">
+        <h2 id="preview-name" class="band-preview-name">Nombre de la Banda</h2>
+        <p id="preview-location" class="band-preview-location" style="display: none;"></p>
+        <span id="preview-code" class="band-preview-code">CÓDIGO</span>
+
+        <!-- Enlaces sociales / web de la banda -->
+        <div id="social-links" class="social-links">
+          <button type="button" id="social-web" class="social-btn" title="Sitio Web" style="display: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          </button>
+          <button type="button" id="social-instagram" class="social-btn" title="Instagram" style="display: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          </button>
+          <button type="button" id="social-facebook" class="social-btn" title="Facebook" style="display: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+          </button>
+          <button type="button" id="social-tiktok" class="social-btn" title="TikTok" style="display: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+          </button>
+        </div>
+
+        <button type="button" id="btn-confirm" class="btn btn-primary" onclick="window.app.handleConfirmBand();">
+          <span data-i18n="access_band">Acceder a mi banda</span>
+        </button>
+
+        <button type="button" class="btn btn-secondary" onclick="window.app.handleCancelPreview();">
+          <span data-i18n="enter_other_code">Introducir otro código</span>
+        </button>
+      </section>
+    </section>
+
+    <!-- ====================================================================
+         VISTA 3B: Si la banda NO usa eBand (Demo + Ventajas + Contacto)
+         ==================================================================== -->
+    <section id="view-no-band" class="view-section">
+      <div class="no-band-container">
+        
+        <div class="no-band-header">
+          <span class="badge-assistant" data-i18n="no_band_badge">Descubre eBand</span>
+          <h2 class="no-band-title" data-i18n="no_band_title">Lleva tu banda al siguiente nivel</h2>
+          <p class="no-band-desc" data-i18n="no_band_subtitle">
+            La plataforma diseñada especialmente para bandas de música, sociedades musicales y agrupaciones.
+          </p>
         </div>
 
         <!-- Botón Demo -->
@@ -158,86 +326,53 @@
             <span class="btn-demo-sub" data-i18n="btn_demo_sub">Explora una banda de ejemplo sin registrarte</span>
           </div>
         </button>
+
+        <!-- Píldoras de Valor -->
+        <div class="value-pills-footer">
+          <div class="value-pill">
+            <div class="value-pill-icon">📅</div>
+            <div class="value-pill-body">
+              <span class="value-pill-title" data-i18n="pill_activities_title">Actividades</span>
+              <span class="value-pill-desc" data-i18n="pill_activities_desc">Ensayos, conciertos y actuaciones</span>
+            </div>
+          </div>
+
+          <div class="value-pill">
+            <div class="value-pill-icon">👥</div>
+            <div class="value-pill-body">
+              <span class="value-pill-title" data-i18n="pill_attendance_title">Asistencias</span>
+              <span class="value-pill-desc" data-i18n="pill_attendance_desc">Control y confirmación en tiempo real</span>
+            </div>
+          </div>
+
+          <div class="value-pill">
+            <div class="value-pill-icon">🔔</div>
+            <div class="value-pill-body">
+              <span class="value-pill-title" data-i18n="pill_communication_title">Comunicación</span>
+              <span class="value-pill-desc" data-i18n="pill_communication_desc">Avisos y notificaciones al móvil</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Contacto / Registro -->
+        <div class="card-cta-contact">
+          <h3 class="cta-contact-title" data-i18n="no_band_cta_title">¿Quieres eBand en tu agrupación?</h3>
+          <p class="cta-contact-desc" data-i18n="no_band_cta_desc">
+            Si eres director, directivo o músico y quieres implantar eBand en tu sociedad musical, solicita información sin compromiso.
+          </p>
+          <button type="button" class="btn btn-primary" onclick="window.app.openExternalUrl('https://eband.app/#contact');">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span data-i18n="btn_more_info">Solicitar información / Registrar banda</span>
+          </button>
+        </div>
+
       </div>
-
-      <!-- Tarjeta informativa para bandas no registradas -->
-      <div class="card card-info-promo">
-        <div class="promo-header">
-          <span class="promo-badge">eBand Cloud</span>
-          <h3 class="promo-title" data-i18n="not_registered_title">¿Tu banda aún no usa eBand?</h3>
-        </div>
-        <p class="promo-desc" data-i18n="not_registered_desc">
-          Gestiona actividades, asistencias, convocatorias y avisos inmediatos para tus músicos.
-        </p>
-        <button type="button" class="btn btn-outline" onclick="window.app.openExternalUrl('https://eband.app/#contact');">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="16" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-          </svg>
-          <span data-i18n="btn_more_info">Solicitar información / Registrar banda</span>
-        </button>
-      </div>
-
-      <!-- 3 Píldoras de Valor en el Footer de la Pantalla -->
-      <footer class="value-pills-footer">
-        <div class="value-pill">
-          <div class="value-pill-icon">📅</div>
-          <div class="value-pill-body">
-            <span class="value-pill-title" data-i18n="pill_activities_title">Actividades</span>
-            <span class="value-pill-desc" data-i18n="pill_activities_desc">Ensayos, conciertos y actuaciones</span>
-          </div>
-        </div>
-
-        <div class="value-pill">
-          <div class="value-pill-icon">👥</div>
-          <div class="value-pill-body">
-            <span class="value-pill-title" data-i18n="pill_attendance_title">Asistencias</span>
-            <span class="value-pill-desc" data-i18n="pill_attendance_desc">Control y confirmación en tiempo real</span>
-          </div>
-        </div>
-
-        <div class="value-pill">
-          <div class="value-pill-icon">🔔</div>
-          <div class="value-pill-body">
-            <span class="value-pill-title" data-i18n="pill_communication_title">Comunicación</span>
-            <span class="value-pill-desc" data-i18n="pill_communication_desc">Avisos y notificaciones al móvil</span>
-          </div>
-        </div>
-      </footer>
     </section>
 
-    <!-- Paso 2: Confirmar Agrupación (Oculto inicialmente) -->
-    <section id="step-confirm" class="card band-preview">
-      <img id="preview-logo" src="" alt="Escudo de la banda" class="band-preview-logo">
-      <h2 id="preview-name" class="band-preview-name">Nombre de la Banda</h2>
-      <p id="preview-location" class="band-preview-location" style="display: none;"></p>
-      <span id="preview-code" class="band-preview-code">CÓDIGO</span>
-
-      <!-- Enlaces sociales / web de la banda -->
-      <div id="social-links" class="social-links">
-        <button type="button" id="social-web" class="social-btn" title="Sitio Web" style="display: none;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-        </button>
-        <button type="button" id="social-instagram" class="social-btn" title="Instagram" style="display: none;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-        </button>
-        <button type="button" id="social-facebook" class="social-btn" title="Facebook" style="display: none;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-        </button>
-        <button type="button" id="social-tiktok" class="social-btn" title="TikTok" style="display: none;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
-        </button>
-      </div>
-
-      <button type="button" id="btn-confirm" class="btn btn-primary" onclick="window.app.handleConfirmBand();">
-        <span data-i18n="access_band">Acceder a mi banda</span>
-      </button>
-
-      <button type="button" class="btn btn-secondary" onclick="window.app.handleCancelPreview();">
-        <span data-i18n="enter_other_code">Introducir otro código</span>
-      </button>
-    </section>
   </div>
 
   <!-- Modal de Ayuda: ¿Cómo conseguir mi código? -->
@@ -278,30 +413,6 @@
         </button>
       </div>
     </div>
-  </div>
-
-  <!-- Pantalla de Contingencia Sin Conexión -->
-  <div id="offline-screen" class="offline-screen">
-    <div class="offline-icon">📡</div>
-    <h2 data-i18n="offline_title">Sin conexión a internet</h2>
-    <p style="color: var(--text-muted); margin: 8px 0 24px 0; font-size: 14px;" data-i18n="offline_desc">
-      Comprueba tu conexión Wi-Fi o datos móviles para continuar usando eBand.
-    </p>
-    <button type="button" class="btn btn-primary" style="max-width: 240px;" onclick="window.app.retryConnection();">
-      <span data-i18n="btn_retry">Reintentar conexión</span>
-    </button>
-  </div>
-
-  <!-- Pantalla de Desbloqueo Biométrico -->
-  <div id="biometric-screen" class="offline-screen">
-    <div class="offline-icon">🔒</div>
-    <h2 data-i18n="biometric_title">Acceso protegido</h2>
-    <p style="color: var(--text-muted); margin: 8px 0 24px 0; font-size: 14px;" data-i18n="biometric_desc">
-      Identifícate con tu huella o rostro para continuar a tu agrupación.
-    </p>
-    <button type="button" class="btn btn-primary" style="max-width: 240px;" onclick="window.app.retryBiometrics();">
-      <span data-i18n="btn_unlock">Desbloquear con Biometría</span>
-    </button>
   </div>
 
   <!-- Modal Escáner de Código QR -->
@@ -346,6 +457,30 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- Pantalla de Contingencia Sin Conexión -->
+  <div id="offline-screen" class="offline-screen">
+    <div class="offline-icon">📡</div>
+    <h2 data-i18n="offline_title">Sin conexión a internet</h2>
+    <p style="color: var(--text-muted); margin: 8px 0 24px 0; font-size: 14px;" data-i18n="offline_desc">
+      Comprueba tu conexión Wi-Fi o datos móviles para continuar usando eBand.
+    </p>
+    <button type="button" class="btn btn-primary" style="max-width: 240px;" onclick="window.app.retryConnection();">
+      <span data-i18n="btn_retry">Reintentar conexión</span>
+    </button>
+  </div>
+
+  <!-- Pantalla de Desbloqueo Biométrico -->
+  <div id="biometric-screen" class="offline-screen">
+    <div class="offline-icon">🔒</div>
+    <h2 data-i18n="biometric_title">Acceso protegido</h2>
+    <p style="color: var(--text-muted); margin: 8px 0 24px 0; font-size: 14px;" data-i18n="biometric_desc">
+      Identifícate con tu huella o rostro para continuar a tu agrupación.
+    </p>
+    <button type="button" class="btn btn-primary" style="max-width: 240px;" onclick="window.app.retryBiometrics();">
+      <span data-i18n="btn_unlock">Desbloquear con Biometría</span>
+    </button>
   </div>
 
   <script src="js/vendor/jsQR.js"></script>
