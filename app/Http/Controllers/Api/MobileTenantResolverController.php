@@ -87,9 +87,18 @@ class MobileTenantResolverController extends Controller
             ], 403);
         }
 
+        $bandSetting = null;
+        try {
+            $bandSetting = $tenant->run(function () {
+                return \App\Models\BandSetting::query()->first();
+            });
+        } catch (\Throwable) {
+            // Silently fallback if tenant DB is uninitialized
+        }
+
         return response()->json([
             'success' => true,
-            'data' => (new MobileTenantResource($tenant))->resolve(),
+            'data' => (new MobileTenantResource($tenant, $bandSetting))->resolve(),
         ]);
     }
 }

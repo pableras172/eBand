@@ -370,16 +370,53 @@ class EBandMobileApp {
     const previewSection = document.getElementById('step-confirm');
     const previewLogo = document.getElementById('preview-logo');
     const previewName = document.getElementById('preview-name');
+    const previewLocation = document.getElementById('preview-location');
     const previewCode = document.getElementById('preview-code');
+    const socialLinks = document.getElementById('social-links');
 
     previewName.textContent = tenant.name;
     previewCode.textContent = tenant.code;
 
+    // Dirección / Localidad
+    if (tenant.direccion) {
+      previewLocation.textContent = tenant.direccion;
+      previewLocation.style.display = 'block';
+    } else {
+      previewLocation.style.display = 'none';
+    }
+
+    // Logo de la banda o fallback al logo oficial eBand
     if (tenant.logo_url) {
       previewLogo.src = tenant.logo_url;
       previewLogo.style.display = 'block';
     } else {
-      previewLogo.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%232563eb'/><text x='50' y='62' font-size='40' font-family='sans-serif' font-weight='bold' fill='white' text-anchor='middle'>🎵</text></svg>";
+      previewLogo.src = 'img/logo.png';
+      previewLogo.style.display = 'block';
+    }
+
+    // Iconos de redes sociales y web
+    let hasSocial = false;
+    const bindSocial = (btnId, url) => {
+      const btn = document.getElementById(btnId);
+      if (btn) {
+        if (url) {
+          btn.style.display = 'inline-flex';
+          btn.onclick = () => this.openExternalUrl(url);
+          hasSocial = true;
+        } else {
+          btn.style.display = 'none';
+          btn.onclick = null;
+        }
+      }
+    };
+
+    bindSocial('social-web', tenant.website);
+    bindSocial('social-instagram', tenant.social?.instagram);
+    bindSocial('social-facebook', tenant.social?.facebook);
+    bindSocial('social-tiktok', tenant.social?.tiktok);
+
+    if (socialLinks) {
+      socialLinks.style.display = hasSocial ? 'flex' : 'none';
     }
 
     previewSection.style.display = 'block';
