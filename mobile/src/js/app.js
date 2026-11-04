@@ -51,6 +51,7 @@ const TRANSLATIONS = {
     error_network: 'Error de conexión con el servidor de eBand.',
     error_saving: 'No se pudo guardar la configuración en el dispositivo.',
     error_invalid_response: 'El servidor devolvió un formato no esperado.',
+    splash_connecting: 'Conectando con tu agrupación...',
   },
   va: {
     subtitle: 'La teua agrupació musical sempre amb tu',
@@ -94,6 +95,7 @@ const TRANSLATIONS = {
     error_network: 'Error de connexió amb el servidor d\'eBand.',
     error_saving: 'No s\'ha pogut guardar la configuració en el dispositiu.',
     error_invalid_response: 'El servidor ha retornat un format no esperat.',
+    splash_connecting: 'Connectant amb la teua agrupació...',
   },
   en: {
     subtitle: 'Your musical ensemble always with you',
@@ -137,6 +139,7 @@ const TRANSLATIONS = {
     error_network: 'Connection error with eBand server.',
     error_saving: 'Could not save configuration on device.',
     error_invalid_response: 'The server returned an unexpected format.',
+    splash_connecting: 'Connecting to your ensemble...',
   }
 };
 
@@ -216,11 +219,42 @@ class EBandMobileApp {
     return window.Capacitor?.Plugins?.StatusBar;
   }
 
+  get SplashScreen() {
+    return window.Capacitor?.Plugins?.SplashScreen;
+  }
+
   get NativeBiometric() {
     return window.Capacitor?.Plugins?.NativeBiometric;
   }
 
+  hideNativeSplashScreen() {
+    if (this.SplashScreen) {
+      try {
+        this.SplashScreen.hide({ fadeOutDuration: 250 });
+      } catch (e) {
+        // ignore
+      }
+    }
+  }
+
+  dismissSplash() {
+    const splash = document.getElementById('app-splash');
+    if (splash) {
+      splash.classList.add('fade-out');
+      setTimeout(() => {
+        splash.style.display = 'none';
+        const codeInput = document.getElementById('band-code');
+        if (codeInput) {
+          codeInput.focus();
+        }
+      }, 450);
+    }
+  }
+
   async init() {
+    const initStartTime = Date.now();
+    this.hideNativeSplashScreen();
+
     // 1. Inicializar Tema y Lenguaje
     await this.initTheme();
     await this.initLanguage();
@@ -244,6 +278,11 @@ class EBandMobileApp {
         this.log(`Agrupación encontrada: ${tenantUrl}.`);
         this.pendingDestinationUrl = tenantUrl;
 
+        const splashStatus = document.getElementById('splash-status');
+        if (splashStatus) {
+          splashStatus.textContent = this.t('splash_connecting');
+        }
+
         // Comprobar si la biometría está activada o disponible
         const biometricAuthPassed = await this.checkAndPromptBiometrics();
         if (biometricAuthPassed) {
@@ -251,6 +290,7 @@ class EBandMobileApp {
           window.location.replace(tenantUrl);
           return;
         } else {
+          this.dismissSplash();
           this.showBiometricScreen();
           return;
         }
@@ -260,10 +300,13 @@ class EBandMobileApp {
       this.log('Aviso al leer configuración previa', err?.message || err);
     }
 
-    const codeInput = document.getElementById('band-code');
-    if (codeInput) {
-      codeInput.focus();
-    }
+    // Asegurar que el splash animado se muestre al menos ~1200ms para una experiencia visual pulida
+    const elapsed = Date.now() - initStartTime;
+    const remaining = Math.max(0, 1200 - elapsed);
+
+    setTimeout(() => {
+      this.dismissSplash();
+    }, remaining);
   }
 
   /* -------------------------------------------------------------------------- */

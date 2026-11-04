@@ -8,6 +8,32 @@
 </head>
 <body>
 
+  <!-- Splash Screen Animado al iniciar -->
+  <div id="app-splash" class="app-splash">
+    <div class="splash-content">
+      <div class="splash-logo-container">
+        <div class="pulse-ring ring-1"></div>
+        <div class="pulse-ring ring-2"></div>
+        <div class="pulse-ring ring-3"></div>
+        <img src="img/logo.png" alt="eBand" class="splash-logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' rx=\'20\' fill=\'%232563eb\'/><text x=\'50\' y=\'62\' font-size=\'42\' font-family=\'sans-serif\' font-weight=\'bold\' fill=\'white\' text-anchor=\'middle\'>eB</text></svg>'">
+      </div>
+
+      <h1 class="splash-title">eBand</h1>
+      <p class="splash-subtitle" data-i18n="subtitle">Tu agrupación musical siempre contigo</p>
+
+      <!-- Ecualizador musical de tempo animado -->
+      <div class="splash-equalizer">
+        <span class="bar bar-1"></span>
+        <span class="bar bar-2"></span>
+        <span class="bar bar-3"></span>
+        <span class="bar bar-4"></span>
+        <span class="bar bar-5"></span>
+      </div>
+
+      <div id="splash-status" class="splash-status"></div>
+    </div>
+  </div>
+
   <!-- Barra de utilidades superior: Selector de Idioma y Modo Día/Noche -->
   <header class="top-nav">
     <div class="lang-selector" role="group" aria-label="Selector de idioma">
