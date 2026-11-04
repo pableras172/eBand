@@ -3,47 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>eBand</title>
+  <title>eBand App</title>
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+
+  <!-- Barra de utilidades superior: Selector de Idioma y Modo Día/Noche -->
+  <header class="top-nav">
+    <div class="lang-selector" role="group" aria-label="Selector de idioma">
+      <button type="button" class="lang-btn active" data-lang="es" onclick="window.app.setLanguage('es')">ES</button>
+      <button type="button" class="lang-btn" data-lang="va" onclick="window.app.setLanguage('va')">VAL</button>
+      <button type="button" class="lang-btn" data-lang="en" onclick="window.app.setLanguage('en')">EN</button>
+    </div>
+
+    <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Cambiar tema diurno/nocturno" onclick="window.app.toggleTheme()">
+      <!-- Icono Sol (se muestra en modo noche para pasar a día) -->
+      <svg id="icon-sun" class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <!-- Icono Luna (se muestra en modo día para pasar a noche) -->
+      <svg id="icon-moon" class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </header>
 
   <div class="container">
     <!-- Cabecera de Marca -->
     <header class="brand-header">
       <img src="img/logo.png" alt="eBand" class="brand-logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' rx=\'20\' fill=\'%232563eb\'/><text x=\'50\' y=\'62\' font-size=\'42\' font-family=\'sans-serif\' font-weight=\'bold\' fill=\'white\' text-anchor=\'middle\'>eB</text></svg>'">
       <h1 class="brand-title">eBand</h1>
-      <p class="brand-subtitle">Tu agrupación musical siempre contigo</p>
+      <p class="brand-subtitle" data-i18n="subtitle">Tu agrupación musical siempre contigo</p>
     </header>
 
     <!-- Paso 1: Introducir Código -->
-    <section id="step-code" class="card">
-      <div id="error-alert" class="alert-error"></div>
+    <section id="step-code">
+      <div class="card">
+        <div id="error-alert" class="alert-error"></div>
 
-      <form id="code-form" onsubmit="event.preventDefault(); window.app.handleValidateCode();">
-        <div class="form-group">
-          <label for="band-code" class="form-label">Código de tu agrupación</label>
-          <input 
-            type="text" 
-            id="band-code" 
-            class="form-input" 
-            placeholder="EJ: BANDA-VALENCIA" 
-            autocomplete="off" 
-            autocorrect="off" 
-            autocapitalize="characters" 
-            spellcheck="false"
-            required
-          >
+        <form id="code-form" onsubmit="event.preventDefault(); window.app.handleValidateCode();">
+          <div class="form-group">
+            <label for="band-code" class="form-label" data-i18n="code_label">Código de tu agrupación</label>
+            <input 
+              type="text" 
+              id="band-code" 
+              class="form-input" 
+              placeholder="EJ: BANDA-VALENCIA" 
+              data-i18n-placeholder="code_placeholder"
+              autocomplete="off" 
+              autocorrect="off" 
+              autocapitalize="characters" 
+              spellcheck="false"
+              required
+            >
+          </div>
+
+          <div class="form-helper-link-wrapper">
+            <button type="button" class="link-btn" onclick="window.app.openHelpModal();" data-i18n="help_link">
+              ¿No sabes el código de tu agrupación?
+            </button>
+          </div>
+
+          <button type="submit" id="btn-validate" class="btn btn-primary">
+            <span class="btn-text" data-i18n="btn_continue">Continuar</span>
+            <div class="spinner" id="btn-spinner"></div>
+          </button>
+        </form>
+
+        <div class="divider">
+          <span class="divider-text" data-i18n="divider_or">o bien</span>
         </div>
 
-        <button type="submit" id="btn-validate" class="btn btn-primary">
-          <span class="btn-text">Continuar</span>
-          <div class="spinner" id="btn-spinner"></div>
+        <!-- Botón Demo -->
+        <button type="button" class="btn btn-demo" onclick="window.app.loadDemoBand();">
+          <span class="btn-demo-icon">🎺</span>
+          <div class="btn-demo-content">
+            <span class="btn-demo-title" data-i18n="btn_demo">Probar Banda Demo</span>
+            <span class="btn-demo-sub" data-i18n="btn_demo_sub">Explora una banda de ejemplo sin registrarte</span>
+          </div>
         </button>
-      </form>
 
-      <!-- Caja de depuración / logs -->
-      <div id="debug-log" style="display: none; margin-top: 16px; padding: 10px; background: rgba(0,0,0,0.05); border-radius: 8px; font-family: monospace; font-size: 11px; max-height: 120px; overflow-y: auto; text-align: left; word-break: break-all;"></div>
+        <!-- Caja de depuración / logs -->
+        <div id="debug-log" style="display: none; margin-top: 16px; padding: 10px; background: rgba(0,0,0,0.05); border-radius: 8px; font-family: monospace; font-size: 11px; max-height: 120px; overflow-y: auto; text-align: left; word-break: break-all;"></div>
+      </div>
+
+      <!-- Tarjeta informativa para bandas no registradas -->
+      <div class="card card-info-promo">
+        <div class="promo-header">
+          <span class="promo-badge">eBand Cloud</span>
+          <h3 class="promo-title" data-i18n="not_registered_title">¿Tu banda aún no usa eBand?</h3>
+        </div>
+        <p class="promo-desc" data-i18n="not_registered_desc">
+          Digitaliza partituras, asistencias, eventos, biblioteca musical y avisos para tus músicos.
+        </p>
+        <button type="button" class="btn btn-outline" onclick="window.app.openExternalUrl('https://eband.app/#contact');">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span data-i18n="btn_more_info">Solicitar información / Registrar banda</span>
+        </button>
+      </div>
     </section>
 
     <!-- Paso 2: Confirmar Agrupación (Oculto inicialmente) -->
@@ -70,36 +139,76 @@
       </div>
 
       <button type="button" id="btn-confirm" class="btn btn-primary" onclick="window.app.handleConfirmBand();">
-        <span>Acceder a mi banda</span>
+        <span data-i18n="access_band">Acceder a mi banda</span>
       </button>
 
       <button type="button" class="btn btn-secondary" onclick="window.app.handleCancelPreview();">
-        <span>Introducir otro código</span>
+        <span data-i18n="enter_other_code">Introducir otro código</span>
       </button>
     </section>
+  </div>
+
+  <!-- Modal de Ayuda: ¿Cómo conseguir mi código? -->
+  <div id="help-modal" class="modal-backdrop" onclick="if(event.target === this) window.app.closeHelpModal();">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" data-i18n="help_modal_title">¿Dónde encuentro mi código?</h3>
+        <button type="button" class="modal-close-btn" onclick="window.app.closeHelpModal();">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro" data-i18n="help_modal_p1">
+          El código de agrupación es un identificador único asignado a cada sociedad musical o banda registrada en eBand.
+        </p>
+        <div class="help-steps">
+          <div class="help-step">
+            <div class="help-step-num">1</div>
+            <div class="help-step-text" data-i18n="help_modal_step1">
+              <strong>Consulta a tu directiva o secretaría:</strong> Ellos tienen el código oficial de acceso para los músicos.
+            </div>
+          </div>
+          <div class="help-step">
+            <div class="help-step-num">2</div>
+            <div class="help-step-text" data-i18n="help_modal_step2">
+              <strong>Revisa tu correo de bienvenida:</strong> Si recibiste una invitación de eBand, el código aparece indicado en el mensaje.
+            </div>
+          </div>
+          <div class="help-step">
+            <div class="help-step-num">3</div>
+            <div class="help-step-text" data-i18n="help_modal_step3">
+              <strong>¿Eres director o responsable?</strong> Si tu banda aún no está en eBand, puedes solicitar el alta y comenzar a probarla hoy mismo.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="window.app.closeHelpModal();">
+          <span data-i18n="help_modal_close">Entendido</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Pantalla de Contingencia Sin Conexión -->
   <div id="offline-screen" class="offline-screen">
     <div class="offline-icon">📡</div>
-    <h2>Sin conexión a internet</h2>
-    <p style="color: var(--text-muted); margin: 8px 0 24px 0; font-size: 14px;">
+    <h2 data-i18n="offline_title">Sin conexión a internet</h2>
+    <p style="color: var(--text-muted); margin: 8px 0 24px 0; font-size: 14px;" data-i18n="offline_desc">
       Comprueba tu conexión Wi-Fi o datos móviles para continuar usando eBand.
     </p>
     <button type="button" class="btn btn-primary" style="max-width: 240px;" onclick="window.app.retryConnection();">
-      <span>Reintentar conexión</span>
+      <span data-i18n="btn_retry">Reintentar conexión</span>
     </button>
   </div>
 
   <!-- Pantalla de Desbloqueo Biométrico -->
   <div id="biometric-screen" class="offline-screen">
     <div class="offline-icon">🔒</div>
-    <h2>Acceso protegido</h2>
-    <p style="color: var(--text-muted); margin: 8px 0 24px 0; font-size: 14px;">
+    <h2 data-i18n="biometric_title">Acceso protegido</h2>
+    <p style="color: var(--text-muted); margin: 8px 0 24px 0; font-size: 14px;" data-i18n="biometric_desc">
       Identifícate con tu huella o rostro para continuar a tu agrupación.
     </p>
     <button type="button" class="btn btn-primary" style="max-width: 240px;" onclick="window.app.retryBiometrics();">
-      <span>Desbloquear con Biometría</span>
+      <span data-i18n="btn_unlock">Desbloquear con Biometría</span>
     </button>
   </div>
 

@@ -1,15 +1,115 @@
 /**
  * eBand Mobile Controller
- * Soporte: Onboarding, WebView, OneSignal Push, Biometría, Cámara y Navegación
+ * Soporte: Onboarding, Multidioma (ES/VAL/EN), Modo Día/Noche, Demo Band,
+ * WebView, OneSignal Push, Biometría, Cámara y Navegación
  */
 
 // URL del dominio central de producción de eBand
 const DEFAULT_CENTRAL_API = 'https://eband.app';
 
+// Diccionario de Traducciones (Castellano, Valenciano, Inglés)
+const TRANSLATIONS = {
+  es: {
+    subtitle: 'Tu agrupación musical siempre contigo',
+    code_label: 'Código de tu agrupación',
+    code_placeholder: 'EJ: BANDA-VALENCIA',
+    btn_continue: 'Continuar',
+    divider_or: 'o bien',
+    btn_demo: 'Probar Banda Demo',
+    btn_demo_sub: 'Explora una banda de ejemplo sin registrarte',
+    help_link: '¿No sabes el código de tu agrupación?',
+    not_registered_title: '¿Tu banda aún no usa eBand?',
+    not_registered_desc: 'Digitaliza partituras, asistencias, eventos, biblioteca musical y avisos para tus músicos.',
+    btn_more_info: 'Solicitar información / Registrar banda',
+    help_modal_title: '¿Dónde encuentro mi código?',
+    help_modal_p1: 'El código de agrupación es un identificador único asignado a cada sociedad musical o banda registrada en eBand.',
+    help_modal_step1: '<strong>Consulta a tu directiva o secretaría:</strong> Ellos tienen el código oficial de acceso para los músicos.',
+    help_modal_step2: '<strong>Revisa tu correo de bienvenida:</strong> Si recibiste una invitación de eBand, el código aparece indicado en el mensaje.',
+    help_modal_step3: '<strong>¿Eres director o responsable?</strong> Si tu banda aún no está en eBand, puedes solicitar el alta y comenzar a probarla hoy mismo.',
+    help_modal_close: 'Entendido',
+    access_band: 'Acceder a mi banda',
+    enter_other_code: 'Introducir otro código',
+    offline_title: 'Sin conexión a internet',
+    offline_desc: 'Comprueba tu conexión Wi-Fi o datos móviles para continuar usando eBand.',
+    btn_retry: 'Reintentar conexión',
+    biometric_title: 'Acceso protegido',
+    biometric_desc: 'Identifícate con tu huella o rostro para continuar a tu agrupación.',
+    btn_unlock: 'Desbloquear con Biometría',
+    error_empty_code: 'Por favor, introduce el código de tu agrupación.',
+    error_network: 'Error de conexión con el servidor de eBand.',
+    error_saving: 'No se pudo guardar la configuración en el dispositivo.',
+    error_invalid_response: 'El servidor devolvió un formato no esperado.',
+  },
+  va: {
+    subtitle: 'La teua agrupació musical sempre amb tu',
+    code_label: 'Codi de la teua agrupació',
+    code_placeholder: 'EX: BANDA-VALENCIA',
+    btn_continue: 'Continuar',
+    divider_or: 'o bé',
+    btn_demo: 'Provar Banda Demo',
+    btn_demo_sub: 'Explora una agrupació d\'exemple sense registrar-te',
+    help_link: 'No saps el codi de la teua agrupació?',
+    not_registered_title: 'La teua banda encara no utilitza eBand?',
+    not_registered_desc: 'Digitalitza partitures, assistències, esdeveniments, biblioteca musical i avisos per als teus músics.',
+    btn_more_info: 'Demanar informació / Registrar banda',
+    help_modal_title: 'On trobe el meu codi?',
+    help_modal_p1: 'El codi d\'agrupació és un identificador únic assignat a cada societat musical o banda registrada en eBand.',
+    help_modal_step1: '<strong>Consulta a la teua directiva o secretaria:</strong> Ells tenen el codi oficial d\'accés per als músics.',
+    help_modal_step2: '<strong>Revisa el teu correu de benvinguda:</strong> Si vas rebre una invitació d\'eBand, el codi ve indicat en el missatge.',
+    help_modal_step3: '<strong>Ets director o responsable?</strong> Si la teua banda encara no està en eBand, pots sol·licitar l\'alta i començar a provar-la.',
+    help_modal_close: 'Entés',
+    access_band: 'Accedir a la meua agrupació',
+    enter_other_code: 'Introduir un altre codi',
+    offline_title: 'Sense connexió a internet',
+    offline_desc: 'Comprova la teua connexió Wi-Fi o dades mòbils per continuar utilitzant eBand.',
+    btn_retry: 'Reintentar connexió',
+    biometric_title: 'Accés protegit',
+    biometric_desc: 'Identifica\'t amb la teua empremta o rostre per a continuar a la teua agrupació.',
+    btn_unlock: 'Desbloquejar amb Biometria',
+    error_empty_code: 'Per favor, introduïx el codi de la teua agrupació.',
+    error_network: 'Error de connexió amb el servidor d\'eBand.',
+    error_saving: 'No s\'ha pogut guardar la configuració en el dispositiu.',
+    error_invalid_response: 'El servidor ha retornat un format no esperat.',
+  },
+  en: {
+    subtitle: 'Your musical ensemble always with you',
+    code_label: 'Your ensemble code',
+    code_placeholder: 'E.G. BAND-NAME',
+    btn_continue: 'Continue',
+    divider_or: 'or',
+    btn_demo: 'Try Demo Band',
+    btn_demo_sub: 'Explore a demo band without registering',
+    help_link: 'Don\'t know your ensemble code?',
+    not_registered_title: 'Does your band not use eBand yet?',
+    not_registered_desc: 'Digitalize sheet music, attendance, events, music library and notifications for your musicians.',
+    btn_more_info: 'Request info / Register band',
+    help_modal_title: 'Where do I find my code?',
+    help_modal_p1: 'The ensemble code is a unique identifier assigned to each music society or band registered on eBand.',
+    help_modal_step1: '<strong>Ask your board of directors or secretary:</strong> They have the official access code for musicians.',
+    help_modal_step2: '<strong>Check your welcome email:</strong> If you received an invitation from eBand, the code is specified in the message.',
+    help_modal_step3: '<strong>Are you a director or manager?</strong> If your band is not yet on eBand, you can request registration and try it out today.',
+    help_modal_close: 'Got it',
+    access_band: 'Access my band',
+    enter_other_code: 'Enter another code',
+    offline_title: 'No internet connection',
+    offline_desc: 'Check your Wi-Fi or mobile data connection to continue using eBand.',
+    btn_retry: 'Retry connection',
+    biometric_title: 'Protected access',
+    biometric_desc: 'Authenticate with your fingerprint or face to proceed to your ensemble.',
+    btn_unlock: 'Unlock with Biometrics',
+    error_empty_code: 'Please enter your ensemble code.',
+    error_network: 'Connection error with eBand server.',
+    error_saving: 'Could not save configuration on device.',
+    error_invalid_response: 'The server returned an unexpected format.',
+  }
+};
+
 class EBandMobileApp {
   constructor() {
     this.currentResolvedTenant = null;
     this.pendingDestinationUrl = null;
+    this.currentLanguage = 'es';
+    this.currentTheme = 'auto'; // 'auto' | 'light' | 'dark'
     this.centralApiBase = this.detectCentralApiBase();
     this.log(`Iniciado eBand Mobile. API Central: ${this.centralApiBase}`);
   }
@@ -65,15 +165,23 @@ class EBandMobileApp {
     return window.Capacitor?.Plugins?.Camera;
   }
 
+  get StatusBar() {
+    return window.Capacitor?.Plugins?.StatusBar;
+  }
+
   get NativeBiometric() {
     return window.Capacitor?.Plugins?.NativeBiometric;
   }
 
   async init() {
+    // 1. Inicializar Tema y Lenguaje
+    await this.initTheme();
+    await this.initLanguage();
+
     this.initNetworkListener();
     this.initAppNavigationListener();
 
-    // 1. Comprobar si ya existe una agrupación configurada previamente
+    // 2. Comprobar si ya existe una agrupación configurada previamente
     try {
       this.log('Comprobando configuración previa guardada...');
       const { value: tenantUrl } = await this.Preferences.get({ key: 'eband_tenant_url' });
@@ -112,7 +220,169 @@ class EBandMobileApp {
   }
 
   /* -------------------------------------------------------------------------- */
-  /*  1. NOTIFICACIONES PUSH (OneSignal)                                         */
+  /*  IDIOMA (i18n)                                                             */
+  /* -------------------------------------------------------------------------- */
+  async initLanguage() {
+    let savedLang = null;
+    try {
+      const { value } = await this.Preferences.get({ key: 'eband_lang' });
+      savedLang = value;
+    } catch (e) {
+      // ignore
+    }
+
+    if (!savedLang) {
+      const navLang = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
+      if (navLang.startsWith('ca') || navLang.startsWith('va')) {
+        savedLang = 'va';
+      } else if (navLang.startsWith('en')) {
+        savedLang = 'en';
+      } else {
+        savedLang = 'es';
+      }
+    }
+
+    this.setLanguage(savedLang, false);
+  }
+
+  async setLanguage(lang, persist = true) {
+    if (!TRANSLATIONS[lang]) {
+      lang = 'es';
+    }
+    this.currentLanguage = lang;
+
+    // Actualizar botones de selector
+    document.querySelectorAll('.lang-btn').forEach((btn) => {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+
+    // Actualizar textos en el DOM
+    const dict = TRANSLATIONS[lang];
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key]) {
+        if (dict[key].includes('<strong') || dict[key].includes('<span')) {
+          el.innerHTML = dict[key];
+        } else {
+          el.textContent = dict[key];
+        }
+      }
+    });
+
+    // Actualizar placeholders
+    document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (dict[key]) {
+        el.placeholder = dict[key];
+      }
+    });
+
+    if (persist) {
+      try {
+        await this.Preferences.set({ key: 'eband_lang', value: lang });
+      } catch (e) {
+        // ignore
+      }
+    }
+  }
+
+  t(key) {
+    const dict = TRANSLATIONS[this.currentLanguage] || TRANSLATIONS.es;
+    return dict[key] || key;
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*  TEMA DÍA / NOCHE                                                          */
+  /* -------------------------------------------------------------------------- */
+  async initTheme() {
+    let savedTheme = null;
+    try {
+      const { value } = await this.Preferences.get({ key: 'eband_theme' });
+      savedTheme = value;
+    } catch (e) {
+      // ignore
+    }
+
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      this.applyTheme(savedTheme);
+    } else {
+      // Auto: detectar según preferencia del sistema
+      const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.applyTheme(isDark ? 'dark' : 'light', false);
+    }
+
+    // Escuchar cambios de sistema si no hay preferencia manual
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (this.currentTheme === 'auto') {
+          this.applyTheme(e.matches ? 'dark' : 'light', false);
+        }
+      });
+    }
+  }
+
+  async toggleTheme() {
+    const activeTheme = document.documentElement.getAttribute('data-theme') || 
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    
+    const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
+    this.applyTheme(nextTheme, true);
+  }
+
+  async applyTheme(theme, persist = false) {
+    this.currentTheme = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+
+    if (this.StatusBar) {
+      try {
+        if (theme === 'dark') {
+          await this.StatusBar.setStyle({ style: 'DARK' });
+          await this.StatusBar.setBackgroundColor({ color: '#0f172a' });
+        } else {
+          await this.StatusBar.setStyle({ style: 'LIGHT' });
+          await this.StatusBar.setBackgroundColor({ color: '#f8fafc' });
+        }
+      } catch (e) {
+        // StatusBar puede fallar en web
+      }
+    }
+
+    if (persist) {
+      try {
+        await this.Preferences.set({ key: 'eband_theme', value: theme });
+      } catch (e) {
+        // ignore
+      }
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*  MODAL DE AYUDA Y BANDA DEMO                                               */
+  /* -------------------------------------------------------------------------- */
+  openHelpModal() {
+    const modal = document.getElementById('help-modal');
+    if (modal) {
+      modal.classList.add('is-open');
+    }
+  }
+
+  closeHelpModal() {
+    const modal = document.getElementById('help-modal');
+    if (modal) {
+      modal.classList.remove('is-open');
+    }
+  }
+
+  loadDemoBand() {
+    const codeInput = document.getElementById('band-code');
+    if (codeInput) {
+      codeInput.value = 'DEMO';
+      this.handleValidateCode();
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*  NOTIFICACIONES PUSH (OneSignal)                                         */
   /* -------------------------------------------------------------------------- */
   initOneSignal(appId, tenantId = null) {
     if (window.plugins?.OneSignal && appId) {
@@ -130,11 +400,24 @@ class EBandMobileApp {
   }
 
   /* -------------------------------------------------------------------------- */
-  /*  2. NAVEGACIÓN NATIVA Y BOTÓN ATRÁS                                        */
+  /*  NAVEGACIÓN NATIVA Y BOTÓN ATRÁS                                        */
   /* -------------------------------------------------------------------------- */
   initAppNavigationListener() {
     if (this.App) {
       this.App.addListener('backButton', ({ canGoBack }) => {
+        // Si el modal de ayuda está abierto, cerrarlo con atrás
+        const helpModal = document.getElementById('help-modal');
+        if (helpModal && helpModal.classList.contains('is-open')) {
+          this.closeHelpModal();
+          return;
+        }
+
+        // Si estamos en previsualización de banda, volver a introducir código
+        if (this.currentResolvedTenant) {
+          this.handleCancelPreview();
+          return;
+        }
+
         if (canGoBack || window.history.length > 1) {
           window.history.back();
         } else {
@@ -168,7 +451,7 @@ class EBandMobileApp {
   }
 
   /* -------------------------------------------------------------------------- */
-  /*  3. CÁMARA Y ARCHIVOS NATIVOS                                              */
+  /*  CÁMARA Y ARCHIVOS NATIVOS                                              */
   /* -------------------------------------------------------------------------- */
   async takePhoto() {
     if (!this.Camera) {
@@ -180,7 +463,7 @@ class EBandMobileApp {
         quality: 90,
         allowEditing: false,
         resultType: 'uri',
-        source: 'PROMPT', // Da a elegir entre tomar foto o galería
+        source: 'PROMPT',
       });
       return image.webPath;
     } catch (e) {
@@ -190,16 +473,15 @@ class EBandMobileApp {
   }
 
   /* -------------------------------------------------------------------------- */
-  /*  5. ACCESO BIOMÉTRICO (Huella / Face ID)                                   */
+  /*  ACCESO BIOMÉTRICO (Huella / Face ID)                                   */
   /* -------------------------------------------------------------------------- */
   async checkAndPromptBiometrics() {
     if (!this.NativeBiometric) {
-      return true; // No está en entorno nativo o plugin no cargado
+      return true;
     }
 
     try {
       const { value: biometricEnabled } = await this.Preferences.get({ key: 'eband_biometric_enabled' });
-      // Si el usuario no lo ha activado explícitamente, no bloquear
       if (biometricEnabled !== 'true') {
         return true;
       }
@@ -211,10 +493,10 @@ class EBandMobileApp {
 
       this.log('Solicitando verificación biométrica...');
       await this.NativeBiometric.verifyIdentity({
-        reason: 'Identifícate con tu huella o rostro para acceder a eBand',
-        title: 'Acceso seguro',
+        reason: this.t('biometric_desc'),
+        title: this.t('biometric_title'),
         subtitle: 'eBand',
-        description: 'Usa la biometría de tu dispositivo',
+        description: 'eBand Security',
       });
 
       this.log('Biometría verificada con éxito.');
@@ -322,7 +604,7 @@ class EBandMobileApp {
     const code = rawCode.trim().toUpperCase();
 
     if (!code) {
-      this.showError('Por favor, introduce el código de tu agrupación.');
+      this.showError(this.t('error_empty_code'));
       return;
     }
 
@@ -356,7 +638,7 @@ class EBandMobileApp {
       } catch (parseError) {
         console.error('[EBAND_DEBUG] ERROR PARSEANDO JSON:', parseError);
         this.log('Error parseando JSON. Contenido:', rawText.substring(0, 120));
-        throw new Error(`El servidor devolvió un formato no esperado (HTTP ${response.status}).`);
+        throw new Error(`${this.t('error_invalid_response')} (HTTP ${response.status})`);
       }
 
       console.log('[EBAND_DEBUG] <<< JSON PARSEADO EXITOSAMENTE:', json);
@@ -380,7 +662,7 @@ class EBandMobileApp {
       this.showPreview(json.data);
     } catch (err) {
       console.error('[EBAND_DEBUG] Error en handleValidateCode:', err);
-      this.showError(err.message || 'Error de conexión con el servidor de eBand.');
+      this.showError(err.message || this.t('error_network'));
     } finally {
       this.setLoading(false);
     }
@@ -488,7 +770,7 @@ class EBandMobileApp {
       this.log(`Navegando a: ${destination}`);
       window.location.replace(destination);
     } catch (err) {
-      this.showError('No se pudo guardar la configuración en el dispositivo.');
+      this.showError(this.t('error_saving'));
     }
   }
 
