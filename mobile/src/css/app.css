@@ -271,10 +271,25 @@ body {
   z-index: 10;
 }
 
-.top-nav-left {
+.top-nav-side {
+  flex: 0 0 40px;
   display: flex;
   align-items: center;
-  gap: 8px;
+}
+
+.top-nav-left {
+  justify-content: flex-start;
+}
+
+.top-nav-right {
+  justify-content: flex-end;
+}
+
+.top-nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .nav-back-btn {
