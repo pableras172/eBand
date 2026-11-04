@@ -1,0 +1,37 @@
+{
+  "name": "eband-mobile",
+  "version": "1.0.0",
+  "description": "Contenedor móvil oficial de eBand para iOS y Android",
+  "main": "src/index.html",
+  "scripts": {
+    "cap:sync": "cap sync",
+    "cap:android": "cap open android",
+    "cap:ios": "cap open ios",
+    "cap:run:android": "cap run android",
+    "cap:run:ios": "cap run ios"
+  },
+  "keywords": [
+    "eband",
+    "capacitor",
+    "mobile",
+    "ios",
+    "android"
+  ],
+  "author": "eBand",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/browser": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/network": "^6.0.0",
+    "@capacitor/preferences": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/ios": "^6.0.0",
+    "typescript": "^5.4.0"
+  }
+}

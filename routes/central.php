@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\MobileTenantResolverController;
 use App\Http\Controllers\Central\TenantAccessController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DemoAccessController;
@@ -38,3 +39,8 @@ Route::post('/contact', [ContactController::class, 'send'])->name('contact.send'
 Route::post('/demo-access', [DemoAccessController::class, 'store'])
     ->middleware(['throttle:demo-access'])
     ->name('demo.access');
+
+// API Móvil para resolución de tenants
+Route::get('/api/v1/mobile/tenants/resolve', [MobileTenantResolverController::class, 'resolve'])
+    ->middleware('throttle:60,1')
+    ->name('api.mobile.tenants.resolve');
