@@ -1,6 +1,6 @@
 {
   "appId": "es.eband.app",
-  "appName": "eBand",
+  "appName": "eBand App",
   "webDir": "src",
   "server": {
     "androidScheme": "https",

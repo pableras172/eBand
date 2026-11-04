@@ -9,7 +9,6 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
-    implementation project(':capgo-capacitor-native-biometric')
     implementation project(':capacitor-app')
     implementation project(':capacitor-browser')
     implementation project(':capacitor-camera')
@@ -17,6 +16,7 @@ dependencies {
     implementation project(':capacitor-preferences')
     implementation project(':capacitor-splash-screen')
     implementation project(':capacitor-status-bar')
+    implementation project(':capgo-capacitor-native-biometric')
 
 }
 apply from: "../../node_modules/onesignal-cordova-plugin/build-extras-onesignal.gradle"
