@@ -9,6 +9,7 @@ use App\Http\Requests\Mobile\ResolveTenantRequest;
 use App\Http\Resources\MobileTenantResource;
 use App\Models\Tenant;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class MobileTenantResolverController extends Controller
 {
@@ -92,13 +93,31 @@ class MobileTenantResolverController extends Controller
             $bandSetting = $tenant->run(function () {
                 return \App\Models\BandSetting::query()->first();
             });
-        } catch (\Throwable) {
-            // Silently fallback if tenant DB is uninitialized
+            Log::info('[MobileTenantResolver] BandSetting resolved successfully', [
+                'tenant_id' => $tenant->id,
+                'band_setting_found' => (bool) $bandSetting,
+                'nombre' => $bandSetting?->nombre,
+                'logo' => $bandSetting?->logo,
+                'direccion' => $bandSetting?->direccion,
+                'urlinstagram' => $bandSetting?->urlinstagram,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('[MobileTenantResolver] Error retrieving BandSetting', [
+                'tenant_id' => $tenant->id,
+                'error' => $e->getMessage(),
+            ]);
         }
+
+        $resourceData = (new MobileTenantResource($tenant, $bandSetting))->resolve();
+
+        Log::info('[MobileTenantResolver] Returning payload to mobile app', [
+            'code' => $code,
+            'payload' => $resourceData,
+        ]);
 
         return response()->json([
             'success' => true,
-            'data' => (new MobileTenantResource($tenant, $bandSetting))->resolve(),
+            'data' => $resourceData,
         ]);
     }
 }

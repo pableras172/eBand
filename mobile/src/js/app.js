@@ -23,18 +23,18 @@ class EBandMobileApp {
 
   log(message, data = null) {
     const timestamp = new Date().toLocaleTimeString();
-    const formatted = `[${timestamp}] ${message}`;
+    const tag = '[EBAND_DEBUG]';
     if (data) {
-      console.log(formatted, data);
+      console.log(`${tag} [${timestamp}] ${message}`, data);
     } else {
-      console.log(formatted);
+      console.log(`${tag} [${timestamp}] ${message}`);
     }
 
     const debugBox = document.getElementById('debug-log');
     if (debugBox) {
       debugBox.style.display = 'block';
       const line = document.createElement('div');
-      line.textContent = data ? `${formatted}: ${JSON.stringify(data)}` : formatted;
+      line.textContent = data ? `[${timestamp}] ${message}: ${JSON.stringify(data)}` : `[${timestamp}] ${message}`;
       debugBox.appendChild(line);
       debugBox.scrollTop = debugBox.scrollHeight;
     }
@@ -328,6 +328,9 @@ class EBandMobileApp {
 
     this.setLoading(true);
     const endpoint = `${this.centralApiBase}/api/v1/mobile/tenants/resolve?code=${encodeURIComponent(code)}`;
+    console.log('[EBAND_DEBUG] ========================================');
+    console.log('[EBAND_DEBUG] >>> SOLICITANDO RESOLUCION DE CODIGO:', code);
+    console.log('[EBAND_DEBUG] >>> URL:', endpoint);
     this.log(`Consultando API: ${endpoint}`);
 
     try {
@@ -339,26 +342,44 @@ class EBandMobileApp {
         },
       });
 
+      console.log('[EBAND_DEBUG] <<< HTTP STATUS:', response.status, response.statusText);
       this.log(`Respuesta HTTP: ${response.status} ${response.statusText}`);
 
       const rawText = await response.text();
+      console.log('[EBAND_DEBUG] <<< RAW RESPONSE RECIBIDO DEL SERVIDOR:');
+      console.log(rawText);
+
       let json = null;
 
       try {
         json = JSON.parse(rawText);
       } catch (parseError) {
+        console.error('[EBAND_DEBUG] ERROR PARSEANDO JSON:', parseError);
         this.log('Error parseando JSON. Contenido:', rawText.substring(0, 120));
         throw new Error(`El servidor devolvió un formato no esperado (HTTP ${response.status}).`);
       }
+
+      console.log('[EBAND_DEBUG] <<< JSON PARSEADO EXITOSAMENTE:', json);
 
       if (!response.ok || !json.success) {
         throw new Error(json.message || `No se encontró la agrupación (HTTP ${response.status})`);
       }
 
-      this.log('Agrupación resuelta con éxito', json.data);
+      console.log('[EBAND_DEBUG] Detalle de agrupación recibido:');
+      console.log('[EBAND_DEBUG] - ID Tenant:', json.data?.tenant_id);
+      console.log('[EBAND_DEBUG] - Nombre completo:', json.data?.name);
+      console.log('[EBAND_DEBUG] - Nombre corto:', json.data?.short_name);
+      console.log('[EBAND_DEBUG] - Logo URL:', json.data?.logo_url);
+      console.log('[EBAND_DEBUG] - Dirección:', json.data?.direccion);
+      console.log('[EBAND_DEBUG] - Web:', json.data?.website);
+      console.log('[EBAND_DEBUG] - Redes sociales:', json.data?.social);
+      console.log('[EBAND_DEBUG] ========================================');
+
+      this.log('Agrupación resuelta:', json.data);
       this.currentResolvedTenant = json.data;
       this.showPreview(json.data);
     } catch (err) {
+      console.error('[EBAND_DEBUG] Error en handleValidateCode:', err);
       this.showError(err.message || 'Error de conexión con el servidor de eBand.');
     } finally {
       this.setLoading(false);
@@ -366,6 +387,7 @@ class EBandMobileApp {
   }
 
   showPreview(tenant) {
+    console.log('[EBAND_DEBUG] Ejecutando showPreview con:', tenant);
     document.getElementById('step-code').style.display = 'none';
     const previewSection = document.getElementById('step-confirm');
     const previewLogo = document.getElementById('preview-logo');
@@ -374,8 +396,8 @@ class EBandMobileApp {
     const previewCode = document.getElementById('preview-code');
     const socialLinks = document.getElementById('social-links');
 
-    previewName.textContent = tenant.name;
-    previewCode.textContent = tenant.code;
+    previewName.textContent = tenant.name || 'Sin nombre';
+    previewCode.textContent = tenant.code || '';
 
     // Dirección / Localidad
     if (tenant.direccion) {
@@ -386,10 +408,20 @@ class EBandMobileApp {
     }
 
     // Logo de la banda o fallback al logo oficial eBand
+    previewLogo.onerror = () => {
+      console.warn('[EBAND_DEBUG] Error al cargar imagen del logo:', tenant.logo_url, '. Usando fallback.');
+      previewLogo.src = 'img/logo.png';
+    };
+    previewLogo.onload = () => {
+      console.log('[EBAND_DEBUG] Logo cargado con éxito en el elemento <img>:', previewLogo.src);
+    };
+
     if (tenant.logo_url) {
+      console.log('[EBAND_DEBUG] Asignando src a previewLogo:', tenant.logo_url);
       previewLogo.src = tenant.logo_url;
       previewLogo.style.display = 'block';
     } else {
+      console.log('[EBAND_DEBUG] No hay logo_url, usando logo local img/logo.png');
       previewLogo.src = 'img/logo.png';
       previewLogo.style.display = 'block';
     }
