@@ -92,6 +92,7 @@ const TRANSLATIONS = {
     error_saving: 'No se pudo guardar la configuración en el dispositivo.',
     error_invalid_response: 'El servidor devolvió un formato no esperado.',
     splash_connecting: 'Conectando con tu agrupación...',
+    press_back_again_to_exit: 'Pulsa atrás otra vez para salir',
   },
 
   va: {
@@ -175,6 +176,7 @@ const TRANSLATIONS = {
     error_saving: 'No s\'ha pogut guardar la configuració en el dispositiu.',
     error_invalid_response: 'El servidor ha retornat un format no esperat.',
     splash_connecting: 'Connectant amb la teua agrupació...',
+    press_back_again_to_exit: 'Prem arrere una altra vegada per a eixir',
   },
 
   en: {
@@ -258,6 +260,7 @@ const TRANSLATIONS = {
     error_saving: 'Could not save configuration on device.',
     error_invalid_response: 'The server returned an unexpected format.',
     splash_connecting: 'Connecting to your ensemble...',
+    press_back_again_to_exit: 'Press back again to exit',
   }
 };
 
@@ -270,6 +273,8 @@ class EBandMobileApp {
     this.currentView = 'intro-slides'; // 'intro-slides' | 'question' | 'has-band' | 'no-band'
     this.currentSlide = 1;
     this.totalSlides = 4;
+    this.lastBackPressTime = 0;
+    this.toastTimeout = null;
     this.qrStream = null;
     this.qrScanActive = false;
     this.barcodeDetector = null;
@@ -876,6 +881,17 @@ class EBandMobileApp {
     }
   }
 
+  showToast(message) {
+    const toast = document.getElementById('toast-message');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(this.toastTimeout);
+    this.toastTimeout = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2000);
+  }
+
   /* -------------------------------------------------------------------------- */
   /*  NAVEGACIÓN NATIVA Y BOTÓN ATRÁS                                        */
   /* -------------------------------------------------------------------------- */
@@ -908,10 +924,19 @@ class EBandMobileApp {
           return;
         }
 
-        if (canGoBack || window.history.length > 1) {
+        // 5. Si hay historial en el navegador y canGoBack es verdadero, retroceder
+        if (canGoBack || window.history.length > 2) {
           window.history.back();
-        } else {
+          return;
+        }
+
+        // 6. Doble pulsación/gesto Atrás para salir de la aplicación
+        const now = Date.now();
+        if (this.lastBackPressTime && (now - this.lastBackPressTime < 2000)) {
           this.App.exitApp();
+        } else {
+          this.lastBackPressTime = now;
+          this.showToast(this.t('press_back_again_to_exit'));
         }
       });
     }
