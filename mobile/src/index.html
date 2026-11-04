@@ -322,14 +322,18 @@
           </p>
         </div>
 
-        <!-- Botón Demo -->
-        <button type="button" class="btn btn-demo" onclick="window.app.loadDemoBand();">
-          <span class="btn-demo-icon">🎺</span>
-          <div class="btn-demo-content">
-            <span class="btn-demo-title" data-i18n="btn_demo">Probar Banda Demo</span>
-            <span class="btn-demo-sub" data-i18n="btn_demo_sub">Explora una banda de ejemplo sin registrarte</span>
-          </div>
-        </button>
+        <!-- Tarjeta Destacada de Banda Demo -->
+        <div class="card-cta-demo">
+          <span class="demo-badge-pill" data-i18n="demo_badge">Acceso inmediato sin registro</span>
+          <h3 class="cta-demo-title" data-i18n="demo_card_title">Explora una Banda de Ejemplo</h3>
+          <p class="cta-demo-desc" data-i18n="demo_card_desc">
+            Prueba todas las funcionalidades de eBand (actividades, asistencias y avisos) con datos reales de demostración.
+          </p>
+          <button type="button" class="btn btn-primary btn-demo-action" onclick="window.app.loadDemoBand();">
+            <span class="btn-demo-icon">🎺</span>
+            <span data-i18n="btn_demo">Probar Banda Demo</span>
+          </button>
+        </div>
 
         <!-- Píldoras de Valor -->
         <div class="value-pills-footer">
