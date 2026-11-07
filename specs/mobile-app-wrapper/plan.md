@@ -21,7 +21,7 @@ El sistema consta de dos pilares sincronizados:
 * **Lenguaje / Backend**: PHP 8.3 / Laravel 12 (estructura Laravel 10) / Livewire 3 / Tailwind CSS 3 / Vite.
 * **Multi-tenancy**: `stancl/tenancy` v3 (base de datos central + bases de datos por tenant aisladas).
 * **Entorno Móvil**: Node.js / Capacitor 6+ alojado en `mobile/`.
-* **Plataformas Móviles Objetivo**: Android (Android Studio / Gradle) e iOS (Xcode / CocoaPods).
+* **Plataformas Móviles Objetivo**: Android (Android Studio / Gradle: `minSdkVersion = 24`, `compileSdkVersion = 36`, `targetSdkVersion = 36` para cumplimiento con Google Play Console) e iOS (Xcode / CocoaPods).
 * **Almacenamiento Local Móvil**: `@capacitor/preferences` (almacena `tenant_code`, `target_url`, `band_name`, `logo_url`).
 * **Autenticación / Sesión**: Cookies de sesión seguras de Laravel dentro del WebView (`remember_web_*`).
 * **Pruebas Backend**: PHPUnit 10 (`tests/Feature/Api/MobileTenantResolverTest.php`).

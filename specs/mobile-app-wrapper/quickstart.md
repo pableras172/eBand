@@ -8,8 +8,8 @@ Esta guía explica cómo compilar, sincronizar y ejecutar el proyecto móvil de 
 
 1. **Node.js**: v18+ y `npm`.
 2. **Para Android**:
-   * [Android Studio](https://developer.android.com/studio) con SDK de Android (API 33+) y herramientas de línea de comandos.
-   * Un emulador de Android configurado o un dispositivo físico con depuración USB activada.
+   * [Android Studio](https://developer.android.com/studio) con SDK de Android (API 36 para compilar/targetear y soporte mínimo API 24+ para cumplir con Google Play).
+   * Un emulador de Android configurado (API 24 o superior) o un dispositivo físico con depuración USB activada.
 3. **Para iOS** (sólo en macOS):
    * [Xcode](https://developer.apple.com/xcode/) v15+ y CocoaPods (`sudo gem install cocoapods`).
 

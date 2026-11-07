@@ -91,6 +91,8 @@
 - [x] T021 Añadir la plataforma Android con `@capacitor/android` (`npx cap add android`)
 - [x] T022 Añadir la plataforma iOS con workflow de GitHub Actions en macOS (`.github/workflows/build-ios.yml`)
 - [x] T023 Configurar permisos e iconos de app en `mobile/android` (Cámara, Biometría, OneSignal Push y Botón Atrás)
+- [x] T023b Actualizar `minSdkVersion` a 24 en `mobile/android/variables.gradle` para cumplimiento con protección automática e integridad de Google Play Console
+- [x] T023c Actualizar `targetSdkVersion` y `compileSdkVersion` a 36 en `mobile/android/variables.gradle` para cumplimiento con las políticas de Google Play Console
 - [x] T024 Crear la guía rápida `specs/mobile-app-wrapper/quickstart.md` con los comandos de sincronización (`npx cap sync`) y ejecución en emulador o dispositivo real
 
 ---

@@ -141,6 +141,7 @@ Como músico de la banda, quiero recibir notificaciones push en mi móvil cuando
 * **FR-008**: La app móvil DEBE contar con un mecanismo accesible para desvincular la agrupación y limpiar el almacenamiento local.
 * **FR-009**: La app móvil DEBE gestionar el estado sin conexión mediante una vista nativa de contingencia con acción de reintento.
 * **FR-010**: El contenedor móvil DEBE soportar la integración del SDK nativo de OneSignal vinculando el `app_id` definido en la configuración del tenant.
+* **FR-011**: La configuración de la plataforma Android DEBE establecer `minSdkVersion = 24` (Android 7.0 Nougat) para dar cumplimiento a la protección automática e integridad de aplicaciones de Google Play Console (Play Integrity / Play Protect automatic protection), con `targetSdkVersion = 36` y `compileSdkVersion = 36`.
 
 ---
 
