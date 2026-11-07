@@ -240,6 +240,36 @@ jobs:
           path: ${{ runner.temp }}/export/*.ipa
           if-no-files-found: error
 
+      - name: Subir a App Store Connect / TestFlight
+        if: success() && env.APP_STORE_CONNECT_KEY_ID != ''
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: |
+          echo "Preparando claves de App Store Connect..."
+          mkdir -p ~/.appstoreconnect/private_keys ~/.private_keys
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY" > ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
+          cp ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8 ~/.private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
+          chmod 600 ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8 ~/.private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
+
+          IPA_PATH=$(find "$RUNNER_TEMP/export" -name "*.ipa" | head -n 1)
+          echo "Archivo IPA encontrado: $IPA_PATH"
+
+          echo "Validando App con App Store Connect..."
+          xcrun altool --validate-app \
+            -f "$IPA_PATH" \
+            -t ios \
+            --apiKey "$APP_STORE_CONNECT_KEY_ID" \
+            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
+
+          echo "Subiendo App a TestFlight / App Store..."
+          xcrun altool --upload-app \
+            -f "$IPA_PATH" \
+            -t ios \
+            --apiKey "$APP_STORE_CONNECT_KEY_ID" \
+            --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
+
       - name: Limpieza de seguridad post-ejecución
         if: always()
         run: |
@@ -258,6 +288,7 @@ jobs:
             rm -f "$PROFILE_PATH"
           fi
 
+          rm -rf ~/.appstoreconnect/private_keys ~/.private_keys 2>/dev/null || true
           rm -f "$RUNNER_TEMP/ExportOptions.plist" 2>/dev/null || true
           rm -rf "$RUNNER_TEMP/eBand.xcarchive" 2>/dev/null || true
           rm -f "$HOME/Library/MobileDevice/Provisioning Profiles/"*.mobileprovision 2>/dev/null || true
