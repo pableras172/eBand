@@ -21,6 +21,18 @@ jobs:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
 
+      - name: Seleccionar la versión más reciente de Xcode
+        run: |
+          echo "Versiones de Xcode disponibles en el runner:"
+          ls -ld /Applications/Xcode*.app || true
+          LATEST_XC=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -n 1)
+          if [ -n "$LATEST_XC" ] && [ -d "$LATEST_XC" ]; then
+            echo "Seleccionando versión más reciente de Xcode: $LATEST_XC"
+            sudo xcode-select -s "$LATEST_XC"
+          fi
+          echo "Ruta de Xcode activa: $(xcode-select -p)"
+          xcodebuild -version
+
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
