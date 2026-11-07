@@ -36,6 +36,7 @@ jobs:
       - name: Sincronizar Capacitor con iOS
         working-directory: mobile
         run: |
+          node -e "const fs=require('fs');const p='node_modules/@capacitor/cli/dist/config.js';if(fs.existsSync(p)){fs.writeFileSync(p,fs.readFileSync(p,'utf8').replace(/minVersion:\s*'13\.0'/g,\"minVersion: '15.0'\"));}"
           npx cap sync ios
 
       - name: Instalar CocoaPods
