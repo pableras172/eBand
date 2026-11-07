@@ -80,8 +80,37 @@ jobs:
           # 5. Establecer como llavero por defecto
           security default-keychain -s "$KEYCHAIN_PATH"
 
-          # 6. Decodificar e importar el certificado .p12
-          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o "$CERTIFICATE_PATH"
+          # 6. Decodificar el certificado .p12 con Python (evita incompatibilidades BSD/GNU base64)
+          python3 -c "
+          import base64, os, re
+          b64 = os.environ.get('BUILD_CERTIFICATE_BASE64', '').strip()
+          if not b64:
+              raise SystemExit('ERROR: Secret BUILD_CERTIFICATE_BASE64 is empty!')
+          cleaned = re.sub(r'[^A-Za-z0-9+/=]', '', b64)
+          pad = len(cleaned) % 4
+          if pad:
+              cleaned += '=' * (4 - pad)
+          with open(os.environ['CERTIFICATE_PATH'], 'wb') as f:
+              f.write(base64.b64decode(cleaned))
+          "
+
+          # Compatibilidad OpenSSL 3 / macOS Keychain (formato legacy PKCS#12)
+          OPENSSL_BIN="openssl"
+          for bin in /opt/homebrew/opt/openssl@3/bin/openssl /opt/homebrew/bin/openssl /usr/local/bin/openssl /usr/bin/openssl; do
+            if [ -x "$bin" ]; then
+              OPENSSL_BIN="$bin"
+              break
+            fi
+          done
+
+          if $OPENSSL_BIN pkcs12 -in "$CERTIFICATE_PATH" -nodes -passin "pass:$P12_PASSWORD" -out "$RUNNER_TEMP/cert_key.pem" 2>/dev/null; then
+            if $OPENSSL_BIN pkcs12 -export -legacy -in "$RUNNER_TEMP/cert_key.pem" -out "$RUNNER_TEMP/legacy_certificate.p12" -passout "pass:$P12_PASSWORD" 2>/dev/null; then
+              CERTIFICATE_PATH="$RUNNER_TEMP/legacy_certificate.p12"
+            fi
+            rm -f "$RUNNER_TEMP/cert_key.pem"
+          fi
+
+          # 7. Importar certificado en el llavero
           security import "$CERTIFICATE_PATH" \
             -k "$KEYCHAIN_PATH" \
             -P "$P12_PASSWORD" \
@@ -89,7 +118,7 @@ jobs:
             -T /usr/bin/security \
             -f pkcs12
 
-          # 7. Conceder permisos a codesign en la lista de particiones para evitar prompts de UI
+          # 8. Conceder permisos a codesign en la lista de particiones para evitar prompts de UI
           security set-key-partition-list \
             -S apple-tool:,apple:,codesign: \
             -s \
@@ -107,8 +136,19 @@ jobs:
           PROFILE_PATH="$RUNNER_TEMP/distribution.mobileprovision"
           echo "PROFILE_PATH=$PROFILE_PATH" >> $GITHUB_ENV
 
-          # Decodificar el perfil de aprovisionamiento
-          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o "$PROFILE_PATH"
+          # Decodificar el perfil de aprovisionamiento con Python (evita incompatibilidades BSD/GNU base64)
+          python3 -c "
+          import base64, os, re
+          b64 = os.environ.get('BUILD_PROVISION_PROFILE_BASE64', '').strip()
+          if not b64:
+              raise SystemExit('ERROR: Secret BUILD_PROVISION_PROFILE_BASE64 is empty!')
+          cleaned = re.sub(r'[^A-Za-z0-9+/=]', '', b64)
+          pad = len(cleaned) % 4
+          if pad:
+              cleaned += '=' * (4 - pad)
+          with open(os.environ['PROFILE_PATH'], 'wb') as f:
+              f.write(base64.b64decode(cleaned))
+          "
 
           # Extraer dinámicamente el UUID del perfil (usando plutil con fallbacks a PlistBuddy y grep/sed)
           PROFILE_UUID=$(security cms -D -i "$PROFILE_PATH" | plutil -extract UUID raw - 2>/dev/null || \
@@ -141,25 +181,28 @@ jobs:
             -allowProvisioningUpdates=NO
 
       - name: Generar ExportOptions.plist y exportar .ipa
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           echo "Generando manifiesto ExportOptions.plist..."
-          EXPORT_METHOD="app-store"
-
-          cat <<EOF > "$RUNNER_TEMP/ExportOptions.plist"
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
+          python3 -c "
+          import os
+          uuid = os.environ.get('PROFILE_UUID', '').strip()
+          team = os.environ.get('APPLE_TEAM_ID', '').strip()
+          plist_content = f'''<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+          <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+          <plist version=\"1.0\">
           <dict>
               <key>method</key>
-              <string>${EXPORT_METHOD}</string>
+              <string>app-store</string>
               <key>signingStyle</key>
               <string>manual</string>
               <key>teamID</key>
-              <string>${{ secrets.APPLE_TEAM_ID }}</string>
+              <string>{team}</string>
               <key>provisioningProfiles</key>
               <dict>
                   <key>es.eband.app</key>
-                  <string>${PROFILE_UUID}</string>
+                  <string>{uuid}</string>
               </dict>
               <key>signingCertificate</key>
               <string>Apple Distribution</string>
@@ -175,7 +218,11 @@ jobs:
               <true/>
           </dict>
           </plist>
-          EOF
+          '''
+          plist_path = os.path.join(os.environ['RUNNER_TEMP'], 'ExportOptions.plist')
+          with open(plist_path, 'w', encoding='utf-8') as f:
+              f.write(plist_content.strip())
+          "
 
           mkdir -p "$RUNNER_TEMP/export"
 
