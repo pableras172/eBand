@@ -53,6 +53,7 @@ jobs:
           KEYCHAIN_PATH="$RUNNER_TEMP/build.keychain-db"
           KEYCHAIN_PASSWORD=$(openssl rand -hex 16)
           CERTIFICATE_PATH="$RUNNER_TEMP/build_cert.p12"
+          export KEYCHAIN_PATH KEYCHAIN_PASSWORD CERTIFICATE_PATH
 
           # Enmascarar contraseña en los logs de GitHub Actions
           echo "::add-mask::$KEYCHAIN_PASSWORD"
@@ -135,6 +136,7 @@ jobs:
           echo "Instalando perfil de aprovisionamiento..."
           mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
           PROFILE_PATH="$RUNNER_TEMP/distribution.mobileprovision"
+          export PROFILE_PATH
           echo "PROFILE_PATH=$PROFILE_PATH" >> $GITHUB_ENV
 
           # Decodificar el perfil de aprovisionamiento con Python (evita incompatibilidades BSD/GNU base64)
