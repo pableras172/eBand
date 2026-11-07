@@ -4,7 +4,7 @@
 **Componente**: Contenedor Móvil iOS (`mobile/ios`)  
 **Fecha de Auditoría**: 7 de Noviembre de 2026  
 **Identificador de Aplicación (Bundle ID)**: `es.eband.app`  
-**Entorno de CI/CD Objetivo**: GitHub Actions (`macos-14`, Apple Silicon M1/M2)  
+**Entorno de CI/CD Objetivo**: GitHub Actions (`macos-15`, Apple Silicon M1/M2)  
 
 ---
 
@@ -95,7 +95,7 @@ El flujo de trabajo previo en `.github/workflows/build-ios.yml` fue concebido ú
 
 ### Bloqueador 3: Ausencia de Gestión de Keychain Temporal y Secretos
 - **Estado actual**: El workflow no contiene ninguna instrucción para crear llaveros (`security create-keychain`), ni importa certificados `.p12`, ni maneja secretos de GitHub Actions (`secrets.*`).
-- **Impacto**: Los runners de GitHub Actions `macos-14` son máquinas virtuales limpias y efímeras. No contienen la clave privada ni el certificado de distribución de la organización. Además, en entornos desatendidos (*headless*), cualquier intento de acceder a un llavero por defecto (`login.keychain-db`) sin partición de permisos provoca un bloqueo interactivo de UI (*GUI prompt*) que congela el job hasta el timeout de 6 horas.
+- **Impacto**: Los runners de GitHub Actions `macos-15` son máquinas virtuales limpias y efímeras. No contienen la clave privada ni el certificado de distribución de la organización. Además, en entornos desatendidos (*headless*), cualquier intento de acceder a un llavero por defecto (`login.keychain-db`) sin partición de permisos provoca un bloqueo interactivo de UI (*GUI prompt*) que congela el job hasta el timeout de 6 horas.
 - **Solución requerida**:
   1. Crear un llavero temporal (`$RUNNER_TEMP/build.keychain-db`) con contraseña aleatoria efímera (`openssl rand -hex 16`).
   2. Configurar el timeout del llavero a 21.600 segundos (6 horas) con `security set-keychain-settings -lut 21600` para evitar que se bloquee durante la compilación.
@@ -135,7 +135,7 @@ En el archivo `mobile/.gitignore`:
 
 ## 5. Especificación de Ajustes para el Runner Headless (macOS)
 
-Para garantizar una compilación desatendida y segura en GitHub Actions (`macos-14`), la canalización debe seguir el siguiente ciclo de vida:
+Para garantizar una compilación desatendida y segura en GitHub Actions (`macos-15`), la canalización debe seguir el siguiente ciclo de vida:
 
 ```
 [1. Checkout]
@@ -187,7 +187,7 @@ Para garantizar una compilación desatendida y segura en GitHub Actions (`macos-
 | **CocoaPods Workspace** | Presente, pero sin lockfile en repo | Ejecución garantizada de `pod install` tras la sincronización |
 | **Esquema de Xcode** | Inexistente (bloqueaba CI headless) | Creación de `App.xcscheme` compartido en `xcshareddata/xcschemes/` |
 | **Lockfile de npm** | Ignorado en `mobile/.gitignore` | Eliminada la exclusión en `.gitignore` para caché determinista |
-| **Runner macOS** | `macos-14` (adecuado) | Mantenido `macos-14` (Apple Silicon M1/M2) |
+| **Runner macOS** | `macos-14` (retirado) | Actualizado a `macos-15` (Apple Silicon M1/M2 Sequoia) |
 | **Llavero y Firma** | Inexistente (compilación sin firma) | Implementado ciclo completo de llavero temporal y partición |
 | **Empaquetado IPA** | Compilaba `.app` de simulador | `xcodebuild clean archive` + `-exportArchive` produciendo `.ipa` |
 | **Artefactos CI** | Ruta errónea, aviso silenciado | `upload-artifact@v4` subiendo el `.ipa` con validación estricta |

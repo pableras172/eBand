@@ -161,7 +161,7 @@ Una vez configurados los secretos:
    - **Branch**: Rama deseada (ej. `main` o rama de trabajo).
    - **Modo de compilación**: `Release` (predeterminado para TestFlight / producción).
 5. Pulsa el botón verde **Run workflow**.
-6. El workflow ejecutará las fases en el runner `macos-14`:
+6. El workflow ejecutará las fases en el runner `macos-15`:
    - Descarga del código e instalación de Node 20 y dependencias de `mobile/`.
    - Sincronización de Capacitor (`npx cap sync ios`) e instalación de CocoaPods (`pod install`).
    - Creación del llavero temporal seguro e importación del certificado.

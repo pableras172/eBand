@@ -15,7 +15,7 @@ on:
 jobs:
   build-ios:
     name: Compilar y Empaquetar iOS (.ipa)
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
       - name: Checkout del repositorio
