@@ -86,6 +86,14 @@ Route::get('/', function () {
     return view('welcome');
 })->name('tenant.home');
 
+Route::get('/politica-privacidad', function () {
+    return view('politica-privacidad');
+})->name('politica-privacidad');
+
+Route::get('/privacidad', function () {
+    return redirect()->route('politica-privacidad');
+});
+
 Route::get('/demo/autologin', [DemoAutologinController::class, 'autologin'])
     ->name('demo.autologin');
 Route::post('/demo/quick-login', [DemoAutologinController::class, 'quickLogin'])
