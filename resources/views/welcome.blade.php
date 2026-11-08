@@ -1,1807 +1,1360 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Plataforma para la gestión de bandas de música y xarangas. Organiza actuaciones, control de asistencias, repertorio y contratos para tu agrupación de forma sencilla.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <!-- Primary Meta Tags -->
+    <title>eBand · Software y App de Gestión para Bandas de Música, Coros y Agrupaciones Musicales</title>
+    <meta name="title" content="eBand · Software y App de Gestión para Bandas de Música, Coros y Agrupaciones Musicales">
+    <meta name="description" content="eBand es la plataforma y app móvil de gestión para Bandas de Música, Charangas, Sociedades Musicales y Corales. Control de asistencia y disponibilidad a ensayos, inventario de uniformes y material, control parental, actividades extra y liquidaciones de bolos. Tarifa plana 150€/año sin límites.">
+    <meta name="keywords" content="software gestion banda de musica, app gestion bandas musicales, plataforma gestion bandas, aplicacion gestion bandas, software bandas de musica, software gestion orquestas, app agrupaciones musicales, gestion coros corales orfeones, app charanga, control asistencia ensayos banda, control parental banda musica, inventario uniformes banda, liquidacion bolos, eband, software musical saas">
     <meta name="author" content="eBand">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="{{ url('/') }}" />
-    <meta name="keywords" content="banda de música, gestión de banda, gestión bandas, xarangas, control de asistencias, repertorio, conciertos">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-    
+    <link rel="canonical" href="{{ url('/') }}">
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url('/') }}">
-    <meta property="og:title" content="eBand - Sistema de Gestión para Bandas de Música">
-    <meta property="og:description" content="La plataforma completa para organizar actuaciones, asistencias, repertorio y mucho más. Gestiona tu banda de música de forma profesional.">
-    <meta property="og:image" content="{{ URL::to('/') }}/logo_e_band.png">
+    <meta property="og:title" content="eBand · Software y App de Gestión para Bandas de Música, Coros y Charangas">
+    <meta property="og:description" content="Plataforma y app de gestión integral para Bandas de Música, Charangas y Corales. Control de disponibilidad en tiempo real, control parental, actividades con confirmación Sí/No, inventario y liquidaciones. Tarifa plana 150€/año.">
+    <meta property="og:image" content="{{ asset('logo_e_band.png') }}">
+    <meta property="og:site_name" content="eBand">
+    <meta property="og:locale" content="es_ES">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ url('/') }}">
-    <meta property="twitter:title" content="eBand - Sistema de Gestión para Bandas de Música">
-    <meta property="twitter:description" content="La plataforma completa para organizar actuaciones, asistencias, repertorio y mucho más. Gestiona tu banda de música de forma profesional.">
-    <meta property="twitter:image" content="{{ URL::to('/') }}/logo_e_band.png">
+    <meta property="twitter:title" content="eBand · Software y App de Gestión para Bandas de Música, Coros y Charangas">
+    <meta property="twitter:description" content="Gestiona tu Banda, Charanga o Coral sin complicaciones: asistencia en tiempo real, control parental, inventario de uniformes, actividades y reparto de bolos.">
+    <meta property="twitter:image" content="{{ asset('logo_e_band.png') }}">
+
+    <!-- Mobile & PWA settings -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="eBand">
+    <meta name="theme-color" content="#1e40af">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ URL::to('/') }}/logo_e_band.png">
-    <link rel="apple-touch-icon" href="{{ URL::to('/') }}/logo_e_band.png">
+    <link rel="icon" type="image/png" href="{{ asset('logo_e_band.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('logo_e_band.png') }}">
 
-    <title>eBand — Gestión de banda de música para bandas y xarangas</title>
+    <!-- Fonts: Plus Jakarta Sans (Headings) & Inter (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Styles & Scripts via Vite -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <style>
-        /* =============================
-           RESET & BASE
-           ============================= */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-void:      #f7f2e8;
-            --bg-deep:      #efe6d6;
-            --bg-surface:   #fffaf2;
-            --bg-card:      rgba(255,250,242,0.86);
-            --border-dim:   rgba(87, 68, 45, 0.12);
-            --border-glow:  rgba(217,119,6,0.28);
-            --gold:         #d97706;
-            --gold-soft:    #f59e0b;
-            --gold-dim:     rgba(217,119,6,0.10);
-            --coral:        #e76f51;
-            --text-primary: #1f2937;
-            --text-secondary: #5f6c7b;
-            --text-muted:   #8b7359;
-            --nav-h:        72px;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
-            font-family: 'DM Sans', system-ui, sans-serif;
-            background:
-                radial-gradient(circle at top left, rgba(245,158,11,0.16), transparent 28%),
-                linear-gradient(180deg, #fbf7f0 0%, #f7f2e8 48%, #f1e9dc 100%);
-            color: var(--text-primary);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-
-        /* =============================
-           KEYFRAMES
-           ============================= */
-        @keyframes breathe {
-            0%, 100% { transform: scale(1);    opacity: 0.38; }
-            50%       { transform: scale(1.12); opacity: 0.58; }
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-
-        @keyframes breathe-slow {
-            0%, 100% { transform: scale(1);    opacity: 0.20; }
-            50%       { transform: scale(1.18); opacity: 0.32; }
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(28px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
-
-        @keyframes float-note {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33%       { transform: translateY(-18px) rotate(8deg); }
-            66%       { transform: translateY(-8px) rotate(-5deg); }
-        }
-
-        @keyframes pulse-ring {
-            0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245,158,11,0.35); }
-            70%  { transform: scale(1);    box-shadow: 0 0 0 18px rgba(245,158,11,0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245,158,11,0); }
-        }
-
-        @keyframes slide-in-nav {
-            from { opacity: 0; transform: translateY(-16px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes reveal {
-            from { opacity: 0; transform: translateY(40px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* =============================
-           NAV
-           ============================= */
-        .nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: var(--nav-h);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 5%;
-            background: rgba(255,250,242,0.78);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-bottom: 1px solid var(--border-dim);
-            z-index: 9000;
-            animation: slide-in-nav 0.6s ease both;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .nav-logo {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-        }
-
-        .nav-wordmark {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.35rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            letter-spacing: -0.01em;
-        }
-
-        .nav-wordmark span {
-            color: var(--gold);
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* =============================
-           BUTTONS
-           ============================= */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 9px 20px;
-            border-radius: 8px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-            line-height: 1;
-            white-space: nowrap;
-        }
-
-        .btn-ghost {
-            background: rgba(255,255,255,0.35);
-            color: var(--text-primary);
-            border-color: var(--border-dim);
-        }
-
-        .btn-ghost:hover {
-            color: var(--text-primary);
-            border-color: rgba(217,119,6,0.22);
-            background: rgba(255,255,255,0.72);
-        }
-
-        .btn-gold {
-            background: var(--gold);
-            color: #07090f;
-            font-weight: 600;
-        }
-
-        .btn-gold:hover {
-            background: var(--gold-soft);
-            transform: translateY(-1px);
-            box-shadow: 0 8px 24px rgba(245,158,11,0.35);
-        }
-
-        .btn-gold-outline {
-            background: transparent;
-            color: var(--gold);
-            border-color: rgba(245,158,11,0.5);
-        }
-
-        .btn-gold-outline:hover {
-            background: var(--gold-dim);
-            border-color: var(--gold);
-        }
-
-        .btn-lg {
-            padding: 14px 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 10px;
-        }
-
-        /* =============================
-           HERO
-           ============================= */
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: calc(var(--nav-h) + 4rem) 5% 6rem;
-            overflow: hidden;
-            isolation: isolate;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                linear-gradient(180deg, rgba(255, 250, 242, 0.712), rgba(247, 242, 232, 0.685)),
-                url('{{ URL::to('/') }}/fondo_eband_head.jpg') center/cover no-repeat;
-            filter: blur(8px);
-            transform: scale(1.08);
-            opacity: 0.78;
-            z-index: 0;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(245,158,11,0.05));
-            z-index: 0;
-        }
-
-        /* Breathing ambient orb — the heart of the experience */
-        .hero-orb {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: min(700px, 120vw);
-            height: min(700px, 120vw);
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background: radial-gradient(circle at center,
-                rgba(245,158,11,0.16) 0%,
-                rgba(251,191,36,0.10) 30%,
-                rgba(245,158,11,0.03) 60%,
-                transparent 75%
-            );
-            animation: breathe 7s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .hero-orb-outer {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: min(1100px, 200vw);
-            height: min(1100px, 200vw);
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background: radial-gradient(circle at center,
-                rgba(251,191,36,0.08) 0%,
-                transparent 65%
-            );
-            animation: breathe-slow 9s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Floating music notes — barely visible, deeply calming */
-        .hero-notes {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .note {
-            position: absolute;
-            font-size: 1.4rem;
-            color: rgba(245,158,11,0.18);
-            animation: float-note var(--dur, 22s) ease-in-out infinite;
-            animation-delay: var(--delay, 0s);
-            user-select: none;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 780px;
-            margin: 0 auto;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            border-radius: 100px;
-            background: rgba(255,250,242,0.72);
-            border: 1px solid rgba(217,119,6,0.22);
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--gold-soft);
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            margin-bottom: 2rem;
-            animation: fadeUp 0.6s ease 0.1s both;
-        }
-
-        .hero-badge-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--gold);
-            animation: pulse-ring 2.4s ease infinite;
-            flex-shrink: 0;
-        }
-
-        .hero-headline {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(2.6rem, 6.5vw, 4.6rem);
-            font-weight: 800;
-            line-height: 1.07;
-            letter-spacing: -0.03em;
-            color: var(--text-primary);
-            margin-bottom: 1.5rem;
-            animation: fadeUp 0.7s ease 0.2s both;
-        }
-
-        .hero-headline em {
-            font-style: normal;
-            color: var(--gold);
-        }
-
-        .hero-sub {
-            font-size: clamp(1rem, 2.2vw, 1.2rem);
-            color: var(--text-secondary);
-            line-height: 1.7;
-            max-width: 560px;
-            margin: 0 auto 2.5rem;
-            font-weight: 300;
-            animation: fadeUp 0.7s ease 0.35s both;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeUp 0.7s ease 0.5s both;
-        }
-
-        .hero-scroll-hint {
-            position: absolute;
-            bottom: 2.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            z-index: 2;
-            animation: fadeIn 1.2s ease 1.2s both;
-        }
-
-        .scroll-mouse {
-            width: 22px;
-            height: 36px;
-            border: 1.5px solid var(--text-muted);
-            border-radius: 12px;
-            position: relative;
-        }
-
-        .scroll-mouse::after {
-            content: '';
-            position: absolute;
-            top: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 3px;
-            height: 6px;
-            background: var(--text-muted);
-            border-radius: 2px;
-            animation: fadeUp 1.2s ease infinite;
-        }
-
-        /* =============================
-           STATS STRIP
-           ============================= */
-        .stats-strip {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 0;
-            background: var(--bg-surface);
-            border-top: 1px solid var(--border-dim);
-            border-bottom: 1px solid var(--border-dim);
-        }
-
-        .stat-item {
-            flex: 1;
-            min-width: 160px;
-            max-width: 240px;
-            padding: 2rem 1.5rem;
-            text-align: center;
-            border-right: 1px solid var(--border-dim);
-            transition: background 0.2s;
-        }
-
-        .stat-item:last-child {
-            border-right: none;
-        }
-
-        .stat-item:hover {
-            background: rgba(245,158,11,0.06);
-        }
-
-        .stat-num {
-            font-family: 'Syne', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--gold);
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-        }
-
-        /* =============================
-           SECTION SHARED
-           ============================= */
-        .section {
-            padding: 6rem 5%;
-        }
-
-        .section-inner {
-            max-width: 1160px;
-            margin: 0 auto;
-        }
-
-        .section-label {
-            font-size: 0.75rem;
-            font-weight: 500;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: 1rem;
-        }
-
-        .section-title {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            line-height: 1.15;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-
-        .section-sub {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            max-width: 520px;
-            font-weight: 300;
-        }
-
-        .section-header {
-            margin-bottom: 3.5rem;
-        }
-
-        /* =============================
-           FEATURES GRID
-           ============================= */
-        .features-bg {
-            background: var(--bg-deep);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .features-bg::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                linear-gradient(180deg, rgba(239, 230, 214, 0), rgba(239, 230, 214, 0)),
-                url('{{ URL::to('/') }}/ensayo.jpg') center/cover no-repeat;
-            filter: blur(8px);
-            transform: scale(1.06);
-            opacity: 0.6;
-            z-index: 0;
-        }
-
-        .features-bg .section-inner {
-            position: relative;
-            z-index: 1;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5px;
-            background: var(--border-dim);
-            border: 1px solid var(--border-dim);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .feat-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            padding: 2rem 2rem 2.2rem;
-            transition: background 0.25s ease;
-            position: relative;
-        }
-
-        .feat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 3px;
-            height: 0;
-            background: var(--gold);
-            transition: height 0.3s ease;
-        }
-
-        .feat-card:hover {
-            background: rgba(255,248,238,0.96);
-        }
-
-        .feat-card:hover::before {
-            height: 100%;
-        }
-
-        .feat-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 10px;
-            background: var(--gold-dim);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.25rem;
-            font-size: 1.3rem;
-            transition: transform 0.25s ease;
-        }
-
-        .feat-card:hover .feat-icon {
-            transform: scale(1.08);
-        }
-
-        .feat-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.6rem;
-        }
-
-        .feat-desc {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.65;
-            font-weight: 300;
-        }
-
-        .feat-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 1rem;
-        }
-
-        .feat-tag {
-            font-size: 0.72rem;
-            padding: 3px 9px;
-            border-radius: 100px;
-            background: rgba(245,158,11,0.08);
-            color: rgba(245,158,11,0.7);
-            border: 1px solid rgba(245,158,11,0.15);
-            font-weight: 400;
-        }
-
-        /* =============================
-           HOW IT WORKS
-           ============================= */
-        .how-bg {
-            background: var(--bg-void);
-        }
-
-        .steps {
-            display: grid;
-            grid-template-columns: 1fr 1px 1fr 1px 1fr;
-            gap: 0;
-            position: relative;
-        }
-
-        @media (max-width: 768px) {
-            .steps {
-                grid-template-columns: 1fr;
-                gap: 2.5rem;
-            }
-
-            .step-divider { display: none; }
-        }
-
-        .step-divider {
-            background: var(--border-dim);
-            align-self: stretch;
-        }
-
-        .step {
-            padding: 0 2.5rem;
-            text-align: center;
-        }
-
-        .step:first-child { padding-left: 0; }
-        .step:last-child  { padding-right: 0; }
-
-        .step-num {
-            font-family: 'Syne', sans-serif;
-            font-size: 4rem;
-            font-weight: 800;
-            color: rgba(245,158,11,0.12);
-            line-height: 1;
-            margin-bottom: 1rem;
-        }
-
-        .step-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.6rem;
-        }
-
-        .step-desc {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.65;
-            font-weight: 300;
-        }
-
-        /* =============================
-           GALLERY
-           ============================= */
-        .gallery-bg {
-            background: var(--bg-surface);
-            overflow: hidden;
-        }
-
-        .gallery-scroll {
-            display: flex;
-            gap: 1.5rem;
-            overflow-x: auto;
-            padding-bottom: 1.5rem;
-            scrollbar-width: thin;
-            scrollbar-color: var(--border-dim) transparent;
-        }
-
-        .gallery-scroll::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .gallery-scroll::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .gallery-scroll::-webkit-scrollbar-thumb {
-            background: var(--border-dim);
-            border-radius: 2px;
-        }
-
-        .gallery-item {
-            flex: 0 0 320px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-dim);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-6px);
-            border-color: var(--border-glow);
-        }
-
-        .gallery-img-wrap {
-            aspect-ratio: 16/10;
-            background: var(--bg-deep);
-            overflow: hidden;
-        }
-
-        .gallery-img-wrap img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.4s ease;
-        }
-
-        .gallery-item:hover .gallery-img-wrap img {
-            transform: scale(1.04);
-        }
-
-        .gallery-caption {
-            padding: 1.1rem 1.4rem 1.4rem;
-        }
-
-        .gallery-caption h4 {
-            font-family: 'Syne', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .gallery-caption p {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        /* =============================
-           BENEFITS BENTO
-           ============================= */
-        .benefits-bg {
-            background: var(--bg-deep);
-        }
-
-        .bento {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: auto auto;
-            gap: 1.5px;
-            background: var(--border-dim);
-            border: 1px solid var(--border-dim);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .bento-cell {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            transition: background 0.2s ease;
-        }
-
-        .bento-cell:hover {
-            background: rgba(255,248,238,0.96);
-        }
-
-        .bento-cell.wide {
-            grid-column: span 2;
-        }
-
-        .bento-cell.tall {
-            grid-row: span 2;
-        }
-
-        .bento-icon {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .bento-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .bento-desc {
-            font-size: 0.88rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            font-weight: 300;
-        }
-
-        .bento-large-num {
-            font-family: 'Syne', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: var(--gold);
-            line-height: 1;
-            margin-bottom: 0.4rem;
-        }
-
-        @media (max-width: 768px) {
-            .bento {
-                grid-template-columns: 1fr;
-            }
-
-            .bento-cell.wide,
-            .bento-cell.tall {
-                grid-column: span 1;
-                grid-row: span 1;
-            }
-        }
-
-        /* =============================
-           PWA STRIP
-           ============================= */
-        .pwa-strip {
-            background: var(--bg-void);
-            padding: 4rem 5%;
-            border-top: 1px solid var(--border-dim);
-            border-bottom: 1px solid var(--border-dim);
-        }
-
-        .pwa-inner {
-            max-width: 1160px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-            flex-wrap: wrap;
-        }
-
-        .pwa-left {
-            flex: 1;
-            min-width: 260px;
-        }
-
-        .pwa-right {
-            flex: 0 0 auto;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .pwa-platform {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 18px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-dim);
-            border-radius: 10px;
-            font-size: 0.88rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        .pwa-platform-icon {
-            font-size: 1.2rem;
-        }
-
-        /* =============================
-           CTA SECTION
-           ============================= */
-        .cta-section {
-            background: var(--bg-surface);
-            padding: 6rem 5%;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            isolation: isolate;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                linear-gradient(180deg, rgba(255, 250, 242, 0), rgba(255, 250, 242, 0)),
-                url('{{ URL::to('/') }}/partitura.jpg') center/cover no-repeat;
-            filter: blur(5px);
-            transform: scale(1.08);
-            opacity: 0.75;
-            z-index: 0;
-        }
-
-        .cta-glow {
-            position: absolute;
-            top: -50%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(245,158,11,0.10) 0%, transparent 70%);
-            pointer-events: none;
-            animation: breathe 8s ease-in-out infinite;
-        }
-
-        .cta-section .section-title {
-            max-width: 600px;
-            margin: 0 auto 1rem;
-        }
-
-        .cta-section .section-sub {
-            max-width: 440px;
-            margin: 0 auto 2.5rem;
-            text-align: center;
-        }
-
-        .cta-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        /* =============================
-           CONTACT
-           ============================= */
-        .contact-bg {
-            background: var(--bg-deep);
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: start;
-        }
-
-        @media (max-width: 860px) {
-            .contact-grid {
-                grid-template-columns: 1fr;
-                gap: 2.5rem;
-            }
-        }
-
-        .contact-info-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-
-        .contact-info-desc {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            font-weight: 300;
-            margin-bottom: 2rem;
-        }
-
-        .contact-benefit {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 1.2rem;
-        }
-
-        .contact-benefit-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--gold-dim);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .contact-benefit-text strong {
-            display: block;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 2px;
-        }
-
-        .contact-benefit-text span {
-            font-size: 0.83rem;
-            color: var(--text-muted);
-        }
-
-        .contact-form {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-dim);
-            border-radius: 16px;
-            padding: 2.5rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        @media (max-width: 520px) {
-            .form-row { grid-template-columns: 1fr; }
-        }
-
-        .form-field {
-            margin-bottom: 1.25rem;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
-        }
-
-        .form-input,
-        .form-textarea {
-            width: 100%;
-            padding: 11px 14px;
-            background: rgba(255,255,255,0.72);
-            border: 1px solid var(--border-dim);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 300;
-            transition: border-color 0.2s ease, background 0.2s ease;
-            outline: none;
-        }
-
-        .form-input::placeholder,
-        .form-textarea::placeholder {
-            color: var(--text-muted);
-        }
-
-        .form-input:focus,
-        .form-textarea:focus {
-            border-color: rgba(245,158,11,0.5);
-            background: rgba(245,158,11,0.03);
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 110px;
-        }
-
-        .form-error {
-            font-size: 0.78rem;
-            color: var(--coral);
-            margin-top: 4px;
-        }
-
-        .form-alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            font-size: 0.88rem;
-        }
-
-        .form-alert-success {
-            background: rgba(52, 211, 153, 0.1);
-            border: 1px solid rgba(52, 211, 153, 0.25);
-            color: #047857;
-        }
-
-        .form-alert-error {
-            background: rgba(251, 113, 133, 0.1);
-            border: 1px solid rgba(251, 113, 133, 0.25);
-            color: var(--coral);
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 13px;
-            background: var(--gold);
-            color: #07090f;
-            border: none;
-            border-radius: 8px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: 0.5rem;
-        }
-
-        .btn-submit:hover {
-            background: var(--gold-soft);
-            transform: translateY(-1px);
-            box-shadow: 0 8px 24px rgba(245,158,11,0.35);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* =============================
-           FOOTER
-           ============================= */
-        .footer {
-            background: var(--bg-void);
-            border-top: 1px solid var(--border-dim);
-            padding: 2.5rem 5%;
-        }
-
-        .footer-inner {
-            max-width: 1160px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .footer-copy {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        .footer-links a {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-links a:hover {
-            color: var(--gold);
-        }
-
-        /* =============================
-           REVEAL ON SCROLL
-           ============================= */
-        .reveal {
-            opacity: 0;
-            transform: translateY(32px);
-            transition: opacity 0.7s ease, transform 0.7s ease;
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* =============================
-           RESPONSIVE
-           ============================= */
-        @media (max-width: 640px) {
-            .nav-wordmark {
-                display: none;
-            }
-
-            .stat-item {
-                min-width: 120px;
-                padding: 1.5rem 1rem;
-            }
-
-            .stat-num {
-                font-size: 1.6rem;
-            }
-
-            .step {
-                padding: 0;
-            }
-
-            .section {
-                padding: 4rem 5%;
-            }
-
-            .btn-lg {
-                padding: 12px 22px;
-                font-size: 0.95rem;
-            }
-        }
+        [x-cloak] { display: none !important; }
     </style>
-        <script type="application/ld+json">
+
+    <!-- Structured Data (JSON-LD) for Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@graph": [
         {
-            "@@context": "https://schema.org",
-            "@@graph": [
-                {
-                    "@@type": "Organization",
-                    "name": "eBand",
-                    "url": "{{ url('/') }}",
-                    "logo": "{{ URL::to('/') }}/logo_e_band.png",
-                    "sameAs": []
-                },
-                {
-                    "@@type": "WebSite",
-                    "url": "{{ url('/') }}",
-                    "name": "eBand",
-                    "description": "Plataforma para la gestión de bandas de música, xarangas y agrupaciones: calendario, asistencias, repertorio y contratos.",
-                    "potentialAction": {
-                        "@@type": "SearchAction",
-                        "target": "{{ url('/') }}?s={search_term_string}",
-                        "query-input": "required name=search_term_string"
-                    }
-                }
-            ]
+          "@@type": "SoftwareApplication",
+          "name": "eBand",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "All (Web, iOS, Android, Windows, macOS)",
+          "offers": {
+            "@@type": "Offer",
+            "price": "150.00",
+            "priceCurrency": "EUR",
+            "priceValidUntil": "2027-12-31",
+            "availability": "https://schema.org/InStock",
+            "description": "Tarifa plana anual de 150€ con miembros, actuaciones, actividades extra, control parental e inventario ilimitados para agrupaciones musicales."
+          },
+          "description": "Software especializado en la gestión integral de Bandas de Música, Charangas, Sociedades Musicales y Corales.",
+          "url": "{{ url('/') }}",
+          "image": "{{ asset('logo_e_band.png') }}"
+        },
+        {
+          "@@type": "Organization",
+          "name": "eBand",
+          "url": "{{ url('/') }}",
+          "logo": "{{ asset('logo_e_band.png') }}",
+          "sameAs": [
+            "https://twitter.com/ebandapp"
+          ]
+        },
+        {
+          "@@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@@type": "Question",
+              "name": "¿Sirve eBand para Corales y Coros además de Bandas?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Sí, totalmente. eBand permite clasificar a los integrantes tanto por instrumentos y cuerdas musicales como por tipos de voz (sopranos, contraltos, tenores, bajos) y gestionar convocatorias, asistencias y actividades."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Cómo funciona el Control Parental para familias con menores?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Los padres o tutores disponen de una vista unificada desde su propio usuario donde pueden ver las convocatorias, ensayos, uniformes y actividades de sus hijos menores, e inscribirlos directamente."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Cómo funciona en teléfonos iPhone y Android?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "eBand está desarrollada como Progressive Web App (PWA). Cada músico puede agregar la app directamente a la pantalla de inicio de su teléfono sin pagar comisiones ni depender de las tiendas de aplicaciones."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Qué incluye la tarifa de 150€ al año?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Es una tarifa plana completa: músicos ilimitados, ensayos y conciertos sin límite, control de disponibilidad (Disponible / No disponible), inventario de trajes y material, control parental, actividades extra, liquidaciones de bolos y soporte continuo."
+              }
+            }
+          ]
         }
-        </script>
+      ]
+    }
+    </script>
 </head>
-<body>
-    <!-- =====================
-         NAV
-         ===================== -->
-    <nav class="nav">
-        <a href="{{ url('/') }}" class="nav-brand">
-                    <img class="nav-logo" src="{{ URL::to('/') }}/logo_e_band.png" alt="eBand" width="36" height="36" />
-            <span class="nav-wordmark">e<span>Band</span></span>
-        </a>
-        <div class="nav-actions">
-            @auth
-                <a href="{{ route('dashboard') }}" class="btn btn-gold">Ir al dashboard</a>
-            @else
-                <a href="{{ route('login') }}" class="btn btn-ghost">Iniciar sesión</a>
-            @endauth
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- ============================================================== -->
+    <!-- NAVIGATION BAR                                                 -->
+    <!-- ============================================================== -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md transition-all">
+        <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <!-- Brand Logo -->
+            <a href="{{ url('/') }}" class="group flex items-center gap-3">
+                <div class="relative flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-700 via-indigo-600 to-amber-500 p-0.5 shadow-md shadow-indigo-500/15 transition-transform group-hover:scale-105">
+                    <img src="{{ asset('logo_e_band.png') }}" alt="eBand Logo" class="h-full w-full rounded-[10px] object-cover bg-white" width="44" height="44">
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-heading text-2xl font-extrabold tracking-tight text-slate-900">
+                        e<span class="text-blue-700">Band</span><span class="text-amber-500">.</span>
+                    </span>
+                    <span class="text-[10px] font-semibold tracking-wider uppercase text-slate-500">Bandas · Charangas · Corales</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+                <a href="#para-quien" class="transition hover:text-blue-700">Para quién</a>
+                <a href="#funcionalidades" class="transition hover:text-blue-700">Funcionalidades</a>
+                <a href="#galeria" class="transition hover:text-blue-700">Galería</a>
+                <a href="#precio" class="transition hover:text-blue-700 flex items-center gap-1.5">
+                    <span>Tarifa</span>
+                    <span class="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-800">150€/año</span>
+                </a>
+                <a href="#faq" class="transition hover:text-blue-700">FAQ</a>
+                <a href="#contacto" class="transition hover:text-blue-700">Contacto</a>
+            </nav>
+
+            <!-- Navigation Actions -->
+            <div class="hidden sm:flex items-center gap-3">
+                <a href="{{ Route::has('tenant-access.index') ? route('tenant-access.index') : (Route::has('login') ? route('login') : url('/acceso')) }}" 
+                   class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-blue-700 hover:border-slate-300">
+                    Acceso a mi banda
+                </a>
+                <button type="button" 
+                        data-demo-trigger
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-600 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-700/20 transition hover:from-blue-800 hover:to-indigo-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+                    <span>Probar Demo</span>
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <div class="flex items-center md:hidden">
+                <button type="button" 
+                        id="mobile-nav-toggle"
+                        class="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 focus:outline-none"
+                        aria-label="Abrir menú de navegación">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
         </div>
-    </nav>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-nav-menu"
+             class="hidden border-b border-slate-200 bg-white px-4 pt-2 pb-6 md:hidden">
+            <nav class="flex flex-col space-y-3 text-base font-medium text-slate-700">
+                <a href="#para-quien" class="py-2 hover:text-blue-700">Para quién</a>
+                <a href="#funcionalidades" class="py-2 hover:text-blue-700">Funcionalidades</a>
+                <a href="#galeria" class="py-2 hover:text-blue-700">Galería del software</a>
+                <a href="#precio" class="py-2 flex items-center justify-between hover:text-blue-700">
+                    <span>Tarifa anual</span>
+                    <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-800">150€/año</span>
+                </a>
+                <a href="#faq" class="py-2 hover:text-blue-700">Preguntas Frecuentes</a>
+                <a href="#contacto" class="py-2 hover:text-blue-700">Contacto</a>
+                <div class="pt-4 flex flex-col gap-2">
+                    <a href="{{ Route::has('tenant-access.index') ? route('tenant-access.index') : (Route::has('login') ? route('login') : url('/acceso')) }}" class="w-full text-center rounded-xl border border-slate-200 py-2.5 text-sm font-semibold text-slate-700">
+                        Acceso a mi banda
+                    </a>
+                    <button type="button" data-demo-trigger class="w-full text-center rounded-xl bg-blue-700 py-2.5 text-sm font-bold text-white shadow-md">
+                        Probar Demo Inmediata
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
     <main>
-    <!-- =====================
-         HERO
-         ===================== -->
-    <section class="hero">
-        <!-- Breathing ambient orb -->
-        <div class="hero-orb-outer"></div>
-        <div class="hero-orb"></div>
+        <!-- ============================================================== -->
+        <!-- HERO SECTION                                                   -->
+        <!-- ============================================================== -->
+        <section class="relative overflow-hidden pt-12 pb-20 sm:pt-16 sm:pb-28">
+            <!-- Ambient Glow Backgrounds -->
+            <div class="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[580px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-br from-blue-400/20 via-indigo-300/20 to-amber-200/20 blur-3xl" aria-hidden="true"></div>
+            <div class="pointer-events-none absolute top-1/2 -right-40 -z-10 h-96 w-96 rounded-full bg-amber-400/10 blur-2xl" aria-hidden="true"></div>
 
-        <!-- Floating notes -->
-        <div class="hero-notes" aria-hidden="true">
-            <span class="note" style="top:12%; left:8%; --dur:26s; --delay:0s;">♩</span>
-            <span class="note" style="top:18%; right:12%; --dur:32s; --delay:4s; font-size:1rem;">♫</span>
-            <span class="note" style="top:68%; left:6%; --dur:22s; --delay:8s; font-size:1.1rem;">♪</span>
-            <span class="note" style="bottom:18%; right:9%; --dur:28s; --delay:2s;">♬</span>
-            <span class="note" style="top:45%; left:4%; --dur:34s; --delay:14s; font-size:0.9rem;">♭</span>
-            <span class="note" style="top:30%; right:5%; --dur:20s; --delay:6s; font-size:0.85rem;">♯</span>
-            <span class="note" style="bottom:30%; left:15%; --dur:38s; --delay:10s; font-size:0.8rem;">𝄞</span>
-        </div>
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <!-- Badge Pill -->
+                <div class="flex justify-center">
+                    <div class="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50/80 px-4 py-1.5 text-xs font-semibold text-blue-900 shadow-sm backdrop-blur-sm">
+                        <span class="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
+                        <span>Plataforma especializada para agrupaciones musicales</span>
+                        <span class="text-blue-300">|</span>
+                        <span class="text-blue-700 font-bold">Versión 3.0</span>
+                    </div>
+                </div>
 
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                Hecho para bandas que quieren ir tranquilas
+                <!-- Hero Heading & Copy -->
+                <div class="mt-8 text-center max-w-4xl mx-auto">
+                    <h1 class="font-heading text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl sm:leading-tight lg:leading-[1.12]">
+                        El software integral para tu <br class="hidden sm:inline">
+                        <span class="bg-gradient-to-r from-blue-700 via-indigo-600 to-amber-600 bg-clip-text text-transparent">
+                            Banda de Música, Charanga o Coral
+                        </span>
+                    </h1>
+                    <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-normal">
+                        Pon fin al caos de los grupos de WhatsApp y a la incertidumbre de saber quién asistirá a cada ensayo o actuación. Con eBand gestionas la disponibilidad de tus músicos, el control parental para familias, el inventario de uniformes y material, las actividades extra y las liquidaciones de bolos en una única app que todos sabrán usar.
+                    </p>
+
+                    <!-- CTAs -->
+                    <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <button type="button" 
+                                data-demo-trigger
+                                class="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-600 px-8 py-4 text-base font-bold text-white shadow-xl shadow-blue-700/25 transition-all hover:scale-[1.02] hover:shadow-2xl hover:from-blue-800 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+                            <span>Probar Demo Gratis</span>
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </button>
+                        <a href="#funcionalidades" 
+                           class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-7 py-4 text-base font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-900 hover:border-slate-400">
+                            <span>Ver cómo funciona</span>
+                            <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- App Store & Google Play Badges (Próximamente disponible) -->
+                    <div class="mt-8 flex flex-col items-center justify-center">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-200/80 px-3 py-1 text-xs font-semibold text-blue-800">
+                                <span class="h-1.5 w-1.5 rounded-full bg-blue-600 animate-ping"></span>
+                                📱 Disponible en Web/PWA y próximamente en tiendas oficiales:
+                            </span>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-center gap-3">
+                            <!-- App Store Button -->
+                            <div class="group relative inline-flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-800 cursor-default">
+                                <svg class="h-7 w-7 fill-current text-white shrink-0" viewBox="0 0 24 24">
+                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.85.94-2.93-.93.04-2.06.62-2.73 1.4-.59.68-1.11 1.77-.97 2.83 1.04.08 2.1-.53 2.76-1.3z"/>
+                                </svg>
+                                <div class="text-left leading-tight">
+                                    <div class="text-[10px] font-medium text-slate-400">Consíguelo en el</div>
+                                    <div class="text-sm font-bold tracking-tight text-white">App Store</div>
+                                </div>
+                                <span class="ml-2 rounded-full bg-blue-500/25 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-blue-300 border border-blue-400/40">
+                                    Próximamente
+                                </span>
+                            </div>
+
+                            <!-- Google Play Button -->
+                            <div class="group relative inline-flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-800 cursor-default">
+                                <svg class="h-6 w-6 shrink-0" viewBox="0 0 24 24">
+                                    <path fill="#EA4335" d="M3.6 1.8L13.5 12 3.6 22.2c-.4-.4-.6-1-.6-1.7V3.5c0-.7.2-1.3.6-1.7z"/>
+                                    <path fill="#FBBC04" d="M16.9 8.6L13.5 12l3.4 3.4 3.9-2.2c1.1-.6 1.1-1.7 0-2.4l-3.9-2.2z"/>
+                                    <path fill="#4285F4" d="M3.6 1.8l10.9 9.3 2.4-2.5L5.7.5C4.8 0 4.1.5 3.6 1.8z"/>
+                                    <path fill="#34A853" d="M16.9 15.4L14.5 13 3.6 22.2c.5 1.3 1.2 1.8 2.1 1.3l11.2-8.1z"/>
+                                </svg>
+                                <div class="text-left leading-tight">
+                                    <div class="text-[10px] font-medium text-slate-400">Disponible en</div>
+                                    <div class="text-sm font-bold tracking-tight text-white">Google Play</div>
+                                </div>
+                                <span class="ml-2 rounded-full bg-emerald-500/25 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-300 border border-emerald-400/40">
+                                    Próximamente
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trust Bar Indicators -->
+                    <div class="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs sm:text-sm font-medium text-slate-500">
+                        <div class="flex items-center gap-1.5">
+                            <svg class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Músicos y familias ilimitados</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <svg class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>App móvil PWA (iOS y Android)</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <svg class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Tarifa plana 150 € / año</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <svg class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Sin permanencia</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Software Mockup Card -->
+                <div class="mt-14 sm:mt-20 relative mx-auto max-w-6xl">
+                    <div class="relative rounded-2xl border border-slate-200/90 bg-white p-2 sm:p-3 shadow-2xl shadow-indigo-900/10">
+                        <!-- Browser Bar Simulation -->
+                        <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3 bg-slate-50/70 rounded-t-xl">
+                            <div class="flex items-center gap-2">
+                                <span class="h-3 w-3 rounded-full bg-rose-400"></span>
+                                <span class="h-3 w-3 rounded-full bg-amber-400"></span>
+                                <span class="h-3 w-3 rounded-full bg-emerald-400"></span>
+                            </div>
+                            <div class="flex items-center gap-2 rounded-lg bg-white px-4 py-1 text-xs font-medium text-slate-500 border border-slate-200 shadow-xs">
+                                <svg class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                </svg>
+                                <span>https://tubanda.eband.app</span>
+                            </div>
+                            <div class="text-xs font-semibold text-slate-400">Panel Directiva</div>
+                        </div>
+
+                        <!-- Screenshot Image -->
+                        <div class="overflow-hidden rounded-b-xl bg-slate-100">
+                            <img src="{{ asset('galeria/tablero_resumen.png') }}" 
+                                 alt="Panel de control eBand - Gestión de actuaciones, disponibilidad y actividades" 
+                                 class="w-full h-auto object-cover object-top max-h-[640px]"
+                                 loading="eager" 
+                                 width="1280" 
+                                 height="720">
+                        </div>
+
+                        <!-- Floating Micro-Badges -->
+                        <div class="absolute -top-4 -left-4 sm:top-8 sm:-left-6 hidden md:flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/95 p-3.5 shadow-xl backdrop-blur-md">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-slate-900">Disponibilidad en tiempo real</div>
+                                <div class="text-[11px] text-slate-500">Músicos disponibles para el ensayo</div>
+                            </div>
+                        </div>
+
+                        <div class="absolute -bottom-4 -right-4 sm:bottom-10 sm:-right-6 hidden md:flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/95 p-3.5 shadow-xl backdrop-blur-md">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-slate-900">Control Parental y Familias</div>
+                                <div class="text-[11px] text-slate-500">Padres y alumnos conectados</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h1 class="hero-headline">
-                Gestión para bandas de música y xarangas:<br>
-                menos caos, más música para <em>tu banda</em>
-            </h1>
-            <p class="hero-sub">
-                eBand es la plataforma para la gestión de bandas de música y xarangas. Organiza actuaciones, controla asistencias, gestiona el repertorio y genera contratos en segundos. Accede desde cualquier dispositivo y comparte programas y QR con tu público.
-            </p>
-            <div class="hero-actions">
-                <a href="{{ route('login') }}" class="btn btn-gold btn-lg">Empezar la demo</a>
-                <a href="#features" class="btn btn-gold-outline btn-lg">Ver características</a>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- TARGET GROUPS / PARA QUIÉN                                     -->
+        <!-- ============================================================== -->
+        <section id="para-quien" class="py-20 bg-white border-t border-b border-slate-200/80">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="inline-block rounded-full bg-blue-100 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-blue-800">
+                        Adaptado a tu agrupación
+                    </span>
+                    <h2 class="mt-4 font-heading text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                        Diseñado para la realidad diaria de tu colectivo musical
+                    </h2>
+                    <p class="mt-4 text-base sm:text-lg text-slate-600">
+                        Cada conjunto musical tiene sus propias dinámicas. eBand se adapta tanto si sois una gran banda sinfónica, una charanga de fiesta o un coro vocal.
+                    </p>
+                </div>
+
+                <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
+                    <!-- 1. Bandas de Música -->
+                    <div class="group relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-slate-50/50 p-8 shadow-xs transition hover:border-blue-400 hover:bg-white hover:shadow-xl">
+                        <div>
+                            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-700 transition group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white">
+                                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+                                </svg>
+                            </div>
+                            <h3 class="mt-6 font-heading text-xl font-bold text-slate-900">Bandas y Sociedades Musicales</h3>
+                            <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+                                Control exhaustivo de ensayos generales y parciales por cuerda (maderas, metales, percusión). Gestión de familias con alumnos menores, actividades extra e inventario de material.
+                            </p>
+                            <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-blue-600 font-bold">✓</span> Disponibilidad inmediata ("Disponible / No disponible")
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-blue-600 font-bold">✓</span> Control parental para padres de educandos y menores
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-blue-600 font-bold">✓</span> Inventario de uniformes y de todo el material de la banda
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-blue-600 font-bold">✓</span> Actividades extra, viajes, comidas y cursos
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-8 pt-4 border-t border-slate-200/60">
+                            <span class="text-xs font-semibold text-blue-700 flex items-center gap-1">
+                                Para bandas sinfónicas, patronales y escuelas &rarr;
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Charangas -->
+                    <div class="group relative flex flex-col justify-between rounded-2xl border-2 border-amber-300/80 bg-gradient-to-b from-amber-50/40 to-white p-8 shadow-md transition hover:border-amber-500 hover:shadow-2xl">
+                        <div class="absolute -top-3.5 right-6">
+                            <span class="rounded-full bg-gradient-to-r from-amber-500 to-amber-600 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-white shadow-sm">
+                                Máxima Agilidad
+                            </span>
+                        </div>
+                        <div>
+                            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-700 transition group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white">
+                                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <h3 class="mt-6 font-heading text-xl font-bold text-slate-900">Charangas</h3>
+                            <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+                                Respuestas inmediatas para cerrar la plantilla de cada bolo en un clic. Reparto de honorarios por bolo con liquidaciones transparentes para cada miembro o refuerzo.
+                            </p>
+                            <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-amber-600 font-bold">✓</span> Confirmación ultra-rápida desde el móvil (Disponible / No disponible)
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-amber-600 font-bold">✓</span> Liquidación y cálculo de cobro por actuación
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-amber-600 font-bold">✓</span> Ubicaciones GPS de pasacalles y puntos de encuentro
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-amber-600 font-bold">✓</span> Horarios de salida de transporte y furgoneta
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-8 pt-4 border-t border-amber-200/60">
+                            <span class="text-xs font-semibold text-amber-700 flex items-center gap-1">
+                                Para grupos festivos y de animación &rarr;
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Corales, Coros y Orfeones -->
+                    <div class="group relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-slate-50/50 p-8 shadow-xs transition hover:border-indigo-400 hover:bg-white hover:shadow-xl">
+                        <div>
+                            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-700 transition group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white">
+                                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+                                </svg>
+                            </div>
+                            <h3 class="mt-6 font-heading text-xl font-bold text-slate-900">Corales, Coros y Orfeones</h3>
+                            <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+                                Organización específica por cuerdas vocales (sopranos, contraltos, tenores y bajos). Convocatorias a misas, certámenes, encuentros corales y salidas grupales.
+                            </p>
+                            <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-indigo-600 font-bold">✓</span> Segmentación por cuerdas de voz
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-indigo-600 font-bold">✓</span> Convocatorias claras a ensayos y conciertos
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-indigo-600 font-bold">✓</span> Actividades extra y viajes de hermanamiento
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-indigo-600 font-bold">✓</span> Tablón de avisos y cambios de última hora
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-8 pt-4 border-t border-slate-200/60">
+                            <span class="text-xs font-semibold text-indigo-700 flex items-center gap-1">
+                                Para coros polifónicos, de cámara y orfeones &rarr;
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <div class="hero-scroll-hint" aria-hidden="true">
-            <div class="scroll-mouse"></div>
-            Descubre
-        </div>
-    </section>
+        <!-- ============================================================== -->
+        <!-- CORE FEATURES GRID                                             -->
+        <!-- ============================================================== -->
+        <section id="funcionalidades" class="py-24 bg-slate-50">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="inline-block rounded-full bg-indigo-100 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-indigo-800">
+                        Funcionalidades Destacadas
+                    </span>
+                    <h2 class="mt-4 font-heading text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                        Todo lo que tu directiva y tus miembros necesitan
+                    </h2>
+                    <p class="mt-4 text-base sm:text-lg text-slate-600">
+                        Olvídate de hojas de cálculo dispersas y notas de papel. Gestiona tu día a día con herramientas diseñadas exactamente para la realidad asociativa.
+                    </p>
+                </div>
 
-    <!-- =====================
-         STATS
-         ===================== -->
-    <div class="stats-strip">
-        <div class="stat-item">
-            <div class="stat-num">360°</div>
-            <div class="stat-label">Gestión integral</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">PWA</div>
-            <div class="stat-label">Instala en tu móvil</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">∞</div>
-            <div class="stat-label">Miembros y actuaciones</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">PDF</div>
-            <div class="stat-label">Contratos automáticos</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">QR</div>
-            <div class="stat-label">Programa público</div>
+                <div class="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    <!-- Feature 1: Asistencia / Disponibilidad -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Control de Asistencia y Disponibilidad</h3>
+                        <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                            Los músicos pueden indicar si están <strong>Disponibles</strong> o <strong>No disponibles</strong> con un solo clic. El director y la directiva conocen la plantilla exacta por cuerda en tiempo real.
+                        </p>
+                    </div>
+
+                    <!-- Feature 2: Control Parental y Familias -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Control Parental para Familias</h3>
+                        <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                            Los padres y tutores pueden supervisar las convocatorias, ensayos y eventos de sus hijos menores, ver sus uniformes asignados e inscribirlos en actividades desde una única cuenta.
+                        </p>
+                    </div>
+
+                    <!-- Feature 3: Actividades Extra y Convocatorias -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Actividades, Conciertos y Convivencia</h3>
+                        <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                            Convoca conciertos o ensayos con confirmación directa (Sí / No) o eventos de pago como comidas de hermandad con elección de menús y viajes. Comparte convocatorias por WhatsApp en un toque.
+                        </p>
+                    </div>
+
+                    <!-- Feature 4: Inventario de uniformes y material -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Inventario de Uniformes y Material</h3>
+                        <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                            Controla los uniformes oficiales (trajes, corbatas, polos) y todo el material de la banda: instrumentos propios, atriles, fundas y accesorios asignados a cada integrante.
+                        </p>
+                    </div>
+
+                    <!-- Feature 5: Liquidaciones económicas -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-50 text-rose-700">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Liquidaciones y Reparto por Bolo</h3>
+                        <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                            Calcula el reparto económico por actuación, gestiona los pagos a refuerzos o colaboradores externos (forasteros) y genera balances contables claros.
+                        </p>
+                    </div>
+
+                    <!-- Feature 6: App Móvil (PWA y Próximamente Nativa) -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 text-purple-700">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div class="mt-5 flex items-center justify-between">
+                            <h3 class="font-heading text-lg font-bold text-slate-900">App Móvil (iOS y Android)</h3>
+                            <span class="rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-bold text-purple-800">PWA + Stores</span>
+                        </div>
+                        <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                            Disponible ya como Progressive Web App (PWA) instalable en pantalla de inicio sin descargas, y muy pronto disponible oficialmente para descarga directa en <strong>Google Play</strong> y <strong>App Store</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- SCREENSHOT SHOWCASE / GALERÍA                                  -->
+        <!-- ============================================================== -->
+        <section id="galeria" class="py-24 bg-white border-t border-slate-200/80">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="inline-block rounded-full bg-amber-100 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-amber-800">
+                        Capturas Reales
+                    </span>
+                    <h2 class="mt-4 font-heading text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                        Una interfaz clara que cualquiera sabe utilizar
+                    </h2>
+                    <p class="mt-4 text-base sm:text-lg text-slate-600">
+                        Explora las diferentes pantallas de eBand: pensadas tanto para directivos como para músicos y familias de todas las edades.
+                    </p>
+                </div>
+
+                <div class="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    <!-- Gallery Card 1 -->
+                    <div class="group overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 transition hover:shadow-xl hover:border-slate-300">
+                        <div class="overflow-hidden bg-slate-200">
+                            <img src="{{ asset('galeria/detalle_actuacion.png') }}" 
+                                 alt="Ficha de detalle de actuación y disponibilidad" 
+                                 class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
+                                 loading="lazy">
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-heading font-bold text-slate-900">Detalle de Actuación y Bolos</h4>
+                            <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                Mapa de ubicación, horarios de transporte, uniforme requerido y panel de disponibilidad de los músicos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 2 -->
+                    <div class="group overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 transition hover:shadow-xl hover:border-slate-300">
+                        <div class="overflow-hidden bg-slate-200">
+                            <img src="{{ asset('galeria/calendario.png') }}" 
+                                 alt="Calendario mensual de citas, ensayos y actuaciones" 
+                                 class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
+                                 loading="lazy">
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-heading font-bold text-slate-900">Calendario Visual de Ensayos</h4>
+                            <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                Vista global del mes para evitar solapamientos y planificar convocatorias y actividades con antelación.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 3 -->
+                    <div class="group overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 transition hover:shadow-xl hover:border-slate-300">
+                        <div class="overflow-hidden bg-slate-200">
+                            <img src="{{ asset('galeria/inventario.png') }}" 
+                                 alt="Gestión de inventario de uniformes y material de la banda" 
+                                 class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
+                                 loading="lazy">
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-heading font-bold text-slate-900">Inventario de Material y Uniformes</h4>
+                            <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                Registro completo del material propiedad de la agrupación y qué músico o familia tiene asignado cada elemento.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 4 -->
+                    <div class="group overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 transition hover:shadow-xl hover:border-slate-300">
+                        <div class="overflow-hidden bg-slate-200">
+                            <img src="{{ asset('galeria/resumen_actuaciones.png') }}" 
+                                 alt="Historial y estadísticas de actuaciones" 
+                                 class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
+                                 loading="lazy">
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-heading font-bold text-slate-900">Historial y Estadísticas</h4>
+                            <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                Métricas de compromisos anuales, porcentaje de asistencia y balances económicos de bolos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 5 -->
+                    <div class="group overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 transition hover:shadow-xl hover:border-slate-300">
+                        <div class="overflow-hidden bg-slate-200">
+                            <img src="{{ asset('galeria/anuncios.png') }}" 
+                                 alt="Tablón de anuncios y avisos directos a la agrupación" 
+                                 class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
+                                 loading="lazy">
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-heading font-bold text-slate-900">Tablón de Anuncios</h4>
+                            <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                Comunicados oficiales visibles para todos los socios y familias al entrar en la aplicación.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 6 -->
+                    <div class="group overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 transition hover:shadow-xl hover:border-slate-300">
+                        <div class="overflow-hidden bg-slate-200">
+                            <img src="{{ asset('galeria/sugerencias.png') }}" 
+                                 alt="Buzón de sugerencias para músicos y socios" 
+                                 class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
+                                 loading="lazy">
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-heading font-bold text-slate-900">Buzón de Sugerencias</h4>
+                            <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                Canal participativo para escuchar propuestas, actividades y sugerencias de mejora de los integrantes.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 7: Listado de Actividades y Botón Compartir -->
+                    <div class="group overflow-hidden rounded-2xl border-2 border-indigo-200 bg-gradient-to-b from-indigo-50/30 to-white transition hover:shadow-xl hover:border-indigo-400">
+                        <div class="overflow-hidden bg-slate-200 relative">
+                            <span class="absolute top-3 right-3 z-10 rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-sm">
+                                Nuevo
+                            </span>
+                            <img src="{{ asset('listadoActividades.png') }}" 
+                                 alt="Listado de actividades con botón de compartir por WhatsApp y filtros" 
+                                 class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
+                                 loading="lazy">
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-heading font-bold text-slate-900 flex items-center gap-1.5">
+                                <span>Actividades y Convocatorias</span>
+                            </h4>
+                            <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                Conciertos, comidas, reuniones o ensayos sin precio. Botón rápido de compartir por WhatsApp para convocar a la banda al instante.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 8: Control de Asistencia y Pendientes -->
+                    <div class="group overflow-hidden rounded-2xl border-2 border-emerald-200 bg-gradient-to-b from-emerald-50/30 to-white transition hover:shadow-xl hover:border-emerald-400">
+                        <div class="overflow-hidden bg-slate-200 relative">
+                            <span class="absolute top-3 right-3 z-10 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-sm">
+                                Nuevo
+                            </span>
+                            <img src="{{ asset('estadisticasActividades.png') }}" 
+                                 alt="Panel de control de actividad con confirmados, no asistirán y pendientes de respuesta" 
+                                 class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
+                                 loading="lazy">
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-heading font-bold text-slate-900 flex items-center gap-1.5">
+                                <span>Control de Asistencia y Pendientes</span>
+                            </h4>
+                            <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                Tarjetas en tiempo real de confirmados, no asistirán y pendientes de responder, junto con el desglose de menús para proveedores.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- PRICING SECTION (150€/AÑO)                                      -->
+        <!-- ============================================================== -->
+        <section id="precio" class="py-24 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+            <!-- Glow background -->
+            <div class="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-400/10 blur-3xl" aria-hidden="true"></div>
+
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="inline-block rounded-full bg-emerald-100 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-emerald-800">
+                        Tarifa Única y Transparente
+                    </span>
+                    <h2 class="mt-4 font-heading text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                        Un único precio sin letra pequeña ni límites
+                    </h2>
+                    <p class="mt-4 text-base sm:text-lg text-slate-600">
+                        Creemos en precios justos para la cultura y el asociacionismo musical. Sin costes por número de músicos ni módulos ocultos.
+                    </p>
+                </div>
+
+                <div class="mt-16 max-w-xl mx-auto">
+                    <div class="relative rounded-3xl border-2 border-blue-600 bg-white p-8 sm:p-10 shadow-2xl shadow-blue-700/10">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-700 to-indigo-600 px-4 py-1 text-xs font-extrabold uppercase tracking-wide text-white shadow-md">
+                                ★ Tarifa Plana para Toda la Agrupación
+                            </span>
+                        </div>
+
+                        <div class="text-center pt-2">
+                            <h3 class="font-heading text-2xl font-extrabold text-slate-900">Plan Completo eBand</h3>
+                            <p class="mt-2 text-sm text-slate-600">
+                                Para Bandas de Música, Charangas y Corales.
+                            </p>
+
+                            <div class="mt-6 flex items-baseline justify-center gap-2">
+                                <span class="font-heading text-5xl sm:text-6xl font-extrabold tracking-tight text-slate-900">150€</span>
+                                <span class="text-base font-semibold text-slate-500">/ año</span>
+                            </div>
+                            <p class="mt-1 text-xs font-medium text-slate-500">Sin sorpresas ni permanencias obligatorias</p>
+                        </div>
+
+                        <!-- Included Features List -->
+                        <div class="mt-8 border-t border-slate-200 pt-8">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Todo incluido sin límites:</h4>
+                            <ul class="mt-4 space-y-3.5 text-sm text-slate-700">
+                                <li class="flex items-start gap-3">
+                                    <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span><strong>Músicos, socios y familias ilimitados:</strong> da de alta a toda tu agrupación sin sobrecostes.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span><strong>Control de disponibilidad:</strong> el músico o tutor indica "Disponible / No disponible" con 1 clic.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span><strong>Control parental y gestión de menores:</strong> acceso familiar unificado para padres y alumnos.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span><strong>Actividades extra y eventos especiales:</strong> viajes, comidas, talleres y convivencia con inscripción.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span><strong>Inventario de uniformes y material:</strong> trazabilidad de trajes, instrumentos propios y accesorios.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span><strong>Liquidaciones económicas por bolo:</strong> cálculo y reparto automático de pagos a integrantes y refuerzos.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span><strong>App Móvil PWA para cada músico:</strong> instalable fácilmente en iPhone y Android.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span><strong>Subdominio propio:</strong> accede con tu dirección privada <code>tubanda.eband.app</code>.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <svg class="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span><strong>Soporte técnico y copias de seguridad:</strong> te ayudamos en la puesta en marcha.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-8 flex flex-col gap-3">
+                            <button type="button" 
+                                    data-demo-trigger
+                                    class="w-full rounded-xl bg-blue-700 py-4 text-center text-sm font-bold text-white shadow-lg shadow-blue-700/25 transition hover:bg-blue-800">
+                                Probar Demo Inmediata Gratis
+                            </button>
+                            <a href="#contacto" 
+                               class="w-full rounded-xl border border-slate-300 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+                                Solicitar Alta o Preguntar Dudas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- FAQ SECTION (NATIVE HTML5 ACCORDION WITH DETAILS/SUMMARY)       -->
+        <!-- ============================================================== -->
+        <section id="faq" class="py-24 bg-white border-t border-slate-200/80">
+            <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <span class="inline-block rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-slate-800">
+                        Resolvemos tus Dudas
+                    </span>
+                    <h2 class="mt-4 font-heading text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                        Preguntas Frecuentes
+                    </h2>
+                    <p class="mt-4 text-base sm:text-lg text-slate-600">
+                        Todo lo que necesitas saber antes de dar el paso con tu agrupación.
+                    </p>
+                </div>
+
+                <div class="mt-14 space-y-4">
+                    <!-- FAQ 1: Corales -->
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
+                            <span>¿eBand es compatible con Corales y Coros además de Bandas?</span>
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
+                            Absolutamente. Puedes clasificar a los integrantes tanto por instrumentos (en el caso de bandas y agrupaciones instrumentales) como por <strong>cuerdas vocales (sopranos, contraltos, tenores y bajos)</strong> en coros y agrupaciones vocales. Las convocatorias, disponibilidad y actividades se gestionan perfectamente según la voz de cada corista.
+                        </div>
+                    </details>
+
+                    <!-- FAQ 2: Control Parental -->
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
+                            <span>¿Cómo funciona el Control Parental para familias con hijos menores?</span>
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
+                            Muchos músicos de bandas y escuelas de música son menores de edad. Los padres o tutores disponen de una vista familiar donde pueden consultar las convocatorias, ensayos, uniformes y actividades de sus hijos, marcar su disponibilidad (Disponible / No disponible) e inscribirlos en salidas o actividades extra sin necesidad de que el menor gestione un usuario independiente.
+                        </div>
+                    </details>
+
+                    <!-- FAQ 3: iPhone y Android -->
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
+                            <span>¿Cómo se instala en iPhone y teléfonos Android?</span>
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
+                            Actualmente eBand funciona como <strong>Progressive Web App (PWA)</strong>: al abrir el enlace de tu banda en el navegador del móvil, basta con pulsar <em>"Añadir a pantalla de inicio"</em> (en Safari de iOS o Chrome de Android) para tener acceso instantáneo con icono en tu teléfono. Además, <strong>muy pronto estará disponible para descargar de forma directa y nativa en el App Store y Google Play</strong>.
+                        </div>
+                    </details>
+
+                    <!-- FAQ 4: Tarifa -->
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
+                            <span>¿Qué incluye exactamente la tarifa plana de 150€/año?</span>
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
+                            Incluye el 100% de la plataforma: músicos y familias ilimitados, actuaciones, ensayos y actividades extra sin límite, control de disponibilidad, inventario de uniformes y material de la banda, módulo de liquidación económica por bolo, soporte por email o WhatsApp, copias de seguridad continuas y todas las actualizaciones de la versión 3.0.
+                        </div>
+                    </details>
+
+                    <!-- FAQ 5: Acceso -->
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
+                            <span>¿Cómo acceden los integrantes a su espacio privado?</span>
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
+                            Cada agrupación dispone de una dirección web propia (por ejemplo <code>tubanda.eband.app</code>). Además, desde la página principal de <code>eband.app</code> en el botón <em>"Acceso a mi banda"</em>, los integrantes pueden introducir su código único y serán dirigidos automáticamente a su espacio privado.
+                        </div>
+                    </details>
+
+                    <!-- FAQ 6: Demo -->
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
+                            <span>¿Puedo probar la herramienta antes de contratar?</span>
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
+                            Sí. Puedes acceder a nuestra demo interactiva en cualquier momento pulsando el botón <strong>"Probar Demo"</strong>. Podrás explorar el panel de administración, ver cómo se configuran las actuaciones y comprobar la agilidad de uso.
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- CONTACT & LEAD CAPTURE SECTION                                 -->
+        <!-- ============================================================== -->
+        <section id="contacto" class="py-24 bg-slate-50 border-t border-slate-200/80">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 gap-12 lg:grid-cols-2 items-start">
+                    <!-- Left: Contact Copy & Benefits -->
+                    <div>
+                        <span class="inline-block rounded-full bg-blue-100 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-blue-800">
+                            Hablemos
+                        </span>
+                        <h2 class="mt-4 font-heading text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                            ¿Hablamos de cómo organizar tu agrupación?
+                        </h2>
+                        <p class="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+                            Cuéntanos cómo os organizáis ahora mismo (si usáis grupos de WhatsApp, hojas de cálculo o papeles sueltos) y te explicamos cómo eBand puede ahorraros horas de trabajo desde la primera semana.
+                        </p>
+
+                        <div class="mt-8 space-y-4">
+                            <div class="flex items-start gap-3.5">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900">Respuesta rápida</h4>
+                                    <p class="text-xs text-slate-600">Te contestamos en menos de 24 horas laborables con una propuesta clara y directa.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3.5">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900">Asesoramiento personalizado</h4>
+                                    <p class="text-xs text-slate-600">Revisamos tu caso: banda con escuela, charanga con bolos o coro polifónico.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3.5">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900">Sin compromiso alguno</h4>
+                                    <p class="text-xs text-slate-600">Pruébalo con tu junta directiva o tus compañeros y decidid con total tranquilidad.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Contact Form -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/50">
+                        @if(session('success'))
+                            <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+                                <div class="flex items-center gap-2 font-bold">
+                                    <svg class="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    ¡Mensaje recibido con éxito!
+                                </div>
+                                <p class="mt-1 text-xs text-emerald-700">{{ session('success') }}</p>
+                            </div>
+                        @endif
+
+                        @if(session('error'))
+                            <div class="mb-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+
+                        <form action="{{ route('contact.send') }}" method="POST" class="space-y-4">
+                            @csrf
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label for="nombre" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Tu Nombre *</label>
+                                    <input type="text" id="nombre" name="nombre" value="{{ old('nombre') }}" required
+                                           placeholder="Ej: Laura Martínez"
+                                           class="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                                    @error('nombre')
+                                        <span class="text-xs text-rose-600 font-medium">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="banda" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Nombre de la Agrupación *</label>
+                                    <input type="text" id="banda" name="banda" value="{{ old('banda') }}" required
+                                           placeholder="Banda, Charanga o Coral..."
+                                           class="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                                    @error('banda')
+                                        <span class="text-xs text-rose-600 font-medium">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label for="email" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Correo Electrónico *</label>
+                                    <input type="email" id="email" name="email" value="{{ old('email') }}" required
+                                           placeholder="directiva@tubanda.es"
+                                           class="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                                    @error('email')
+                                        <span class="text-xs text-rose-600 font-medium">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="telefono" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Teléfono (opcional)</label>
+                                    <input type="tel" id="telefono" name="telefono" value="{{ old('telefono') }}"
+                                           placeholder="+34 600 000 000"
+                                           class="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                                    @error('telefono')
+                                        <span class="text-xs text-rose-600 font-medium">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="informacion" class="block text-xs font-bold uppercase tracking-wider text-slate-700">¿Qué os gustaría organizar o mejorar? *</label>
+                                <textarea id="informacion" name="informacion" rows="4" required
+                                          placeholder="Cuéntanos cuántos integrantes sois, cómo gestionáis ahora los ensayos o cualquier duda que tengáis..."
+                                          class="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600">{{ old('informacion') }}</textarea>
+                                @error('informacion')
+                                    <span class="text-xs text-rose-600 font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <!-- NoCaptcha Display -->
+                            <div class="pt-2">
+                                {!! NoCaptcha::display() !!}
+                                @error('g-recaptcha-response')
+                                    <span class="text-xs text-rose-600 font-medium">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <button type="submit" 
+                                    class="w-full rounded-xl bg-gradient-to-r from-blue-700 to-indigo-600 py-3.5 text-center text-sm font-bold text-white shadow-md shadow-blue-700/20 transition hover:from-blue-800 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
+                                Enviar Consulta
+                            </button>
+                            <p class="text-[11px] text-center text-slate-500">
+                                Respetamos tu privacidad. Tus datos solo se utilizarán para responder a esta solicitud.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================================================== -->
+    <!-- DEMO ACCESS MODAL                                              -->
+    <!-- ============================================================== -->
+    <div id="demo-modal"
+         class="hidden fixed inset-0 z-50 items-center justify-center p-4 sm:p-6 overflow-y-auto"
+         role="dialog" 
+         aria-modal="true">
+        <!-- Backdrop -->
+        <div id="demo-modal-backdrop"
+             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity cursor-pointer"></div>
+
+        <!-- Modal Card -->
+        <div class="relative w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-2xl transition-all z-10">
+            
+            <button type="button" 
+                    id="demo-modal-close"
+                    class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 focus:outline-none"
+                    aria-label="Cerrar ventana">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-heading text-xl font-bold text-slate-900">Acceso Inmediato a la Demo</h3>
+                    <p class="text-xs text-slate-500">Explora eBand en tiempo real sin esperas</p>
+                </div>
+            </div>
+
+            @if($errors->demoAccess->any())
+                <div class="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
+                    {{ $errors->demoAccess->first() }}
+                </div>
+            @endif
+
+            <form action="{{ route('demo.access') }}" method="POST" class="mt-6 space-y-4">
+                @csrf
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label for="demo_nombre" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Nombre *</label>
+                        <input type="text" id="demo_nombre" name="nombre" required value="{{ old('nombre') }}"
+                               placeholder="Tu nombre"
+                               class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    </div>
+                    <div>
+                        <label for="demo_apellidos" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Apellidos *</label>
+                        <input type="text" id="demo_apellidos" name="apellidos" required value="{{ old('apellidos') }}"
+                               placeholder="Tus apellidos"
+                               class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="demo_email" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Email *</label>
+                    <input type="email" id="demo_email" name="email" required value="{{ old('email') }}"
+                           placeholder="tu@email.com"
+                           class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600">
+                </div>
+
+                <div class="pt-2">
+                    {!! NoCaptcha::display() !!}
+                    @if ($errors->demoAccess->has('g-recaptcha-response'))
+                        <span class="mt-1 block text-xs text-rose-600 font-medium">{{ $errors->demoAccess->first('g-recaptcha-response') }}</span>
+                    @endif
+                </div>
+
+                <button type="submit" 
+                        class="w-full rounded-xl bg-blue-700 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-700/25 transition hover:bg-blue-800">
+                    Entrar a la Demo Ahora
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- =====================
-         FEATURES
-         ===================== -->
-    <section class="section features-bg" id="features">
-        <div class="section-inner">
-            <div class="section-header reveal">
-                <div class="section-label">Características</div>
-                <h2 class="section-title">Todo lo que necesitas para llevar la banda con calma</h2>
-                <p class="section-sub">Herramientas pensadas para el dia a dia real de ensayos, conciertos, papeleo y coordinacion entre personas.</p>
-            </div>
-
-            <div class="features-grid reveal">
-                <div class="feat-card">
-                    <div class="feat-icon">🎭</div>
-                    <div class="feat-title">Gestión de Actuaciones</div>
-                    <div class="feat-desc">Calendario interactivo con filtrado por fecha, marcado de actos oficiales con indicadores visuales y control de visibilidad.</div>
-                    <div class="feat-tags">
-                        <span class="feat-tag">Calendario</span>
-                        <span class="feat-tag">Historial</span>
-                        <span class="feat-tag">Actos oficiales</span>
-                    </div>
-                </div>
-
-                <div class="feat-card">
-                    <div class="feat-icon">✅</div>
-                    <div class="feat-title">Control de Asistencias</div>
-                    <div class="feat-desc">Seguimiento por actuación, disponibilidad de músicos y reportes automáticos para no perder el detalle de ningún ensayo ni concierto.</div>
-                    <div class="feat-tags">
-                        <span class="feat-tag">Reportes</span>
-                        <span class="feat-tag">Por músico</span>
-                    </div>
-                </div>
-
-                <div class="feat-card">
-                    <div class="feat-icon">👥</div>
-                    <div class="feat-title">Gestión de Miembros</div>
-                    <div class="feat-desc">Autenticación segura con roles y permisos, verificación de email y restablecimiento de contraseña personalizados. Administra instrumentos y accesos fácilmente.</div>
-                    <div class="feat-tags">
-                        <span class="feat-tag">Roles</span>
-                        <span class="feat-tag">Permisos</span>
-                        <span class="feat-tag">Fortify</span>
-                    </div>
-                </div>
-
-                <div class="feat-card">
-                    <div class="feat-icon">📋</div>
-                    <div class="feat-title">Contratos y Documentos</div>
-                    <div class="feat-desc">Genera contratos de actuación. Consulta el historial de contratos desde la administración.</div>
-                    <div class="feat-tags">
-                        <span class="feat-tag">Automático</span>
-                    </div>
-                </div>
-
-                <div class="feat-card">
-                    <div class="feat-icon">📦</div>
-                    <div class="feat-title">Control de Inventario</div>
-                    <div class="feat-desc">Gestiona instrumentos y material con estado, valor económico, responsables asignados e histórico completo de movimientos.</div>
-                    <div class="feat-tags">
-                        <span class="feat-tag">Instrumentos</span>
-                        <span class="feat-tag">Histórico</span>
-                        <span class="feat-tag">Responsables</span>
-                    </div>
-                </div>
-
-                <div class="feat-card">
-                    <div class="feat-icon">🎁</div>
-                    <div class="feat-title">Sistema de anuncios</div>
-                    <div class="feat-desc">Crea anuncios para que cuando los usuarios accedan a la app estén informados de novedades y eventos importantes.</div>
-                    <div class="feat-tags">
-                        <span class="feat-tag">Anuncios</span>
-                        <span class="feat-tag">Novedades</span>
-                    </div>
-                </div>
-
-                <div class="feat-card">
-                    <div class="feat-icon">🎼</div>
-                    <div class="feat-title">Programa de Concierto + QR</div>
-                    <div class="feat-desc">Crea el programa con repertorio, autores, imagen y logos; publícalo en una URL fija y compártelo por QR para que cualquier asistente lo vea al momento.</div>
-                    <div class="feat-tags">
-                        <span class="feat-tag">URL pública</span>
-                        <span class="feat-tag">QR descargable</span>
-                        <span class="feat-tag">Cartel A4</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================
-         HOW IT WORKS
-         ===================== -->
-    <section class="section how-bg">
-        <div class="section-inner">
-            <div class="section-header reveal" style="text-align:center; max-width:480px; margin-left:auto; margin-right:auto; margin-bottom:3.5rem;">
-                <div class="section-label">Cómo funciona</div>
-                <h2 class="section-title">En marcha en minutos</h2>
-            </div>
-
-            <div class="steps reveal">
-                <div class="step">
-                    <div class="step-num">01</div>
-                    <div class="step-title">Crea tu banda</div>
-                    <div class="step-desc">Registra tu cuenta, personaliza el perfil de tu banda y configura los instrumentos y secciones.</div>
-                </div>
-                <div class="step-divider"></div>
-                <div class="step">
-                    <div class="step-num">02</div>
-                    <div class="step-title">Invita a los miembros</div>
-                    <div class="step-desc">Cada músico recibe acceso con su rol: director, administrativo o músico. Todo bajo control.</div>
-                </div>
-                <div class="step-divider"></div>
-                <div class="step">
-                    <div class="step-num">03</div>
-                    <div class="step-title">Gestiona desde el día 1</div>
-                    <div class="step-desc">Crea actuaciones, registra asistencias, genera contratos y controla el inventario. Todo en uno.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================
-         GALLERY
-         ===================== -->
-    <section class="section gallery-bg">
-        <div class="section-inner">
-            <div class="section-header reveal">
-                <div class="section-label">Interfaz</div>
-                <h2 class="section-title">Ve eBand en acción</h2>
-                <p class="section-sub">Diseño responsive para que puedas trabajar tanto en dispositivos móviles como en escritorio.</p>
-            </div>
-        </div>
-
-        <div class="section-inner">
-            <div class="gallery-scroll reveal">
-                <div class="gallery-item">
-                    <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/anuncios.png" alt="Anuncios" loading="lazy" width="1280" height="800">
-                    </div>
-                    <div class="gallery-caption">
-                        <h4>Anuncios a usuarios</h4>
-                        <p>Anuncios para mantener a los miembros informados sobre novedades y eventos importantes.</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/tablero_resumen.png" alt="Tablero principal" loading="lazy" width="1280" height="800">
-                    </div>
-                    <div class="gallery-caption">
-                        <h4>Tablero Principal</h4>
-                        <p>Métricas clave de la banda en un vistazo.</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/calendario.png" alt="Calendario de actuaciones" loading="lazy" width="1280" height="800">
-                    </div>
-                    <div class="gallery-caption">
-                        <h4>Calendario de Actuaciones</h4>
-                        <p>Visualiza y organiza todos los eventos con claridad.</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/detalle_actuacion.png" alt="Detalle de actuación" loading="lazy" width="1280" height="800">
-                    </div>
-                    <div class="gallery-caption">
-                        <h4>Detalle de Actuación</h4>
-                        <p>Información completa: lugar, asistencias y gestión.</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/resumen_actuaciones.png" alt="Resumen de actuaciones" loading="lazy" width="1280" height="800">
-                    </div>
-                    <div class="gallery-caption">
-                        <h4>Resumen de Actuaciones</h4>
-                        <p>Listado completo con filtros y estadísticas.</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/inventario.png" alt="Resumen de actuaciones" loading="lazy" width="1280" height="800">
-                    </div>
-                    <div class="gallery-caption">
-                        <h4>Gestión de Inventario</h4>
-                        <p>Controla en todo momento el inventario de tu banda y los músicos que tienen asignados los instrumentos.</p>
-                    </div>
-                </div> 
-                <div class="gallery-item">
-                    <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/sugerencias.png" alt="Configuración flexible" loading="lazy" width="1280" height="800">
-                    </div>
-                    <div class="gallery-caption">
-                        <h4>Buzón de sugerencias</h4>
-                        <p>Escucha a los músicos.</p>
-                    </div>
-                </div>               
-                <div class="gallery-item">
-                    <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/personalizar_actuaciones.png" alt="Configuración flexible" loading="lazy" width="1280" height="800">
-                    </div>
-                    <div class="gallery-caption">
-                        <h4>Configuración Flexible</h4>
-                        <p>Personaliza campos según tu banda.</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-img-wrap">
-                        <img src="{{ URL::to('/') }}/galeria/personalizacion_instrumentos.png" alt="Gestión de instrumentos" loading="lazy" width="1280" height="800">
-                    </div>
-                    <div class="gallery-caption">
-                        <h4>Gestión de Instrumentos</h4>
-                        <p>Define y asigna instrumentos personalizados.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================
-         BENEFITS BENTO
-         ===================== -->
-    <section class="section benefits-bg">
-        <div class="section-inner">
-            <div class="section-header reveal">
-                <div class="section-label">Por qué eBand</div>
-                <h2 class="section-title">Diseñado para músicos,<br>no para administradores</h2>
-            </div>
-
-            <div class="bento reveal">
-                <div class="bento-cell wide">
-                    <span class="bento-icon">⚡</span>
-                    <div class="bento-title">Fácil desde el primer día</div>
-                    <div class="bento-desc">Interfaz intuitiva pensada para músicos. No necesitas formación técnica para tener tu banda perfectamente organizada.</div>
-                </div>
-                <div class="bento-cell">
-                    <span class="bento-icon">🔒</span>
-                    <div class="bento-title">Seguro y privado</div>
-                    <div class="bento-desc">Autenticación robusta con Laravel Fortify. Tus datos y los de tu banda están protegidos.</div>
-                </div>
-                <div class="bento-cell">
-                    <span class="bento-icon">☁️</span>
-                    <div class="bento-title">Siempre disponible</div>
-                    <div class="bento-desc">Accede desde cualquier dispositivo, en cualquier momento. En la nube, sin instalaciones.</div>
-                </div>
-                <div class="bento-cell">
-                    <span class="bento-icon">📊</span>
-                    <div class="bento-title">Reportes automáticos</div>
-                    <div class="bento-desc">Estadísticas de asistencia, actuaciones y rendimiento para tomar mejores decisiones.</div>
-                </div>
-                <div class="bento-cell">
-                    <div class="bento-large-num">+3</div>
-                    <div class="bento-title">idiomas disponibles</div>
-                    <div class="bento-desc">Cambia el idioma de la interfaz según las preferencias de cada miembro.</div>
-                </div>
-                <div class="bento-cell">
-                    <span class="bento-icon">💬</span>
-                    <div class="bento-title">Comunicación fluida</div>
-                    <div class="bento-desc">Notificaciones y sistema de comentarios para mantener a toda la banda al día.</div>
-                </div>
-                <div class="bento-cell">
-                    <span class="bento-icon">🎯</span>
-                    <div class="bento-title">100% personalizable</div>
-                    <div class="bento-desc">Adapta tipos de actuación, instrumentos y flujos a cómo funciona tu banda.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================
-         PWA STRIP
-         ===================== -->
-    <div class="pwa-strip">
-        <div class="pwa-inner reveal">
-            <div class="pwa-left">
-                <div class="section-label">App Móvil</div>
-                <h3 style="font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:700; color:var(--text-primary); margin-bottom:0.6rem; letter-spacing:-0.02em;">
-                    Instálala en tu dispositivo
-                </h3>
-                <p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.65; font-weight:300; max-width:380px;">
-                    eBand es una Progressive Web App. Instálala en cualquier dispositivo y accede aunque no tengas conexión.
-                </p>
-            </div>
-            <div class="pwa-right">
-                <div class="pwa-platform">
-                    <span class="pwa-platform-icon">🤖</span>
-                    Android
-                </div>
-                <div class="pwa-platform">
-                    <span class="pwa-platform-icon">🍎</span>
-                    iOS
-                </div>
-                <div class="pwa-platform">
-                    <span class="pwa-platform-icon">🪟</span>
-                    Windows
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- =====================
-         CTA
-         ===================== -->
-    <section class="cta-section">
-        <div class="cta-glow" aria-hidden="true"></div>
-        <div style="position:relative; z-index:2;">
-            <div class="section-label" style="text-align:center; margin-bottom:1rem;">¿Listo?</div>
-            <h2 class="section-title" style="text-align:center;">Tu banda merece una<br><em style="font-style:normal; color:var(--gold);">gestion mas sencilla y humana</em></h2>
-            <p class="section-sub" style="text-align:center; margin-top:0.5rem;">Prueba eBand y descubre una forma mas clara de coordinar a tu gente, preparar actuaciones y tener todo a mano.</p>
-            <div class="cta-actions" style="margin-top:2.5rem;">                
-                <a href="{{ route('login') }}" class="btn btn-ghost btn-lg">Empezar la demo</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================
-         CONTACT
-         ===================== -->
-    <section class="section contact-bg" id="contact">
-        <div class="section-inner">
-            <div class="contact-grid">
-                <div class="reveal">
-                    <div class="section-label">Contacto</div>
-                    <h2 class="contact-info-title">Hablamos cuando quieras,<br>sin rodeos</h2>
-                    <p class="contact-info-desc">Cuéntanos como os organizais ahora y te enseñamos de manera cercana como eBand puede encajar en vuestra banda desde el primer dia.</p>
-
-                    <div class="contact-benefit">
-                        <div class="contact-benefit-icon">⚡</div>
-                        <div class="contact-benefit-text">
-                            <strong>Respuesta rápida</strong>
-                            <span>Te respondemos pronto y con una propuesta clara</span>
+    <!-- ============================================================== -->
+    <!-- FOOTER                                                         -->
+    <!-- ============================================================== -->
+    <footer class="border-t border-slate-200 bg-white py-12">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <img src="{{ asset('logo_e_band.png') }}" alt="eBand Logo" class="h-8 w-8 rounded-lg object-cover" width="32" height="32">
+                    <div>
+                        <div class="font-heading text-lg font-extrabold text-slate-900">
+                            e<span class="text-blue-700">Band</span><span class="text-amber-500">.</span>
                         </div>
-                    </div>
-                    <div class="contact-benefit">
-                        <div class="contact-benefit-icon">🎯</div>
-                        <div class="contact-benefit-text">
-                            <strong>Asesoramiento personalizado</strong>
-                            <span>Te enseñamos lo que de verdad os puede ahorrar tiempo</span>
-                        </div>
-                    </div>
-                    <div class="contact-benefit">
-                        <div class="contact-benefit-icon">🎁</div>
-                        <div class="contact-benefit-text">
-                            <strong>Sin compromiso</strong>
-                            <span>Puedes probarlo y valorar si encaja con vosotros</span>
-                        </div>
+                        <p class="text-xs text-slate-500">
+                            &copy; {{ date('Y') }} eBand. El software para Bandas de Música, Charangas y Corales.
+                        </p>
                     </div>
                 </div>
 
-                <div class="contact-form reveal">
-                    @if(session('success'))
-                        <div class="form-alert form-alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if(session('error'))
-                        <div class="form-alert form-alert-error">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-
-                    <form action="{{ route('contact.send') }}" method="POST">
-                        @csrf
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label class="form-label" for="nombre">Nombre *</label>
-                                <input class="form-input" type="text" id="nombre" name="nombre" required value="{{ old('nombre') }}" placeholder="Tu nombre">
-                                @error('nombre')
-                                    <div class="form-error">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="form-field">
-                                <label class="form-label" for="banda">Banda *</label>
-                                <input class="form-input" type="text" id="banda" name="banda" required value="{{ old('banda') }}" placeholder="Nombre de tu banda">
-                                @error('banda')
-                                    <div class="form-error">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label class="form-label" for="email">Email *</label>
-                                <input class="form-input" type="email" id="email" name="email" required value="{{ old('email') }}" placeholder="tu@email.com">
-                                @error('email')
-                                    <div class="form-error">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="form-field">
-                                <label class="form-label" for="telefono">Teléfono</label>
-                                <input class="form-input" type="tel" id="telefono" name="telefono" value="{{ old('telefono') }}" placeholder="+34 600 000 000">
-                                @error('telefono')
-                                    <div class="form-error">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-field">
-                            <label class="form-label" for="informacion">Consulta *</label>
-                            <textarea class="form-textarea" id="informacion" name="informacion" required placeholder="Cuéntanos sobre tu banda y en qué podemos ayudarte...">{{ old('informacion') }}</textarea>
-                            @error('informacion')
-                                <div class="form-error">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-field">
-                            {!! NoCaptcha::display() !!}
-                            @error('g-recaptcha-response')
-                                <div class="form-error">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <button type="submit" class="btn-submit">Enviar mensaje</button>
-                    </form>
+                <div class="flex flex-wrap items-center gap-6 text-xs font-medium text-slate-600">
+                    <a href="{{ Route::has('tenant-access.index') ? route('tenant-access.index') : (Route::has('login') ? route('login') : url('/acceso')) }}" class="hover:text-blue-700">Acceso a mi banda</a>
+                    <a href="#para-quien" class="hover:text-blue-700">Para quién</a>
+                    <a href="#funcionalidades" class="hover:text-blue-700">Funcionalidades</a>
+                    <a href="#precio" class="hover:text-blue-700">Tarifa 150€</a>
+                    <a href="#faq" class="hover:text-blue-700">Preguntas Frecuentes</a>
+                    <a href="#contacto" class="hover:text-blue-700">Contacto</a>
                 </div>
-            </div>
-        </div>
-    </section>
-
-        </main>
-
-        <!-- =====================
-            FOOTER
-            ===================== -->
-    <footer class="footer">
-        <div class="footer-inner">
-            <div>
-                <div class="nav-wordmark" style="font-size:1rem; margin-bottom:4px; font-family:'Syne',sans-serif; font-weight:800; color:var(--text-primary);">e<span style="color:var(--gold)">Band</span></div>
-                <p class="footer-copy">&copy; {{ date('Y') }} eBand — Sistema de Gestión para Bandas de Música</p>
-            </div>
-            <div class="footer-links">
-                <a href="{{ route('login') }}">Iniciar sesión</a>
-                <a href="{{ route('register') }}">Crear cuenta</a>
-                <a href="#contact">Contacto</a>
             </div>
         </div>
     </footer>
 
+    <!-- Render reCAPTCHA Script -->
     {!! NoCaptcha::renderJs() !!}
 
+    <!-- Fallback pure JS for bulletproof modal, FAQ accordion and mobile menu -->
     <script>
-        // Scroll reveal
-        (function () {
-            const els = document.querySelectorAll('.reveal');
-            const io = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                            io.unobserve(entry.target);
-                        }
-                    });
-                },
-                { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-            );
-            els.forEach((el) => io.observe(el));
-        })();
+        window.openDemoModal = function () {
+            const modal = document.getElementById('demo-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            }
+        };
 
-        // Smooth anchor scroll
-        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-            anchor.addEventListener('click', function (e) {
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
+        window.closeDemoModal = function () {
+            const modal = document.getElementById('demo-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Demo Modal open / close handlers
+            const demoButtons = document.querySelectorAll('[data-demo-trigger]');
+            const demoClose = document.getElementById('demo-modal-close');
+            const demoBackdrop = document.getElementById('demo-modal-backdrop');
+
+            demoButtons.forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
                     e.preventDefault();
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    window.openDemoModal();
+                });
+            });
+
+            if (demoClose) {
+                demoClose.addEventListener('click', window.closeDemoModal);
+            }
+            if (demoBackdrop) {
+                demoBackdrop.addEventListener('click', window.closeDemoModal);
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    window.closeDemoModal();
                 }
             });
+
+            // Accordion: cerrar otros <details> al abrir uno
+            const allDetails = document.querySelectorAll('details[name="faq"]');
+            allDetails.forEach(function (targetDetail) {
+                targetDetail.addEventListener('toggle', function () {
+                    if (targetDetail.open) {
+                        allDetails.forEach(function (otherDetail) {
+                            if (otherDetail !== targetDetail && otherDetail.open) {
+                                otherDetail.open = false;
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Mobile menu toggle
+            const mobileToggle = document.getElementById('mobile-nav-toggle');
+            const mobileMenu = document.getElementById('mobile-nav-menu');
+            if (mobileToggle && mobileMenu) {
+                mobileToggle.addEventListener('click', function () {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            @if($errors->demoAccess->any())
+                window.openDemoModal();
+            @endif
         });
     </script>
 </body>
