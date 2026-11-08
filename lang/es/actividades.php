@@ -174,4 +174,14 @@ return [
     'metrics_attendance_sub' => 'Recuento de músicos que han confirmado asistencia o indicado que no van.',
     'total_confirmed_attending' => 'Músicos Confirmados',
     'total_declined_attending' => 'No Asistirán',
+
+    // Compartir actividad
+    'share' => 'Compartir',
+    'share_text' => '¡Apúntate a la actividad :title! Fecha: :date.',
+    'share_modal_title' => 'Compartir Actividad',
+    'share_url_label' => 'Enlace para los músicos',
+    'copy_url' => 'Copiar enlace',
+    'copied' => '¡Copiado!',
+    'share_whatsapp' => 'Enviar por WhatsApp',
+    'close' => 'Cerrar',
 ];

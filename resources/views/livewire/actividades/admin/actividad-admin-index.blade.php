@@ -1,4 +1,32 @@
-<div class="max-w-7xl mx-auto py-4 px-2 pb-24 sm:px-6 lg:px-8 space-y-6">
+<div class="max-w-7xl mx-auto py-4 px-2 pb-24 sm:px-6 lg:px-8 space-y-6"
+    x-data="{
+        shareModalOpen: false,
+        shareData: { title: '', text: '', url: '' },
+        copied: false,
+        compartir(data) {
+            this.shareData = data;
+            this.copied = false;
+            if (navigator.share) {
+                navigator.share({
+                    title: data.title,
+                    text: data.text,
+                    url: data.url
+                }).catch(err => {
+                    if (err.name !== 'AbortError') {
+                        this.shareModalOpen = true;
+                    }
+                });
+            } else {
+                this.shareModalOpen = true;
+            }
+        },
+        copyToClipboard() {
+            navigator.clipboard.writeText(this.shareData.url).then(() => {
+                this.copied = true;
+                setTimeout(() => this.copied = false, 2500);
+            });
+        }
+    }">
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
@@ -178,6 +206,20 @@
                                         </button>
                                     @endif
 
+                                    <!-- Compartir -->
+                                    <button type="button"
+                                        @click="compartir({
+                                            title: @js($act->titulo),
+                                            text: @js(__('actividades.share_text', ['title' => $act->titulo, 'date' => $act->fecha->translatedFormat('d M Y, H:i')])),
+                                            url: @js(route('actividades.show', $act))
+                                        })"
+                                        title="{{ __('actividades.share') }}"
+                                        class="p-2 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-lg transition cursor-pointer">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                        </svg>
+                                    </button>
+
                                     <!-- Ver detalle / inscripciones -->
                                     <a href="{{ route('admin.actividades.detail', $act) }}"
                                         title="{{ __('actividades.dashboard_title') }}"
@@ -259,4 +301,69 @@
             </div>
         </div>
     @endif
+
+    <!-- Modal Compartir Enlace (Para ordenadores o navegadores sin Web Share) -->
+    <div x-show="shareModalOpen" x-cloak
+        class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 backdrop-blur-xs flex items-center justify-center p-4"
+        @keydown.escape.window="shareModalOpen = false">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 border border-gray-100"
+            @click.outside="shareModalOpen = false">
+            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🔗</span>
+                    <h3 class="text-base font-bold text-gray-900">{{ __('actividades.share_modal_title') }}</h3>
+                </div>
+                <button type="button" @click="shareModalOpen = false" class="text-gray-400 hover:text-gray-600 transition">
+                    ✕
+                </button>
+            </div>
+
+            <div class="space-y-3">
+                <p class="text-xs text-gray-700 font-semibold" x-text="shareData.title"></p>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                        {{ __('actividades.share_url_label') }}
+                    </label>
+                    <div class="flex items-center gap-2">
+                        <input type="text" readonly :value="shareData.url"
+                            class="w-full rounded-lg border-gray-300 text-xs bg-gray-50 text-gray-700 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 select-all py-2"
+                            @click="$el.select()" />
+                        <button type="button" @click="copyToClipboard()"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-sm transition whitespace-nowrap cursor-pointer">
+                            <template x-if="!copied">
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                    <span>{{ __('actividades.copy_url') }}</span>
+                                </span>
+                            </template>
+                            <template x-if="copied">
+                                <span class="flex items-center gap-1 text-emerald-200">
+                                    <span>✓</span>
+                                    <span>{{ __('actividades.copied') }}</span>
+                                </span>
+                            </template>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Accesos directos a WhatsApp Web -->
+                <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
+                    <a :href="'https://api.whatsapp.com/send?text=' + encodeURIComponent(shareData.text + ' ' + shareData.url)"
+                        target="_blank"
+                        class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition shadow-xs">
+                        <span>💬</span>
+                        <span>{{ __('actividades.share_whatsapp') }}</span>
+                    </a>
+
+                    <button type="button" @click="shareModalOpen = false"
+                        class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition cursor-pointer">
+                        {{ __('actividades.close') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
