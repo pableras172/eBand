@@ -109,10 +109,18 @@
             },
             {
               "@@type": "Question",
-              "name": "¿Cómo funciona en teléfonos iPhone y Android?",
+              "name": "¿Por qué utilizar eBand en lugar de hojas de cálculo de Excel o grupos de WhatsApp?",
               "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "eBand está desarrollada como Progressive Web App (PWA). Cada músico puede agregar la app directamente a la pantalla de inicio de su teléfono sin pagar comisiones ni depender de las tiendas de aplicaciones."
+                "text": "Llevar una banda, charanga o coro con Excel y grupos de WhatsApp genera mensajes perdidos, falta de respuestas a última hora y decenas de versiones de la misma lista. eBand centraliza y automatiza todo en una plataforma común para Android, iOS y Escritorio: cada músico marca su disponibilidad con un solo clic, la directiva ve la plantilla confirmada en tiempo real, las familias gestionan a sus hijos con control parental, y todo con una tarifa plana de 150€/año con miembros ilimitados."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Cómo funciona en teléfonos iPhone, Android y ordenadores?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "eBand es 100% multiplataforma: funciona tanto en escritorio (ordenadores PC y Mac) a través de cualquier navegador web, como en teléfonos móviles iPhone y Android (como PWA y próximamente con apps nativas en App Store y Google Play)."
               }
             },
             {
@@ -232,20 +240,20 @@
                         <span class="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
                         <span>Plataforma especializada para agrupaciones musicales</span>
                         <span class="text-blue-300">|</span>
-                        <span class="text-blue-700 font-bold">Versión 3.0</span>
+                        <span class="text-blue-700 font-bold">Android · iOS · Escritorio</span>
                     </div>
                 </div>
 
                 <!-- Hero Heading & Copy -->
                 <div class="mt-8 text-center max-w-4xl mx-auto">
                     <h1 class="font-heading text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl sm:leading-tight lg:leading-[1.12]">
-                        El software integral para tu <br class="hidden sm:inline">
+                        El software y app de gestión para tu <br class="hidden sm:inline">
                         <span class="bg-gradient-to-r from-blue-700 via-indigo-600 to-amber-600 bg-clip-text text-transparent">
-                            Banda de Música, Charanga o Coral
+                            Banda de Música, Charanga, Coro u Orquesta
                         </span>
                     </h1>
                     <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-normal">
-                        Pon fin al caos de los grupos de WhatsApp y a la incertidumbre de saber quién asistirá a cada ensayo o actuación. Con eBand gestionas la disponibilidad de tus músicos, el control parental para familias, el inventario de uniformes y material, las actividades extra y las liquidaciones de bolos en una única app que todos sabrán usar.
+                        Pon fin al caos de los grupos de WhatsApp y hojas de cálculo dispersas. Con eBand gestionas la disponibilidad de tus músicos en tiempo real, el control parental para familias, el inventario de uniformes y material, las actividades y las liquidaciones de bolos. Disponible para <strong>Android, iOS y Escritorio (PC / Mac)</strong> en una plataforma intuitiva que todos sabrán usar.
                     </p>
 
                     <!-- CTAs -->
@@ -272,7 +280,7 @@
                         <div class="flex items-center gap-2 mb-3">
                             <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-200/80 px-3 py-1 text-xs font-semibold text-blue-800">
                                 <span class="h-1.5 w-1.5 rounded-full bg-blue-600 animate-ping"></span>
-                                📱 Disponible en Web/PWA y próximamente en tiendas oficiales:
+                                📱 Disponible en Escritorio, Web/PWA y próximamente en tiendas oficiales móviles:
                             </span>
                         </div>
                         <div class="flex flex-wrap items-center justify-center gap-3">
@@ -321,7 +329,7 @@
                             <svg class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                             </svg>
-                            <span>App móvil PWA (iOS y Android)</span>
+                            <span>Multiplataforma: Android, iOS y Escritorio</span>
                         </div>
                         <div class="flex items-center gap-1.5">
                             <svg class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
@@ -534,10 +542,10 @@
                         Funcionalidades Destacadas
                     </span>
                     <h2 class="mt-4 font-heading text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-                        Todo lo que tu directiva y tus miembros necesitan
+                        Todo lo que tu directiva, directores y miembros necesitan
                     </h2>
                     <p class="mt-4 text-base sm:text-lg text-slate-600">
-                        Olvídate de hojas de cálculo dispersas y notas de papel. Gestiona tu día a día con herramientas diseñadas exactamente para la realidad asociativa.
+                        Olvídate de hojas de cálculo dispersas y notas de papel. Gestiona tu día a día con herramientas diseñadas exactamente para la realidad asociativa de bandas, coros y orquestas.
                     </p>
                 </div>
 
@@ -549,9 +557,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                             </svg>
                         </div>
-                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Control de Asistencia y Disponibilidad</h3>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Control de Asistencia a Ensayos y Disponibilidad</h3>
                         <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                            Los músicos pueden indicar si están <strong>Disponibles</strong> o <strong>No disponibles</strong> con un solo clic. El director y la directiva conocen la plantilla exacta por cuerda en tiempo real.
+                            Los músicos indican con un solo clic si están <strong>Disponibles</strong> o <strong>No disponibles</strong> desde su teléfono o navegador de escritorio. El director y la junta conocen la plantilla confirmada por cuerda o instrumento en tiempo real.
                         </p>
                     </div>
 
@@ -607,7 +615,7 @@
                         </p>
                     </div>
 
-                    <!-- Feature 6: App Móvil (PWA y Próximamente Nativa) -->
+                    <!-- Feature 6: App Móvil y Escritorio (Android, iOS y PC/Mac) -->
                     <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
                         <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 text-purple-700">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -615,11 +623,11 @@
                             </svg>
                         </div>
                         <div class="mt-5 flex items-center justify-between">
-                            <h3 class="font-heading text-lg font-bold text-slate-900">App Móvil (iOS y Android)</h3>
-                            <span class="rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-bold text-purple-800">PWA + Stores</span>
+                            <h3 class="font-heading text-lg font-bold text-slate-900">App Móvil y Escritorio</h3>
+                            <span class="rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-bold text-purple-800">Android · iOS · PC/Mac</span>
                         </div>
                         <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                            Disponible ya como Progressive Web App (PWA) instalable en pantalla de inicio sin descargas, y muy pronto disponible oficialmente para descarga directa en <strong>Google Play</strong> y <strong>App Store</strong>.
+                            Accede cómodamente desde cualquier dispositivo: navegador web en tu ordenador de escritorio o app en teléfonos <strong>Android</strong> e <strong>iPhone</strong> (ya como PWA y próximamente en App Store y Google Play).
                         </p>
                     </div>
                 </div>
@@ -949,6 +957,21 @@
                         </summary>
                         <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
                             Muchos músicos de bandas y escuelas de música son menores de edad. Los padres o tutores disponen de una vista familiar donde pueden consultar las convocatorias, ensayos, uniformes y actividades de sus hijos, marcar su disponibilidad (Disponible / No disponible) e inscribirlos en salidas o actividades extra sin necesidad de que el menor gestione un usuario independiente.
+                        </div>
+                    </details>
+
+                    <!-- FAQ 3: eBand vs Excel / WhatsApp -->
+                    <details name="faq" class="group rounded-2xl border border-slate-200 bg-slate-50/60 p-6 transition duration-200 open:bg-white open:shadow-md hover:border-slate-300">
+                        <summary class="flex w-full cursor-pointer list-none items-center justify-between text-left text-base font-bold text-slate-900 focus:outline-none select-none [&::-webkit-details-marker]:hidden">
+                            <span>¿Por qué utilizar eBand en lugar de hojas de cálculo de Excel o grupos de WhatsApp?</span>
+                            <span class="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 shadow-xs transition-transform duration-200 group-open:rotate-180">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
+                            Gestionar una banda, charanga o coro con Excel y grupos de WhatsApp genera mensajes perdidos, falta de respuestas a última hora y múltiples versiones desactualizadas de un mismo archivo. eBand centraliza y automatiza toda la gestión en una plataforma común accesible desde <strong>Android, iOS y Escritorio (PC / Mac)</strong>: cada músico indica su disponibilidad con un solo clic, el director y la junta directiva visualizan la plantilla confirmada en tiempo real, las familias disponen de control parental para sus hijos y las actuaciones cuentan con liquidación económica automática. Todo con una <strong>tarifa plana de 150€/año sin límites de miembros</strong>.
                         </div>
                     </details>
 
