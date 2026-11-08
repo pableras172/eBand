@@ -21,6 +21,15 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+// Política de Privacidad
+Route::get('/politica-privacidad', function () {
+    return view('politica-privacidad');
+})->name('politica-privacidad');
+
+Route::get('/privacidad', function () {
+    return redirect()->route('politica-privacidad');
+});
+
 // Acceso de miembros a su banda (mediante código que redirige a xxx.eband.app)
 Route::get('/acceso', [TenantAccessController::class, 'index'])->name('tenant-access.index');
 Route::get('/login', [TenantAccessController::class, 'index'])->name('central.login');
