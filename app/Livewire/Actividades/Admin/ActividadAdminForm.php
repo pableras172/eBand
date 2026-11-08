@@ -124,6 +124,11 @@ class ActividadAdminForm extends Component
         }
     }
 
+    public function setEsDePago(bool $value): void
+    {
+        $this->es_de_pago = $value;
+    }
+
     public function addOpcion(): void
     {
         $this->opciones[] = [
