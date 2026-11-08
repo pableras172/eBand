@@ -57,6 +57,8 @@
                     <option value="">{{ __('actividades.types.all') }}</option>
                     <option value="comida">🍽️ {{ __('actividades.types.comida') }}</option>
                     <option value="cena">🍷 {{ __('actividades.types.cena') }}</option>
+                    <option value="concierto">🎺 {{ __('actividades.types.concierto') }}</option>
+                    <option value="reunion">📋 {{ __('actividades.types.reunion') }}</option>
                     <option value="excursion">🚌 {{ __('actividades.types.excursion') }}</option>
                     <option value="otro">🎉 {{ __('actividades.types.otro') }}</option>
                 </select>
@@ -110,7 +112,11 @@
                                                 <span class="truncate max-w-xs">📍 {{ $act->lugar }}</span>
                                             @endif
                                             <span>•</span>
-                                            <span>{{ $act->opciones_count }} {{ __('opcions') }}</span>
+                                            @if ($act->es_de_pago)
+                                                <span>{{ $act->opciones_count }} {{ __('opcions') }}</span>
+                                            @else
+                                                <span class="text-cyan-700 font-medium">🎺 {{ __('actividades.free_individual_badge') }}</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -133,7 +139,11 @@
                             </td>
 
                             <td class="px-5 py-4 whitespace-nowrap text-center font-medium text-gray-900 text-sm">
-                                {{ number_format((float) ($act->inscripciones_sum_total ?? 0), 2, ',', '.') }} €
+                                @if ($act->es_de_pago)
+                                    {{ number_format((float) ($act->inscripciones_sum_total ?? 0), 2, ',', '.') }} €
+                                @else
+                                    <span class="text-gray-400 font-normal">-</span>
+                                @endif
                             </td>
 
                             <td class="px-5 py-4 whitespace-nowrap text-center">

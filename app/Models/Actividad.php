@@ -22,6 +22,7 @@ class Actividad extends Model
     protected $fillable = [
         'titulo',
         'tipo',
+        'es_de_pago',
         'descripcion',
         'lugar',
         'fecha',
@@ -39,6 +40,7 @@ class Actividad extends Model
     protected function casts(): array
     {
         return [
+            'es_de_pago' => 'boolean',
             'fecha' => 'datetime',
             'fecha_limite_inscripcion' => 'datetime',
             'notified_at' => 'datetime',
@@ -88,6 +90,8 @@ class Actividad extends Model
             'comida' => '🍽️',
             'cena' => '🍷',
             'excursion' => '🚌',
+            'concierto' => '🎺',
+            'reunion' => '📋',
             default => '🎉',
         };
     }
@@ -98,5 +102,13 @@ class Actividad extends Model
     public function requiereAlergias(): bool
     {
         return in_array($this->tipo, ['comida', 'cena'], true);
+    }
+
+    /**
+     * Comprueba si la actividad es individual y no tiene precio (solo confirmación Si/No).
+     */
+    public function esIndividualSinPrecio(): bool
+    {
+        return ! $this->es_de_pago;
     }
 }

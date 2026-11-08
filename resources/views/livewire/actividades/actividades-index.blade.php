@@ -34,6 +34,10 @@
             class="px-4 py-2 rounded-xl text-xs font-semibold transition {{ $filtroTipo === 'cena' ? 'bg-cyan-600 text-white shadow-sm' : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200' }}">
             🍷 {{ __('actividades.types.cena') }}
         </button>
+        <button type="button" wire:click="$set('filtroTipo', 'concierto')"
+            class="px-4 py-2 rounded-xl text-xs font-semibold transition {{ $filtroTipo === 'concierto' ? 'bg-cyan-600 text-white shadow-sm' : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200' }}">
+            🎺 {{ __('actividades.types.concierto') }}
+        </button>
         <button type="button" wire:click="$set('filtroTipo', 'excursion')"
             class="px-4 py-2 rounded-xl text-xs font-semibold transition {{ $filtroTipo === 'excursion' ? 'bg-cyan-600 text-white shadow-sm' : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200' }}">
             🚌 {{ __('actividades.types.excursion') }}
@@ -56,7 +60,7 @@
                             @if ($miInscripcion)
                                 @if ($miInscripcion->asiste)
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
-                                        ✓ {{ __('actividades.already_inscribed') }} ({{ number_format((float) $miInscripcion->total, 2, ',', '.') }} €)
+                                        ✓ {{ __('actividades.already_inscribed') }} @if($act->es_de_pago) ({{ number_format((float) $miInscripcion->total, 2, ',', '.') }} €) @endif
                                     </span>
                                 @else
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
@@ -102,24 +106,36 @@
                         </div>
                     </div>
 
-                    <!-- Muestra de opciones -->
+                    <!-- Muestra de opciones / Modalidad -->
                     <div class="pt-2 border-t border-gray-100">
-                        <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">
-                            {{ __('actividades.options_available') }}:
-                        </span>
-                        <div class="flex flex-wrap gap-1.5">
-                            @foreach ($act->opciones as $op)
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs bg-gray-50 border border-gray-200 text-gray-700">
-                                    {{ $op->titulo }} <strong class="ml-1 text-gray-900">{{ number_format((float) $op->precio, 2, ',', '.') }} €</strong>
+                        @if ($act->es_de_pago)
+                            <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">
+                                {{ __('actividades.options_available') }}:
+                            </span>
+                            <div class="flex flex-wrap gap-1.5">
+                                @foreach ($act->opciones as $op)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs bg-gray-50 border border-gray-200 text-gray-700">
+                                        {{ $op->titulo }} <strong class="ml-1 text-gray-900">{{ number_format((float) $op->precio, 2, ',', '.') }} €</strong>
+                                    </span>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="flex items-center gap-1.5">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-cyan-50 border border-cyan-200 text-cyan-800">
+                                    🎺 {{ __('actividades.free_individual_badge') }}
                                 </span>
-                            @endforeach
-                        </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
                 <div class="p-4 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between">
                     <span class="text-xs text-gray-500">
-                        {{ $act->opciones->count() }} {{ __('opcions') }}
+                        @if ($act->es_de_pago)
+                            {{ $act->opciones->count() }} {{ __('opcions') }}
+                        @else
+                            {{ __('actividades.modality_free_title') }}
+                        @endif
                     </span>
 
                     <a href="{{ route('actividades.show', $act) }}"

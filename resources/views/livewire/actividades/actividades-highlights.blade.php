@@ -88,11 +88,19 @@
                     <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
                         <span class="text-xs font-semibold text-gray-700">
                             @if ($miInscripcion && $miInscripcion->asiste)
-                                <span class="text-emerald-700 font-bold">{{ number_format((float) $miInscripcion->total, 2, ',', '.') }} €</span>
+                                @if ($act->es_de_pago)
+                                    <span class="text-emerald-700 font-bold">{{ number_format((float) $miInscripcion->total, 2, ',', '.') }} €</span>
+                                @else
+                                    <span class="text-emerald-700 font-bold">✓ {{ __('actividades.confirmed_badge') }}</span>
+                                @endif
                             @elseif ($miInscripcion && ! $miInscripcion->asiste)
                                 <span class="text-slate-500 font-medium italic">{{ __('actividades.not_attending_badge') }}</span>
                             @else
-                                {{ $act->opciones->count() }} {{ __('opcions') }}
+                                @if ($act->es_de_pago)
+                                    {{ $act->opciones->count() }} {{ __('opcions') }}
+                                @else
+                                    <span class="text-cyan-700 font-medium">{{ __('actividades.free_individual_badge') }}</span>
+                                @endif
                             @endif
                         </span>
 

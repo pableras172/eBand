@@ -357,23 +357,61 @@ class ActividadInscripcionTest extends TestCase
 
         $actividad = Actividad::query()->create([
             'titulo' => 'Concierto de Gala',
-            'tipo' => 'otro',
+            'tipo' => 'concierto',
+            'es_de_pago' => false,
             'descripcion' => $htmlDesc,
             'fecha' => Carbon::now()->addDays(10),
             'fecha_limite_inscripcion' => Carbon::now()->addDays(5),
             'estado' => 'abierta',
         ]);
 
-        ActividadOpcion::query()->create([
-            'actividad_id' => $actividad->id,
-            'titulo' => 'Entrada General',
-            'precio' => 0.00,
-            'orden' => 1,
-        ]);
-
         Livewire::actingAs($user)
             ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
             ->assertSeeHtml('<strong>sede</strong>')
             ->assertSeeHtml('<li>Traer partituras</li>');
+    }
+
+    public function test_musician_can_confirm_attendance_in_free_individual_activity(): void
+    {
+        $user = $this->createRegularUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Concierto Fiestas Mayores',
+            'tipo' => 'concierto',
+            'es_de_pago' => false,
+            'fecha' => Carbon::now()->addDays(8),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(4),
+            'estado' => 'abierta',
+        ]);
+
+        // El músico confirma asistencia directamente (Sí)
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->assertSee(__('actividades.btn_confirm_attendance'))
+            ->assertSee(__('actividades.btn_not_attending'))
+            ->call('inscribirme')
+            ->assertHasNoErrors()
+            ->assertSee(__('actividades.attendance_confirmed_title'));
+
+        $this->assertDatabaseHas('actividad_inscripciones', [
+            'actividad_id' => $actividad->id,
+            'user_id' => $user->id,
+            'asiste' => true,
+            'total' => 0.00,
+            'pagado' => true,
+        ]);
+
+        // Cambiar respuesta a "No voy"
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->call('indicarNoVoy')
+            ->assertHasNoErrors()
+            ->assertSee(__('actividades.declined_card_title'));
+
+        $this->assertDatabaseHas('actividad_inscripciones', [
+            'actividad_id' => $actividad->id,
+            'user_id' => $user->id,
+            'asiste' => false,
+        ]);
     }
 }
