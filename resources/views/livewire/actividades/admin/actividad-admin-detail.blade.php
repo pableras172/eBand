@@ -136,6 +136,54 @@
         </div>
     @endif
 
+    <!-- Bloque de Métricas de Asistencia para Todos los Tipos de Actividad -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="rounded-2xl bg-white p-6 shadow-sm border border-emerald-100 bg-emerald-50/20 flex items-center justify-between">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">
+                    ✓ {{ __('actividades.total_confirmed_attending') }}
+                </span>
+                <div class="text-3xl font-black text-emerald-800">
+                    {{ $totalPersonasInscritas }}
+                </div>
+                <p class="text-xs text-emerald-600 mt-1">{{ __('actividades.total_confirmed_attending_sub') }}</p>
+            </div>
+            <div class="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-3xl">
+                {{ $actividad->icono }}
+            </div>
+        </div>
+
+        <div class="rounded-2xl bg-white p-6 shadow-sm border border-rose-100 bg-rose-50/20 flex items-center justify-between">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">
+                    ✗ {{ __('actividades.total_declined_attending') }}
+                </span>
+                <div class="text-3xl font-black text-rose-800">
+                    {{ $totalNoAsisten }}
+                </div>
+                <p class="text-xs text-rose-600 mt-1">{{ __('actividades.total_declined_attending_sub') }}</p>
+            </div>
+            <div class="w-14 h-14 rounded-2xl bg-rose-100 flex items-center justify-center text-3xl">
+                🙅‍♂️
+            </div>
+        </div>
+
+        <div class="rounded-2xl bg-white p-6 shadow-sm border border-amber-100 bg-amber-50/20 flex items-center justify-between">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">
+                    ⏳ {{ __('actividades.total_pending_response') }}
+                </span>
+                <div class="text-3xl font-black text-amber-800">
+                    {{ $totalPendienteRespuesta }}
+                </div>
+                <p class="text-xs text-amber-600 mt-1">{{ __('actividades.total_pending_response_sub') }}</p>
+            </div>
+            <div class="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center text-3xl">
+                ❓
+            </div>
+        </div>
+    </div>
+
     @if ($actividad->es_de_pago)
         <!-- Bloque de Recuento de Platos / Opciones (Para el restaurante o proveedor) -->
         <div class="rounded-2xl bg-white p-6 shadow-sm border border-gray-100 space-y-4">
@@ -224,54 +272,6 @@
                     {{ number_format((float) $totalPendiente, 2, ',', '.') }} €
                 </div>
                 <p class="text-[11px] text-amber-600 mt-1">{{ __('actividades.total_pending_sub') }}</p>
-            </div>
-        </div>
-    @else
-        <!-- Bloque de Métricas de Asistencia para Actividades Individuales / Sin Precio -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="rounded-2xl bg-white p-6 shadow-sm border border-emerald-100 bg-emerald-50/20 flex items-center justify-between">
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">
-                        ✓ {{ __('actividades.total_confirmed_attending') }}
-                    </span>
-                    <div class="text-3xl font-black text-emerald-800">
-                        {{ $totalPersonasInscritas }}
-                    </div>
-                    <p class="text-xs text-emerald-600 mt-1">{{ __('Músicos que han confirmado asistencia.') }}</p>
-                </div>
-                <div class="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-3xl">
-                    🎺
-                </div>
-            </div>
-
-            <div class="rounded-2xl bg-white p-6 shadow-sm border border-rose-100 bg-rose-50/20 flex items-center justify-between">
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block mb-1">
-                        ✗ {{ __('actividades.total_declined_attending') }}
-                    </span>
-                    <div class="text-3xl font-black text-rose-800">
-                        {{ $totalNoAsisten }}
-                    </div>
-                    <p class="text-xs text-rose-600 mt-1">{{ __('Músicos que han indicado que no acudirán.') }}</p>
-                </div>
-                <div class="w-14 h-14 rounded-2xl bg-rose-100 flex items-center justify-center text-3xl">
-                    🙅‍♂️
-                </div>
-            </div>
-
-            <div class="rounded-2xl bg-white p-6 shadow-sm border border-amber-100 bg-amber-50/20 flex items-center justify-between">
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">
-                        ⏳ {{ __('actividades.total_pending_response') }}
-                    </span>
-                    <div class="text-3xl font-black text-amber-800">
-                        {{ $totalPendienteRespuesta }}
-                    </div>
-                    <p class="text-xs text-amber-600 mt-1">{{ __('actividades.total_pending_response_sub') }}</p>
-                </div>
-                <div class="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center text-3xl">
-                    ❓
-                </div>
             </div>
         </div>
     @endif
