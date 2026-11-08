@@ -14,6 +14,8 @@ return [
         'comida' => 'Comida',
         'cena' => 'Cena',
         'excursion' => 'Excursión',
+        'concierto' => 'Concierto',
+        'reunion' => 'Reunión',
         'otro' => 'Otro evento',
     ],
     'status' => [
@@ -153,4 +155,23 @@ return [
     'filter_not_attending' => 'Solo que No Asisten (No voy)',
     'total_not_attending' => 'no asistirán',
     'error_paid_cannot_cancel' => 'Tu inscripción ya está marcada como pagada. Contacta con la administración para cancelarla.',
+
+    // Modalidad Individual sin Precio
+    'modality_title' => 'Modalidad de la Actividad',
+    'modality_paid_title' => 'Con opciones y precios',
+    'modality_paid_desc' => 'Comidas, cenas, tickets o viajes con menús de pago y selección de cantidades.',
+    'modality_free_title' => 'Individual sin precio (Sí / No)',
+    'modality_free_desc' => 'Conciertos, ensayos o reuniones donde el músico solo confirma si asiste o no.',
+    'free_individual_badge' => 'Individual (Sin coste)',
+    'confirmed_badge' => 'Asistencia confirmada',
+    'attendance_confirmation_title' => 'Confirmación de Asistencia',
+    'attendance_confirmation_desc' => 'Esta actividad no tiene coste ni opciones de menú. Solo debes indicar si vas a acudir.',
+    'btn_confirm_attendance' => 'Sí, asistiré',
+    'attendance_confirmed_title' => '¡Has confirmado tu asistencia!',
+    'attendance_confirmed_sub' => 'Tu asistencia ha quedado registrada para este evento. Si necesitas cambiar tu respuesta, puedes hacerlo antes del plazo límite.',
+    'change_opinion_decline' => 'Cambiar respuesta: No podré asistir',
+    'metrics_attendance_title' => 'Control de Asistencia del Evento',
+    'metrics_attendance_sub' => 'Recuento de músicos que han confirmado asistencia o indicado que no van.',
+    'total_confirmed_attending' => 'Músicos Confirmados',
+    'total_declined_attending' => 'No Asistirán',
 ];

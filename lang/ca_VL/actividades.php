@@ -14,6 +14,8 @@ return [
         'comida' => 'Dinar',
         'cena' => 'Sopar',
         'excursion' => 'Excursió',
+        'concierto' => 'Concert',
+        'reunion' => 'Reunió',
         'otro' => 'Altre esdeveniment',
     ],
     'status' => [
@@ -153,4 +155,23 @@ return [
     'filter_not_attending' => 'Només qui No Assisteix (No vaig)',
     'total_not_attending' => 'no assistiran',
     'error_paid_cannot_cancel' => 'La teua inscripció ja està marcada com a pagada. Contacta amb l’administració per a cancel·lar-la.',
+
+    // Modalitat Individual sense Preu
+    'modality_title' => 'Modalitat de l’Activitat',
+    'modality_paid_title' => 'Amb opcions i preus',
+    'modality_paid_desc' => 'Dinars, sopars, tiquets o viatges amb menús de pagament i selecció de quantitats.',
+    'modality_free_title' => 'Individual sense preu (Sí / No)',
+    'modality_free_desc' => 'Concerts, assajos o reunions on el músic només confirma si assistix o no.',
+    'free_individual_badge' => 'Individual (Sense cost)',
+    'confirmed_badge' => 'Assistència confirmada',
+    'attendance_confirmation_title' => 'Confirmació d’Assistència',
+    'attendance_confirmation_desc' => 'Esta activitat no té cost ni opcions de menú. Només has d’indicar si vas a acudir-hi.',
+    'btn_confirm_attendance' => 'Sí, hi assistiré',
+    'attendance_confirmed_title' => '¡Has confirmat la teua assistència!',
+    'attendance_confirmed_sub' => 'La teua assistència ha quedat registrada per a este esdeveniment. Si necessites canviar la teua resposta, pots fer-ho abans del termini límit.',
+    'change_opinion_decline' => 'Canviar resposta: No podré assistir-hi',
+    'metrics_attendance_title' => 'Control d’Assistència de l’Esdeveniment',
+    'metrics_attendance_sub' => 'Recompte de músics que han confirmat assistència o indicat que no hi van.',
+    'total_confirmed_attending' => 'Músics Confirmats',
+    'total_declined_attending' => 'No Assistiran',
 ];

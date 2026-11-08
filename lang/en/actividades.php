@@ -14,6 +14,8 @@ return [
         'comida' => 'Lunch',
         'cena' => 'Dinner',
         'excursion' => 'Excursion',
+        'concierto' => 'Concert',
+        'reunion' => 'Meeting',
         'otro' => 'Other event',
     ],
     'status' => [
@@ -153,4 +155,23 @@ return [
     'filter_not_attending' => 'Only Not Attending',
     'total_not_attending' => 'not attending',
     'error_paid_cannot_cancel' => 'Your registration is marked as paid. Please contact administration to cancel it.',
+
+    // Individual modality without price
+    'modality_title' => 'Activity Modality',
+    'modality_paid_title' => 'With options and prices',
+    'modality_paid_desc' => 'Meals, dinners, tickets or trips with paid menus and quantity selection.',
+    'modality_free_title' => 'Individual without price (Yes / No)',
+    'modality_free_desc' => 'Concerts, rehearsals or meetings where the musician only confirms attendance (Yes/No).',
+    'free_individual_badge' => 'Individual (No cost)',
+    'confirmed_badge' => 'Attendance confirmed',
+    'attendance_confirmation_title' => 'Attendance Confirmation',
+    'attendance_confirmation_desc' => 'This activity is free and has no menu options. Just confirm whether you will attend.',
+    'btn_confirm_attendance' => 'Yes, I will attend',
+    'attendance_confirmed_title' => 'You confirmed your attendance!',
+    'attendance_confirmed_sub' => 'Your attendance has been recorded for this event. If you need to change your answer, you can do so before the deadline.',
+    'change_opinion_decline' => 'Change answer: I cannot attend',
+    'metrics_attendance_title' => 'Event Attendance Overview',
+    'metrics_attendance_sub' => 'Count of musicians who confirmed attendance or marked not attending.',
+    'total_confirmed_attending' => 'Confirmed Musicians',
+    'total_declined_attending' => 'Not Attending',
 ];

@@ -22,6 +22,8 @@ class ActividadAdminForm extends Component
 
     public string $tipo = 'comida';
 
+    public bool $es_de_pago = true;
+
     public string $descripcion = '';
 
     public string $lugar = '';
@@ -44,20 +46,26 @@ class ActividadAdminForm extends Component
      */
     protected function rules(): array
     {
-        return [
+        $rules = [
             'titulo' => ['required', 'string', 'max:255'],
-            'tipo' => ['required', 'string', 'in:comida,cena,excursion,otro'],
+            'tipo' => ['required', 'string', 'in:comida,cena,excursion,concierto,reunion,otro'],
+            'es_de_pago' => ['required', 'boolean'],
             'descripcion' => ['nullable', 'string'],
             'lugar' => ['nullable', 'string', 'max:255'],
             'fecha' => ['required', 'date'],
             'fecha_limite_inscripcion' => ['required', 'date', 'before_or_equal:fecha'],
             'estado' => ['required', 'string', 'in:borrador,abierta,cerrada'],
             'instrucciones_pago' => ['nullable', 'string'],
-            'opciones' => ['required', 'array', 'min:1'],
-            'opciones.*.titulo' => ['required', 'string', 'max:255'],
-            'opciones.*.descripcion' => ['nullable', 'string'],
-            'opciones.*.precio' => ['required', 'numeric', 'min:0'],
         ];
+
+        if ($this->es_de_pago) {
+            $rules['opciones'] = ['required', 'array', 'min:1'];
+            $rules['opciones.*.titulo'] = ['required', 'string', 'max:255'];
+            $rules['opciones.*.descripcion'] = ['nullable', 'string'];
+            $rules['opciones.*.precio'] = ['required', 'numeric', 'min:0'];
+        }
+
+        return $rules;
     }
 
     /**
@@ -83,6 +91,7 @@ class ActividadAdminForm extends Component
 
             $this->titulo = $this->actividad->titulo;
             $this->tipo = $this->actividad->tipo;
+            $this->es_de_pago = (bool) ($this->actividad->es_de_pago ?? true);
             $this->descripcion = (string) $this->actividad->descripcion;
             $this->lugar = (string) $this->actividad->lugar;
             $this->fecha = $this->actividad->fecha ? $this->actividad->fecha->format('Y-m-d\TH:i') : '';
@@ -148,12 +157,13 @@ class ActividadAdminForm extends Component
             $data = [
                 'titulo' => $this->titulo,
                 'tipo' => $this->tipo,
+                'es_de_pago' => $this->es_de_pago,
                 'descripcion' => $this->descripcion ?: null,
                 'lugar' => $this->lugar ?: null,
                 'fecha' => $this->fecha,
                 'fecha_limite_inscripcion' => $this->fecha_limite_inscripcion,
                 'estado' => $this->estado,
-                'instrucciones_pago' => $this->instrucciones_pago ?: null,
+                'instrucciones_pago' => $this->es_de_pago ? ($this->instrucciones_pago ?: null) : null,
             ];
 
             if ($this->isEditing && $this->actividad) {
@@ -163,41 +173,49 @@ class ActividadAdminForm extends Component
                 $actividad = Actividad::query()->create($data);
             }
 
-            // Guardar opciones
-            $keptIds = [];
-            foreach ($this->opciones as $index => $opcionData) {
-                if (! empty($opcionData['id'])) {
-                    $opcion = ActividadOpcion::query()
-                        ->where('actividad_id', $actividad->id)
-                        ->find($opcionData['id']);
+            if (! $this->es_de_pago) {
+                // Eliminar opciones huérfanas si la actividad pasó a ser individual sin precio
+                ActividadOpcion::query()
+                    ->where('actividad_id', $actividad->id)
+                    ->doesntHave('inscripcionItems')
+                    ->delete();
+            } else {
+                // Guardar opciones
+                $keptIds = [];
+                foreach ($this->opciones as $index => $opcionData) {
+                    if (! empty($opcionData['id'])) {
+                        $opcion = ActividadOpcion::query()
+                            ->where('actividad_id', $actividad->id)
+                            ->find($opcionData['id']);
 
-                    if ($opcion) {
-                        $opcion->update([
+                        if ($opcion) {
+                            $opcion->update([
+                                'titulo' => $opcionData['titulo'],
+                                'descripcion' => $opcionData['descripcion'] ?: null,
+                                'precio' => (float) $opcionData['precio'],
+                                'orden' => $index,
+                            ]);
+                            $keptIds[] = $opcion->id;
+                        }
+                    } else {
+                        $newOpcion = ActividadOpcion::query()->create([
+                            'actividad_id' => $actividad->id,
                             'titulo' => $opcionData['titulo'],
                             'descripcion' => $opcionData['descripcion'] ?: null,
                             'precio' => (float) $opcionData['precio'],
                             'orden' => $index,
                         ]);
-                        $keptIds[] = $opcion->id;
+                        $keptIds[] = $newOpcion->id;
                     }
-                } else {
-                    $newOpcion = ActividadOpcion::query()->create([
-                        'actividad_id' => $actividad->id,
-                        'titulo' => $opcionData['titulo'],
-                        'descripcion' => $opcionData['descripcion'] ?: null,
-                        'precio' => (float) $opcionData['precio'],
-                        'orden' => $index,
-                    ]);
-                    $keptIds[] = $newOpcion->id;
                 }
-            }
 
-            // Opciones eliminadas que no tengan ítems asociados
-            ActividadOpcion::query()
-                ->where('actividad_id', $actividad->id)
-                ->whereNotIn('id', $keptIds)
-                ->doesntHave('inscripcionItems')
-                ->delete();
+                // Opciones eliminadas que no tengan ítems asociados
+                ActividadOpcion::query()
+                    ->where('actividad_id', $actividad->id)
+                    ->whereNotIn('id', $keptIds)
+                    ->doesntHave('inscripcionItems')
+                    ->delete();
+            }
         });
 
         session()->flash('success', $this->isEditing ? __('actividades.activity_updated') : __('actividades.activity_created'));

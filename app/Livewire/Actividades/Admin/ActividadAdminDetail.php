@@ -182,6 +182,48 @@ class ActividadAdminDetail extends Component
             ]);
         }
 
+        if (! $this->actividad->es_de_pago) {
+            DB::transaction(function (): void {
+                if ($this->editingInscripcionId) {
+                    $inscripcion = ActividadInscripcion::query()->findOrFail($this->editingInscripcionId);
+                    $inscripcion->update([
+                        'user_id' => $this->tipoAsistente === 'miembro' ? $this->selectedUserId : null,
+                        'nombre_manual' => $this->tipoAsistente === 'manual' ? trim($this->nombreManual) : null,
+                        'asiste' => true,
+                        'total' => 0.0,
+                        'observaciones_alergias' => null,
+                        'pagado' => true,
+                        'metodo_pago' => 'gratuito',
+                        'fecha_pago' => $inscripcion->fecha_pago ?? Carbon::now(),
+                    ]);
+
+                    $inscripcion->items()->delete();
+                } else {
+                    $inscripcion = ActividadInscripcion::query()->create([
+                        'actividad_id' => $this->actividad->id,
+                        'user_id' => $this->tipoAsistente === 'miembro' ? $this->selectedUserId : null,
+                        'nombre_manual' => $this->tipoAsistente === 'manual' ? trim($this->nombreManual) : null,
+                        'asiste' => true,
+                        'fecha_inscripcion' => Carbon::now(),
+                        'total' => 0.0,
+                        'observaciones_alergias' => null,
+                        'pagado' => true,
+                        'metodo_pago' => 'gratuito',
+                        'fecha_pago' => Carbon::now(),
+                    ]);
+                }
+            });
+
+            $this->showingInscripcionModal = false;
+            session()->flash('success', __('actividades.registration_saved_success', [
+                'name' => $this->tipoAsistente === 'miembro'
+                    ? (User::query()->find($this->selectedUserId)?->name ?? 'Músico')
+                    : $this->nombreManual,
+            ]));
+
+            return;
+        }
+
         $this->calcularTotal();
 
         $totalCantidad = array_sum(array_map('intval', $this->cantidades));

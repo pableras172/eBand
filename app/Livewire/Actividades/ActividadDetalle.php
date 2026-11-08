@@ -113,7 +113,7 @@ class ActividadDetalle extends Component
 
         $userId = Auth::id();
 
-        if ($this->miInscripcion && $this->miInscripcion->pagado) {
+        if ($this->actividad->es_de_pago && $this->miInscripcion && $this->miInscripcion->pagado) {
             $this->addError('error', __('actividades.error_paid_cannot_cancel'));
 
             return;
@@ -164,7 +164,43 @@ class ActividadDetalle extends Component
             return;
         }
 
-        // Filtrar opciones seleccionadas con cantidad > 0
+        // Si la actividad es individual y sin coste (ej. concierto, ensayo, reunión)
+        if (! $this->actividad->es_de_pago) {
+            DB::transaction(function () use ($userId): void {
+                if ($this->miInscripcion) {
+                    $this->miInscripcion->items()->delete();
+                    $this->miInscripcion->update([
+                        'asiste' => true,
+                        'fecha_inscripcion' => Carbon::now(),
+                        'total' => 0.0,
+                        'observaciones_alergias' => null,
+                        'pagado' => true,
+                        'metodo_pago' => 'gratuito',
+                    ]);
+                    $inscripcion = $this->miInscripcion;
+                } else {
+                    $inscripcion = ActividadInscripcion::query()->create([
+                        'actividad_id' => $this->actividad->id,
+                        'user_id' => $userId,
+                        'asiste' => true,
+                        'fecha_inscripcion' => Carbon::now(),
+                        'total' => 0.0,
+                        'observaciones_alergias' => null,
+                        'pagado' => true,
+                        'metodo_pago' => 'gratuito',
+                    ]);
+                }
+
+                $this->miInscripcion = $inscripcion->fresh(['items.opcion']);
+            });
+
+            $this->cambiandoRespuesta = false;
+            session()->flash('success', __('actividades.registration_success'));
+
+            return;
+        }
+
+        // Actividad con pago y opciones: Filtrar opciones seleccionadas con cantidad > 0
         $itemsAInsertar = [];
         $totalFinal = 0.0;
 
