@@ -19,3 +19,10 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# Bloquear indexación en motores de búsqueda para subdominios privados (*.eband.app)
+# Manteniendo únicamente indexable el dominio principal (eband.app y www.eband.app)
+<IfModule mod_headers.c>
+    SetEnvIfNoCase Host "^(www\.)?eband\.app$" IS_MAIN_DOMAIN
+    Header set X-Robots-Tag "noindex, nofollow" env=!IS_MAIN_DOMAIN
+</IfModule>
