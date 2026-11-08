@@ -89,8 +89,8 @@
                         {{ __('actividades.modality_title') }}
                     </span>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <label class="relative flex items-start p-3.5 rounded-xl border cursor-pointer transition {{ $es_de_pago ? 'bg-white border-cyan-500 ring-2 ring-cyan-500 shadow-xs' : 'bg-white/60 border-gray-200 hover:bg-white text-gray-600' }}">
-                            <input type="radio" wire:model.live="es_de_pago" :value="true" class="sr-only">
+                        <button type="button" wire:click="setEsDePago(true)"
+                            class="text-left relative flex items-start p-3.5 rounded-xl border cursor-pointer transition {{ $es_de_pago ? 'bg-white border-cyan-500 ring-2 ring-cyan-500 shadow-xs' : 'bg-white/60 border-gray-200 hover:bg-white text-gray-600' }}">
                             <div class="flex items-start gap-3">
                                 <span class="text-2xl mt-0.5">🏷️</span>
                                 <div>
@@ -98,10 +98,10 @@
                                     <span class="block text-xs text-gray-500 mt-0.5">{{ __('actividades.modality_paid_desc') }}</span>
                                 </div>
                             </div>
-                        </label>
+                        </button>
 
-                        <label class="relative flex items-start p-3.5 rounded-xl border cursor-pointer transition {{ ! $es_de_pago ? 'bg-white border-cyan-500 ring-2 ring-cyan-500 shadow-xs' : 'bg-white/60 border-gray-200 hover:bg-white text-gray-600' }}">
-                            <input type="radio" wire:model.live="es_de_pago" :value="false" class="sr-only">
+                        <button type="button" wire:click="setEsDePago(false)"
+                            class="text-left relative flex items-start p-3.5 rounded-xl border cursor-pointer transition {{ ! $es_de_pago ? 'bg-white border-cyan-500 ring-2 ring-cyan-500 shadow-xs' : 'bg-white/60 border-gray-200 hover:bg-white text-gray-600' }}">
                             <div class="flex items-start gap-3">
                                 <span class="text-2xl mt-0.5">🎺</span>
                                 <div>
@@ -109,7 +109,7 @@
                                     <span class="block text-xs text-gray-500 mt-0.5">{{ __('actividades.modality_free_desc') }}</span>
                                 </div>
                             </div>
-                        </label>
+                        </button>
                     </div>
                 </div>
 
