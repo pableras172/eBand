@@ -155,6 +155,11 @@
                             {{ $totalNoAsisten }} {{ __('actividades.total_not_attending') }}
                         </span>
                     @endif
+                    @if ($totalPendienteRespuesta > 0)
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700">
+                            {{ $totalPendienteRespuesta }} {{ __('actividades.total_pending_response_badge') }}
+                        </span>
+                    @endif
                 </div>
             </div>
 
@@ -223,7 +228,7 @@
         </div>
     @else
         <!-- Bloque de Métricas de Asistencia para Actividades Individuales / Sin Precio -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="rounded-2xl bg-white p-6 shadow-sm border border-emerald-100 bg-emerald-50/20 flex items-center justify-between">
                 <div>
                     <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block mb-1">
@@ -251,6 +256,21 @@
                 </div>
                 <div class="w-14 h-14 rounded-2xl bg-rose-100 flex items-center justify-center text-3xl">
                     🙅‍♂️
+                </div>
+            </div>
+
+            <div class="rounded-2xl bg-white p-6 shadow-sm border border-amber-100 bg-amber-50/20 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">
+                        ⏳ {{ __('actividades.total_pending_response') }}
+                    </span>
+                    <div class="text-3xl font-black text-amber-800">
+                        {{ $totalPendienteRespuesta }}
+                    </div>
+                    <p class="text-xs text-amber-600 mt-1">{{ __('actividades.total_pending_response_sub') }}</p>
+                </div>
+                <div class="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center text-3xl">
+                    ❓
                 </div>
             </div>
         </div>

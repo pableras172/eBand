@@ -396,6 +396,16 @@ class ActividadAdminDetail extends Component
         $totalCobrado = (float) (clone $inscripcionesQuery)->where('asiste', true)->where('pagado', true)->sum('total');
         $totalPendiente = $totalPrevisto - $totalCobrado;
 
+        // Músicos activos que aún no han emitido respuesta (ni Sí ni No)
+        $totalPendienteRespuesta = (int) User::query()
+            ->where(function ($q): void {
+                $q->where('activo', true)->orWhereNull('activo');
+            })
+            ->whereDoesntHave('actividadInscripciones', function ($q): void {
+                $q->where('actividad_id', $this->actividad->id);
+            })
+            ->count();
+
         // Lista de inscritos con filtros
         $inscritos = ActividadInscripcion::query()
             ->where('actividad_id', $this->actividad->id)
@@ -434,6 +444,7 @@ class ActividadAdminDetail extends Component
             'recuentoOpciones' => $recuentoOpciones,
             'totalPersonasInscritas' => $totalPersonasInscritas,
             'totalNoAsisten' => $totalNoAsisten,
+            'totalPendienteRespuesta' => $totalPendienteRespuesta,
             'totalPrevisto' => $totalPrevisto,
             'totalCobrado' => $totalCobrado,
             'totalPendiente' => $totalPendiente,

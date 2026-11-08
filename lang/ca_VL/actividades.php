@@ -174,6 +174,9 @@ return [
     'metrics_attendance_sub' => 'Recompte de músics que han confirmat assistència o indicat que no hi van.',
     'total_confirmed_attending' => 'Músics Confirmats',
     'total_declined_attending' => 'No Assistiran',
+    'total_pending_response' => 'Pendent de Resposta',
+    'total_pending_response_sub' => 'Músics que encara no han contestat.',
+    'total_pending_response_badge' => 'pendents de resposta',
 
     // Compartir activitat
     'share' => 'Compartir',
