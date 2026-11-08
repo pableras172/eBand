@@ -174,4 +174,14 @@ return [
     'metrics_attendance_sub' => 'Recompte de músics que han confirmat assistència o indicat que no hi van.',
     'total_confirmed_attending' => 'Músics Confirmats',
     'total_declined_attending' => 'No Assistiran',
+
+    // Compartir activitat
+    'share' => 'Compartir',
+    'share_text' => 'Apunta’t a l’activitat :title! Data: :date.',
+    'share_modal_title' => 'Compartir Activitat',
+    'share_url_label' => 'Enllaç per als músics',
+    'copy_url' => 'Copiar enllaç',
+    'copied' => '¡Copiat!',
+    'share_whatsapp' => 'Enviar per WhatsApp',
+    'close' => 'Tancar',
 ];

@@ -174,4 +174,14 @@ return [
     'metrics_attendance_sub' => 'Count of musicians who confirmed attendance or marked not attending.',
     'total_confirmed_attending' => 'Confirmed Musicians',
     'total_declined_attending' => 'Not Attending',
+
+    // Share activity
+    'share' => 'Share',
+    'share_text' => 'Join the activity :title! Date: :date.',
+    'share_modal_title' => 'Share Activity',
+    'share_url_label' => 'Link for musicians',
+    'copy_url' => 'Copy link',
+    'copied' => 'Copied!',
+    'share_whatsapp' => 'Send via WhatsApp',
+    'close' => 'Close',
 ];
