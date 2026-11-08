@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     
     <!-- Primary Meta Tags -->
-    <title>eBand — El software de gestión para Bandas de Música, Charangas y Corales</title>
-    <meta name="title" content="eBand — El software de gestión para Bandas de Música, Charangas y Corales">
-    <meta name="description" content="Plataforma todo en uno para Bandas de Música, Charangas, Sociedades Musicales y Corales. Control de disponibilidad (Disponible / No disponible), control parental para familias, inventario de uniformes y material, actividades extra, liquidaciones y app móvil PWA. Tarifa plana 150€/año.">
-    <meta name="keywords" content="software bandas de musica, app banda musica, app charanga, gestion corales coros orfeones, agrupaciones musicales, control asistencia disponibilidad ensayos, control parental banda musica, inventario uniformes material banda, actividades extra banda, liquidacion bolos, eband, software musical saas">
+    <title>eBand · Software y App de Gestión para Bandas de Música, Coros y Agrupaciones Musicales</title>
+    <meta name="title" content="eBand · Software y App de Gestión para Bandas de Música, Coros y Agrupaciones Musicales">
+    <meta name="description" content="eBand es la plataforma y app móvil de gestión para Bandas de Música, Charangas, Sociedades Musicales y Corales. Control de asistencia y disponibilidad a ensayos, inventario de uniformes y material, control parental, actividades extra y liquidaciones de bolos. Tarifa plana 150€/año sin límites.">
+    <meta name="keywords" content="software gestion banda de musica, app gestion bandas musicales, plataforma gestion bandas, aplicacion gestion bandas, software bandas de musica, software gestion orquestas, app agrupaciones musicales, gestion coros corales orfeones, app charanga, control asistencia ensayos banda, control parental banda musica, inventario uniformes banda, liquidacion bolos, eband, software musical saas">
     <meta name="author" content="eBand">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url('/') }}">
@@ -16,8 +16,8 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url('/') }}">
-    <meta property="og:title" content="eBand — El software de gestión para Bandas de Música, Charangas y Corales">
-    <meta property="og:description" content="La solución todo en uno para Bandas, Charangas y Corales. Disponibilidad en tiempo real, control parental, inventario de uniformes y material, actividades extra y liquidación de bolos. 150€/año todo incluido.">
+    <meta property="og:title" content="eBand · Software y App de Gestión para Bandas de Música, Coros y Charangas">
+    <meta property="og:description" content="Plataforma y app de gestión integral para Bandas de Música, Charangas y Corales. Control de disponibilidad en tiempo real, control parental, actividades con confirmación Sí/No, inventario y liquidaciones. Tarifa plana 150€/año.">
     <meta property="og:image" content="{{ asset('logo_e_band.png') }}">
     <meta property="og:site_name" content="eBand">
     <meta property="og:locale" content="es_ES">
@@ -25,8 +25,8 @@
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ url('/') }}">
-    <meta property="twitter:title" content="eBand — El software de gestión para Bandas de Música, Charangas y Corales">
-    <meta property="twitter:description" content="Gestiona tu Banda, Charanga o Coral sin complicaciones: disponibilidad, control parental, inventario de uniformes y material, actividades y liquidaciones.">
+    <meta property="twitter:title" content="eBand · Software y App de Gestión para Bandas de Música, Coros y Charangas">
+    <meta property="twitter:description" content="Gestiona tu Banda, Charanga o Coral sin complicaciones: asistencia en tiempo real, control parental, inventario de uniformes, actividades y reparto de bolos.">
     <meta property="twitter:image" content="{{ asset('logo_e_band.png') }}">
 
     <!-- Mobile & PWA settings -->
@@ -265,6 +265,48 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </a>
+                    </div>
+
+                    <!-- App Store & Google Play Badges (Próximamente disponible) -->
+                    <div class="mt-8 flex flex-col items-center justify-center">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-200/80 px-3 py-1 text-xs font-semibold text-blue-800">
+                                <span class="h-1.5 w-1.5 rounded-full bg-blue-600 animate-ping"></span>
+                                📱 Disponible en Web/PWA y próximamente en tiendas oficiales:
+                            </span>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-center gap-3">
+                            <!-- App Store Button -->
+                            <div class="group relative inline-flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-800 cursor-default">
+                                <svg class="h-7 w-7 fill-current text-white shrink-0" viewBox="0 0 24 24">
+                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.85.94-2.93-.93.04-2.06.62-2.73 1.4-.59.68-1.11 1.77-.97 2.83 1.04.08 2.1-.53 2.76-1.3z"/>
+                                </svg>
+                                <div class="text-left leading-tight">
+                                    <div class="text-[10px] font-medium text-slate-400">Consíguelo en el</div>
+                                    <div class="text-sm font-bold tracking-tight text-white">App Store</div>
+                                </div>
+                                <span class="ml-2 rounded-full bg-blue-500/25 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-blue-300 border border-blue-400/40">
+                                    Próximamente
+                                </span>
+                            </div>
+
+                            <!-- Google Play Button -->
+                            <div class="group relative inline-flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-800 cursor-default">
+                                <svg class="h-6 w-6 shrink-0" viewBox="0 0 24 24">
+                                    <path fill="#EA4335" d="M3.6 1.8L13.5 12 3.6 22.2c-.4-.4-.6-1-.6-1.7V3.5c0-.7.2-1.3.6-1.7z"/>
+                                    <path fill="#FBBC04" d="M16.9 8.6L13.5 12l3.4 3.4 3.9-2.2c1.1-.6 1.1-1.7 0-2.4l-3.9-2.2z"/>
+                                    <path fill="#4285F4" d="M3.6 1.8l10.9 9.3 2.4-2.5L5.7.5C4.8 0 4.1.5 3.6 1.8z"/>
+                                    <path fill="#34A853" d="M16.9 15.4L14.5 13 3.6 22.2c.5 1.3 1.2 1.8 2.1 1.3l11.2-8.1z"/>
+                                </svg>
+                                <div class="text-left leading-tight">
+                                    <div class="text-[10px] font-medium text-slate-400">Disponible en</div>
+                                    <div class="text-sm font-bold tracking-tight text-white">Google Play</div>
+                                </div>
+                                <span class="ml-2 rounded-full bg-emerald-500/25 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-300 border border-emerald-400/40">
+                                    Próximamente
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Trust Bar Indicators -->
@@ -526,16 +568,16 @@
                         </p>
                     </div>
 
-                    <!-- Feature 3: Actividades Extra -->
+                    <!-- Feature 3: Actividades Extra y Convocatorias -->
                     <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
                         <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
-                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Actividades Extra y Convivencia</h3>
+                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">Actividades, Conciertos y Convivencia</h3>
                         <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                            Organiza comidas de hermandad, viajes, talleres de formación, concursos y encuentros. Gestiona las inscripciones de músicos, socios y acompañantes con total claridad.
+                            Convoca conciertos o ensayos con confirmación directa (Sí / No) o eventos de pago como comidas de hermandad con elección de menús y viajes. Comparte convocatorias por WhatsApp en un toque.
                         </p>
                     </div>
 
@@ -565,16 +607,19 @@
                         </p>
                     </div>
 
-                    <!-- Feature 6: PWA Móvil -->
+                    <!-- Feature 6: App Móvil (PWA y Próximamente Nativa) -->
                     <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-xs transition hover:shadow-md hover:border-slate-300">
                         <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 text-purple-700">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                             </svg>
                         </div>
-                        <h3 class="mt-5 font-heading text-lg font-bold text-slate-900">App Móvil PWA (iOS y Android)</h3>
+                        <div class="mt-5 flex items-center justify-between">
+                            <h3 class="font-heading text-lg font-bold text-slate-900">App Móvil (iOS y Android)</h3>
+                            <span class="rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-bold text-purple-800">PWA + Stores</span>
+                        </div>
                         <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                            Sin necesidad de descargar nada desde tiendas. Los integrantes y familias guardan eBand como icono en su pantalla de inicio y tienen acceso al instante.
+                            Disponible ya como Progressive Web App (PWA) instalable en pantalla de inicio sin descargas, y muy pronto disponible oficialmente para descarga directa en <strong>Google Play</strong> y <strong>App Store</strong>.
                         </p>
                     </div>
                 </div>
@@ -691,6 +736,48 @@
                             <h4 class="font-heading font-bold text-slate-900">Buzón de Sugerencias</h4>
                             <p class="mt-1 text-xs text-slate-600 leading-relaxed">
                                 Canal participativo para escuchar propuestas, actividades y sugerencias de mejora de los integrantes.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 7: Listado de Actividades y Botón Compartir -->
+                    <div class="group overflow-hidden rounded-2xl border-2 border-indigo-200 bg-gradient-to-b from-indigo-50/30 to-white transition hover:shadow-xl hover:border-indigo-400">
+                        <div class="overflow-hidden bg-slate-200 relative">
+                            <span class="absolute top-3 right-3 z-10 rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-sm">
+                                Nuevo
+                            </span>
+                            <img src="{{ asset('listadoActividades.png') }}" 
+                                 alt="Listado de actividades con botón de compartir por WhatsApp y filtros" 
+                                 class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
+                                 loading="lazy">
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-heading font-bold text-slate-900 flex items-center gap-1.5">
+                                <span>Actividades y Convocatorias</span>
+                            </h4>
+                            <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                Conciertos, comidas, reuniones o ensayos sin precio. Botón rápido de compartir por WhatsApp para convocar a la banda al instante.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Card 8: Control de Asistencia y Pendientes -->
+                    <div class="group overflow-hidden rounded-2xl border-2 border-emerald-200 bg-gradient-to-b from-emerald-50/30 to-white transition hover:shadow-xl hover:border-emerald-400">
+                        <div class="overflow-hidden bg-slate-200 relative">
+                            <span class="absolute top-3 right-3 z-10 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-sm">
+                                Nuevo
+                            </span>
+                            <img src="{{ asset('estadisticasActividades.png') }}" 
+                                 alt="Panel de control de actividad con confirmados, no asistirán y pendientes de respuesta" 
+                                 class="h-56 w-full object-cover object-top transition duration-300 group-hover:scale-105"
+                                 loading="lazy">
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-heading font-bold text-slate-900 flex items-center gap-1.5">
+                                <span>Control de Asistencia y Pendientes</span>
+                            </h4>
+                            <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                Tarjetas en tiempo real de confirmados, no asistirán y pendientes de responder, junto con el desglose de menús para proveedores.
                             </p>
                         </div>
                     </div>
@@ -876,7 +963,7 @@
                             </span>
                         </summary>
                         <div class="mt-3 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
-                            eBand funciona como una <strong>Progressive Web App (PWA)</strong>. No requiere pasar por la App Store ni Google Play. Al abrir el enlace de tu banda en el navegador del móvil, basta con pulsar <em>"Añadir a pantalla de inicio"</em> (en Safari de iOS o Chrome de Android). Se creará un icono idéntico al de una aplicación nativa, con navegación a pantalla completa y acceso rápido.
+                            Actualmente eBand funciona como <strong>Progressive Web App (PWA)</strong>: al abrir el enlace de tu banda en el navegador del móvil, basta con pulsar <em>"Añadir a pantalla de inicio"</em> (en Safari de iOS o Chrome de Android) para tener acceso instantáneo con icono en tu teléfono. Además, <strong>muy pronto estará disponible para descargar de forma directa y nativa en el App Store y Google Play</strong>.
                         </div>
                     </details>
 
