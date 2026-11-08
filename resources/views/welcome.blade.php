@@ -1184,7 +1184,7 @@
                                 Enviar Consulta
                             </button>
                             <p class="text-[11px] text-center text-slate-500">
-                                Respetamos tu privacidad. Tus datos solo se utilizarán para responder a esta solicitud.
+                                Respetamos tu privacidad. Tus datos solo se utilizarán para responder a esta solicitud. Consulta nuestra <a href="{{ route('politica-privacidad') }}" class="underline hover:text-blue-700">Política de Privacidad</a>.
                             </p>
                         </form>
                     </div>
@@ -1269,6 +1269,9 @@
                         class="w-full rounded-xl bg-blue-700 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-700/25 transition hover:bg-blue-800">
                     Entrar a la Demo Ahora
                 </button>
+                <p class="text-[11px] text-center text-slate-500 mt-2">
+                    Al acceder aceptas nuestra <a href="{{ route('politica-privacidad') }}" target="_blank" class="underline hover:text-blue-700">Política de Privacidad</a>.
+                </p>
             </form>
         </div>
     </div>
@@ -1298,6 +1301,7 @@
                     <a href="#precio" class="hover:text-blue-700">Tarifa 150€</a>
                     <a href="#faq" class="hover:text-blue-700">Preguntas Frecuentes</a>
                     <a href="#contacto" class="hover:text-blue-700">Contacto</a>
+                    <a href="{{ route('politica-privacidad') }}" class="hover:text-blue-700 font-semibold text-slate-700">Privacidad</a>
                 </div>
             </div>
         </div>

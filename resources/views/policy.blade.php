@@ -44,13 +44,16 @@
                     <div class="prose prose-slate max-w-none prose-headings:font-semibold prose-a:text-cyan-700 hover:prose-a:text-cyan-900 prose-a:no-underline hover:prose-a:underline">
 
                 <section class="mb-6">
-                    <h2 class="text-2xl font-semibold mb-3">1. Información General</h2>
+                    <h2 class="text-2xl font-semibold mb-3">1. Información General y Roles en Protección de Datos (RGPD)</h2>
                     <p class="mb-3">
-                        La presente Política de Privacidad establece los términos en que {{ config('app.name') }} utiliza y protege la información 
-                        que es proporcionada por sus usuarios al momento de utilizar su plataforma. Esta aplicación está comprometida con la 
-                        seguridad de los datos de sus usuarios. Cuando le pedimos llenar los campos de información personal con la cual usted 
-                        pueda ser identificado, lo hacemos asegurando que sólo se empleará de acuerdo con los términos de este documento.
+                        La presente Política de Privacidad establece los términos en que {{ config('app.name') }} trata y protege la información que es proporcionada por sus usuarios y clientes al momento de utilizar su plataforma.
                     </p>
+                    <div class="mb-4 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
+                        <strong class="block mb-1">🏛️ Las Agrupaciones Musicales son las Responsables de los Datos:</strong>
+                        <p>
+                            En el marco del RGPD (UE 2016/679) y la LOPDGDD 3/2018, <strong>cada agrupación musical (sociedad musical, banda, coro o charanga) actúa como Responsable del Tratamiento</strong> de los datos de sus integrantes, alumnos, socios y familias. <strong>{{ config('app.name') }} actúa estrictamente como Encargado del Tratamiento</strong> (Art. 28 RGPD), proporcionando el soporte tecnológico y almacenamiento seguro conforme a las directrices de la agrupación.
+                        </p>
+                    </div>
                 </section>
 
                 <section class="mb-6">
@@ -131,8 +134,7 @@
                         <li><strong>Derecho de Portabilidad:</strong> Puede solicitar una copia de sus datos en formato estructurado</li>
                     </ul>
                     <p class="mb-3">
-                        Para ejercer cualquiera de estos derechos, puede ponerse en contacto con el administrador de la aplicación a través de 
-                        los canales de comunicación proporcionados en la plataforma.
+                        Para ejercer cualquiera de estos derechos: los miembros, socios y familias de una banda deben dirigirse a su propia agrupación musical (Responsable del Tratamiento). Para consultas de suscripción o clientes directos de la plataforma, pueden escribir a través de los canales de soporte de eBand.
                     </p>
                 </section>
 

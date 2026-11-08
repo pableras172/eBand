@@ -88,6 +88,14 @@ Route::post('/demo-access', [DemoAccessController::class, 'store'])
     ->middleware(['guest', 'throttle:demo-access'])
     ->name('demo.access');
 
+Route::get('/politica-privacidad', function () {
+    return view('politica-privacidad');
+})->name('politica-privacidad');
+
+Route::get('/privacidad', function () {
+    return redirect()->route('politica-privacidad');
+});
+
 Route::get('/masinfo', [MasInfoController::class, 'create'])->name('masinfo.create');
 Route::post('/masinfo', [MasInfoController::class, 'store'])->name('masinfo.store');
 Route::get('/programa', [ConcertProgramController::class, 'publicProgram'])->name('concert-programs.public');
