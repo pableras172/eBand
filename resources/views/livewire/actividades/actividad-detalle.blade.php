@@ -165,22 +165,31 @@
                     </div>
                 @endif
 
-                <!-- Botón para indicar que finalmente no va si está dentro del plazo y no ha pagado -->
-                @if ($actividad->puedeInscribirse() && ! $miInscripcion->pagado)
-                    <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
-                        <span class="text-xs text-gray-500">{{ __('actividades.no_direct_edit_notice') }}</span>
-                        <button type="button" wire:click="indicarNoVoy"
-                            wire:confirm="{{ __('actividades.confirm_decline') }}"
-                            class="text-xs font-semibold text-rose-600 hover:text-rose-800 transition flex items-center gap-1.5 py-1 px-2.5 rounded-lg border border-rose-200 hover:bg-rose-50">
-                            <span>❌</span>
-                            <span>{{ __('actividades.change_to_not_attending') }}</span>
+                <!-- Acciones para modificar opciones o indicar no asistencia -->
+                @if ($actividad->puedeInscribirse())
+                    <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                        <button type="button" wire:click="modificarOpciones"
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-700 hover:bg-cyan-100 font-bold text-xs transition shadow-xs cursor-pointer">
+                            <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            <span>{{ __('actividades.modify_options') }}</span>
                         </button>
+
+                        @if (! $miInscripcion->pagado)
+                            <button type="button" wire:click="indicarNoVoy"
+                                wire:confirm="{{ __('actividades.confirm_decline') }}"
+                                class="text-xs font-semibold text-rose-600 hover:text-rose-800 transition flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-rose-200 hover:bg-rose-50 cursor-pointer">
+                                <span>❌</span>
+                                <span>{{ __('actividades.change_to_not_attending') }}</span>
+                            </button>
+                        @endif
                     </div>
                 @else
                     <div class="text-xs text-gray-500 bg-gray-50 p-4 rounded-xl border border-gray-100 flex items-start gap-2">
                         <span class="text-base leading-none">ℹ️</span>
                         <span>
-                            {{ __('actividades.no_direct_edit_notice') }}
+                            {{ __('actividades.closed_direct_edit_notice') }}
                         </span>
                     </div>
                 @endif
@@ -260,15 +269,16 @@
                     <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                         <div>
                             <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-                                <span>📝</span> {{ __('actividades.registration_form') }}
+                                <span>📝</span>
+                                {{ $miInscripcion && $miInscripcion->asiste ? __('actividades.modify_registration_title') : __('actividades.registration_form') }}
                             </h2>
                             <p class="text-xs text-gray-500 mt-1">
-                                {{ __('actividades.registration_form_sub') }}
+                                {{ $miInscripcion && $miInscripcion->asiste ? __('actividades.modify_registration_sub') : __('actividades.registration_form_sub') }}
                             </p>
                         </div>
 
                         @if ($cambiandoRespuesta)
-                            <button type="button" wire:click="toggleCambiarRespuesta"
+                            <button type="button" wire:click="cancelarEdicion"
                                 class="text-xs font-semibold text-gray-500 hover:text-gray-800 transition">
                                 {{ __('actividades.cancel') }}
                             </button>
@@ -362,7 +372,7 @@
 
                         <div class="flex flex-col sm:flex-row items-center gap-3">
                             @if ($cambiandoRespuesta)
-                                <button type="button" wire:click="toggleCambiarRespuesta"
+                                <button type="button" wire:click="cancelarEdicion"
                                     class="w-full sm:w-auto rounded-xl border border-gray-300 bg-white px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">
                                     {{ __('actividades.cancel') }}
                                 </button>
@@ -382,7 +392,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
-                                <span>{{ __('actividades.confirm_registration') }}</span>
+                                <span>{{ $miInscripcion && $miInscripcion->asiste ? __('actividades.save_changes') : __('actividades.confirm_registration') }}</span>
                             </button>
                         </div>
                     </div>
