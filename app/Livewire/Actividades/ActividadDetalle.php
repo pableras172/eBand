@@ -58,16 +58,69 @@ class ActividadDetalle extends Component
 
         if ($this->miInscripcion && $this->miInscripcion->asiste) {
             foreach ($this->miInscripcion->items as $item) {
-                $this->cantidades[$item->actividad_opcion_id] = (int) $item->cantidad;
+                if (isset($this->cantidades[$item->actividad_opcion_id])) {
+                    $this->cantidades[$item->actividad_opcion_id] = (int) $item->cantidad;
+                }
             }
             $this->observaciones_alergias = $this->miInscripcion->observaciones_alergias ?? '';
             $this->calcularTotal();
         }
     }
 
+    public function modificarOpciones(): void
+    {
+        if (! $this->actividad->puedeInscribirse()) {
+            $this->addError('error', __('actividades.error_closed'));
+
+            return;
+        }
+
+        foreach ($this->actividad->opciones as $opcion) {
+            $this->cantidades[$opcion->id] = 0;
+        }
+
+        if ($this->miInscripcion && $this->miInscripcion->asiste) {
+            foreach ($this->miInscripcion->items as $item) {
+                if (isset($this->cantidades[$item->actividad_opcion_id])) {
+                    $this->cantidades[$item->actividad_opcion_id] = (int) $item->cantidad;
+                }
+            }
+            $this->observaciones_alergias = $this->miInscripcion->observaciones_alergias ?? '';
+            $this->calcularTotal();
+        }
+
+        $this->cambiandoRespuesta = true;
+    }
+
+    public function cancelarEdicion(): void
+    {
+        $this->cambiandoRespuesta = false;
+
+        foreach ($this->actividad->opciones as $opcion) {
+            $this->cantidades[$opcion->id] = 0;
+        }
+
+        if ($this->miInscripcion && $this->miInscripcion->asiste) {
+            foreach ($this->miInscripcion->items as $item) {
+                if (isset($this->cantidades[$item->actividad_opcion_id])) {
+                    $this->cantidades[$item->actividad_opcion_id] = (int) $item->cantidad;
+                }
+            }
+            $this->observaciones_alergias = $this->miInscripcion->observaciones_alergias ?? '';
+            $this->calcularTotal();
+        } else {
+            $this->observaciones_alergias = '';
+            $this->totalCalculado = 0.0;
+        }
+    }
+
     public function toggleCambiarRespuesta(): void
     {
-        $this->cambiandoRespuesta = ! $this->cambiandoRespuesta;
+        if ($this->cambiandoRespuesta) {
+            $this->cancelarEdicion();
+        } else {
+            $this->modificarOpciones();
+        }
     }
 
     public function incrementarCantidad(int $opcionId): void
@@ -225,14 +278,27 @@ class ActividadDetalle extends Component
         }
 
         // Persistir inscripción
-        DB::transaction(function () use ($userId, $totalFinal, $itemsAInsertar): void {
+        $eraInscritoPrevio = (bool) ($this->miInscripcion && $this->miInscripcion->asiste);
+
+        DB::transaction(function () use ($userId, $totalFinal, $itemsAInsertar, $eraInscritoPrevio): void {
             if ($this->miInscripcion) {
-                $this->miInscripcion->update([
+                $dataToUpdate = [
                     'asiste' => true,
-                    'fecha_inscripcion' => Carbon::now(),
                     'total' => $totalFinal,
-                    'observaciones_alergias' => $this->actividad->requiereAlergias() ? ($this->observaciones_alergias ?: null) : null,
-                ]);
+                    'observaciones_alergias' => $this->actividad->requiereAlergias() ? (trim($this->observaciones_alergias) ?: null) : null,
+                ];
+
+                if (! $eraInscritoPrevio) {
+                    $dataToUpdate['fecha_inscripcion'] = Carbon::now();
+                }
+
+                if ($this->miInscripcion->pagado && round($totalFinal, 2) !== round((float) $this->miInscripcion->total, 2)) {
+                    $dataToUpdate['pagado'] = false;
+                    $dataToUpdate['metodo_pago'] = null;
+                    $dataToUpdate['fecha_pago'] = null;
+                }
+
+                $this->miInscripcion->update($dataToUpdate);
                 $this->miInscripcion->items()->delete();
                 $inscripcion = $this->miInscripcion;
             } else {
@@ -242,7 +308,7 @@ class ActividadDetalle extends Component
                     'asiste' => true,
                     'fecha_inscripcion' => Carbon::now(),
                     'total' => $totalFinal,
-                    'observaciones_alergias' => $this->actividad->requiereAlergias() ? ($this->observaciones_alergias ?: null) : null,
+                    'observaciones_alergias' => $this->actividad->requiereAlergias() ? (trim($this->observaciones_alergias) ?: null) : null,
                     'pagado' => false,
                 ]);
             }
@@ -261,7 +327,12 @@ class ActividadDetalle extends Component
         });
 
         $this->cambiandoRespuesta = false;
-        session()->flash('success', __('actividades.registration_success'));
+
+        $mensaje = $eraInscritoPrevio
+            ? __('actividades.registration_updated_success')
+            : __('actividades.registration_success');
+
+        session()->flash('success', $mensaje);
     }
 
     public function render(): View
