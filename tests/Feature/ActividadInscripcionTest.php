@@ -9,6 +9,7 @@ use App\Livewire\Actividades\ActividadDetalle;
 use App\Livewire\Actividades\Admin\ActividadAdminDetail;
 use App\Models\Actividad;
 use App\Models\ActividadInscripcion;
+use App\Models\ActividadInscripcionItem;
 use App\Models\ActividadOpcion;
 use App\Models\Role;
 use App\Models\User;
@@ -155,6 +156,287 @@ class ActividadInscripcionTest extends TestCase
             ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
             ->assertSee(__('actividades.already_inscribed'))
             ->assertDontSee(__('actividades.confirm_registration'));
+    }
+
+    public function test_musician_can_modify_selected_options_and_menus(): void
+    {
+        $user = $this->createRegularUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Cena Patronal',
+            'tipo' => 'cena',
+            'fecha' => Carbon::now()->addDays(10),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(5),
+            'estado' => 'abierta',
+        ]);
+
+        $opcionCarne = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú Carne',
+            'precio' => 25.00,
+            'orden' => 1,
+        ]);
+
+        $opcionPescado = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú Pescado',
+            'precio' => 25.00,
+            'orden' => 2,
+        ]);
+
+        $inscripcion = ActividadInscripcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'user_id' => $user->id,
+            'fecha_inscripcion' => Carbon::now()->subDay(),
+            'total' => 25.00,
+            'asiste' => true,
+            'pagado' => false,
+            'observaciones_alergias' => 'Ninguna',
+        ]);
+
+        ActividadInscripcionItem::query()->create([
+            'actividad_inscripcion_id' => $inscripcion->id,
+            'actividad_opcion_id' => $opcionCarne->id,
+            'cantidad' => 1,
+            'precio_unitario' => 25.00,
+            'subtotal' => 25.00,
+        ]);
+
+        // El músico abre la vista, ve el botón de modificar y cambia de Menú Carne a Menú Pescado
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->assertSee(__('actividades.modify_options'))
+            ->call('modificarOpciones')
+            ->assertSet('cambiandoRespuesta', true)
+            ->assertSet("cantidades.{$opcionCarne->id}", 1)
+            ->assertSet("cantidades.{$opcionPescado->id}", 0)
+            ->set("cantidades.{$opcionCarne->id}", 0)
+            ->set("cantidades.{$opcionPescado->id}", 1)
+            ->set('observaciones_alergias', 'Alérgico a mariscos')
+            ->call('inscribirme')
+            ->assertHasNoErrors()
+            ->assertSet('cambiandoRespuesta', false);
+
+        // Comprobar que en la base de datos se ha actualizado
+        $this->assertDatabaseHas('actividad_inscripciones', [
+            'id' => $inscripcion->id,
+            'user_id' => $user->id,
+            'total' => 25.00,
+            'observaciones_alergias' => 'Alérgico a mariscos',
+        ]);
+
+        $this->assertDatabaseCount('actividad_inscripcion_items', 1);
+        $this->assertDatabaseHas('actividad_inscripcion_items', [
+            'actividad_inscripcion_id' => $inscripcion->id,
+            'actividad_opcion_id' => $opcionPescado->id,
+            'cantidad' => 1,
+            'subtotal' => 25.00,
+        ]);
+        $this->assertDatabaseMissing('actividad_inscripcion_items', [
+            'actividad_opcion_id' => $opcionCarne->id,
+        ]);
+    }
+
+    public function test_modifying_options_with_different_total_resets_paid_status(): void
+    {
+        $user = $this->createRegularUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Comida de Navidad',
+            'tipo' => 'comida',
+            'fecha' => Carbon::now()->addDays(12),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(6),
+            'estado' => 'abierta',
+        ]);
+
+        $opcion = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú',
+            'precio' => 30.00,
+            'orden' => 1,
+        ]);
+
+        $inscripcion = ActividadInscripcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'user_id' => $user->id,
+            'fecha_inscripcion' => Carbon::now()->subDays(2),
+            'total' => 30.00,
+            'asiste' => true,
+            'pagado' => true,
+            'metodo_pago' => 'bizum',
+            'fecha_pago' => Carbon::now()->subDay(),
+        ]);
+
+        ActividadInscripcionItem::query()->create([
+            'actividad_inscripcion_id' => $inscripcion->id,
+            'actividad_opcion_id' => $opcion->id,
+            'cantidad' => 1,
+            'precio_unitario' => 30.00,
+            'subtotal' => 30.00,
+        ]);
+
+        // Modifica a 2 menús (total 60.00 €)
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->call('modificarOpciones')
+            ->set("cantidades.{$opcion->id}", 2)
+            ->call('inscribirme')
+            ->assertHasNoErrors();
+
+        // El estado de pago debe resetearse a pendiente
+        $this->assertDatabaseHas('actividad_inscripciones', [
+            'id' => $inscripcion->id,
+            'total' => 60.00,
+            'pagado' => false,
+            'metodo_pago' => null,
+            'fecha_pago' => null,
+        ]);
+    }
+
+    public function test_modifying_options_with_same_total_preserves_paid_status(): void
+    {
+        $user = $this->createRegularUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Cena de Verano',
+            'tipo' => 'cena',
+            'fecha' => Carbon::now()->addDays(15),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(8),
+            'estado' => 'abierta',
+        ]);
+
+        $opcionA = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Opción A',
+            'precio' => 20.00,
+            'orden' => 1,
+        ]);
+
+        $opcionB = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Opción B',
+            'precio' => 20.00,
+            'orden' => 2,
+        ]);
+
+        $inscripcion = ActividadInscripcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'user_id' => $user->id,
+            'fecha_inscripcion' => Carbon::now()->subDays(2),
+            'total' => 20.00,
+            'asiste' => true,
+            'pagado' => true,
+            'metodo_pago' => 'transferencia',
+            'fecha_pago' => Carbon::now()->subDay(),
+        ]);
+
+        ActividadInscripcionItem::query()->create([
+            'actividad_inscripcion_id' => $inscripcion->id,
+            'actividad_opcion_id' => $opcionA->id,
+            'cantidad' => 1,
+            'precio_unitario' => 20.00,
+            'subtotal' => 20.00,
+        ]);
+
+        // Cambiar de opción A a opción B (mismo importe 20€)
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->call('modificarOpciones')
+            ->set("cantidades.{$opcionA->id}", 0)
+            ->set("cantidades.{$opcionB->id}", 1)
+            ->call('inscribirme')
+            ->assertHasNoErrors();
+
+        // El pago debe mantenerse pagado y con su método
+        $this->assertDatabaseHas('actividad_inscripciones', [
+            'id' => $inscripcion->id,
+            'total' => 20.00,
+            'pagado' => true,
+            'metodo_pago' => 'transferencia',
+        ]);
+    }
+
+    public function test_musician_cannot_modify_options_when_deadline_passed(): void
+    {
+        $user = $this->createRegularUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Cena Pasada',
+            'tipo' => 'cena',
+            'fecha' => Carbon::now()->addDays(5),
+            'fecha_limite_inscripcion' => Carbon::now()->subHour(), // Ya cerrada
+            'estado' => 'abierta',
+        ]);
+
+        $opcion = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú',
+            'precio' => 20.00,
+            'orden' => 1,
+        ]);
+
+        $inscripcion = ActividadInscripcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'user_id' => $user->id,
+            'fecha_inscripcion' => Carbon::now()->subDays(2),
+            'total' => 20.00,
+            'asiste' => true,
+            'pagado' => false,
+        ]);
+
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->call('modificarOpciones')
+            ->assertHasErrors(['error' => __('actividades.error_closed')]);
+    }
+
+    public function test_musician_can_cancel_modifying_options_restoring_selection(): void
+    {
+        $user = $this->createRegularUser();
+
+        $actividad = Actividad::query()->create([
+            'titulo' => 'Cena de Prueba',
+            'tipo' => 'cena',
+            'fecha' => Carbon::now()->addDays(5),
+            'fecha_limite_inscripcion' => Carbon::now()->addDays(2),
+            'estado' => 'abierta',
+        ]);
+
+        $opcion = ActividadOpcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'titulo' => 'Menú',
+            'precio' => 20.00,
+            'orden' => 1,
+        ]);
+
+        $inscripcion = ActividadInscripcion::query()->create([
+            'actividad_id' => $actividad->id,
+            'user_id' => $user->id,
+            'fecha_inscripcion' => Carbon::now()->subDays(1),
+            'total' => 20.00,
+            'asiste' => true,
+            'pagado' => false,
+            'observaciones_alergias' => 'Sin gluten',
+        ]);
+
+        ActividadInscripcionItem::query()->create([
+            'actividad_inscripcion_id' => $inscripcion->id,
+            'actividad_opcion_id' => $opcion->id,
+            'cantidad' => 1,
+            'precio_unitario' => 20.00,
+            'subtotal' => 20.00,
+        ]);
+
+        Livewire::actingAs($user)
+            ->test(ActividadDetalle::class, ['actividadId' => $actividad->id])
+            ->call('modificarOpciones')
+            ->set("cantidades.{$opcion->id}", 3)
+            ->set('observaciones_alergias', 'Cambio temporal')
+            ->call('cancelarEdicion')
+            ->assertSet('cambiandoRespuesta', false)
+            ->assertSet("cantidades.{$opcion->id}", 1)
+            ->assertSet('observaciones_alergias', 'Sin gluten')
+            ->assertSet('totalCalculado', 20.00);
     }
 
     public function test_admin_can_export_actividad_to_excel(): void
