@@ -8,7 +8,7 @@
     $hasLifetime = $user && $user->lifetime_access;
 @endphp
 
-@if (ConfigHelper::getConfigValue('enablestripe') === 'true')
+@if (config('cashier.ui_enabled', false) && ConfigHelper::getConfigValue('enablestripe') === 'true')
 <div class="flex flex-col md:flex-row items-center justify-center bg-white text-center rounded-lg p-4 mb-2 gap-2">
 
     {{-- Icono --}}
