@@ -47,9 +47,11 @@
                     @livewire('profile.delete-user-form')
                 </div>
             @endif
-            <div class="p-4 mt-1 mb-1">
-                <x-subscription-info />
-            </div>
+            @if (config('cashier.ui_enabled', false))
+                <div class="p-4 mt-1 mb-1">
+                    <x-subscription-info />
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>
