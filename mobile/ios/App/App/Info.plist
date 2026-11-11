@@ -53,6 +53,8 @@
 	<string>eBand necesita permiso para guardar imágenes en la galería.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>eBand utiliza Face ID para proteger el acceso a tu agrupación musical.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>eBand utiliza tu ubicación de forma opcional para contextualizar eventos, ensayos y actuaciones de tu agrupación musical.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
