@@ -280,6 +280,8 @@ Route::middleware(['auth', config('jetstream.auth_session'), 'verified', 'demo.r
         // Route::get('/paymentresumes/{paymetresume}',PaymentresumeEdit::class)->name('paymentresumes.edit');
 
         Route::post('/checkout', function (Request $request) {
+            abort_unless(config('cashier.ui_enabled', false), 404);
+
             $price = config('cashier.prices.suscription');
 
             return $request->user()
@@ -291,6 +293,8 @@ Route::middleware(['auth', config('jetstream.auth_session'), 'verified', 'demo.r
         })->name('checkout');
 
         Route::post('/donation', function (Request $request) {
+            abort_unless(config('cashier.ui_enabled', false), 404);
+
             $donationPrice = config('cashier.prices.donation') ?? config('cashier.price'); // fallback si no hay precio específico
 
             return $request->user()->checkout(
@@ -307,6 +311,8 @@ Route::middleware(['auth', config('jetstream.auth_session'), 'verified', 'demo.r
         Route::view('/stripe/cancel', 'stripe.cancel')->name('stripe.cancel');
 
         Route::get('/billing-portal', function (Request $request) {
+            abort_unless(config('cashier.ui_enabled', false), 404);
+
             return $request->user()->redirectToBillingPortal(route('dashboard'));
         });
 

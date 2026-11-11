@@ -129,6 +129,18 @@ return [
     // Opcional: varios planes/precios. Úsalos con envs como CASHIER_PRICE_BASIC, CASHIER_PRICE_PREMIUM
     'prices' => [
         'suscription' => env('CASHIER_PRICE_SUSCRIPTION'),
-        'donation' => env('CASHIER_PRICE_DONATION'),        
+        'donation' => env('CASHIER_PRICE_DONATION'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Stripe UI Visibility
+    |--------------------------------------------------------------------------
+    |
+    | Controls whether Stripe subscription and donation UI components/routes
+    | are exposed to users. Disabled by default for App Store compliance.
+    |
+    */
+
+    'ui_enabled' => (bool) env('CASHIER_UI_ENABLED', false),
 ];
