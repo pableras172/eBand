@@ -41,7 +41,7 @@
 <body class="bg-slate-50 text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
 
     <!-- Header / Navbar simplificada -->
-    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md pt-safe">
         <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <a href="{{ url('/') }}" class="group flex items-center gap-3">
                 <div class="relative flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-700 via-indigo-600 to-amber-500 p-0.5 shadow-md shadow-indigo-500/15 transition-transform group-hover:scale-105">

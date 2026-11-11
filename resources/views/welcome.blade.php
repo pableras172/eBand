@@ -142,7 +142,7 @@
     <!-- ============================================================== -->
     <!-- NAVIGATION BAR                                                 -->
     <!-- ============================================================== -->
-    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md transition-all">
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md transition-all pt-safe">
         <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <!-- Brand Logo -->
             <a href="{{ url('/') }}" class="group flex items-center gap-3">

@@ -2,7 +2,7 @@
     use App\Helpers\ConfigHelper;
 @endphp
 
-<nav x-data="{ open: false, mobileAdminOpen: false, mobileActivityOpen: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 shadow-md">
+<nav x-data="{ open: false, mobileAdminOpen: false, mobileActivityOpen: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 shadow-md pt-safe">
     
 
     <!-- Primary Navigation Menu -->
@@ -492,11 +492,11 @@
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
         @click="open = false"
-        class="fixed inset-0 top-[72px] bg-slate-900/60 backdrop-blur-sm z-40 sm:hidden"
-        style="display: none;"></div>
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 sm:hidden"
+        style="display: none; top: calc(5rem + env(safe-area-inset-top, 0px));"></div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{ 'block': open, 'hidden': !open }" class="relative z-50 hidden sm:hidden bg-white dark:bg-gray-800 max-h-[85vh] overflow-y-auto border-b border-gray-200 dark:border-gray-700 shadow-2xl">
+    <div :class="{ 'block': open, 'hidden': !open }" class="relative z-50 hidden sm:hidden bg-white dark:bg-gray-800 max-h-[85vh] overflow-y-auto border-b border-gray-200 dark:border-gray-700 shadow-2xl pb-safe">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 <div class="flex items-center space-x-3">

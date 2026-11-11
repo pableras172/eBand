@@ -153,21 +153,21 @@
 </head>
 
 <body class="font-sans antialiased" x-data="themeSwitcher()" :class="{ 'dark': switchOn }">
-    <x-banner />
-
-    @if (session('demo_mode'))
-        <div class="relative z-50 border-b border-amber-300 bg-amber-100 px-4 py-2 text-center text-sm font-semibold text-amber-900">
-            <div class="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3">
-                <span>Modo demo activo: estas en un entorno de pruebas con acceso completo.</span>
-                <a href="{{ route('demo.info.create') }}" class="inline-flex items-center rounded-md border border-amber-500 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-900 transition hover:bg-amber-200">
-                    Solicitar informacion
-                </a>
-            </div>
-        </div>
-    @endif
-
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div class="min-h-screen bg-gray-100 dark:bg-gray-900 pb-safe">
         @livewire('navigation-menu')
+
+        <x-banner />
+
+        @if (session('demo_mode'))
+            <div class="relative z-40 border-b border-amber-300 bg-amber-100 px-4 py-2 text-center text-sm font-semibold text-amber-900">
+                <div class="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3">
+                    <span>Modo demo activo: estas en un entorno de pruebas con acceso completo.</span>
+                    <a href="{{ route('demo.info.create') }}" class="inline-flex items-center rounded-md border border-amber-500 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-900 transition hover:bg-amber-200">
+                        Solicitar informacion
+                    </a>
+                </div>
+            </div>
+        @endif
 
         <!-- Page Heading -->
         @if (isset($header))
