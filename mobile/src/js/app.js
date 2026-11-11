@@ -384,7 +384,18 @@ class EBandMobileApp {
     this.initNetworkListener();
     this.initAppNavigationListener();
 
-    // 2. Comprobar si ya existe una agrupación configurada previamente
+    // 2. Si el usuario solicitó cambiar de agrupación desde la vista web, limpiar datos de banda
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('reset_band') === '1') {
+      this.log('Reinicio de agrupación solicitado (?reset_band=1).');
+      await this.clearSavedBand();
+      window.history.replaceState(null, '', window.location.pathname);
+      this.goToView('question', false);
+      this.dismissSplash();
+      return;
+    }
+
+    // 3. Comprobar si ya existe una agrupación configurada previamente
     try {
       this.log('Comprobando configuración previa guardada...');
       const { value: tenantUrl } = await this.Preferences.get({ key: 'eband_tenant_url' });
@@ -1257,6 +1268,8 @@ class EBandMobileApp {
     this.log(`Guardando configuración de banda: ${name} (${code})`);
 
     try {
+      const appHomeUrl = window.location.href.split('#')[0].split('?')[0];
+      await this.Preferences.set({ key: 'eband_app_home_url', value: appHomeUrl });
       await this.Preferences.set({ key: 'eband_tenant_code', value: code });
       await this.Preferences.set({ key: 'eband_tenant_url', value: target_url });
       await this.Preferences.set({ key: 'eband_tenant_name', value: name });
@@ -1279,11 +1292,25 @@ class EBandMobileApp {
     }
   }
 
+  async clearSavedBand() {
+    const tenantKeys = [
+      'eband_tenant_code',
+      'eband_tenant_url',
+      'eband_tenant_name',
+      'eband_tenant_id',
+      'eband_logo_url',
+      'eband_onesignal_app_id',
+    ];
+
+    await Promise.all(tenantKeys.map((key) => this.Preferences.remove({ key })));
+    this.currentResolvedTenant = null;
+    this.pendingDestinationUrl = null;
+  }
+
   async desvincularBanda() {
     try {
-      await this.Preferences.clear();
-      this.currentResolvedTenant = null;
-      window.location.replace('index.html');
+      await this.clearSavedBand();
+      window.location.replace('index.html?reset_band=1');
     } catch (err) {
       console.error('Error desvinculando banda:', err);
     }
