@@ -448,6 +448,12 @@
 
                             <div class="border-t border-gray-200 dark:border-gray-600"></div>
 
+                            <div data-mobile-switch-band class="hidden">
+                                <x-dropdown-link href="#" onclick="event.preventDefault(); window.ebandReturnToBandSelector('{{ route('logout') }}');">
+                                    {{ __('Cambiar de agrupación') }}
+                                </x-dropdown-link>
+                            </div>
+
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}" x-data>
                                 @csrf
@@ -817,6 +823,16 @@
 
 
                 <div class="border-t border-gray-200 dark:border-gray-600 my-2"></div>
+                <div data-mobile-switch-band class="hidden">
+                    <x-responsive-nav-link href="#" onclick="event.preventDefault(); window.ebandReturnToBandSelector('{{ route('logout') }}');">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                            </svg>
+                            <span>{{ __('Cambiar de agrupación') }}</span>
+                        </div>
+                    </x-responsive-nav-link>
+                </div>
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}" x-data>
                     @csrf
@@ -836,3 +852,5 @@
         </div>
     </div>
 </nav>
+
+<x-mobile-band-reset-script />
