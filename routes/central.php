@@ -42,6 +42,9 @@ Route::get('/register', fn () => redirect('/#contact'))->name('central.register'
 Route::get('/dashboard', fn () => redirect()->route('tenant-access.index', ['code' => 'demo']))->name('central.dashboard');
 
 // Formulario de contacto
+Route::get('/contacto-app', function () {
+    return view('central.contacto-app');
+})->name('central.contacto-app');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 // Acceso a demo instantánea

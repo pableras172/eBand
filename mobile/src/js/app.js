@@ -57,7 +57,7 @@ const TRANSLATIONS = {
     btn_demo_sub: 'Explora una banda de ejemplo sin registrarte',
     no_band_cta_title: '¿Quieres eBand en tu agrupación?',
     no_band_cta_desc: 'Si eres director, directivo o músico y quieres implantar eBand en tu sociedad musical, solicita información sin compromiso.',
-    btn_more_info: 'Solicitar información / Registrar banda',
+    btn_more_info: 'Solicitar información',
 
     // Píldoras de valor
     pill_activities_title: 'Actividades',
@@ -144,7 +144,7 @@ const TRANSLATIONS = {
     btn_demo_sub: 'Explora una agrupació d\'exemple sense registrar-te',
     no_band_cta_title: 'Vols eBand a la teua agrupació?',
     no_band_cta_desc: 'Si ets director, directiu o músic i vols implantar eBand a la teua societat musical, demana informació.',
-    btn_more_info: 'Demanar informació / Registrar banda',
+    btn_more_info: 'Demanar informació',
 
     // Píldoras de valor
     pill_activities_title: 'Activitats',
@@ -231,7 +231,7 @@ const TRANSLATIONS = {
     btn_demo_sub: 'Explore a demo band without registering',
     no_band_cta_title: 'Want eBand in your ensemble?',
     no_band_cta_desc: 'If you are a director, board member or musician and want eBand in your society, request info.',
-    btn_more_info: 'Request info / Register band',
+    btn_more_info: 'Request information',
 
     // Píldoras de valor
     pill_activities_title: 'Activities',
