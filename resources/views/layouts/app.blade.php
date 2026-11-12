@@ -182,10 +182,12 @@
         @endif
 
         <!-- Page Content -->
-        <main>
+        <main class="pb-20 lg:pb-0">
             {{ $slot }}
         </main>
     </div>
+
+    <x-bottom-nav />
 
     @stack('modals')
 
