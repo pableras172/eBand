@@ -35,7 +35,7 @@
             <li class="py-3 sm:py-4">
                 <div class="flex items-center space-x-4">
                     <div class="flex-shrink-0">
-                        <img class="w-8 h-8 rounded-full" src="{{ asset('storage/imagenes/tipoactuacion/' . $tipoActuacion['icono']) }}" alt="Neil image">
+                        <img class="w-8 h-8 rounded-full" src="{{ \App\Models\Tipoactuacion::resolveIconUrl($tipoActuacion['icono'] ?? null) }}" onerror="this.onerror=null;this.src='{{ asset(\App\Models\Tipoactuacion::DEFAULT_ICON_PATH) }}';" alt="{{ $tipoActuacionNombre }}">
                     </div>
                     <div class="flex-1 min-w-0">
                         <a href="{{ route('actuaciones.usuario.listatipo', ['user' => $usuario->id, 'year' => $year, 'type' => $tipoActuacion['tipoactuacion_id']]) }}" class="text-sm font-medium text-gray-900 truncate dark:text-white">

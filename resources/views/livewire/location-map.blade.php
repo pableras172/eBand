@@ -45,11 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Grupo de marcadores
 	const markersGroup = L.featureGroup().addTo(map);
 
-	// Icono personalizado por usuario (instrumento) con fallback al logo
+	// Icono personalizado por usuario (instrumento) con fallback al icono por defecto
 	const markerIconUrl = @json(
-		(optional(Auth::user()->instrument)->icon
-			? asset('storage/imagenes/instruments/' . Auth::user()->instrument->icon)
-			: URL::to('/') . '/imagenes/logo.png')
+		\App\Models\Instrument::resolveIconUrl(optional(Auth::user()->instrument)->icon)
 	);
 	const markerIcon = L.icon({
 		iconUrl: markerIconUrl,

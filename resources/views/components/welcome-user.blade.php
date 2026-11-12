@@ -11,8 +11,9 @@
             <div
                 class="absolute bottom-0 right-0 w-6 h-6 bg-white rounded-full border-2 border-blue-500 flex items-center justify-center">
                 @if (isset(Auth::user()->instrument))
-                    <img src="{{ asset('storage/imagenes/instruments/' . Auth::user()->instrument->icon) }}"
-                        alt="{{ Auth::user()->instrument }}" class="w-4 h-4">
+                    <img src="{{ \App\Models\Instrument::resolveIconUrl(Auth::user()->instrument->icon) }}"
+                        onerror="this.onerror=null;this.src='{{ asset(\App\Models\Instrument::DEFAULT_ICON_PATH) }}';"
+                        alt="{{ Auth::user()->instrument->name ?? '' }}" class="w-4 h-4 rounded-full">
                 @else
                     <svg class="w-4 h-4" version="1.1" id="_x36_" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"
