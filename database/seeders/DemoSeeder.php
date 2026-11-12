@@ -475,12 +475,12 @@ class DemoSeeder extends Seeder
         $percusion = InventoryCategory::query()->firstOrCreate(['nombre' => 'Percusión y escenario']);
 
         $items = [
-            ['category' => $viento->id, 'nombre' => 'Tuba Sib Yamaha YBB-321', 'cantidad' => 2, 'valor' => 3850.00, 'estado' => 'bueno'],
-            ['category' => $viento->id, 'nombre' => 'Saxofón Barítono Jupiter', 'cantidad' => 1, 'valor' => 2600.00, 'estado' => 'bueno'],
-            ['category' => $viento->id, 'nombre' => 'Trombón de varas Bach', 'cantidad' => 3, 'valor' => 1150.00, 'estado' => 'bueno'],
-            ['category' => $percusion->id, 'nombre' => 'Bombo de concierto 36"', 'cantidad' => 1, 'valor' => 1450.00, 'estado' => 'bueno'],
-            ['category' => $percusion->id, 'nombre' => 'Juego de platos Zildjian 18"', 'cantidad' => 2, 'valor' => 480.00, 'estado' => 'bueno'],
-            ['category' => $percusion->id, 'nombre' => 'Atriles metálicos plegables', 'cantidad' => 30, 'valor' => 35.00, 'estado' => 'bueno'],
+            ['category' => $viento->id, 'nombre' => 'Tuba Sib Yamaha YBB-321', 'cantidad' => 2, 'valor' => 3850.00, 'estado' => 'usado'],
+            ['category' => $viento->id, 'nombre' => 'Saxofón Barítono Jupiter', 'cantidad' => 1, 'valor' => 2600.00, 'estado' => 'nuevo'],
+            ['category' => $viento->id, 'nombre' => 'Trombón de varas Bach', 'cantidad' => 3, 'valor' => 1150.00, 'estado' => 'usado'],
+            ['category' => $percusion->id, 'nombre' => 'Bombo de concierto 36"', 'cantidad' => 1, 'valor' => 1450.00, 'estado' => 'usado'],
+            ['category' => $percusion->id, 'nombre' => 'Juego de platos Zildjian 18"', 'cantidad' => 2, 'valor' => 480.00, 'estado' => 'nuevo'],
+            ['category' => $percusion->id, 'nombre' => 'Atriles metálicos plegables', 'cantidad' => 30, 'valor' => 35.00, 'estado' => 'nuevo'],
         ];
 
         $responsableId = $musicians->first()?->id;
