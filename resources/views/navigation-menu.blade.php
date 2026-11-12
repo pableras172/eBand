@@ -2,13 +2,26 @@
     use App\Helpers\ConfigHelper;
 @endphp
 
-<nav x-data="{ open: false, mobileAdminOpen: false, mobileActivityOpen: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 shadow-md pt-safe">
+<nav x-data="{ open: false, mobileAdminOpen: false, mobileActivityOpen: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 shadow-md pt-safe" style="padding-top: env(safe-area-inset-top, 0px);">
     
 
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
+                @if (!request()->routeIs('dashboard'))
+                    <div class="flex items-center me-2 sm:hidden">
+                        <button type="button"
+                            onclick="window.ebandNavigateBack('{{ route('dashboard') }}')"
+                            aria-label="{{ __('Volver atrás') }}"
+                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition duration-150 ease-in-out">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                    </div>
+                @endif
+
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">

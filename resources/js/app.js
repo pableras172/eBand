@@ -1,5 +1,6 @@
 import './bootstrap';
 import { initSafariPwaSupport } from './pwa-safari';
+import { initPullToRefresh } from './pull-to-refresh';
 import './driver-init';
 
 // Clave persistente para recordar si el usuario oculto el aviso de instalacion PWA.
@@ -119,7 +120,21 @@ window.themeSwitcher = function () {
 }
 
 
+window.ebandNavigateBack = function (fallbackUrl) {
+    const referrer = document.referrer || '';
+    const sameOriginReferrer = referrer.startsWith(window.location.origin);
+
+    if (window.history.length > 1 && sameOriginReferrer && !referrer.includes('/login')) {
+        window.history.back();
+        return;
+    }
+
+    window.location.href = fallbackUrl;
+};
+
 document.addEventListener('DOMContentLoaded', function () {
+    initPullToRefresh();
+
     // Este bloque solo aplica en pantallas que incluyan la tabla de instrumentos.
     const table = document.getElementById('instrumentTable');
 
