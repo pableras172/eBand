@@ -361,7 +361,8 @@
                                 </button>
                             @endcan
                             <img class="w-10 h-10 rounded-full px-1 py-1"
-                                src="{{ asset($usuariosDelInstrumento->first()?->instrument?->icon ? 'storage/imagenes/instruments/' . $usuariosDelInstrumento->first()->instrument->icon : 'storage/imagenes/instruments/default.png') }}">
+                                src="{{ \App\Models\Instrument::resolveIconUrl($usuariosDelInstrumento->first()?->instrument?->icon) }}"
+                                onerror="this.onerror=null;this.src='{{ asset(\App\Models\Instrument::DEFAULT_ICON_PATH) }}';">
                         </div>
 
 

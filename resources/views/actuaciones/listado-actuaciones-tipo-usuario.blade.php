@@ -213,7 +213,8 @@
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0">
                                     <img class="w-8 h-8 rounded-full"
-                                        src="{{ asset('storage/imagenes/tipoactuacion/' . $actuacion->actuacion->tipoactuacion->icon) }}"
+                                        src="{{ \App\Models\Tipoactuacion::resolveIconUrl($actuacion->actuacion->tipoactuacion?->icon) }}"
+                                        onerror="this.onerror=null;this.src='{{ asset(\App\Models\Tipoactuacion::DEFAULT_ICON_PATH) }}';"
                                         alt="Tipo de actuación">
                                 </div>
                                 <div class="flex-1 min-w-0">
@@ -259,7 +260,8 @@
                             <div class="bg-gradient-to-br from-blue-100 to-blue-200 p-1.5 sm:p-2 rounded-lg flex-shrink-0">
                                 @if(isset($iconos[$index]) && $iconos[$index])
                                     <img class="w-4 h-4 sm:w-6 sm:h-6 object-contain rounded-full" 
-                                         src="{{ asset('storage/imagenes/tipoactuacion/' . $iconos[$index]) }}" 
+                                         src="{{ \App\Models\Tipoactuacion::resolveIconUrl($iconos[$index]) }}" 
+                                         onerror="this.onerror=null;this.src='{{ asset(\App\Models\Tipoactuacion::DEFAULT_ICON_PATH) }}';"
                                          alt="{{ $label }}">
                                 @else
                                     <svg class="w-4 h-4 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

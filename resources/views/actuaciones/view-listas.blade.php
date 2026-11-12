@@ -257,8 +257,9 @@
 
                         <div class="h-auto overflow-hidden">
                             <div class="h-40 overflow-hidden relative">
-                                <img src="{{ asset('storage/imagenes/tipoactuacion/' . $actuacion->tipoactuacion->icon) }}"
-                                    alt="{{ $actuacion->tipoactuacion->nombre }}" class="object-cover w-full h-full">
+                                <img src="{{ \App\Models\Tipoactuacion::resolveIconUrl($actuacion->tipoactuacion?->icon) }}"
+                                    onerror="this.onerror=null;this.src='{{ asset(\App\Models\Tipoactuacion::DEFAULT_ICON_PATH) }}';"
+                                    alt="{{ $actuacion->tipoactuacion?->nombre ?? 'Actuación' }}" class="object-cover w-full h-full">
                             </div>
                         </div>
                         <div class="bg-white py-4 px-3">

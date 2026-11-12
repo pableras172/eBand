@@ -63,10 +63,12 @@
                             <div
                                 class="absolute bottom-0 right-0 w-5 h-5 sm:w-6 sm:h-6 bg-white rounded-full border-2 border-blue-500 flex items-center justify-center">
                                 @if(isset($mensaje->user->instrument) && !empty($mensaje->user->instrument->icon))
-                                    <img id="carousel-instrument" src="{{ asset('storage/imagenes/instruments/' . $mensaje->user->instrument->icon) }}"
+                                    <img id="carousel-instrument" src="{{ \App\Models\Instrument::resolveIconUrl($mensaje->user->instrument->icon) }}"
+                                        onerror="this.onerror=null;this.src='{{ asset(\App\Models\Instrument::DEFAULT_ICON_PATH) }}';"
                                         alt="{{ $mensaje->user->instrument->name ?? '' }}" class="w-3 h-3 sm:w-4 sm:h-4">
                                 @else
-                                    <span class="text-[10px] font-bold text-blue-600">🎵</span>
+                                    <img id="carousel-instrument" src="{{ asset(\App\Models\Instrument::DEFAULT_ICON_PATH) }}"
+                                        alt="{{ $mensaje->user->instrument->name ?? '' }}" class="w-3 h-3 sm:w-4 sm:h-4 rounded-full">
                                 @endif
                             </div>
                         </div>
@@ -140,7 +142,7 @@
             'comment' => $mensaje->comment,
             'date' => \Carbon\Carbon::parse($mensaje->created_at)->format('d/m/Y'),
             'photo' => $mensaje->user->profile_photo_url ?? 'https://icons.iconarchive.com/icons/diversity-avatars/avatars/256/charlie-chaplin-icon.png',
-            'instrument' => $mensaje->user->instrument ? '/storage/imagenes/instruments/' . $mensaje->user->instrument->icon : '/storage/imagenes/instruments/default.png',
+            'instrument' => \App\Models\Instrument::resolveIconUrl($mensaje->user->instrument?->icon),
             'actuacionName' => $mensaje->actuacion->descripcion,
             'enlaceActuacion' => route('listas.actuacion', ['actuacion_id' => $mensaje->actuacion->id]),
         ];
