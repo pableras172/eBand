@@ -45,7 +45,7 @@
         @livewireStyles
     </head>
     <body class="bg-slate-50 dark:bg-gray-900">
-        <div class="font-sans text-gray-900 dark:text-gray-100 antialiased pt-safe pb-safe">
+        <div class="font-sans text-gray-900 dark:text-gray-100 antialiased pt-safe pb-safe" style="padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);">
             {{ $slot }}
         </div>
 
