@@ -30,16 +30,16 @@ Cada pantalla se aborda de extremo a extremo (Frontend Blade/Livewire + adaptaci
 
 ## 🧱 Fase 1: Cimientos y Layout Shell Responsivo (Infraestructura UI)
 
-- [ ] **Tarea 1.1: Integrar Tokens de `DESIGN.md` en Tailwind**
+- [x] **Tarea 1.1: Integrar Tokens de `DESIGN.md` en Tailwind** *(Completada - Commit f7b08eb)*
   - Mapear la paleta *Dark Command Center* en `tailwind.config.js` (`surface: #0B1120`, `surface-card: #111827`, `primary: #2563EB`, `secondary: #F59E0B`, estados de asistencia).
   - Configurar las tipografías `Plus Jakarta Sans` e `Inter` e importar fuentes en el layout.
-- [ ] **Tarea 1.2: Componentes Blade Base Atómicos**
-  - `<x-card>`: Contenedor con fondo `#111827`, borde `#1E293B` y radio `rounded-xl`/`rounded-2xl`.
-  - `<x-button>`: Variantes primaria (azul eléctrico), secundaria (latón/ámbar), ghost y tonal.
+- [x] **Tarea 1.2: Componentes Blade Base Atómicos** *(Completada - Commit 13043e0)*
+  - `<x-ui.card>`: Contenedor con fondo `#111827`, borde `#1E293B` y radio `rounded-xl`/`rounded-2xl`.
+  - `<x-ui.button>`: Variantes primaria (azul eléctrico), secundaria (latón/ámbar), de éxito, peligro y ghost.
   - `<x-badge-status>`: Píldoras semánticas para *Disponible*, *Duda* y *No disponible*.
-- [ ] **Tarea 1.3: Layout Shell Responsivo Unificado (`layouts/app.blade.php`)**
-  - **Móvil (`< 768px`):** Top Bar fija con selector de banda compacto + *Bottom Navigation Bar* flotante con `backdrop-blur-xl` y soporte `pb-safe`.
-  - **Escritorio (`>= 1024px`):** *Sidebar* lateral izquierda colapsable (logo, navegación modular, perfil) + Top Header con breadcrumbs y alertas.
+- [x] **Tarea 1.3: Layout Shell Responsivo Unificado (`layouts/app.blade.php`)** *(Completada - Commit 13043e0)*
+  - **Móvil (`< 768px`):** Top Bar fija con selector de banda compacto + `<x-bottom-nav>` flotante con `backdrop-blur-xl` y soporte `pb-safe`.
+  - **Escritorio (`>= 1024px`):** `<x-desktop-sidebar>` lateral izquierda (logo, navegación modular, perfil) + Top Header con breadcrumbs y alertas.
 
 ---
 
