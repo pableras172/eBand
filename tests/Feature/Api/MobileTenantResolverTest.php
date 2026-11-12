@@ -34,7 +34,7 @@ class MobileTenantResolverTest extends TestCase
 
     public function test_resolve_tenant_is_case_insensitive_and_trims_whitespace(): void
     {
-        $response = $this->getJson('/api/v1/mobile/tenants/resolve?code=  DEMO  ');
+        $response = $this->getJson('/api/v1/mobile/tenants/resolve?code=%20%20DEMO%20%20');
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -66,7 +66,7 @@ class MobileTenantResolverTest extends TestCase
     public function test_resolve_tenant_returns_403_when_tenant_is_inactive(): void
     {
         $tenantId = 'test-inactive-tenant';
-        
+
         try {
             $tenant = Tenant::query()->create([
                 'id' => $tenantId,
