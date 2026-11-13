@@ -34,6 +34,8 @@ class DatabaseSeeder extends Seeder
             ConfigurationSeeder::class,
             ListaUserSeeder::class,
             InventorySeeder::class,
+            PaymentSeeder::class,
+            ConcertProgramSeeder::class,
         ]);
     }
 }

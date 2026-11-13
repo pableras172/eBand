@@ -2,19 +2,18 @@
 
 namespace App\Livewire\Dashboard\Comments\Forms;
 
-use Livewire\Form;
 use App\Models\Comment;
-use Illuminate\Validation\Rule;
+use Livewire\Form;
 
 class UpdateForm extends Form
 {
     public ?Comment $commentario;
 
-    public $comment= '';
+    public $comment = '';
 
     public $user_id = '';
 
-    public $username='';
+    public $username = '';
 
     public $data = '';
 
@@ -22,16 +21,14 @@ class UpdateForm extends Form
 
     public $inadecuado;
 
-    public $fechaComentario='';
+    public $fechaComentario = '';
 
-    public $actuacion='';
+    public $actuacion = '';
 
     public function rules(): array
     {
         return [
-            'comment' => ['required'],
-            'user_id' => ['required'],
-            'data' => ['required'],
+            'comment' => ['required', 'string'],
         ];
     }
 
@@ -41,18 +38,22 @@ class UpdateForm extends Form
 
         $this->comment = $commentario->comment;
         $this->user_id = $commentario->user_id;
-        $this->username=$commentario->user->name;
+        $this->username = optional($commentario->user)->name ?? 'Usuari';
         $this->data = $commentario->data;
-        $this->eliminado = $commentario->eliminado;
-        $this->inadecuado=$commentario->inadecuado;
+        $this->eliminado = (bool) $commentario->eliminado;
+        $this->inadecuado = (bool) $commentario->inadecuado;
         $this->fechaComentario = $commentario->created_at;
-        $this->actuacion=$commentario->actuacion->descripcion;
+        $this->actuacion = optional($commentario->actuacion)->descripcion ?? '-';
     }
 
     public function save()
     {
         $this->validate();
 
-        $this->commentario->update();
+        $this->commentario->update([
+            'comment' => $this->comment,
+            'eliminado' => (bool) $this->eliminado,
+            'inadecuado' => (bool) $this->inadecuado,
+        ]);
     }
 }
