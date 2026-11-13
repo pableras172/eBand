@@ -3,8 +3,8 @@
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div class="flex items-center gap-3.5">
                 <div class="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs">
-                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2c-5.33 4.55-8 6.75-8 11 0 2.25.75 4.25 2.05 5.65.84.94 1.95 1.6 3.2 1.95V22h5.5v-1.4c1.25-.35 2.36-1.01 3.2-1.95 1.3-1.4 2.05-3.4 2.05-5.65 0-4.25-2.67-6.45-8-11zm0 4c.83 0 1.5.67 1.5 1.5S12.83 9 12 9s-1.5-.67-1.5-1.5S11.17 6 12 6zm-2.5 7c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12 0c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                     </svg>
                 </div>
                 <div>
@@ -32,10 +32,18 @@
         </div>
     </x-slot>
 
-    @if (request()->has('success') && request()->success)
-        <div class="max-w-6xl mx-auto px-4 mt-4">
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 py-3 px-4 rounded-2xl text-xs font-semibold">
-                {{ __('El instrumento se ha eliminat correctament') }}
+    @if (session()->has('message') || (request()->has('success') && request()->success))
+        <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 mt-4">
+            <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 text-emerald-800 text-xs font-semibold flex items-center justify-between shadow-xs">
+                <div class="flex items-center gap-2.5">
+                    <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>{{ session('message') ?? __('El instrument s\'ha eliminat correctament') }}</span>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700 ml-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
             </div>
         </div>
     @endif
@@ -92,31 +100,6 @@
 
         <x-statistics.instruments />
     </div>
-
-    <footer
-        class="fixed bottom-0 left-0 z-20 w-full bg-white/90 backdrop-blur-2xl border-t border-indigo-100/80 shadow-glass">
-        <div class="flex justify-around items-center px-6 py-3">
-            <!-- Botón Nou Instrument -->
-            <a href="{{ route('instrument.create') }}"
-                class="flex flex-col items-center text-slate-600 hover:text-indigo-600 transition">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                </div>
-                <span class="text-xs mt-1 font-bold text-slate-700">{{ __('Nou instrument') }}</span>
-            </a>
-        </div>
-    </footer>
-                                    id="🎨-Color"> </path>
-                            </g>
-                        </g>
-                    </g>
-                </svg>
-                <span class="text-xs mt-1 font-bold">{{ __('Nou instrument') }}</span>
-            </a>
-        </div>
-    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
