@@ -1277,5 +1277,12 @@
     "No s'han trobat esdeveniments amb els criteris seleccionats.": "No se han encontrado eventos con los criterios seleccionados.",
     "Veure totes les actuacions": "Ver todas las actuaciones",
     "Usa els filtres per afinar la llista d'actuacions.": "Usa los filtros para afinar la lista de actuaciones.",
-    "Fes clic per veure els detalls i la convocatòria de l'acte.": "Haz clic para ver los detalles y la convocatoria del acto."
+    "Fes clic per veure els detalls i la convocatòria de l'acte.": "Haz clic para ver los detalles y la convocatoria del acto.",
+    "Assistència confirmada per la direcció": "Asistencia confirmada por la dirección",
+    "Termini de canvi tancat": "Plazo de cambio cerrado",
+    "Menys de :dias dies d'antelació. Contacta amb direcció.": "Menos de :dias días de antelación. Contacta con dirección.",
+    "Actualitzant disponibilitat...": "Actualizando disponibilidad...",
+    "Sincronitzant amb la plantilla de la banda": "Sincronizando con la plantilla de la banda",
+    "Has sigut convocat per la direcció. No pots marcar que no assisteixes o que tens dubtes. Contacta amb un administrador.": "Has sido convocado por la dirección. No puedes marcar que no asistes o que tienes dudas. Contacta con un administrador.",
+    "No es pot canviar la disponibilitat amb menys de :dias dies d'antelació. Contacta amb la direcció.": "No se puede cambiar la disponibilidad con menos de :dias días de antelación. Contacta con la dirección."
 }

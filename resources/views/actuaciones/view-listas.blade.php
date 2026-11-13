@@ -218,6 +218,10 @@
 
                             $fechaAct = \Carbon\Carbon::parse($actuacion->fechaActuacion);
                             $esHoy = $fechaAct->isToday();
+                            $limiteAntelacion = (int) (\App\Helpers\ConfigHelper::getConfigValue('diasantelacion') ?? 5);
+                            $isAdmin = $currentUser && $currentUser->roles()->where('title', 'Admin')->exists();
+                            $diasRestantes = now()->startOfDay()->diffInDays($fechaAct->startOfDay(), false);
+                            $fueraDePlazo = ($diasRestantes <= $limiteAntelacion && ! $isAdmin);
                         @endphp
 
                         <div @if($loop->first && $loop->parent->first) id="driver-actuacion-first" @endif 
@@ -334,33 +338,47 @@
                                 {{-- Gestión de Disponibilidad rápida (Dudas y No Disponible) --}}
                                 @if ($currentUser)
                                     <div class="flex flex-col gap-1.5 pt-1 border-t border-indigo-50/70">
-                                        {{-- Banner Estàs convocat --}}
-                                        <div id="banner-convocado-{{ $actuacion->id }}" 
-                                             class="{{ $usuarioConvocado ? 'flex' : 'hidden' }} items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-xs">
-                                            <span class="material-symbols-outlined text-[16px] text-status-available">verified</span>
-                                            <span>{{ __('Estàs convocat') }}</span>
-                                        </div>
+                                        @if ($usuarioConvocado)
+                                            {{-- Músico CONVOCADO por la dirección: NO puede indicar que no asiste ni dudas --}}
+                                            <div id="banner-convocado-{{ $actuacion->id }}" 
+                                                 class="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-xs">
+                                                <span class="material-symbols-outlined text-[18px] text-status-available">verified</span>
+                                                <div class="flex flex-col">
+                                                    <span>{{ __('Estàs convocat') }}</span>
+                                                    <span class="text-[10.5px] font-medium text-emerald-700">{{ __('Assistència confirmada per la direcció') }}</span>
+                                                </div>
+                                            </div>
+                                        @elseif ($fueraDePlazo)
+                                            {{-- Fuera de plazo por antelación --}}
+                                            <div class="px-3 py-2 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-amber-900 text-xs flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-amber-600 text-[18px] shrink-0">lock_clock</span>
+                                                <div class="flex flex-col">
+                                                    <span class="font-bold text-[11px]">{{ __('Termini de canvi tancat') }}</span>
+                                                    <span class="text-[10px] text-amber-700">{{ __('Menys de :dias dies d\'antelació. Contacta amb direcció.', ['dias' => $limiteAntelacion]) }}</span>
+                                                </div>
+                                            </div>
+                                        @else
+                                            {{-- Botones interactivos de Duda y No asistencia --}}
+                                            <div class="grid grid-cols-2 gap-2 bg-surface-subtle p-1.5 rounded-2xl">
+                                                <button type="button" 
+                                                    id="btn-status-duda-{{ $actuacion->id }}" 
+                                                    onclick="setCalendarAttendance('duda', {{ $listaId ? $listaId : 'null' }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
+                                                    class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-amber-200' }}"
+                                                    title="{{ __('Notifica que no saps segur si podràs assistir') }}">
+                                                    <span class="material-symbols-outlined text-[16px]">help</span>
+                                                    <span class="truncate">{{ __('Tinc dubtes') }}</span>
+                                                </button>
 
-                                        {{-- Botones interactivos de Duda y No asistencia --}}
-                                        <div class="grid grid-cols-2 gap-2 bg-surface-subtle p-1.5 rounded-2xl">
-                                            <button type="button" 
-                                                id="btn-status-duda-{{ $actuacion->id }}" 
-                                                onclick="setCalendarAttendance('duda', {{ $listaId ? $listaId : 'null' }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
-                                                class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-amber-200' }}"
-                                                title="{{ __('Notifica que no saps segur si podràs assistir') }}">
-                                                <span class="material-symbols-outlined text-[16px]">help</span>
-                                                <span class="truncate">{{ __('Tinc dubtes') }}</span>
-                                            </button>
-
-                                            <button type="button" 
-                                                id="btn-status-no-{{ $actuacion->id }}" 
-                                                onclick="setCalendarAttendance('no', {{ $listaId ? $listaId : 'null' }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
-                                                class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-rose-200' }}"
-                                                title="{{ __('Comunica la teua baixa') }}">
-                                                <span class="material-symbols-outlined text-[16px]">cancel</span>
-                                                <span class="truncate">{{ __('No puc assistir') }}</span>
-                                            </button>
-                                        </div>
+                                                <button type="button" 
+                                                    id="btn-status-no-{{ $actuacion->id }}" 
+                                                    onclick="setCalendarAttendance('no', {{ $listaId ? $listaId : 'null' }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
+                                                    class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-rose-200' }}"
+                                                    title="{{ __('Comunica la teua baixa') }}">
+                                                    <span class="material-symbols-outlined text-[16px]">cancel</span>
+                                                    <span class="truncate">{{ __('No puc assistir') }}</span>
+                                                </button>
+                                            </div>
+                                        @endif
                                     </div>
                                 @endif
 
@@ -424,45 +442,58 @@
 
     <x-subscription-info />
 
+    {{-- Overlay de Carga Difuminado (Backdrop Blur) para Disponibilidad --}}
+    <div id="calendar-loading-overlay" 
+         class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-900/40 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none"
+         aria-hidden="true">
+        <div class="bg-white rounded-3xl p-6 shadow-2xl border border-indigo-50 flex flex-col items-center gap-3.5 max-w-xs mx-4 text-center transform scale-95 transition-transform duration-300">
+            <div class="relative w-12 h-12 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full border-4 border-indigo-100"></div>
+                <div class="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+                <span class="material-symbols-outlined text-primary text-[22px]">event_repeat</span>
+            </div>
+            <div>
+                <p class="text-sm font-bold text-slate-800">
+                    {{ __('Actualitzant disponibilitat...') }}
+                </p>
+                <p class="text-xs text-slate-500 mt-0.5">
+                    {{ __('Sincronitzant amb la plantilla de la banda') }}
+                </p>
+            </div>
+        </div>
+    </div>
+
     {{-- SCRIPT PARA GESTIÓN DE DISPONIBILIDAD DESDE EL CALENDARIO --}}
     <script>
-        function setCalendarAttendance(choice, listaId, userId, actuacionId) {
-            const btnDuda = document.getElementById('btn-status-duda-' + actuacionId);
-            const btnNo = document.getElementById('btn-status-no-' + actuacionId);
-            const bannerConvocado = document.getElementById('banner-convocado-' + actuacionId);
-
-            if (!btnDuda || !btnNo) return;
-
-            const yaEnDuda = btnDuda.classList.contains('bg-status-pending');
-            const yaEnNo = btnNo.classList.contains('bg-status-unavailable');
-
-            let targetEstado = choice;
-            if (choice === 'duda' && yaEnDuda) {
-                targetEstado = 'disponible';
-            } else if (choice === 'no' && yaEnNo) {
-                targetEstado = 'disponible';
-            }
-
-            const baseDuda = "flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white border border-transparent hover:border-amber-200 transition-all active:scale-95";
-            const baseNo = "flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white border border-transparent hover:border-rose-200 transition-all active:scale-95";
-
-            btnDuda.className = baseDuda;
-            btnNo.className = baseNo;
-
-            if (targetEstado === 'duda') {
-                btnDuda.className = "flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40 transition-all active:scale-95";
-                if (bannerConvocado) bannerConvocado.classList.replace('flex', 'hidden');
-            } else if (targetEstado === 'no') {
-                btnNo.className = "flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40 transition-all active:scale-95";
-                if (bannerConvocado) bannerConvocado.classList.replace('flex', 'hidden');
+        function showCalendarLoading(show) {
+            const overlay = document.getElementById('calendar-loading-overlay');
+            if (!overlay) return;
+            if (show) {
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                overlay.classList.add('opacity-100');
+                const box = overlay.firstElementChild;
+                if (box) {
+                    box.classList.remove('scale-95');
+                    box.classList.add('scale-100');
+                }
             } else {
-                if (bannerConvocado) bannerConvocado.classList.replace('hidden', 'flex');
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                const box = overlay.firstElementChild;
+                if (box) {
+                    box.classList.remove('scale-100');
+                    box.classList.add('scale-95');
+                }
             }
+        }
+
+        function setCalendarAttendance(choice, listaId, userId, actuacionId) {
+            showCalendarLoading(true);
 
             const payload = {
                 usuario_id: userId,
                 actuacion_id: actuacionId,
-                estado: targetEstado
+                estado: choice
             };
             if (listaId) {
                 payload.lista_id = listaId;
@@ -486,18 +517,20 @@
                 return response.json();
             })
             .then(data => {
-                if (data.lista_id) {
-                    btnDuda.setAttribute('onclick', `setCalendarAttendance('duda', ${data.lista_id}, ${userId}, ${actuacionId})`);
-                    btnNo.setAttribute('onclick', `setCalendarAttendance('no', ${data.lista_id}, ${userId}, ${actuacionId})`);
-                }
                 if (typeof showToast === 'function') {
                     showToast(data);
                 }
+                setTimeout(() => {
+                    location.reload();
+                }, 250);
             })
             .catch(err => {
+                showCalendarLoading(false);
                 console.error('Error al actualitzar disponibilitat:', err);
                 if (typeof showToast === 'function') {
                     showToast({ message: err.message || 'Error al actualitzar disponibilitat', alert_type: 'error' });
+                } else {
+                    alert(err.message || 'Error al actualitzar disponibilitat');
                 }
             });
         }

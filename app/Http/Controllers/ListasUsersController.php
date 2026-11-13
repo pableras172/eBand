@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ConfigHelper;
 use App\Mail\UserNoDisponible;
 use App\Models\Configuration;
 use App\Models\Listas;
 use App\Models\ListasUser;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
@@ -129,6 +131,24 @@ class ListasUsersController extends Controller
             return response()->json(['message' => 'No se pudo identificar la lista de la actuación'], 422);
         }
 
+        $lista = Listas::with('actuacion')->findOrFail($listaId);
+        $actuacion = $lista->actuacion;
+        $currentUser = auth()->user();
+        $isAdmin = $currentUser && $currentUser->roles()->where('title', 'Admin')->exists();
+
+        // 1. Validar límite de antelación para no-administradores
+        if ($actuacion && ! $isAdmin) {
+            $limiteAntelacion = (int) (ConfigHelper::getConfigValue('diasantelacion') ?? 5);
+            $diasRestantes = now()->startOfDay()->diffInDays(Carbon::parse($actuacion->fechaActuacion)->startOfDay(), false);
+
+            if ($diasRestantes <= $limiteAntelacion) {
+                return response()->json([
+                    'message' => __('No es pot canviar la disponibilitat amb menys de :dias dies d\'antelació. Contacta amb la direcció.', ['dias' => $limiteAntelacion]),
+                    'alert_type' => 'error',
+                ], 422);
+            }
+        }
+
         $hasDudaColumn = Schema::hasColumn('listas_user', 'duda');
 
         $existingRelation = ListasUser::where('listas_id', $listaId)
@@ -144,6 +164,17 @@ class ListasUsersController extends Controller
                 $estadoSolicitado = ((int) $request->disponible === 0) ? 'no' : 'disponible';
             } else {
                 $estadoSolicitado = 'disponible';
+            }
+        }
+
+        // 2. Si el usuario ya está convocado/confirmado por dirección en la lista, no puede ponerse en duda ni en no asistir
+        if ($existingRelation && ! $isAdmin) {
+            $yaConvocado = ((int) $existingRelation->disponible === 1 && empty($existingRelation->duda));
+            if ($yaConvocado && in_array($estadoSolicitado, ['duda', 'no'], true)) {
+                return response()->json([
+                    'message' => __('Has sigut convocat per la direcció. No pots marcar que no assisteixes o que tens dubtes. Contacta amb un administrador.'),
+                    'alert_type' => 'error',
+                ], 422);
             }
         }
 

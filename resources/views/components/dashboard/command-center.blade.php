@@ -48,6 +48,14 @@
         }
     }
 
+    $isAdmin = $user && $user->roles()->where('title', 'Admin')->exists();
+    $limiteAntelacion = (int) (\App\Helpers\ConfigHelper::getConfigValue('diasantelacion') ?? 5);
+    $fueraDePlazo = false;
+    if ($proximaActuacion) {
+        $diasRestantes = now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($proximaActuacion->fechaActuacion)->startOfDay(), false);
+        $fueraDePlazo = ($diasRestantes <= $limiteAntelacion && ! $isAdmin);
+    }
+
     // 2. Actes dels pròxims 7 dies
     $fin7Dias = now()->addDays(7)->endOfDay();
     $proximos7Dias = \App\Models\Actuacion::with(['tipo', 'tipoactuacion', 'contrato', 'lista.users'])
@@ -378,35 +386,47 @@
                     {{-- Gestión de Disponibilidad del Músico (Dudas y Bajas) --}}
                     @if ($user)
                         <div class="flex flex-col gap-2 pt-1 border-t border-indigo-50/80">
-                            {{-- Si el usuario está marcado para asistir se muestra que está convocado --}}
                             @if ($usuarioConvocado)
+                                {{-- Músico CONVOCADO por la dirección: NO puede indicar que no asiste ni dudas --}}
                                 <div id="banner-convocado" class="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-bold shadow-sm">
                                     <span class="material-symbols-outlined text-[18px] text-status-available">verified</span>
-                                    <span>{{ __('Estàs convocat') }}</span>
+                                    <div class="flex flex-col">
+                                        <span>{{ __('Estàs convocat') }}</span>
+                                        <span class="text-[10.5px] font-medium text-emerald-700">{{ __('Assistència confirmada per la direcció') }}</span>
+                                    </div>
+                                </div>
+                            @elseif ($fueraDePlazo)
+                                {{-- Fuera de plazo por antelación --}}
+                                <div class="px-3.5 py-2 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-amber-900 text-xs flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-amber-600 text-[18px] shrink-0">lock_clock</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-bold text-[11px]">{{ __('Termini de canvi tancat') }}</span>
+                                        <span class="text-[10px] text-amber-700">{{ __('Menys de :dias dies d\'antelació. Contacta amb direcció.', ['dias' => $limiteAntelacion]) }}</span>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="grid grid-cols-2 gap-2 bg-surface-subtle p-1.5 rounded-2xl" id="attendance-toggle-group">
+                                    {{-- Opción 1: Tinc Dubtes --}}
+                                    <button type="button" 
+                                        id="btn-status-duda" 
+                                        onclick="setBentoAttendance('duda', {{ $listaId ? $listaId : 'null' }}, {{ $user->id }}, {{ $proximaActuacion->id }})"
+                                        class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-amber-200' }}"
+                                        title="{{ __('Notifica que no saps segur si podràs assistir') }}">
+                                        <span class="material-symbols-outlined text-[17px]">help</span>
+                                        <span>{{ __('Tinc dubtes') }}</span>
+                                    </button>
+
+                                    {{-- Opción 2: No puc anar --}}
+                                    <button type="button" 
+                                        id="btn-status-no" 
+                                        onclick="setBentoAttendance('no', {{ $listaId ? $listaId : 'null' }}, {{ $user->id }}, {{ $proximaActuacion->id }})"
+                                        class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-rose-200' }}"
+                                        title="{{ __('Comunica la teua baixa') }}">
+                                        <span class="material-symbols-outlined text-[17px]">cancel</span>
+                                        <span>{{ __('No puc assistir') }}</span>
+                                    </button>
                                 </div>
                             @endif
-
-                            <div class="grid grid-cols-2 gap-2 bg-surface-subtle p-1.5 rounded-2xl" id="attendance-toggle-group">
-                                {{-- Opción 1: Tinc Dubtes --}}
-                                <button type="button" 
-                                    id="btn-status-duda" 
-                                    onclick="setBentoAttendance('duda', {{ $listaId ? $listaId : 'null' }}, {{ $user->id }}, {{ $proximaActuacion->id }})"
-                                    class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-amber-200' }}"
-                                    title="{{ __('Notifica que no saps segur si podràs assistir') }}">
-                                    <span class="material-symbols-outlined text-[17px]">help</span>
-                                    <span>{{ __('Tinc dubtes') }}</span>
-                                </button>
-
-                                {{-- Opción 2: No puc anar --}}
-                                <button type="button" 
-                                    id="btn-status-no" 
-                                    onclick="setBentoAttendance('no', {{ $listaId ? $listaId : 'null' }}, {{ $user->id }}, {{ $proximaActuacion->id }})"
-                                    class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-rose-200' }}"
-                                    title="{{ __('Comunica la teua baixa') }}">
-                                    <span class="material-symbols-outlined text-[17px]">cancel</span>
-                                    <span>{{ __('No puc assistir') }}</span>
-                                </button>
-                            </div>
                         </div>
                     @endif
                 </div>
@@ -785,47 +805,57 @@
 
 </div>
 
+{{-- Overlay de Carga Difuminado (Backdrop Blur) para la Home --}}
+<div id="home-loading-overlay" 
+     class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-900/40 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none"
+     aria-hidden="true">
+    <div class="bg-white rounded-3xl p-6 shadow-2xl border border-indigo-50 flex flex-col items-center gap-3.5 max-w-xs mx-4 text-center transform scale-95 transition-transform duration-300">
+        <div class="relative w-12 h-12 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full border-4 border-indigo-100"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+            <span class="material-symbols-outlined text-primary text-[22px]">event_repeat</span>
+        </div>
+        <div>
+            <p class="text-sm font-bold text-slate-800">
+                {{ __('Actualitzant disponibilitat...') }}
+            </p>
+            <p class="text-xs text-slate-500 mt-0.5">
+                {{ __('Sincronitzant amb la plantilla de la banda') }}
+            </p>
+        </div>
+    </div>
+</div>
+
 {{-- SCRIPT PARA INTERACCIÓN DEL CONMUTADOR DE ASISTENCIA Y CARGA DEL MAPA --}}
 <script>
-    function setBentoAttendance(choice, listaId, userId, actuacionId) {
-        const btnDuda = document.getElementById('btn-status-duda');
-        const btnNo = document.getElementById('btn-status-no');
-        const bannerConvocado = document.getElementById('banner-convocado');
-
-        if (!btnDuda || !btnNo) return;
-
-        // Si se pulsa el botón que ya estaba activo, se desmarca para volver a Disponible
-        const yaEnDuda = btnDuda.classList.contains('bg-status-pending');
-        const yaEnNo = btnNo.classList.contains('bg-status-unavailable');
-
-        let targetEstado = choice;
-        if (choice === 'duda' && yaEnDuda) {
-            targetEstado = 'disponible';
-        } else if (choice === 'no' && yaEnNo) {
-            targetEstado = 'disponible';
-        }
-
-        // Estilos base neutros
-        const baseDuda = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-white border border-transparent hover:border-amber-200 transition-all active:scale-95";
-        const baseNo = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-white border border-transparent hover:border-rose-200 transition-all active:scale-95";
-
-        btnDuda.className = baseDuda;
-        btnNo.className = baseNo;
-
-        // Feedback visual optimista
-        if (targetEstado === 'duda') {
-            btnDuda.className = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40 transition-all active:scale-95";
-            if (bannerConvocado) bannerConvocado.style.display = 'none';
-        } else if (targetEstado === 'no') {
-            btnNo.className = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40 transition-all active:scale-95";
-            if (bannerConvocado) bannerConvocado.style.display = 'none';
+    function showHomeLoading(show) {
+        const overlay = document.getElementById('home-loading-overlay');
+        if (!overlay) return;
+        if (show) {
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.add('opacity-100');
+            const box = overlay.firstElementChild;
+            if (box) {
+                box.classList.remove('scale-95');
+                box.classList.add('scale-100');
+            }
         } else {
-            if (bannerConvocado) bannerConvocado.style.display = 'flex';
+            overlay.classList.remove('opacity-100');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            const box = overlay.firstElementChild;
+            if (box) {
+                box.classList.remove('scale-100');
+                box.classList.add('scale-95');
+            }
         }
+    }
+
+    function setBentoAttendance(choice, listaId, userId, actuacionId) {
+        showHomeLoading(true);
 
         const payload = {
             usuario_id: userId,
-            estado: targetEstado
+            estado: choice
         };
         if (listaId) payload.lista_id = listaId;
         if (actuacionId) payload.actuacion_id = actuacionId;
@@ -849,14 +879,23 @@
             return response.json();
         })
         .then(data => {
-            if (data.lista_id && actuacionId) {
-                btnDuda.setAttribute('onclick', `setBentoAttendance('duda', ${data.lista_id}, ${userId}, ${actuacionId})`);
-                btnNo.setAttribute('onclick', `setBentoAttendance('no', ${data.lista_id}, ${userId}, ${actuacionId})`);
-            }
             if (typeof showToast === 'function') {
                 showToast(data);
             }
+            setTimeout(() => {
+                location.reload();
+            }, 250);
         })
+        .catch(err => {
+            showHomeLoading(false);
+            console.error('Error al actualizar disponibilidad:', err);
+            if (typeof showToast === 'function') {
+                showToast({ message: err.message || 'Error al actualitzar disponibilitat', alert_type: 'error' });
+            } else {
+                alert(err.message || 'Error al actualitzar disponibilitat');
+            }
+        });
+    }
         .catch(err => {
             console.error('Error al actualizar disponibilidad:', err);
             if (typeof showToast === 'function') {
