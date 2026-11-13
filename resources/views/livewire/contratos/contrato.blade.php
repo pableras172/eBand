@@ -1,259 +1,429 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Nou contracte') }}
-        </h2>
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div class="flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19.5 14.25v-8.25A2.25 2.25 0 0017.25 3.75H6.75A2.25 2.25 0 004.5 6v12a2.25 2.25 0 002.25 2.25h7.5m-6-12h7.5m-7.5 4.5h4.5m5.25 2.25v6m3-3h-6" />
+                    </svg>
+                </div>
+                <div>
+                    <x-ui.breadcrumbs>
+                        <x-ui.breadcrumbs.link href="/">{{ __('common.dashboard') }}</x-ui.breadcrumbs.link>
+                        <x-ui.breadcrumbs.separator />
+                        <x-ui.breadcrumbs.link href="{{ route('contratos.index') }}">{{ __('Contractes') }}</x-ui.breadcrumbs.link>
+                        <x-ui.breadcrumbs.separator />
+                        <x-ui.breadcrumbs.link active>
+                            {{ isset($contrato) ? __('Editar contracte') : __('Nou contracte') }}
+                        </x-ui.breadcrumbs.link>
+                    </x-ui.breadcrumbs>
+                    <h1 class="text-2xl lg:text-3xl font-extrabold font-headline text-slate-900 tracking-tight mt-0.5">
+                        {{ isset($contrato) ? __('Editar contracte') : __('Nou contracte') }}
+                    </h1>
+                    <p class="mt-0.5 text-xs text-slate-500">
+                        {{ isset($contrato) ? ($contrato->poblacion . ' — ' . $contrato->descripcion) : __('Registra un nou acord de la banda i la seua localització') }}
+                    </p>
+                </div>
+            </div>
+
+            @if (isset($contrato))
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('contratos.actuaciones.index', ['contrato' => $contrato->id]) }}"
+                        class="inline-flex items-center gap-2 rounded-2xl bg-indigo-50 border border-indigo-100 px-4 py-2.5 text-xs font-bold text-indigo-700 shadow-xs hover:bg-indigo-100 transition active:scale-95">
+                        <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{{ __('Veure actuacions') }}</span>
+                    </a>
+                </div>
+            @endif
+        </div>
     </x-slot>
 
-    <div class="mx-auto py-2 bg-white px-4 sm:px-0">
-
+    <div class="container mx-auto py-4 px-3 sm:px-6 lg:px-8 pb-32 max-w-5xl">
+        {{-- Errores de validación / Alertas --}}
         @if (session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">{{ __('Error') }}</strong>
-                <span class="block sm:inline">{{ session('error') }}</span>
+            <div class="flex items-center gap-3 bg-red-50 border border-red-200 text-red-800 py-3 px-4 mb-5 rounded-2xl text-xs font-semibold shadow-xs">
+                <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{{ session('error') }}</span>
             </div>
         @endif
 
+        @if ($errors->any())
+            <div class="bg-red-50 border border-red-200 text-red-800 p-4 mb-5 rounded-2xl text-xs space-y-1 shadow-xs">
+                <p class="font-bold">{{ __('Hi ha errors en el formulari:') }}</p>
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        <form method="post" class="max-w-lg mx-auto"
-            action="{{ isset($contrato) ? route('contratos.update', $contrato->id) : route('contratos.store') }}">
+        <form id="contratoForm" method="POST"
+            action="{{ isset($contrato) ? route('contratos.update', $contrato->id) : route('contratos.store') }}"
+            class="space-y-6">
             @csrf
             @if (isset($contrato))
                 @method('PUT')
             @endif
-            <div class="mb-4">
-                <label for="poblacion" class="block text-sm font-medium text-gray-700">{{ __('Población') }}</label>
-                <input type="text" id="poblacion" name="poblacion" placeholder="Escribe un municipio"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                    value="{{ isset($contrato) ? $contrato->poblacion : old('poblacion') }}" required />
-                <div id="municipio-suggestions" class="relative z-50 bg-white border rounded-md shadow mt-1 hidden">
+
+            {{-- Bento Card 1: Ubicació i Població --}}
+            <div class="rounded-3xl border border-indigo-50/80 bg-white p-6 shadow-bento space-y-5">
+                <div class="flex items-center gap-3 border-b border-indigo-50 pb-3">
+                    <div class="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold font-headline text-slate-900">
+                            {{ __('Ubicació i geolocalització') }}
+                        </h2>
+                        <p class="text-xs text-slate-500">
+                            {{ __('Indica la població on se celebra el contracte per a ubicar-lo al mapa') }}
+                        </p>
+                    </div>
                 </div>
 
-                <input type="hidden" id="latitude" name="latitude"
-                value="{{ isset($contrato) ? $contrato->latitude : old('latitude') }}" >
-                <input type="hidden" id="longitude" name="longitude"
-                value="{{ isset($contrato) ? $contrato->longitude : old('longitude') }}" >
+                <div class="space-y-4">
+                    <div class="relative">
+                        <label for="poblacion" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+                            {{ __('Població') }} <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                </svg>
+                            </span>
+                            <input type="text" id="poblacion" name="poblacion" autocomplete="off"
+                                placeholder="{{ __('Escriu un municipi (ex. Llíria, Cullera, Buñol)...') }}"
+                                class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] py-2.5 pl-10 pr-4 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition"
+                                value="{{ old('poblacion', isset($contrato) ? $contrato->poblacion : '') }}" required />
+                        </div>
+                        <div id="municipio-suggestions"
+                            class="absolute z-50 left-0 right-0 mt-1 max-h-60 overflow-y-auto rounded-2xl border border-indigo-100 bg-white shadow-xl hidden">
+                        </div>
 
+                        <input type="hidden" id="latitude" name="latitude"
+                            value="{{ old('latitude', isset($contrato) ? $contrato->latitude : '') }}">
+                        <input type="hidden" id="longitude" name="longitude"
+                            value="{{ old('longitude', isset($contrato) ? $contrato->longitude : '') }}">
+                    </div>
 
-            </div>
-
-            <div class="mb-6">
-                <livewire:location-map :height="150" />
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label for="fechainicio"
-                        class="block text-sm font-medium text-gray-700">{{ __('Data Inici') }}</label>
-                    <input type="date" id="fechainicio" name="fechainicio"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        value="{{ isset($contrato) ? $contrato->fechainicio : old('fechainicio') }}" required>
+                    {{-- Mapa interactivo --}}
+                    <div>
+                        <span class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+                            {{ __('Visualització al mapa') }}
+                        </span>
+                        <div class="rounded-2xl border border-indigo-100/80 overflow-hidden shadow-inner">
+                            <livewire:location-map :height="200" />
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label for="fechafin" class="block text-sm font-medium text-gray-700">{{ __('Data de Fi') }}</label>
-                    <input type="date" id="fechafin" name="fechafin"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        value="{{ isset($contrato) ? $contrato->fechafin : old('fechafin') }}" required>
+            </div>
+
+            {{-- Bento Card 2: Dades Generals i Dates --}}
+            <div class="rounded-3xl border border-indigo-50/80 bg-white p-6 shadow-bento space-y-5">
+                <div class="flex items-center gap-3 border-b border-indigo-50 pb-3">
+                    <div class="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold font-headline text-slate-900">
+                            {{ __('Dades del contracte') }}
+                        </h2>
+                        <p class="text-xs text-slate-500">
+                            {{ __('Període de vigència, descripció i exercici') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="descripcion" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+                            {{ __('Descripció') }} <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="descripcion" name="descripcion" rows="3" required
+                            placeholder="{{ __('Exemple: Festes Patronals i Moros i Cristians de Sant Vicent') }}"
+                            class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] p-3 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition">{{ old('descripcion', isset($contrato) ? $contrato->descripcion : '') }}</textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label for="fechainicio" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+                                {{ __('Data Inici') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" id="fechainicio" name="fechainicio"
+                                class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] py-2.5 px-3 text-xs font-medium text-slate-800 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition"
+                                value="{{ old('fechainicio', isset($contrato) ? $contrato->fechainicio : '') }}" required>
+                        </div>
+                        <div>
+                            <label for="fechafin" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+                                {{ __('Data de Fi') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" id="fechafin" name="fechafin"
+                                class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] py-2.5 px-3 text-xs font-medium text-slate-800 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition"
+                                value="{{ old('fechafin', isset($contrato) ? $contrato->fechafin : '') }}" required>
+                        </div>
+                        <div>
+                            <label for="anyo" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+                                {{ __('Any') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" id="anyo" name="anyo" min="1900" max="2100"
+                                class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] py-2.5 px-3 text-xs font-medium text-slate-800 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition"
+                                value="{{ old('anyo', isset($contrato) ? $contrato->anyo : date('Y')) }}" required>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="mb-4">
-                <label for="descripcion" class="block text-sm font-medium text-gray-700">{{ __('Descripció') }}</label>
-                <textarea id="descripcion" name="descripcion" rows="3" required
-                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">{{ isset($contrato) ? $contrato->descripcion : old('descripcion') }}</textarea>
-            </div>
-            <div class="mb-4">
-                <label for="contacto" class="block text-sm font-medium text-gray-700">{{ __('Contacte') }}</label>
-                <input type="text" id="contacto" name="contacto" required
-                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    value="{{ isset($contrato) ? $contrato->contacto : old('contacto') }}">
-            </div>
-            <div class="mb-4">
-                <label for="telefono" class="block text-sm font-medium text-gray-700">{{ __('Telefon') }}</label>
-                <input type="text" id="telefono" name="telefono"
-                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    value="{{ isset($contrato) ? $contrato->telefono : old('telefono') }}">
-            </div>
-            <div class="mb-4">
-                <label for="correo" class="block text-sm font-medium text-gray-700">{{ __('Email') }}</label>
-                <input type="email" id="correo" name="correo"
-                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    value="{{ isset($contrato) ? $contrato->correo : old('correo') }}">
-            </div>
-            <div class="mb-4">
-                <label for="anyo" class="block text-sm font-medium text-gray-700">{{ __('Any') }}</label>
-                <input type="number" id="anyo" name="anyo"
-                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    value="{{ old('anyo', isset($contrato) ? $contrato->anyo : date('Y')) }}" min="1900"
-                    max="2100" required>
 
-            </div>
-            <div class="mb-4">
-                <label for="dnicontacto"
-                    class="block text-sm font-medium text-gray-700">{{ __('DNI del Contacto') }}</label>
-                <input type="text" id="dnicontacto" name="dnicontacto"
-                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    value="{{ isset($contrato) ? $contrato->dnicontacto : old('dnicontacto') }}">
-            </div>
-            <div class="mb-4">
-                <label for="observacions"
-                    class="block text-sm font-medium text-gray-700">{{ __('Observacions') }}</label>
-                <textarea id="observacions" name="observacions" rows="3"
-                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">{{ isset($contrato) ? $contrato->observacions : old('observacions') }}</textarea>
-            </div>
-            <div class="flex justify-center">
-                <button type="submit" id="submitBtn"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest bg-green-800 hover:bg-green-600 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition ml-2">Guardar</button>
+            {{-- Bento Card 3: Contacte i Observacions --}}
+            <div class="rounded-3xl border border-indigo-50/80 bg-white p-6 shadow-bento space-y-5">
+                <div class="flex items-center gap-3 border-b border-indigo-50 pb-3">
+                    <div class="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold font-headline text-slate-900">
+                            {{ __('Contacte i observacions') }}
+                        </h2>
+                        <p class="text-xs text-slate-500">
+                            {{ __('Persona responsable de la contractació i notes rellevants') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="contacto" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+                                {{ __('Persona de contacte') }}
+                            </label>
+                            <input type="text" id="contacto" name="contacto"
+                                placeholder="{{ __('Nom del representant o comissió') }}"
+                                class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] py-2.5 px-3 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition"
+                                value="{{ old('contacto', isset($contrato) ? $contrato->contacto : '') }}">
+                        </div>
+                        <div>
+                            <label for="dnicontacto" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+                                {{ __('DNI / NIF') }}
+                            </label>
+                            <input type="text" id="dnicontacto" name="dnicontacto"
+                                placeholder="{{ __('12345678A') }}"
+                                class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] py-2.5 px-3 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition"
+                                value="{{ old('dnicontacto', isset($contrato) ? $contrato->dnicontacto : '') }}">
+                        </div>
+                        <div>
+                            <label for="telefono" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+                                {{ __('Telèfon') }}
+                            </label>
+                            <input type="text" id="telefono" name="telefono"
+                                placeholder="{{ __('600 000 000') }}"
+                                class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] py-2.5 px-3 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition"
+                                value="{{ old('telefono', isset($contrato) ? $contrato->telefono : '') }}">
+                        </div>
+                        <div>
+                            <label for="correo" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+                                {{ __('Correu electrònic') }}
+                            </label>
+                            <input type="email" id="correo" name="correo"
+                                placeholder="{{ __('contacte@festes.org') }}"
+                                class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] py-2.5 px-3 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition"
+                                value="{{ old('correo', isset($contrato) ? $contrato->correo : '') }}">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="observacions" class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">
+                            {{ __('Observacions') }}
+                        </label>
+                        <textarea id="observacions" name="observacions" rows="3"
+                            placeholder="{{ __('Detalls sobre vestuari, alimentació, allotjament o particularitats del contracte...') }}"
+                            class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] p-3 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition">{{ old('observacions', isset($contrato) ? $contrato->observacions : '') }}</textarea>
+                    </div>
+                </div>
             </div>
         </form>
+
+        {{-- Bento Card 4: Importar actuacions des d'Excel (només en mode edició) --}}
         @if (isset($contrato))
-            @livewire('actuaciones.importar-excel', ['contratoId' => $contrato->id])
+            <div class="mt-6 rounded-3xl border border-indigo-50/80 bg-white p-6 shadow-bento space-y-4">
+                <div class="flex items-center gap-3 border-b border-indigo-50 pb-3">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold font-headline text-slate-900">
+                            {{ __('Importar actuacions des d\'Excel') }}
+                        </h2>
+                        <p class="text-xs text-slate-500">
+                            {{ __('Pots carregar ràpidament un calendari complet d\'actuacions per a aquest contracte') }}
+                        </p>
+                    </div>
+                </div>
+
+                @livewire('actuaciones.importar-excel', ['contratoId' => $contrato->id])
+            </div>
         @endif
     </div>
 
-    </div>
-    <div style="height: 75px">
-
-    </div>
-
-    <footer
-        class="fixed bottom-0 left-0 z-20 w-full bg-white border-t border-gray-300 shadow-t-md dark:bg-gray-800 dark:border-gray-600">
-        <div class="flex justify-around items-center space-x-4 py-3">
-            @if (isset($contrato))
-             <a href="{{ route('contratos.actuaciones.index', ['contrato' => $contrato->id]) }}"
-                                                    class="flex flex-col items-center text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition">
-                                                    <x-calendario w="32" h="32" />
-                                                    <span class="text-xs mt-1 font-bold">{{ __('Actuacions') }}</span>
-                                                </a>
-                                                <a class = "flex flex-col items-center text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition" href="{{ route('contratos.duplicate', $contrato->id) }}">
-                                                    <x-duplicar w="32" h="32" />
-                                                    <span class="text-xs mt-1 font-bold">{{ __('Duplicar') }}</span>
-                                                </a>
-                <!-- Botón Eliminar Contrato -->
-                <form action="{{ route('contratos.destroy', $contrato) }}" method="post"
-                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar este contrato? Se eliminarán las actuaciones y las listas relacionadas.')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                        class="flex flex-col items-center text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-red-400 transition">
-                        <svg width="32px" height="32px" viewBox="0 0 48 48" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                            fill="#000000">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-                                <title>ic_fluent_delete_48_regular</title>
-                                <desc>Created with Sketch.</desc>
-                                <g id="🔍-Product-Icons" stroke="none" stroke-width="1" fill="none"
-                                    fill-rule="evenodd">
-                                    <g id="ic_fluent_delete_48_regular" fill="#610000" fill-rule="nonzero">
-                                        <path
-                                            d="M24,7.25 C27.1017853,7.25 29.629937,9.70601719 29.7458479,12.7794443 L29.75,13 L37,13 C37.6903559,13 38.25,13.5596441 38.25,14.25 C38.25,14.8972087 37.7581253,15.4295339 37.1278052,15.4935464 L37,15.5 L35.909,15.5 L34.2058308,38.0698451 C34.0385226,40.2866784 32.1910211,42 29.9678833,42 L18.0321167,42 C15.8089789,42 13.9614774,40.2866784 13.7941692,38.0698451 L12.09,15.5 L11,15.5 C10.3527913,15.5 9.8204661,15.0081253 9.75645361,14.3778052 L9.75,14.25 C9.75,13.6027913 10.2418747,13.0704661 10.8721948,13.0064536 L11,13 L18.25,13 C18.25,9.82436269 20.8243627,7.25 24,7.25 Z M33.4021054,15.5 L14.5978946,15.5 L16.2870795,37.8817009 C16.3559711,38.7945146 17.116707,39.5 18.0321167,39.5 L29.9678833,39.5 C30.883293,39.5 31.6440289,38.7945146 31.7129205,37.8817009 L33.4021054,15.5 Z M27.25,20.75 C27.8972087,20.75 28.4295339,21.2418747 28.4935464,21.8721948 L28.5,22 L28.5,33 C28.5,33.6903559 27.9403559,34.25 27.25,34.25 C26.6027913,34.25 26.0704661,33.7581253 26.0064536,33.1278052 L26,33 L26,22 C26,21.3096441 26.5596441,20.75 27.25,20.75 Z M20.75,20.75 C21.3972087,20.75 21.9295339,21.2418747 21.9935464,21.8721948 L22,22 L22,33 C22,33.6903559 21.4403559,34.25 20.75,34.25 C20.1027913,34.25 19.5704661,33.7581253 19.5064536,33.1278052 L19.5,33 L19.5,22 C19.5,21.3096441 20.0596441,20.75 20.75,20.75 Z M24,9.75 C22.2669685,9.75 20.8507541,11.1064548 20.7551448,12.8155761 L20.75,13 L27.25,13 C27.25,11.2050746 25.7949254,9.75 24,9.75 Z"
-                                            id="🎨-Color"> </path>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-                        <span class="text-xs mt-1 font-bold text-red-600">{{ __('Eliminar') }}</span>
-                    </button>
-                </form>
-            @endif
-
-            <!-- Botón Cancelar -->
+    {{-- Barra Flotante Inferior de Acciones (Neo-Bento Claro) --}}
+    <footer class="fixed bottom-0 left-0 z-20 w-full bg-white/90 backdrop-blur-2xl border-t border-indigo-100/80 shadow-glass">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between gap-3 max-w-5xl">
+            {{-- Enlace volver --}}
             <a href="{{ route('contratos.index') }}"
-                class="flex flex-col items-center text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition">
-                <svg width="32px" height="32px" viewBox="0 0 28 28" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <path
-                            d="M8 6.75C8 6.33579 8.33578 6 8.75 6H15.75C18.0865 6 20.0117 6.78107 21.25 8.01578C22.4814 9.2436 23 10.8763 23 12.5C23 14.1237 22.4814 15.7564 21.25 16.9842C20.0117 18.2189 18.0865 19 15.75 19H7.56066L10.7803 22.2197C11.0732 22.5126 11.0732 22.9874 10.7803 23.2803C10.4874 23.5732 10.0126 23.5732 9.71967 23.2803L5.21967 18.7803C5.07902 18.6397 5 18.4489 5 18.25C5 18.0511 5.07902 17.8603 5.21967 17.7197L9.71967 13.2197C10.0126 12.9268 10.4874 12.9268 10.7803 13.2197C11.0732 13.5126 11.0732 13.9874 10.7803 14.2803L7.56066 17.5H15.75C17.7385 17.5 19.1758 16.8436 20.1 15.922C21.0311 14.9936 21.5 13.7513 21.5 12.5C21.5 11.2487 21.0311 10.0064 20.1 9.07797C19.1758 8.15643 17.7385 7.5 15.75 7.5H8.75C8.33578 7.5 8 7.16421 8 6.75Z"
-                            fill="#7f7834"></path>
-                    </g>
+                class="inline-flex items-center gap-1.5 rounded-2xl border border-indigo-100 bg-[#F5F6FC] px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 active:scale-95 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                <span class="text-xs mt-1 font-bold">{{ __('Volver') }}</span>
+                <span>{{ __('Tornar') }}</span>
             </a>
+
+            <div class="flex items-center gap-2">
+                @if (isset($contrato))
+                    {{-- Actuaciones --}}
+                    <a href="{{ route('contratos.actuaciones.index', ['contrato' => $contrato->id]) }}"
+                        class="hidden sm:inline-flex items-center gap-1.5 rounded-2xl bg-indigo-50 border border-indigo-100 px-3.5 py-2.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition active:scale-95"
+                        title="{{ __('Actuacions') }}">
+                        <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{{ __('Actuacions') }}</span>
+                    </a>
+
+                    {{-- Duplicar --}}
+                    <a href="{{ route('contratos.duplicate', $contrato->id) }}"
+                        class="inline-flex items-center gap-1.5 rounded-2xl bg-slate-100 border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-200 transition active:scale-95"
+                        title="{{ __('Duplicar') }}">
+                        <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        <span class="hidden sm:inline">{{ __('Duplicar') }}</span>
+                    </a>
+
+                    {{-- Eliminar --}}
+                    <form action="{{ route('contratos.destroy', $contrato) }}" method="POST"
+                        onsubmit="return confirm('{{ __('¿Estás seguro de que deseas eliminar este contrato? Se eliminarán las actuaciones y las listas relacionadas.') }}')"
+                        class="inline-block">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="inline-flex items-center gap-1.5 rounded-2xl bg-red-50 border border-red-100 px-3 py-2.5 text-xs font-bold text-red-600 hover:bg-red-100 active:scale-95 transition"
+                            title="{{ __('Eliminar') }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            <span class="hidden sm:inline">{{ __('Eliminar') }}</span>
+                        </button>
+                    </form>
+                @endif
+
+                {{-- Botón Guardar / Actualizar --}}
+                <button type="submit" form="contratoForm" id="submitBtn"
+                    class="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/20 hover:bg-indigo-700 active:scale-95 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>{{ isset($contrato) ? __('Guardar canvis') : __('Crear contracte') }}</span>
+                </button>
+            </div>
         </div>
     </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('poblacion');
             const box = document.getElementById('municipio-suggestions');
             const latInput = document.getElementById('latitude');
-            const lngInput = document.getElementById('longitude');            
-            const descripcion = document.getElementById('descripcion');            
+            const lngInput = document.getElementById('longitude');
+            const descripcion = document.getElementById('descripcion');
 
-            //Si latitud y longitud tienen valor, actualizar el mapa al cargar la página
-            const latValue = latInput.value;
-            const lngValue = lngInput.value;
+            // Si latitud y longitud tienen valor, actualizar el mapa al cargar la página
+            const latValue = latInput ? latInput.value : null;
+            const lngValue = lngInput ? lngInput.value : null;
 
-            if (latValue && lngValue) {
-                if (window.MapComponent) {
-                    window.MapComponent.setMunicipios([{
-                        nombre: input.value,
-                        coords: [parseFloat(latValue), parseFloat(lngValue)],
-                        texto: descripcion.value
-                    }]);
-                }
+            if (latValue && lngValue && window.MapComponent) {
+                window.MapComponent.setMunicipios([{
+                    nombre: input ? input.value : '',
+                    coords: [parseFloat(latValue), parseFloat(lngValue)],
+                    texto: descripcion ? descripcion.value : ''
+                }]);
             }
 
             let debounce;
 
-            input.addEventListener('input', () => {
-                clearTimeout(debounce);
-                const q = input.value.trim();
+            if (input && box) {
+                input.addEventListener('input', () => {
+                    clearTimeout(debounce);
+                    const q = input.value.trim();
 
-                if (q.length < 3) {
-                    box.classList.add('hidden');
-                    box.innerHTML = '';
-                    return;
-                }
-
-                debounce = setTimeout(async () => {
-                    const url =
-                        `https://nominatim.openstreetmap.org/search?format=json&countrycodes=es&limit=5&q=${encodeURIComponent(q)}`;
-                    const res = await fetch(url);
-                    const data = await res.json();
-
-                    box.innerHTML = '';
-                    if (!data.length) {
+                    if (q.length < 3) {
                         box.classList.add('hidden');
+                        box.innerHTML = '';
                         return;
                     }
 
-                    data.forEach(item => {
-                        const div = document.createElement('div');
-                        div.className =
-                            'px-3 py-2 hover:bg-indigo-100 cursor-pointer text-sm';
-                        div.textContent = item.display_name;
-
-                        div.addEventListener('click', () => {
-                            input.value = item.name;
-                            latInput.value = item.lat;
-                            lngInput.value = item.lon;
-
-                            // Actualizar mapa usando TU API
-                            if (window.MapComponent) {
-                                window.MapComponent.setMunicipios([{
-                                    nombre: item.display_name,
-                                    coords: [parseFloat(item.lat),
-                                        parseFloat(item.lon)
-                                    ],
-                                    texto: item.display_name
-                                }]);
-                            }
+                    debounce = setTimeout(async () => {
+                        try {
+                            const url = `https://nominatim.openstreetmap.org/search?format=json&countrycodes=es&limit=5&q=${encodeURIComponent(q)}`;
+                            const res = await fetch(url);
+                            const data = await res.json();
 
                             box.innerHTML = '';
-                            box.classList.add('hidden');
-                        });
+                            if (!data || !data.length) {
+                                box.classList.add('hidden');
+                                return;
+                            }
 
-                        box.appendChild(div);
-                    });
+                            data.forEach(item => {
+                                const div = document.createElement('div');
+                                div.className = 'px-4 py-2.5 hover:bg-indigo-50/80 cursor-pointer text-xs font-medium text-slate-700 border-b border-indigo-50 last:border-0 transition';
+                                div.textContent = item.display_name;
 
-                    box.classList.remove('hidden');
-                }, 400);
-            });
+                                div.addEventListener('click', () => {
+                                    input.value = item.name || item.display_name;
+                                    if (latInput) latInput.value = item.lat;
+                                    if (lngInput) lngInput.value = item.lon;
+
+                                    if (window.MapComponent) {
+                                        window.MapComponent.setMunicipios([{
+                                            nombre: item.display_name,
+                                            coords: [parseFloat(item.lat), parseFloat(item.lon)],
+                                            texto: item.display_name
+                                        }]);
+                                    }
+
+                                    box.innerHTML = '';
+                                    box.classList.add('hidden');
+                                });
+
+                                box.appendChild(div);
+                            });
+
+                            box.classList.remove('hidden');
+                        } catch (err) {
+                            console.error('Error fetching suggestions:', err);
+                        }
+                    }, 400);
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!box.contains(e.target) && e.target !== input) {
+                        box.classList.add('hidden');
+                    }
+                });
+            }
         });
     </script>
 </x-app-layout>

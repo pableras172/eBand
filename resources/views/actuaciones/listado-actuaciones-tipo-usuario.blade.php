@@ -1,332 +1,605 @@
 @php
     use Illuminate\Support\Facades\Auth;
 
-    $user = Auth::user();
-    $esPadre = $user->hijos()->exists();
-    $hijos = $esPadre ? $user->hijos : collect();
-    $usuarioActivo = session('usuarioActivo', $user); // ya debes tener esto en algún middleware o lógica previa
+    $authUser = Auth::user();
+    $targetUser = $user ?? $authUser;
+    $esPadre = $authUser->hijos()->exists();
+    $hijos = $esPadre ? $authUser->hijos : collect();
+    $usuarioActivo = session('usuarioActivo', $targetUser);
+    $iconos = $iconos ?? [];
 
+    $statsItems = isset($statsPorTipo) && $statsPorTipo->isNotEmpty()
+        ? $statsPorTipo
+        : collect($labels ?? [])->filter(fn($l) => $l !== 'Sin datos')->values()->map(function ($label, $idx) use ($data, $totalesBanda, $porcentajes, $iconos) {
+            $userCount = $data[$idx] ?? 0;
+            $bandCount = $totalesBanda[$idx] ?? $userCount;
+            $pct = $porcentajes[$idx] ?? ($bandCount > 0 ? round(($userCount / $bandCount) * 100) : 0);
+            return [
+                'id' => null,
+                'tipo' => $label,
+                'icono' => $iconos[$idx] ?? null,
+                'usuario' => $userCount,
+                'banda' => $bandCount,
+                'porcentaje' => $pct,
+            ];
+        });
+
+    $totalAsistencias = $statsItems->sum('usuario');
+    $totalBanda = $statsItems->sum('banda');
+    $porcentajeGlobal = $totalBanda > 0 ? round(($totalAsistencias / $totalBanda) * 100) : 0;
+
+    $sparklinePayload = $statsItems->map(function ($item) {
+        return [
+            'tipo' => $item['tipo'] ?? '',
+            'usuario' => (int) ($item['usuario'] ?? 0),
+            'banda' => (int) ($item['banda'] ?? 0),
+            'porcentaje' => (int) ($item['porcentaje'] ?? 0),
+        ];
+    })->values()->all();
 @endphp
 
 <x-app-layout>
+    {{-- HEADER Y BREADCRUMBS --}}
     <x-slot name="header">
-        <h2 class="font-semibold text-l text-gray-800 leading-tight">
-            {{ __('Actuaciones') }} - {{ $user->name }}
-        </h2>
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <x-ui.breadcrumbs>
+                        <x-ui.breadcrumbs.link href="/">{{ __('common.dashboard') }}</x-ui.breadcrumbs.link>
+                        <x-ui.breadcrumbs.separator />
+                        <x-ui.breadcrumbs.link href="{{ route('actuacion.index') }}">{{ __('Actuacions') }}</x-ui.breadcrumbs.link>
+                        <x-ui.breadcrumbs.separator />
+                        <x-ui.breadcrumbs.link active>{{ $targetUser->name }} ({{ $year }})</x-ui.breadcrumbs.link>
+                    </x-ui.breadcrumbs>
+                    <div class="flex items-center gap-2.5 mt-0.5">
+                        <h1 class="text-2xl lg:text-3xl font-extrabold font-headline text-slate-900 tracking-tight">
+                            {{ __('Actuacions de') }} {{ $targetUser->name }}
+                        </h1>
+                        <span class="inline-flex items-center rounded-xl bg-indigo-50 px-2.5 py-1 text-xs font-bold text-indigo-700 border border-indigo-100">
+                            {{ $actuaciones->count() }} {{ __('actuacions') }}
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-0.5">
+                        {{ __('Historial d\'assistència, serveis realitzats i estadístiques per tipus') }}
+                    </p>
+                </div>
+            </div>
 
-        @if ($esPadre)
-            <div class="bg-yellow-100 text-gray-800 text-sm p-2 mb-1 rounded flex items-center gap-2">
-                {{-- Icono --}}
-                <svg height="32px" width="32px" version="1.1" id="_x36_" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#000000">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <g>
-                            <path style="fill:#646363;"
-                                d="M468.125,128.73C304.284,99.474,234.069,0,234.069,0S163.847,99.474,0.013,128.73 c0,64.367-5.858,277.944,234.056,383.27C473.976,406.675,468.125,193.098,468.125,128.73z">
-                            </path>
-                            <path style="fill:#EAEEBE;"
-                                d="M234.069,466.88C63.977,384.073,43.61,240.378,41.255,161.786 c95.349-23.792,158.067-69.25,192.814-101.558c34.747,32.308,97.458,77.766,192.807,101.558 C424.528,240.378,404.155,384.073,234.069,466.88z">
-                            </path>
-                            <path style="fill:#F0C57B;"
-                                d="M410.284,169.867c-1.813,70.95-19.134,203.716-176.215,279.583 c-29.05-14.015-53.306-29.989-73.582-47.191c-27.411-23.173-47.513-48.568-62.293-74.285 c-33.346-58.164-39.32-118.025-40.346-158.106c88.156-21.531,145.384-63.78,176.221-92.92 c15.328,14.483,37.185,32.21,66.118,49.035c26.16,15.183,58.132,29.637,96.284,40.256 C400.981,167.525,405.6,168.725,410.284,169.867z">
-                            </path>
-                            <g>
-                                <path style="fill:#716363;"
-                                    d="M234.069,76.947c-30.837,29.14-88.066,71.389-176.221,92.92 c0.613,23.74,3.007,54.442,11.742,87.595h164.48V76.947z">
-                                </path>
-                                <path style="opacity:0.26;fill:#F1891A;"
-                                    d="M396.472,166.238c-38.152-10.618-70.124-25.073-96.284-40.256 c-28.934-16.825-50.79-34.552-66.118-49.035v180.515h164.506c8.748-33.153,11.103-63.841,11.709-87.595 C405.6,168.725,400.981,167.525,396.472,166.238z">
-                                </path>
-                                <path style="opacity:0.26;fill:#F1891A;"
-                                    d="M69.589,257.462c6.012,22.824,15.011,46.8,28.604,70.512 c14.78,25.718,34.882,51.113,62.293,74.285c20.276,17.202,44.532,33.176,73.582,47.191V257.462H69.589z">
-                                </path>
-                                <path style="fill:#716363;"
-                                    d="M234.069,449.449c104.49-50.468,147.133-126.108,164.506-191.988H234.069V449.449z">
-                                </path>
-                            </g>
-                            <path style="opacity:0.08;fill:#231815;"
-                                d="M234.069,0c0,0,70.215,99.474,234.056,128.73c0,64.367,5.851,277.944-234.056,383.27V0 z">
-                            </path>
-                        </g>
-                    </g>
-                </svg>
-
-                {{-- Texto --}}
-                <span>
-                    {{ __('Estàs veient la informació de:') }}
-                </span>
-
-                @if (Auth::user()->hijos && Auth::user()->hijos->count() > 0)
-                    <form method="GET" id="hijoForm">
-                        <select name="hijo_id" class="ml-2 border-gray-300 rounded"
-                            onchange="window.location.href = '/actuaciones/' + this.value + '/{{ date('Y') }}' + '?hijo_id=' + this.value">
-
-                            <option value="{{ Auth::user()->id }}"
-                                {{ Auth::user()->id == $usuarioActivo->id ? 'selected' : '' }}>
-                                {{ Auth::user()->name }} ({{ __('Yo') }})
+            {{-- Selector de Año y Selector de Hijo (si aplica) --}}
+            <div class="flex flex-wrap items-center gap-2.5">
+                {{-- Selector de Año --}}
+                <div class="flex items-center gap-1.5 bg-white border border-indigo-100/80 rounded-2xl px-3 py-1.5 shadow-xs">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ __('Any') }}:</span>
+                    <select id="yearSelect"
+                        class="border-0 bg-transparent py-1 pl-1 pr-7 text-xs font-bold text-indigo-700 focus:ring-0 focus:outline-none cursor-pointer">
+                        @for ($i = date('Y') - 3; $i <= date('Y') + 1; $i++)
+                            <option value="{{ $i }}" {{ $i == $year ? 'selected' : '' }}>
+                                {{ $i }}
                             </option>
-                            @foreach (Auth::user()->hijos as $hijo)
-                                <option value="{{ $hijo->id }}"
-                                    {{ $hijo->id == $usuarioActivo->id ? 'selected' : '' }}>
+                        @endfor
+                    </select>
+                </div>
+
+                {{-- Selector de Hijo / Perfil activo --}}
+                @if ($esPadre && $hijos->count() > 0)
+                    <div class="flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 rounded-2xl px-3 py-1.5 shadow-xs">
+                        <svg class="w-4 h-4 text-indigo-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <select onchange="window.location.href = '/actuaciones/' + this.value + '/{{ $year }}?hijo_id=' + this.value"
+                            class="border-0 bg-transparent py-1 pl-1 pr-7 text-xs font-bold text-indigo-800 focus:ring-0 focus:outline-none cursor-pointer">
+                            <option value="{{ $authUser->id }}" {{ $authUser->id == $usuarioActivo->id ? 'selected' : '' }}>
+                                {{ $authUser->name }} ({{ __('Jo') }})
+                            </option>
+                            @foreach ($hijos as $hijo)
+                                <option value="{{ $hijo->id }}" {{ $hijo->id == $usuarioActivo->id ? 'selected' : '' }}>
                                     {{ $hijo->name }}
                                 </option>
                             @endforeach
                         </select>
-                    </form>
+                    </div>
                 @endif
-
             </div>
-
-        @endif
-
-        <details class="p-2 group" close>
-            <summary>{{ __('informacion') }}</summary>
-            <p class="mt-1 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                {{ __('info_listados') }}
-            </p>
-            <div class="flex items-center mt-1 mb-2 text-gray-500 w-full">
-                <div class="mr-2 px-2 py-2 text-sm"><x-disponible w="24" h="24" />{{ __('Has marcat no disponible') }}
-                </div>
-                <div class="mr-2 px-2 py-2  text-sm"><x-coche w="24" h="24" />{{ __('Has agafat el cotxe') }}</div>
-                <div class="mr-2 px-2 py-2  text-sm"><x-euro w="24" h="24" />{{ __('Actuació pagada') }}</div>
-            </div>
-        </details>
+        </div>
     </x-slot>
 
-    <div class="bg-white border border-gray-200 divide-y divide-gray-200  m-2">
-        <details class="p-2 group" @isset($filtrotipo) open @else close @endisset>
-            <summary class="flex items-center justify-between cursor-pointer">
-                <h5 class="text-base font-medium text-gray-900">
-                    {{ __('Filtrar actuacions per tipus') }}:
-                </h5>
-                @isset($filtrotipo)
-                    <a href="{{ route('actuaciones.usuario.anyo', [$usuarioActivo->id, $year]) }}">
-                        <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path
-                                    d="M15 15L21 21M21 15L15 21M10 21V14.6627C10 14.4182 10 14.2959 9.97237 14.1808C9.94787 14.0787 9.90747 13.9812 9.85264 13.8917C9.7908 13.7908 9.70432 13.7043 9.53137 13.5314L3.46863 7.46863C3.29568 7.29568 3.2092 7.2092 3.14736 7.10828C3.09253 7.01881 3.05213 6.92127 3.02763 6.81923C3 6.70414 3 6.58185 3 6.33726V4.6C3 4.03995 3 3.75992 3.10899 3.54601C3.20487 3.35785 3.35785 3.20487 3.54601 3.10899C3.75992 3 4.03995 3 4.6 3H19.4C19.9601 3 20.2401 3 20.454 3.10899C20.6422 3.20487 20.7951 3.35785 20.891 3.54601C21 3.75992 21 4.03995 21 4.6V6.33726C21 6.58185 21 6.70414 20.9724 6.81923C20.9479 6.92127 20.9075 7.01881 20.8526 7.10828C20.7908 7.2092 20.7043 7.29568 20.5314 7.46863L17 11"
-                                    stroke="#b2843e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </g>
+    <div class="container mx-auto py-5 px-3 sm:px-6 lg:px-8 space-y-6 pb-32">
+        {{-- TARJETA DE LEYENDA Y RESUMEN RÁPIDO --}}
+        <div class="rounded-3xl border border-indigo-50/80 bg-white p-4 sm:p-5 shadow-bento space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-indigo-50/70 pb-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                    </a>
-                @else
-                    <span class="relative flex-shrink-0 ml-1.5 w-5 h-5">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="absolute inset-0 w-5 h-5 opacity-100 group-open:opacity-0" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="absolute inset-0 w-5 h-5 opacity-0 group-open:opacity-100" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </span>
-                @endisset
-
-            </summary>
-            @foreach ($tiposActuacion as $tipoId => $tipoNombre)
-                <a href="{{ route('actuaciones.usuario.listatipo', ['user' => $usuarioActivo->id, 'year' => $year, 'type' => $tipoId]) }}"
-                    class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                    <span class="bg-gray-200 px-2 py-1 rounded-md mr-2">{{ $tipoNombre }} </span>
-                </a>
-            @endforeach
-
-        </details>
-
-        <details class="p-2 group" @isset($filtropobla) open @else close @endisset>
-            <summary class="flex items-center justify-between cursor-pointer">
-                <h5 class="text-base font-medium text-gray-900">
-                    {{ __('Filtrar actuacions per població') }}:
-                </h5>
-                @isset($filtropobla)
-                    <a href="{{ route('actuaciones.usuario.anyo', [$usuarioActivo->id, $year]) }}">
-                        <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path
-                                    d="M15 15L21 21M21 15L15 21M10 21V14.6627C10 14.4182 10 14.2959 9.97237 14.1808C9.94787 14.0787 9.90747 13.9812 9.85264 13.8917C9.7908 13.7908 9.70432 13.7043 9.53137 13.5314L3.46863 7.46863C3.29568 7.29568 3.2092 7.2092 3.14736 7.10828C3.09253 7.01881 3.05213 6.92127 3.02763 6.81923C3 6.70414 3 6.58185 3 6.33726V4.6C3 4.03995 3 3.75992 3.10899 3.54601C3.20487 3.35785 3.35785 3.20487 3.54601 3.10899C3.75992 3 4.03995 3 4.6 3H19.4C19.9601 3 20.2401 3 20.454 3.10899C20.6422 3.20487 20.7951 3.35785 20.891 3.54601C21 3.75992 21 4.03995 21 4.6V6.33726C21 6.58185 21 6.70414 20.9724 6.81923C20.9479 6.92127 20.9075 7.01881 20.8526 7.10828C20.7908 7.2092 20.7043 7.29568 20.5314 7.46863L17 11"
-                                    stroke="#b2843e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </g>
-                        </svg>
-                    </a>
-                @else
-                    <span class="relative flex-shrink-0 ml-1.5 w-5 h-5">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="absolute inset-0 w-5 h-5 opacity-100 group-open:opacity-0" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="absolute inset-0 w-5 h-5 opacity-0 group-open:opacity-100" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </span>
-                @endisset
-            </summary>
-
-            @foreach ($poblaciones as $poblacion)
-                <a
-                    href="{{ route('actuaciones.usuario.poblacion', ['user' => $usuarioActivo->id, 'year' => $year, 'poblacion' => $poblacion]) }}">
-                    <span class="bg-gray-200 px-2 py-1 rounded-md mr-2">{{ $poblacion }}</span>
-                </a>
-            @endforeach
-
-        </details>
-
-    </div>
-
-    <div class="mx-auto mt-2 p-2">
-        <div class="p-4 bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold leading-none text-gray-900 dark:text-white">
-                    {{ __('Listado de actuaciones del año: ') }}</h3>
-                <div class="relative">
-                    <select id="yearSelect"
-                        class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-8 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-                        @for ($i = date('Y') - 2; $i <= date('Y'); $i++)
-                            <option value="{{ $i }}" {{ $i == $year ? 'selected' : '' }}>
-                                {{ $i }}</option>
-                        @endfor
-                    </select>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">{{ __('Llegenda d\'assistència i serveis') }}</span>
                 </div>
+                <span class="text-[11px] text-slate-400">
+                    {{ __('Mostrant exercici anual') }} <strong class="text-indigo-600">{{ $year }}</strong>
+                </span>
             </div>
-            <hr>
-            <div class="flow-root">
-                <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @foreach ($actuaciones as $actuacion)
-                        <li class="py-3 sm:py-4">
-                            <div class="flex items-center space-x-4">
-                                <div class="flex-shrink-0">
-                                    <img class="w-8 h-8 rounded-full"
-                                        src="{{ \App\Models\Tipoactuacion::resolveIconUrl($actuacion->actuacion->tipoactuacion?->icon) }}"
-                                        onerror="this.onerror=null;this.src='{{ asset(\App\Models\Tipoactuacion::DEFAULT_ICON_PATH) }}';"
-                                        alt="Tipo de actuación">
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                        <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->actuacion->id]) }}"
-                                            class="">{{ $actuacion->actuacion->descripcion }}</a>
-                                    </p>
-                                    <div class="flex items-center">
-                                        @if ($actuacion->oficial)
-                                            <x-oficial w="24" h="24" />
-                                        @endif
 
-                                        @if (!$actuacion->pivot->disponible)
-                                            <x-disponible w="24" h="24" />
-                                        @endif
+            <div class="flex flex-wrap items-center gap-2.5 text-xs font-semibold">
+                <span class="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-2.5 py-1 text-emerald-700 border border-emerald-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>{{ __('Disponible / Assistix') }}</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl bg-rose-50 px-2.5 py-1 text-rose-700 border border-rose-200">
+                    <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                    <span>{{ __('No disponible / Baixa') }}</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl bg-amber-50 px-2.5 py-1 text-amber-700 border border-amber-200">
+                    <span>🚗</span>
+                    <span>{{ __('Aporta cotxe') }}</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl bg-violet-50 px-2.5 py-1 text-violet-700 border border-violet-200">
+                    <span>💶</span>
+                    <span>{{ __('Liquidada / Pagada') }}</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50 px-2.5 py-1 text-indigo-700 border border-indigo-200">
+                    <span>⭐</span>
+                    <span>{{ __('Acte Oficial') }}</span>
+                </span>
+            </div>
+        </div>
 
-                                        @if ($actuacion->pivot->coche)
-                                            <x-coche w="24" h="24" />
-                                        @endif
+        {{-- RESUMEN ESTADÍSTICO POR TIPO (CARDS BENTO CON SPARKLINE) --}}
+        @if ($statsItems->isNotEmpty())
+            <div>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 px-1">
+                    <div>
+                        <h3 class="text-sm font-bold font-headline text-slate-800 uppercase tracking-wider">
+                            {{ __('Assistència per tipus d\'acte') }} ({{ $year }})
+                        </h3>
+                        <p class="text-[11px] text-slate-400">
+                            {{ __('Percentatge calculat sobre el total d\'actes de cada tipus programats per la banda') }}
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2 self-start sm:self-auto">
+                        <span class="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700 border border-indigo-100">
+                            <span>{{ __('Total assistències') }}:</span>
+                            <strong class="text-indigo-900 font-extrabold">{{ $totalAsistencias }}</strong>
+                            <span class="text-indigo-400 font-medium">/ {{ $totalBanda }}</span>
+                            <span class="rounded-lg bg-indigo-600 text-white px-1.5 py-0.5 text-[10px] font-black">{{ $porcentajeGlobal }}%</span>
+                        </span>
+                    </div>
+                </div>
 
-                                        @if ($actuacion->pivot->pagada)
-                                            <x-euro w="24" h="24" />
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                    @foreach ($statsItems as $index => $stat)
+                        @php
+                            $tipoId = $stat['id'] ?? null;
+                            $tipoNombre = $stat['tipo'] ?? '-';
+                            $tipoIcono = $stat['icono'] ?? null;
+                            $userCount = $stat['usuario'] ?? 0;
+                            $bandCount = $stat['banda'] ?? 0;
+                            $pct = $stat['porcentaje'] ?? 0;
+                            $isActive = isset($filtrotipo) && request()->route('type') == $tipoId;
+
+                            // Colores según porcentaje
+                            if ($pct >= 80) {
+                                $badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                                $progressClass = 'bg-emerald-500';
+                            } elseif ($pct >= 50) {
+                                $badgeClass = 'bg-indigo-50 text-indigo-700 border-indigo-200';
+                                $progressClass = 'bg-indigo-600';
+                            } else {
+                                $badgeClass = 'bg-amber-50 text-amber-700 border-amber-200';
+                                $progressClass = 'bg-amber-500';
+                            }
+                        @endphp
+                        <div class="relative group rounded-3xl border {{ $isActive ? 'border-indigo-500 ring-2 ring-indigo-500/20 bg-indigo-50/20' : 'border-indigo-50/80 bg-white hover:border-indigo-200' }} p-4 sm:p-5 shadow-bento space-y-3 transition">
+                            {{-- Cabecera de la tarjeta: Icono + Nombre + Badge % --}}
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <div class="w-9 h-9 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                                        @if ($tipoIcono)
+                                            <img class="w-5 h-5 object-contain rounded-lg"
+                                                src="{{ \App\Models\Tipoactuacion::resolveIconUrl($tipoIcono) }}"
+                                                onerror="this.onerror=null;this.src='{{ asset(\App\Models\Tipoactuacion::DEFAULT_ICON_PATH) }}';"
+                                                alt="{{ $tipoNombre }}">
+                                        @else
+                                            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                                            </svg>
                                         @endif
                                     </div>
-
+                                    <div class="min-w-0">
+                                        @if ($tipoId)
+                                            <a href="{{ route('actuaciones.usuario.listatipo', ['user' => $usuarioActivo->id, 'year' => $year, 'type' => $tipoId]) }}"
+                                                class="text-xs font-bold text-slate-800 hover:text-indigo-600 transition truncate block"
+                                                title="{{ $tipoNombre }}">
+                                                {{ $tipoNombre }}
+                                            </a>
+                                        @else
+                                            <span class="text-xs font-bold text-slate-800 truncate block" title="{{ $tipoNombre }}">
+                                                {{ $tipoNombre }}
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div
-                                    class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                    {{ \Carbon\Carbon::parse($actuacion->actuacion->fechaActuacion)->format('d/m/Y') }}
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-black border {{ $badgeClass }}">
+                                    {{ $pct }}%
+                                </span>
+                            </div>
+
+                            {{-- Cifras de asistencia: Usuario / Banda --}}
+                            <div class="pt-1">
+                                <div class="flex items-baseline justify-between">
+                                    <div>
+                                        <span class="text-2xl sm:text-3xl font-extrabold font-headline text-slate-900">{{ $userCount }}</span>
+                                        <span class="text-xs font-bold text-slate-400 ml-1">/ {{ $bandCount }} {{ __('actes') }}</span>
+                                    </div>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                        {{ $userCount }} {{ __('assistits') }}
+                                    </span>
+                                </div>
+
+                                {{-- Barra de progreso del tipo --}}
+                                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden mt-2">
+                                    <div class="h-full rounded-full transition-all duration-500 {{ $progressClass }}"
+                                        style="width: {{ min(100, $pct) }}%"></div>
+                                </div>
+                                <div class="flex justify-between items-center text-[10px] text-slate-400 mt-1">
+                                    <span>{{ __('Assistència') }}</span>
+                                    <span>{{ $pct }}% {{ __('del total') }}</span>
                                 </div>
                             </div>
-                        </li>
+
+                            {{-- Mini sparkline chart --}}
+                            <div class="h-9 w-full pt-1">
+                                <canvas id="miniChart-{{ $index }}"></canvas>
+                            </div>
+                        </div>
                     @endforeach
-                </ul>
+                </div>
+            </div>
+        @endif
+
+        {{-- FILTROS DE TIPUS I POBLACIÓ (NEO-BENTO) --}}
+        <div class="rounded-3xl border border-indigo-50/80 bg-white p-4 sm:p-5 shadow-bento space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-indigo-50/70 pb-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">{{ __('Filtrar actuacions') }}</span>
+                </div>
+
+                @if (isset($filtrotipo) || isset($filtropobla))
+                    <a href="{{ route('actuaciones.usuario.anyo', [$usuarioActivo->id, $year]) }}"
+                        class="inline-flex items-center gap-1.5 rounded-xl bg-rose-50 px-3 py-1 text-xs font-bold text-rose-700 border border-rose-200 hover:bg-rose-100 transition">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span>{{ __('Netejar filtres') }}</span>
+                    </a>
+                @endif
+            </div>
+
+            {{-- Filtro por tipo --}}
+            @if ($tiposActuacion->isNotEmpty())
+                <div class="space-y-1.5">
+                    <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-500">{{ __('Per tipus d\'actuació') }}:</span>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <a href="{{ route('actuaciones.usuario.anyo', [$usuarioActivo->id, $year]) }}"
+                            class="rounded-xl px-3 py-1.5 text-xs font-bold transition {{ !isset($filtrotipo) ? 'bg-indigo-600 text-white shadow-xs' : 'bg-[#F5F6FC] text-slate-600 hover:bg-indigo-50 hover:text-indigo-700' }}">
+                            {{ __('Tots els tipus') }}
+                        </a>
+                        @foreach ($tiposActuacion as $tipoId => $tipoNombre)
+                            <a href="{{ route('actuaciones.usuario.listatipo', ['user' => $usuarioActivo->id, 'year' => $year, 'type' => $tipoId]) }}"
+                                class="rounded-xl px-3 py-1.5 text-xs font-bold transition {{ isset($filtrotipo) && request()->route('type') == $tipoId ? 'bg-indigo-600 text-white shadow-xs' : 'bg-[#F5F6FC] text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 border border-indigo-50' }}">
+                                {{ $tipoNombre }}
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            {{-- Filtro por población --}}
+            @if ($poblaciones->isNotEmpty())
+                <div class="space-y-1.5 pt-2 border-t border-indigo-50/60">
+                    <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-500">{{ __('Per població') }}:</span>
+                    <div class="flex flex-wrap items-center gap-2">
+                        @foreach ($poblaciones as $poblacion)
+                            <a href="{{ route('actuaciones.usuario.poblacion', ['user' => $usuarioActivo->id, 'year' => $year, 'poblacion' => $poblacion]) }}"
+                                class="inline-flex items-center gap-1 rounded-xl px-3 py-1.5 text-xs font-bold transition {{ isset($filtropobla) && request()->route('poblacion') == $poblacion ? 'bg-indigo-600 text-white shadow-xs' : 'bg-[#F5F6FC] text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 border border-indigo-50' }}">
+                                <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span>{{ $poblacion }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        {{-- LISTADO DE ACTUACIONES (VISTA MÓVIL md:hidden) --}}
+        <div class="md:hidden space-y-3">
+            @forelse ($actuaciones as $actuacion)
+                @php
+                    $act = $actuacion->actuacion;
+                    $pivot = $actuacion->pivot;
+                    $iconUrl = \App\Models\Tipoactuacion::resolveIconUrl($act->tipoactuacion?->icon);
+                @endphp
+                <div class="rounded-3xl border border-indigo-50/80 bg-white p-4 shadow-bento space-y-3 transition hover:border-indigo-100">
+                    {{-- Fila superior: Fecha + Tipo --}}
+                    <div class="flex items-center justify-between gap-2 border-b border-indigo-50/70 pb-2.5">
+                        <div class="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50/80 px-2.5 py-1 text-xs font-bold text-indigo-700 border border-indigo-100/70">
+                            <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span>{{ \Carbon\Carbon::parse($act->fechaActuacion)->format('d/m/Y') }}</span>
+                        </div>
+
+                        <div class="inline-flex items-center gap-1.5 rounded-xl bg-[#F5F6FC] px-2.5 py-1 text-xs font-bold text-slate-700 border border-indigo-50">
+                            <img class="w-4 h-4 object-contain rounded-full"
+                                src="{{ $iconUrl }}"
+                                onerror="this.onerror=null;this.src='{{ asset(\App\Models\Tipoactuacion::DEFAULT_ICON_PATH) }}';"
+                                alt="{{ $act->tipoactuacion?->nombre }}">
+                            <span>{{ $act->tipoactuacion?->nombre ?? '-' }}</span>
+                        </div>
+                    </div>
+
+                    {{-- Título y Población --}}
+                    <div>
+                        <a href="{{ route('listas.actuacion', ['actuacion_id' => $act->id]) }}"
+                            class="block text-sm font-bold text-slate-900 hover:text-indigo-600 transition leading-snug">
+                            {{ $act->descripcion }}
+                        </a>
+                        @if ($actuacion->poblacion)
+                            <div class="flex items-center gap-1 text-[11px] text-slate-500 mt-1">
+                                <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span>{{ $actuacion->poblacion }}</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Badges de Estado y Asistencia --}}
+                    <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                        @if ($act->oficial)
+                            <span class="rounded-xl bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-700 border border-indigo-200">
+                                ⭐ {{ __('Oficial') }}
+                            </span>
+                        @endif
+
+                        @if ($pivot && $pivot->disponible)
+                            <span class="rounded-xl bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
+                                {{ __('Disponible') }}
+                            </span>
+                        @else
+                            <span class="rounded-xl bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-700 border border-rose-200">
+                                {{ __('No disponible') }}
+                            </span>
+                        @endif
+
+                        @if ($pivot && $pivot->coche)
+                            <span class="rounded-xl bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 border border-amber-200">
+                                🚗 {{ __('Cotxe') }}
+                            </span>
+                        @endif
+
+                        @if ($pivot && $pivot->pagada)
+                            <span class="rounded-xl bg-violet-50 px-2 py-0.5 text-[10px] font-bold text-violet-700 border border-violet-200">
+                                💶 {{ __('Pagada') }}
+                            </span>
+                        @endif
+                    </div>
+
+                    {{-- Botón de acción --}}
+                    <div class="flex justify-end pt-2 border-t border-indigo-50/60">
+                        <a href="{{ route('listas.actuacion', ['actuacion_id' => $act->id]) }}"
+                            class="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50 px-3.5 py-1.5 text-xs font-bold text-indigo-700 border border-indigo-100 hover:bg-indigo-100 transition active:scale-95">
+                            <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            <span>{{ __('Veure llista') }}</span>
+                        </a>
+                    </div>
+                </div>
+            @empty
+                <div class="rounded-3xl border border-indigo-50/80 bg-white p-8 text-center shadow-bento">
+                    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-500">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <p class="mt-4 text-sm font-bold text-slate-800">{{ __('Sense actuacions') }}</p>
+                    <p class="mt-1 text-xs text-slate-500">{{ __('No s\'han trobat actuacions per a este músic en l\'any seleccionat.') }}</p>
+                </div>
+            @endforelse
+        </div>
+
+        {{-- TABLA DE ESCRITORIO (hidden md:block) --}}
+        <div class="hidden md:block overflow-hidden rounded-3xl border border-indigo-50/80 bg-white shadow-bento">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-indigo-50">
+                    <thead>
+                        <tr class="bg-[#EEF1FA]/60">
+                            <th scope="col" class="px-5 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                {{ __('Data') }}
+                            </th>
+                            <th scope="col" class="px-5 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                {{ __('Actuació') }}
+                            </th>
+                            <th scope="col" class="px-5 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                {{ __('Tipus') }}
+                            </th>
+                            <th scope="col" class="px-5 py-3.5 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                {{ __('Estat / Assistència') }}
+                            </th>
+                            <th scope="col" class="px-5 py-3.5 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                {{ __('Accions') }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-indigo-50/70 bg-white">
+                        @forelse ($actuaciones as $actuacion)
+                            @php
+                                $act = $actuacion->actuacion;
+                                $pivot = $actuacion->pivot;
+                                $iconUrl = \App\Models\Tipoactuacion::resolveIconUrl($act->tipoactuacion?->icon);
+                            @endphp
+                            <tr class="group hover:bg-indigo-50/40 transition">
+                                {{-- Fecha --}}
+                                <td class="px-5 py-4 whitespace-nowrap">
+                                    <div class="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50/80 px-2.5 py-1 text-xs font-bold text-indigo-700 border border-indigo-100/70">
+                                        <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        {{ \Carbon\Carbon::parse($act->fechaActuacion)->format('d/m/Y') }}
+                                    </div>
+                                </td>
+
+                                {{-- Actuación y Población --}}
+                                <td class="px-5 py-4">
+                                    <div class="flex flex-col">
+                                        <a href="{{ route('listas.actuacion', ['actuacion_id' => $act->id]) }}"
+                                            class="text-xs font-bold text-slate-900 hover:text-indigo-600 transition">
+                                            {{ $act->descripcion }}
+                                        </a>
+                                        @if ($actuacion->poblacion)
+                                            <span class="inline-flex items-center gap-1 text-[11px] text-slate-400 mt-0.5">
+                                                <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                                {{ $actuacion->poblacion }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </td>
+
+                                {{-- Tipo --}}
+                                <td class="px-5 py-4 whitespace-nowrap">
+                                    <div class="inline-flex items-center gap-2 rounded-xl bg-[#F5F6FC] px-2.5 py-1 text-xs font-bold text-slate-700 border border-indigo-50">
+                                        <img class="w-4 h-4 object-contain rounded-full"
+                                            src="{{ $iconUrl }}"
+                                            onerror="this.onerror=null;this.src='{{ asset(\App\Models\Tipoactuacion::DEFAULT_ICON_PATH) }}';"
+                                            alt="{{ $act->tipoactuacion?->nombre }}">
+                                        <span>{{ $act->tipoactuacion?->nombre ?? '-' }}</span>
+                                    </div>
+                                </td>
+
+                                {{-- Estado y Asistencia --}}
+                                <td class="px-5 py-4 whitespace-nowrap text-center">
+                                    <div class="inline-flex items-center justify-center gap-1.5">
+                                        @if ($act->oficial)
+                                            <span class="rounded-xl bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-700 border border-indigo-200" title="{{ __('Acte oficial') }}">
+                                                ⭐
+                                            </span>
+                                        @endif
+
+                                        @if ($pivot && $pivot->disponible)
+                                            <span class="rounded-xl bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 border border-emerald-200">
+                                                {{ __('Disponible') }}
+                                            </span>
+                                        @else
+                                            <span class="rounded-xl bg-rose-50 px-2.5 py-0.5 text-[11px] font-bold text-rose-700 border border-rose-200">
+                                                {{ __('No disponible') }}
+                                            </span>
+                                        @endif
+
+                                        @if ($pivot && $pivot->coche)
+                                            <span class="rounded-xl bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 border border-amber-200" title="{{ __('Aporta vehicle') }}">
+                                                🚗
+                                            </span>
+                                        @endif
+
+                                        @if ($pivot && $pivot->pagada)
+                                            <span class="rounded-xl bg-violet-50 px-2 py-0.5 text-[10px] font-bold text-violet-700 border border-violet-200" title="{{ __('Actuació pagada') }}">
+                                                💶
+                                            </span>
+                                        @endif
+                                    </div>
+                                </td>
+
+                                {{-- Acciones --}}
+                                <td class="px-5 py-4 whitespace-nowrap text-right text-xs font-medium">
+                                    <a href="{{ route('listas.actuacion', ['actuacion_id' => $act->id]) }}"
+                                        class="inline-flex items-center gap-1 rounded-xl bg-indigo-50 px-3 py-1.5 text-xs font-bold text-indigo-700 border border-indigo-100 hover:bg-indigo-100 transition shadow-2xs">
+                                        <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                        </svg>
+                                        <span>{{ __('Llista') }}</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-400 text-xs">
+                                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-500 mx-auto flex items-center justify-center mb-2">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <span class="font-bold text-slate-700 block text-sm">{{ __('Sense actuacions') }}</span>
+                                    <span class="text-slate-500">{{ __('No s\'han trobat actuacions per a este músic en l\'any seleccionat.') }}</span>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6 px-2">
-            @foreach($labels as $index => $label)
-                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 p-4 sm:p-6 transition-all hover:shadow-xl">
-                    <div class="flex items-center justify-between mb-3 sm:mb-4">
-                        <div class="flex items-center space-x-1.5 sm:space-x-2 flex-1 min-w-0">
-                            <div class="bg-gradient-to-br from-blue-100 to-blue-200 p-1.5 sm:p-2 rounded-lg flex-shrink-0">
-                                @if(isset($iconos[$index]) && $iconos[$index])
-                                    <img class="w-4 h-4 sm:w-6 sm:h-6 object-contain rounded-full" 
-                                         src="{{ \App\Models\Tipoactuacion::resolveIconUrl($iconos[$index]) }}" 
-                                         onerror="this.onerror=null;this.src='{{ asset(\App\Models\Tipoactuacion::DEFAULT_ICON_PATH) }}';"
-                                         alt="{{ $label }}">
-                                @else
-                                    <svg class="w-4 h-4 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                                    </svg>
-                                @endif
-                            </div>
-                            <span class="text-xs sm:text-sm font-medium text-gray-600 truncate">{{ $label }}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-2 sm:space-y-3">
-                        <div class="text-3xl sm:text-4xl font-bold text-gray-900" id="count-{{ $index }}">{{ $data[$index] }}</div>
-                        <div class="flex items-center space-x-2 text-xs sm:text-sm">
-                            <span class="text-gray-600">{{ __('actuaciones') }}</span>
-                        </div>
-                        <div class="mt-3 sm:mt-4 h-12 sm:h-16">
-                            <canvas id="miniChart-{{ $index }}"></canvas>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-
-
-
-
+        <x-subscription-info />
     </div>
-    <x-subscription-info />
+
+    {{-- CHART.JS SPARKLINE GRAPHS --}}
     <script>
-        document.getElementById('yearSelect').addEventListener('change', function() {
+        document.getElementById('yearSelect')?.addEventListener('change', function() {
             var year = this.value;
             window.location.href = "/actuaciones/" + {{ $usuarioActivo->id }} + "/" + year;
         });
 
-        // Obtener datos del backend
-        const labels = @json($labels);
-        const data = @json($data);
+        const sparklineData = @json($sparklinePayload);
 
-        // Generar colores para cada tipo
         const colors = [
-            { bg: 'rgba(59, 130, 246, 0.3)', border: 'rgb(59, 130, 246)' },    // Blue
-            { bg: 'rgba(139, 92, 246, 0.3)', border: 'rgb(139, 92, 246)' },    // Purple
-            { bg: 'rgba(236, 72, 153, 0.3)', border: 'rgb(236, 72, 153)' },    // Pink
-            { bg: 'rgba(251, 146, 60, 0.3)', border: 'rgb(251, 146, 60)' },    // Orange
-            { bg: 'rgba(34, 197, 94, 0.3)', border: 'rgb(34, 197, 94)' },      // Green
-            { bg: 'rgba(234, 179, 8, 0.3)', border: 'rgb(234, 179, 8)' },      // Yellow
-            { bg: 'rgba(239, 68, 68, 0.3)', border: 'rgb(239, 68, 68)' },      // Red
-            { bg: 'rgba(20, 184, 166, 0.3)', border: 'rgb(20, 184, 166)' },    // Teal
+            { bg: 'rgba(79, 70, 229, 0.25)', border: 'rgb(79, 70, 229)' },   // Indigo
+            { bg: 'rgba(6, 182, 212, 0.25)', border: 'rgb(6, 182, 212)' },    // Cyan
+            { bg: 'rgba(16, 185, 129, 0.25)', border: 'rgb(16, 185, 129)' },  // Emerald
+            { bg: 'rgba(245, 158, 11, 0.25)', border: 'rgb(245, 158, 11)' },  // Amber
+            { bg: 'rgba(139, 92, 246, 0.25)', border: 'rgb(139, 92, 246)' },  // Violet
+            { bg: 'rgba(244, 63, 94, 0.25)', border: 'rgb(244, 63, 94)' },    // Rose
+            { bg: 'rgba(59, 130, 246, 0.25)', border: 'rgb(59, 130, 246)' },   // Blue
         ];
 
-        // Crear mini gráficos para cada tipo
-        labels.forEach((label, index) => {
+        sparklineData.forEach((item, index) => {
             const canvas = document.getElementById(`miniChart-${index}`);
-            if (canvas) {
+            if (canvas && typeof Chart !== 'undefined') {
                 const ctx = canvas.getContext('2d');
                 const color = colors[index % colors.length];
-                
-                // Crear datos simulados de tendencia (últimos 6 meses)
-                const trendData = Array(6).fill(0).map(() => Math.floor(Math.random() * (data[index] + 1)));
-                
-                // Gradient
-                const gradient = ctx.createLinearGradient(0, 0, 0, 60);
+
+                const count = item.usuario || 0;
+                const totalBanda = item.banda || count;
+                const pct = item.porcentaje || 0;
+
+                const trendData = [
+                    Math.round(count * 0.2),
+                    Math.round(count * 0.4),
+                    Math.round(count * 0.3),
+                    Math.round(count * 0.7),
+                    Math.round(count * 0.8),
+                    count
+                ];
+
+                const gradient = ctx.createLinearGradient(0, 0, 0, 36);
                 gradient.addColorStop(0, color.bg);
-                gradient.addColorStop(1, color.bg.replace('0.3', '0.0'));
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
                 new Chart(ctx, {
                     type: 'line',
@@ -340,7 +613,7 @@
                             fill: true,
                             tension: 0.4,
                             pointRadius: 0,
-                            pointHoverRadius: 4,
+                            pointHoverRadius: 3,
                             pointHoverBackgroundColor: color.border,
                         }]
                     },
@@ -350,16 +623,17 @@
                         plugins: {
                             legend: { display: false },
                             tooltip: {
-                                mode: 'index',
-                                intersect: false
+                                enabled: true,
+                                callbacks: {
+                                    label: function() { 
+                                        return `${item.tipo}: ${count} / ${totalBanda} (${pct}%)`; 
+                                    }
+                                }
                             }
                         },
                         scales: {
                             x: { display: false },
-                            y: { 
-                                display: false,
-                                beginAtZero: true
-                            }
+                            y: { display: false, beginAtZero: true }
                         }
                     }
                 });

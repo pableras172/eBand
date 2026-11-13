@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Actuacion extends Model
 {
@@ -47,28 +50,32 @@ class Actuacion extends Model
         });
     }
 
-    public function lista()
+    public function lista(): HasOne
     {
-        // return $this->hasMany(Listas::class, 'actuacions_id');
         return $this->hasOne(Listas::class, 'actuacions_id');
     }
 
-    public function contrato()
+    public function listas(): HasMany
+    {
+        return $this->hasMany(Listas::class, 'actuacions_id');
+    }
+
+    public function contrato(): BelongsTo
     {
         return $this->belongsTo(Contratos::class, 'contratos_id');
     }
 
-    public function tipoactuacion()
+    public function tipoactuacion(): BelongsTo
     {
         return $this->belongsTo(Tipoactuacion::class, 'tipoactuacions_id');
     }
 
-    public function tipo()
+    public function tipo(): BelongsTo
     {
         return $this->belongsTo(Tipoactuacion::class, 'tipoactuacions_id');
     }
 
-    public function comments()
+    public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'actuacion_id');
     }

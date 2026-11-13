@@ -510,6 +510,12 @@ class ActuacionController extends Controller
      */
     public function getActuacionesUsuarioPorPoblacionAnyo(User $user, $year, $poblacion)
     {
+        $auth = Auth::user();
+
+        if ($user->id !== $auth->id && ! $auth->hijos->contains('id', $user->id)) {
+            abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        }
+
         // Validar que $year sea un año válido
         if (! is_numeric($year) || strlen($year) != 4 || $year < 2000 || $year > 2100) {
             Log::warning('Invalid year parameter in getActuacionesUsuarioPorPoblacionAnyo', [
@@ -535,37 +541,47 @@ class ActuacionController extends Controller
         $poblaciones = $actuaciones->pluck('poblacion')->unique();
         $filtropobla = true;
 
-        $sql = '
-        select
-        tipoactuacions.nombre AS tipo,
-        COUNT(*) as total
-        from
-        `listas`
-        inner join `listas_user` on `listas`.`id` = `listas_user`.`listas_id`
-        inner join `actuacions` on `listas`.`actuacions_id` = `actuacions`.`id`
-        inner join `tipoactuacions` on `actuacions`.`tipoactuacions_id` = `tipoactuacions`.`id`
-        inner join `contratos` on `actuacions`.`contratos_id` = `contratos`.`id`
-        where
-        `listas_user`.`user_id` ='.$user->id.'  
-        and year(`actuacions`.`fechaActuacion`) ='.$year.' 
-        and `contratos`.`poblacion` = "'.$poblacion.'"  
-        and  `listas_user`.`disponible` = 1
-        group by
-        `tipoactuacions`.`nombre`
-        order by
-        `total` desc';
+        $statsSql = '
+            SELECT 
+                t.id,
+                t.nombre AS tipo,
+                t.icon AS icono,
+                COUNT(DISTINCT a.id) AS total_banda,
+                COUNT(DISTINCT CASE WHEN lu.user_id = ? AND lu.disponible = 1 THEN a.id END) AS total_usuario
+            FROM tipoactuacions t
+            INNER JOIN actuacions a ON a.tipoactuacions_id = t.id AND YEAR(a.fechaActuacion) = ?
+            INNER JOIN contratos c ON a.contratos_id = c.id AND c.poblacion = ?
+            LEFT JOIN listas l ON l.actuacions_id = a.id
+            LEFT JOIN listas_user lu ON lu.listas_id = l.id AND lu.user_id = ?
+            GROUP BY t.id, t.nombre, t.icon
+            HAVING total_banda > 0
+            ORDER BY total_banda DESC
+        ';
 
-        $actuacionesGrph = DB::select($sql);
+        $actuacionesGrph = DB::select($statsSql, [$user->id, $year, $poblacion, $user->id]);
 
-        if (! empty($actuacionesGrph)) {
-            $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
-            $data = collect($actuacionesGrph)->pluck('total')->toArray();
-        } else {
-            $labels = ['Sin datos']; // Etiqueta predeterminada
-            $data = [0]; // Valor predeterminado para la gráfica
-        }
+        $statsPorTipo = collect($actuacionesGrph)->map(function ($item) {
+            $usuario = (int) $item->total_usuario;
+            $banda = (int) $item->total_banda;
+            $porcentaje = $banda > 0 ? round(($usuario / $banda) * 100) : 0;
 
-        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones', 'year', 'user', 'tiposActuacion', 'poblaciones', 'filtropobla', 'labels', 'data'));
+            return [
+                'id' => $item->id,
+                'tipo' => $item->tipo,
+                'icono' => $item->icono,
+                'usuario' => $usuario,
+                'banda' => $banda,
+                'porcentaje' => $porcentaje,
+            ];
+        });
+
+        $labels = $statsPorTipo->pluck('tipo')->toArray();
+        $data = $statsPorTipo->pluck('usuario')->toArray();
+        $totalesBanda = $statsPorTipo->pluck('banda')->toArray();
+        $porcentajes = $statsPorTipo->pluck('porcentaje')->toArray();
+        $iconos = $statsPorTipo->pluck('icono')->toArray();
+
+        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones', 'year', 'user', 'tiposActuacion', 'poblaciones', 'filtropobla', 'labels', 'data', 'totalesBanda', 'porcentajes', 'iconos', 'statsPorTipo'));
     }
 
     /**
@@ -605,37 +621,46 @@ class ActuacionController extends Controller
 
         $filtrotipo = true;
 
-        $sql = '
-        select
-        tipoactuacions.nombre AS tipo,
-        COUNT(*) as total
-        from
-        `listas`
-        inner join `listas_user` on `listas`.`id` = `listas_user`.`listas_id`
-        inner join `actuacions` on `listas`.`actuacions_id` = `actuacions`.`id`
-        inner join `tipoactuacions` on `actuacions`.`tipoactuacions_id` = `tipoactuacions`.`id`
-        inner join `contratos` on `actuacions`.`contratos_id` = `contratos`.`id`
-        where
-        `listas_user`.`user_id` ='.$user->id.'    
-        and year(`actuacions`.`fechaActuacion`) ='.$year.'         
-        and tipoactuacions_id = '.$type.'   
-        group by 
-        `tipoactuacions`.`nombre` 
-        order by
-        `total` desc';
+        $statsSql = '
+            SELECT 
+                t.id,
+                t.nombre AS tipo,
+                t.icon AS icono,
+                COUNT(DISTINCT a.id) AS total_banda,
+                COUNT(DISTINCT CASE WHEN lu.user_id = ? AND lu.disponible = 1 THEN a.id END) AS total_usuario
+            FROM tipoactuacions t
+            INNER JOIN actuacions a ON a.tipoactuacions_id = t.id AND YEAR(a.fechaActuacion) = ? AND t.id = ?
+            LEFT JOIN listas l ON l.actuacions_id = a.id
+            LEFT JOIN listas_user lu ON lu.listas_id = l.id AND lu.user_id = ?
+            GROUP BY t.id, t.nombre, t.icon
+            HAVING total_banda > 0
+        ';
 
-        $actuacionesGrph = DB::select($sql);
+        $actuacionesGrph = DB::select($statsSql, [$user->id, $year, $type, $user->id]);
 
-        if (! empty($actuacionesGrph)) {
-            $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
-            $data = collect($actuacionesGrph)->pluck('total')->toArray();
-        } else {
-            $labels = ['Sin datos']; // Etiqueta predeterminada
-            $data = [0]; // Valor predeterminado para la gráfica
-        }
+        $statsPorTipo = collect($actuacionesGrph)->map(function ($item) {
+            $usuario = (int) $item->total_usuario;
+            $banda = (int) $item->total_banda;
+            $porcentaje = $banda > 0 ? round(($usuario / $banda) * 100) : 0;
+
+            return [
+                'id' => $item->id,
+                'tipo' => $item->tipo,
+                'icono' => $item->icono,
+                'usuario' => $usuario,
+                'banda' => $banda,
+                'porcentaje' => $porcentaje,
+            ];
+        });
+
+        $labels = $statsPorTipo->pluck('tipo')->toArray();
+        $data = $statsPorTipo->pluck('usuario')->toArray();
+        $totalesBanda = $statsPorTipo->pluck('banda')->toArray();
+        $porcentajes = $statsPorTipo->pluck('porcentaje')->toArray();
+        $iconos = $statsPorTipo->pluck('icono')->toArray();
 
         // Puedes pasar $actuaciones a la vista para mostrar el listado
-        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones', 'year', 'user', 'tiposActuacion', 'poblaciones', 'filtrotipo', 'labels', 'data'));
+        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones', 'year', 'user', 'tiposActuacion', 'poblaciones', 'filtrotipo', 'labels', 'data', 'totalesBanda', 'porcentajes', 'iconos', 'statsPorTipo'));
     }
 
     public function getListadoActuacionesUsuarioAndPoblacion(User $user, $year, $poblacion)
@@ -755,39 +780,47 @@ class ActuacionController extends Controller
         ->orderBy('total', 'desc')
         ->get();*/
 
-        $sql = '
-                select
-                tipoactuacions.nombre AS tipo,
-                tipoactuacions.icon AS icono,
-                COUNT(*) as total
-                from
-                `listas`
-                inner join `listas_user` on `listas`.`id` = `listas_user`.`listas_id`
-                inner join `actuacions` on `listas`.`actuacions_id` = `actuacions`.`id`
-                inner join `tipoactuacions` on `actuacions`.`tipoactuacions_id` = `tipoactuacions`.`id`
-                where
-                `listas_user`.`user_id` ='.$user->id.'  
-                and year(`actuacions`.`fechaActuacion`) ='.$year.' 
-                group by
-                `tipoactuacions`.`nombre`,
-                `tipoactuacions`.`icon`
-                order by
-                `total` desc';
+        $statsSql = '
+            SELECT 
+                t.id,
+                t.nombre AS tipo,
+                t.icon AS icono,
+                COUNT(DISTINCT a.id) AS total_banda,
+                COUNT(DISTINCT CASE WHEN lu.user_id = ? AND lu.disponible = 1 THEN a.id END) AS total_usuario
+            FROM tipoactuacions t
+            INNER JOIN actuacions a ON a.tipoactuacions_id = t.id AND YEAR(a.fechaActuacion) = ?
+            LEFT JOIN listas l ON l.actuacions_id = a.id
+            LEFT JOIN listas_user lu ON lu.listas_id = l.id AND lu.user_id = ?
+            GROUP BY t.id, t.nombre, t.icon
+            HAVING total_banda > 0
+            ORDER BY total_banda DESC
+        ';
 
-        $actuacionesGrph = DB::select($sql);
+        $actuacionesGrph = DB::select($statsSql, [$user->id, $year, $user->id]);
 
-        if (! empty($actuacionesGrph)) {
-            $labels = collect($actuacionesGrph)->pluck('tipo')->toArray();
-            $data = collect($actuacionesGrph)->pluck('total')->toArray();
-            $iconos = collect($actuacionesGrph)->pluck('icono')->toArray();
-        } else {
-            $labels = ['Sin datos']; // Etiqueta predeterminada
-            $data = [0]; // Valor predeterminado para la gráfica
-            $iconos = [null]; // Sin icono por defecto
-        }
+        $statsPorTipo = collect($actuacionesGrph)->map(function ($item) {
+            $usuario = (int) $item->total_usuario;
+            $banda = (int) $item->total_banda;
+            $porcentaje = $banda > 0 ? round(($usuario / $banda) * 100) : 0;
+
+            return [
+                'id' => $item->id,
+                'tipo' => $item->tipo,
+                'icono' => $item->icono,
+                'usuario' => $usuario,
+                'banda' => $banda,
+                'porcentaje' => $porcentaje,
+            ];
+        });
+
+        $labels = $statsPorTipo->pluck('tipo')->toArray();
+        $data = $statsPorTipo->pluck('usuario')->toArray();
+        $totalesBanda = $statsPorTipo->pluck('banda')->toArray();
+        $porcentajes = $statsPorTipo->pluck('porcentaje')->toArray();
+        $iconos = $statsPorTipo->pluck('icono')->toArray();
 
         // Puedes pasar $actuaciones a la vista para mostrar el listado
-        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones', 'year', 'user', 'tiposActuacion', 'poblaciones', 'labels', 'data', 'iconos'));
+        return view('actuaciones.listado-actuaciones-tipo-usuario', compact('actuaciones', 'year', 'user', 'tiposActuacion', 'poblaciones', 'labels', 'data', 'totalesBanda', 'porcentajes', 'iconos', 'statsPorTipo'));
     }
 
     public function generateICSFile($evento)

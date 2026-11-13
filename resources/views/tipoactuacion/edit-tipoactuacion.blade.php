@@ -1,106 +1,155 @@
 <x-app-layout>
+    {{-- HEADER Y BREADCRUMBS --}}
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Editar tipus d\'actuació') }}
-        </h2>
-    </x-slot>
-    <div class="max-w-xl mx-auto mt-1 p-4 bg-white shadow-md rounded-lg">
-        <!-- Formulario de edición -->
-        <form method="POST" action="{{ route('tipoactuacion.update', $tipoactuacion) }}" enctype="multipart/form-data"
-            class="space-y-4">
-            @csrf
-            @method('PUT')
-
-            <!-- Nombre -->
-            <div>
-                <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">{{__('Nom')}}</label>
-                <input type="text" name="nombre" id="nombre"
-                    class="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
-                    value="{{ old('nombre', $tipoactuacion->nombre) }}" required>
-                @error('nombre')
-                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Icono -->
-            <div class="flex items-center space-x-4">
-                <!-- Vista previa del icono actual -->
-                <div class="w-full">
-                    <label for="icon" class="block text-sm font-medium text-gray-700 mb-1">{{__('Imatge')}}</label>
-                    <input type="file" name="icon" id="icon"
-                        class="w-full border border-gray-300 rounded-md shadow-sm p-2 cursor-pointer file:bg-blue-100 file:text-blue-700 file:rounded-md file:border-0 file:py-2 file:px-3 hover:file:bg-blue-200"
-                        accept="image/*" value="{{ old('icon', $tipoactuacion->icon) }}">
-                    @error('icon')
-                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
                 </div>
-                <div class="flex-shrink-0">
-                    @if ($tipoactuacion->icon)
-                        <img src="{{ asset('storage/imagenes/tipoactuacion/' . $tipoactuacion->icon) }}"
-                            alt="Icono actual" class="w-16 h-16 rounded-full border">
-                    @else
-                        <x-nophoto w="40" h="40" />
-                    @endif
+                <div>
+                    <x-ui.breadcrumbs>
+                        <x-ui.breadcrumbs.link href="/">{{ __('common.dashboard') }}</x-ui.breadcrumbs.link>
+                        <x-ui.breadcrumbs.separator />
+                        <x-ui.breadcrumbs.link href="{{ route('tipoactuacion.index') }}">{{ __('Tipus d\'actuació') }}</x-ui.breadcrumbs.link>
+                        <x-ui.breadcrumbs.separator />
+                        <x-ui.breadcrumbs.link active>{{ $tipoactuacion->nombre }}</x-ui.breadcrumbs.link>
+                    </x-ui.breadcrumbs>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <h1 class="text-2xl lg:text-3xl font-extrabold font-headline text-slate-900 tracking-tight">
+                            {{ __('Editar tipus d\'actuació') }}
+                        </h1>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-0.5">
+                        {{ __('Actualitza el nom, categoria funcional o imatge representativa') }}
+                    </p>
                 </div>
-
-                <!-- Campo para subir nuevo icono -->
-
             </div>
 
             <div>
-                <label for="tipoactuacion" class="block text-sm font-medium text-gray-700 mb-1">{{__('Tipus de actuacio')}}</label>
-                <select name="tipoactuacion" id="tipoactuacion" class="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 mb-2">
-                    <option value="" disabled selected>Selecciona un tipo</option>
-                    <option value="ensayo" @selected($tipoactuacion->tipoensayo)>{{__('Es de tipo de ensayo')}}</option>
-                    <option value="concierto" @selected($tipoactuacion->tipoconcierto)>{{__('Es de tipo de concierto')}}</option>
-                </select>
-                
-                <p class="text-xs text-gray-500 mt-1">ℹ️{{__('ayuda_tipos')}}</p>
-            </div>
-            
-            <!-- Botones -->
-            <div class="flex items-center justify-between pt-4">
-                <button type="submit"
-                    class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700 transition">
-                    Guardar
-                </button>
-                <a href="{{ route('tipoactuacion.index') }}" class="text-gray-600 hover:underline text-sm">
-                    ← Volver al listado
+                <a href="{{ route('tipoactuacion.index') }}"
+                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200/60 shadow-xs transition active:scale-95">
+                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    <span>{{ __('Tornar al llistat') }}</span>
                 </a>
             </div>
-        </form>
-    </div>
-    <footer
-        class="fixed bottom-0 left-0 z-20 w-full bg-white border-t border-gray-300 shadow-t-md dark:bg-gray-800 dark:border-gray-600">
-        <div class="flex justify-center items-center py-3">
-            <!-- Botón Eliminar -->
-            <form action="{{ route('tipoactuacion.destroy', $tipoactuacion) }}" method="post"
-                onsubmit="return confirm('¿Estás seguro de que deseas eliminar este tipo de actuación?')">
+        </div>
+    </x-slot>
+
+    <div class="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 mt-6 pb-28">
+        {{-- TARJETA NEO-BENTO FORMULARIO --}}
+        <div class="rounded-3xl border border-indigo-50/80 bg-white p-6 sm:p-8 shadow-bento space-y-6">
+            <form method="POST" action="{{ route('tipoactuacion.update', $tipoactuacion) }}" enctype="multipart/form-data" class="space-y-6">
+                @csrf
+                @method('PUT')
+
+                {{-- Nombre --}}
+                <div>
+                    <label for="nombre" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                        {{ __('Nom del tipus') }} <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" name="nombre" id="nombre"
+                        class="w-full text-sm bg-[#F5F6FC] border border-indigo-100 rounded-2xl text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition p-3.5"
+                        value="{{ old('nombre', $tipoactuacion->nombre) }}" required />
+                    @error('nombre')
+                        <p class="text-rose-600 text-xs mt-1.5 font-semibold">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Icono / Imagen con Preview --}}
+                <div>
+                    <label for="icon" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                        {{ __('Imatge o icona actual') }}
+                    </label>
+                    <div class="flex items-center gap-4 p-4 rounded-2xl bg-[#F5F6FC] border border-indigo-100/70">
+                        {{-- Vista previa actual --}}
+                        <div class="w-16 h-16 rounded-2xl bg-white border border-indigo-100 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+                            @if ($tipoactuacion->icon)
+                                <img src="{{ asset('storage/imagenes/tipoactuacion/' . $tipoactuacion->icon) }}"
+                                    alt="{{ $tipoactuacion->nombre }}"
+                                    class="w-full h-full object-cover">
+                            @else
+                                <x-nophoto w="40" h="40" />
+                            @endif
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+                            <span class="text-xs font-bold text-slate-700 block mb-1">
+                                {{ __('Substituir imatge (opcional)') }}
+                            </span>
+                            <input type="file" name="icon" id="icon" accept="image/*"
+                                class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer focus:outline-none transition" />
+                        </div>
+                    </div>
+                    @error('icon')
+                        <p class="text-rose-600 text-xs mt-1.5 font-semibold">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Clasificación: Ensayo / Concierto / General --}}
+                <div>
+                    <label for="tipoactuacion" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                        {{ __('Classificació funcional') }}
+                    </label>
+                    <select name="tipoactuacion" id="tipoactuacion"
+                        class="w-full text-xs font-semibold bg-[#F5F6FC] border border-indigo-100 rounded-2xl text-slate-800 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition p-3">
+                        <option value="" @selected(!$tipoactuacion->tipoensayo && !$tipoactuacion->tipoconcierto)>
+                            {{ __('General / Altres actuacions') }}
+                        </option>
+                        <option value="ensayo" @selected($tipoactuacion->tipoensayo)>
+                            {{ __('Es de tipus assaig') }}
+                        </option>
+                        <option value="concierto" @selected($tipoactuacion->tipoconcierto)>
+                            {{ __('Es de tipus concert') }}
+                        </option>
+                    </select>
+
+                    <div class="mt-2.5 flex items-start gap-2 p-3 bg-indigo-50/50 rounded-2xl border border-indigo-100/60 text-indigo-900 text-xs">
+                        <svg class="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-[11px] leading-relaxed text-indigo-800">
+                            {{ __('ayuda_tipos') }}
+                        </p>
+                    </div>
+                </div>
+
+                {{-- Botones de Acción --}}
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-indigo-50">
+                    <button type="button"
+                        onclick="if(confirm('{{ __('Segur que vols eliminar este tipus d\'actuació?') }}')) { document.getElementById('delete-tipo-form').submit(); }"
+                        class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold border border-rose-200/60 transition active:scale-95">
+                        <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        <span>{{ __('Eliminar tipus') }}</span>
+                    </button>
+
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('tipoactuacion.index') }}"
+                            class="px-5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+                            {{ __('Cancel·lar') }}
+                        </a>
+
+                        <button type="submit"
+                            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition active:scale-95">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>{{ __('Guardar canvis') }}</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            {{-- Formulario oculto para eliminar --}}
+            <form id="delete-tipo-form" action="{{ route('tipoactuacion.destroy', $tipoactuacion) }}" method="POST" class="hidden">
                 @csrf
                 @method('DELETE')
-                <button type="submit"
-                    class="flex flex-col items-center text-gray-700 hover:text-red-600 dark:text-gray-300 dark:hover:text-red-400 transition">
-                    <svg width="32px" height="32px" viewBox="0 0 48 48" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000">
-                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                        <g id="SVGRepo_iconCarrier">
-                            <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-                            <title>ic_fluent_delete_48_regular</title>
-                            <desc>Created with Sketch.</desc>
-                            <g id="🔍-Product-Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <g id="ic_fluent_delete_48_regular" fill="#610000" fill-rule="nonzero">
-                                    <path
-                                        d="M24,7.25 C27.1017853,7.25 29.629937,9.70601719 29.7458479,12.7794443 L29.75,13 L37,13 C37.6903559,13 38.25,13.5596441 38.25,14.25 C38.25,14.8972087 37.7581253,15.4295339 37.1278052,15.4935464 L37,15.5 L35.909,15.5 L34.2058308,38.0698451 C34.0385226,40.2866784 32.1910211,42 29.9678833,42 L18.0321167,42 C15.8089789,42 13.9614774,40.2866784 13.7941692,38.0698451 L12.09,15.5 L11,15.5 C10.3527913,15.5 9.8204661,15.0081253 9.75645361,14.3778052 L9.75,14.25 C9.75,13.6027913 10.2418747,13.0704661 10.8721948,13.0064536 L11,13 L18.25,13 C18.25,9.82436269 20.8243627,7.25 24,7.25 Z M33.4021054,15.5 L14.5978946,15.5 L16.2870795,37.8817009 C16.3559711,38.7945146 17.116707,39.5 18.0321167,39.5 L29.9678833,39.5 C30.883293,39.5 31.6440289,38.7945146 31.7129205,37.8817009 L33.4021054,15.5 Z M27.25,20.75 C27.8972087,20.75 28.4295339,21.2418747 28.4935464,21.8721948 L28.5,22 L28.5,33 C28.5,33.6903559 27.9403559,34.25 27.25,34.25 C26.6027913,34.25 26.0704661,33.7581253 26.0064536,33.1278052 L26,33 L26,22 C26,21.3096441 26.5596441,20.75 27.25,20.75 Z M20.75,20.75 C21.3972087,20.75 21.9295339,21.2418747 21.9935464,21.8721948 L22,22 L22,33 C22,33.6903559 21.4403559,34.25 20.75,34.25 C20.1027913,34.25 19.5704661,33.7581253 19.5064536,33.1278052 L19.5,33 L19.5,22 C19.5,21.3096441 20.0596441,20.75 20.75,20.75 Z M24,9.75 C22.2669685,9.75 20.8507541,11.1064548 20.7551448,12.8155761 L20.75,13 L27.25,13 C27.25,11.2050746 25.7949254,9.75 24,9.75 Z"
-                                        id="🎨-Color"> </path>
-                                </g>
-                            </g>
-                        </g>
-                    </svg>
-                    <span class="text-xs mt-1 font-bold text-red-600">{{ __('Eliminar') }}</span>
-                </button>
             </form>
         </div>
-    </footer>
-
+    </div>
 </x-app-layout>
