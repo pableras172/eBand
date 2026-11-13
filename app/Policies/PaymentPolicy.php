@@ -2,18 +2,24 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Payment;
+use App\Models\User;
 
 class PaymentPolicy
 {
-    public function viewAny(User $user, User $owner = null): bool
+    public function viewAny(User $user, ?User $owner = null): bool
     {
-        return $user->hasRole('Admin') ||
-            $user->id === $owner->id ||
+        if ($user->hasRole('Admin')) {
+            return true;
+        }
+
+        if ($owner === null || ! $owner->exists) {
+            return true;
+        }
+
+        return $user->id === $owner->id ||
             $user->hijos->contains('id', $owner->id);
     }
-
 
     public function view(User $user, Payment $payment): bool
     {
@@ -37,7 +43,6 @@ class PaymentPolicy
         return $user->hasRole('Admin')
             || $user->hijos->contains('id', $payment->users_id);
     }
-
 
     public function restore(User $user, Payment $payment): bool
     {

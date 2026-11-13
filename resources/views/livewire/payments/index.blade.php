@@ -30,7 +30,7 @@
             $user = Auth::user();
             $esPadre = $user->hijos()->exists();
             $hijos = $esPadre ? $user->hijos : collect();
-            $usuarioActivo = session('usuarioActivo', $user);
+            $usuarioActivo = $this->user ?? session('usuarioActivo', $user);
         @endphp
 
         {{-- Selector de Menor para Familias / Padres --}}

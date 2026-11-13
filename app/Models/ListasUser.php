@@ -18,6 +18,7 @@ class ListasUser extends Model
         'totalActuacion',
         'totalActo',
         'totalCoche',
+        'totalFurgo',
         'coche',
         'furgona',
     ];

@@ -2,15 +2,14 @@
 
 namespace App\Livewire\Paymentresume;
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\WithFileUploads;
-use App\Models\Payment;
-use App\Models\Paymentresume;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use App\Livewire\Dashboard\Paymentresumes\Forms\CreateDetailForm;
 use App\Livewire\Dashboard\Paymentresumes\Forms\UpdateDetailForm;
+use App\Models\Payment;
+use App\Models\Paymentresume;
+use Illuminate\Support\Facades\Log;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class PaymentresumePaymentsDetail extends Component
 {
@@ -19,12 +18,15 @@ class PaymentresumePaymentsDetail extends Component
     public CreateDetailForm|UpdateDetailForm $form;
 
     public ?Payment $payment = null;
+
     public Paymentresume $paymetresume;
 
     public $showingModal = false;
 
     public $detailPaymentsSearch = '';
+
     public $detailPaymentsSortField = 'updated_at';
+
     public $detailPaymentsSortDirection = 'desc';
 
     public $queryString = [
@@ -34,6 +36,7 @@ class PaymentresumePaymentsDetail extends Component
     ];
 
     public $confirmingPaymentDeletion = false;
+
     public string $deletingPayment = '';
 
     public function mount(Paymentresume $paymetresume)
@@ -115,20 +118,32 @@ class PaymentresumePaymentsDetail extends Component
         $this->detailPaymentsSortField = $field;
     }
 
+    public function updatingDetailPaymentsSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRowsProperty()
     {
-        return $this->rowsQuery->paginate(5);
+        return $this->rowsQuery->paginate(10);
     }
 
     public function getRowsQueryProperty()
     {
         return $this->paymetresume
             ->payments()
+            ->with('user')
+            ->withCount('listasUsers')
+            ->where(function ($query) {
+                $query->where('descripcion', 'like', "%{$this->detailPaymentsSearch}%")
+                    ->orWhereHas('user', function ($q) {
+                        $q->where('name', 'like', "%{$this->detailPaymentsSearch}%");
+                    });
+            })
             ->orderBy(
                 $this->detailPaymentsSortField,
                 $this->detailPaymentsSortDirection
-            )
-            ->where('descripcion', 'like', "%{$this->detailPaymentsSearch}%");
+            );
     }
 
     public function render()

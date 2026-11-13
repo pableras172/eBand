@@ -2,35 +2,36 @@
 
 namespace App\Livewire\Payment;
 
-use Livewire\Component;
 use App\Models\Payment;
 use App\Models\User;
-use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
-use Symfony\Component\HttpFoundation\Response;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class PaymentIndex extends Component
 {
     use WithPagination;
 
     public $search;
+
     public $sortField = 'fechaPago';
+
     public $sortDirection = 'desc';
 
     public $queryString = ['search', 'sortField', 'sortDirection'];
 
     public $confirmingDeletion = false;
+
     public $deletingPayment;
+
     public $deletingPaymentDescription;
+
     public $user;
 
     public function updatingSearch()
     {
         $this->resetPage();
     }
-
-
 
     /*public function mount(User $user)
     {
@@ -40,24 +41,34 @@ class PaymentIndex extends Component
             abort(403, __('Sorry! You are not authorized to perform this action.'));
         }
     }*/
-    public function mount(User $user)
+    public function mount(?User $user = null)
     {
-        $this->user = $user ?: Auth::user();
-
+        /** @var User $authUser */
         $authUser = Auth::user();
+        if (! $authUser) {
+            abort(401);
+        }
 
-        $esPropio = $this->user->id === $authUser->id;
-        $esPadreDelUser = $authUser->hijos->contains('id', $this->user->id);
+        $targetUser = ($user && $user->exists) ? $user : null;
 
-        if (!$authUser->hasRole('Admin') && !$esPropio && !$esPadreDelUser) {
-            abort(403, __('Sorry! You are not authorized to perform this action.'));
+        if ($authUser->hasRole('Admin')) {
+            $this->user = $targetUser;
+        } else {
+            if ($targetUser) {
+                $esPropio = $targetUser->id === $authUser->id;
+                $esPadreDelUser = $authUser->hijos->contains('id', $targetUser->id);
+
+                if (! $esPropio && ! $esPadreDelUser) {
+                    abort(403, __('Sorry! You are not authorized to perform this action.'));
+                }
+                $this->user = $targetUser;
+            } else {
+                $this->user = $authUser;
+            }
         }
 
         $this->authorize('viewAny', [Payment::class, $this->user]);
     }
-
-
-
 
     public function confirmDeletion(string $id)
     {
@@ -100,31 +111,22 @@ class PaymentIndex extends Component
 
     public function getRowsQueryProperty()
     {
-        if ($this->user != null && $this->user->id != null) {
-            return Payment::query()
-                ->join('users', 'payment.users_id', '=', 'users.id')
-                ->with('user')
-                ->where('payment.users_id', $this->user->id)
-                ->orderBy($this->sortField, $this->sortDirection)
-                ->where(function ($query) {
-                    $query->where('users.name', 'like', "%{$this->search}%")
-                        ->orWhere('payment.descripcion', 'like', "%{$this->search}%");
-                })
-                ->select('payment.*');
-        } else {
-            return Payment::query()
-                ->join('users', 'payment.users_id', '=', 'users.id')
-                ->with('user')
-                ->orderBy($this->sortField, $this->sortDirection)
-                ->where(function ($query) {
-                    $query->where('users.name', 'like', "%{$this->search}%")
-                        ->orWhere('payment.descripcion', 'like', "%{$this->search}%");
-                })
-                ->select('payment.*');
+        $query = Payment::query()
+            ->join('users', 'payment.users_id', '=', 'users.id')
+            ->with('user')
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->where(function ($q) {
+                $q->where('users.name', 'like', "%{$this->search}%")
+                    ->orWhere('payment.descripcion', 'like', "%{$this->search}%");
+            })
+            ->select('payment.*');
+
+        if ($this->user && $this->user->id) {
+            $query->where('payment.users_id', $this->user->id);
         }
+
+        return $query;
     }
-
-
 
     public function render()
     {

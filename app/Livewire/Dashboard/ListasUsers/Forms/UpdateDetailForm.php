@@ -2,15 +2,16 @@
 
 namespace App\Livewire\Dashboard\ListasUsers\Forms;
 
-use Livewire\Form;
 use App\Models\ListasUser;
-use Livewire\Attributes\Rule;
+use Livewire\Form;
 
 class UpdateDetailForm extends Form
 {
     public ?ListasUser $listasUser;
 
     public $coche = '';
+
+    public $furgona = '';
 
     public $pagada = '';
 
@@ -21,10 +22,11 @@ class UpdateDetailForm extends Form
     public function rules(): array
     {
         return [
-            'coche' => ['required', 'boolean'],
-            'pagada' => ['required', 'boolean'],
-            'cuentas' => ['required', 'boolean'],
-            'disponible' => ['required', 'boolean'],
+            'coche' => ['nullable', 'boolean'],
+            'furgona' => ['nullable', 'boolean'],
+            'pagada' => ['nullable', 'boolean'],
+            'cuentas' => ['nullable', 'boolean'],
+            'disponible' => ['nullable', 'boolean'],
         ];
     }
 
@@ -32,10 +34,11 @@ class UpdateDetailForm extends Form
     {
         $this->listasUser = $listasUser;
 
-        $this->coche = $listasUser->coche;
-        $this->pagada = $listasUser->pagada;
-        $this->cuentas = $listasUser->cuentas;
-        $this->disponible = $listasUser->disponible;
+        $this->coche = (bool) $listasUser->coche;
+        $this->furgona = (bool) $listasUser->furgona;
+        $this->pagada = (bool) $listasUser->pagada;
+        $this->cuentas = (bool) $listasUser->cuentas;
+        $this->disponible = (bool) $listasUser->disponible;
     }
 
     public function save()

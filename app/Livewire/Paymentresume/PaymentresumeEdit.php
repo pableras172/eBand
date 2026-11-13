@@ -2,25 +2,26 @@
 
 namespace App\Livewire\Paymentresume;
 
-use App\Models\User;
-use Livewire\Component;
-use App\Models\Paymentresume;
-use Illuminate\Support\Collection;
 use App\Livewire\Dashboard\Paymentresumes\Forms\UpdateForm;
+use App\Mail\PaymentresumeDetail;
+use App\Models\Paymentresume;
+use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\PaymentresumeDetail;
+use Livewire\Component;
 
 class PaymentresumeEdit extends Component
 {
     public ?Paymentresume $paymetresume = null;
 
     public UpdateForm $form;
+
     public Collection $users;
 
     public function mount(Paymentresume $paymetresume)
     {
-        //$this->authorize('view-any', Paymentresume::class);
+        // $this->authorize('view-any', Paymentresume::class);
 
         $this->paymetresume = $paymetresume;
 
@@ -30,7 +31,7 @@ class PaymentresumeEdit extends Component
 
     public function save()
     {
-        $this->authorize('update', $this->paymentresume);
+        $this->authorize('update', $this->paymetresume);
 
         $this->validate();
 
@@ -48,10 +49,11 @@ class PaymentresumeEdit extends Component
     {
         try {
             $currentUser = Auth::user();
-            
+
             // Verificar que el usuario tenga email
-            if (!$currentUser || !$currentUser->email) {
+            if (! $currentUser || ! $currentUser->email) {
                 $this->dispatch('email-error');
+
                 return;
             }
 
@@ -63,7 +65,7 @@ class PaymentresumeEdit extends Component
 
             $this->dispatch('email-sent');
         } catch (\Exception $e) {
-            \Log::error('Error sending paymentresume email: ' . $e->getMessage());
+            \Log::error('Error sending paymentresume email: '.$e->getMessage());
             $this->dispatch('email-error');
         }
     }

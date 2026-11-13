@@ -33,20 +33,18 @@ class PaymentCreate extends Component
 
     public function mount()
     {
-
         if (! Auth::user()->hasRole('Admin')) {
             abort(403, __('Sorry! You are not authorized to perform this action.'));
         }
 
-        $this->users = User::pluck('name', 'id');
-        // $this->actuaciones = collect();
-
+        $this->users = User::where('activo', 1)->orderBy('name', 'asc')->pluck('name', 'id');
         $this->form['fechaPago'] = Carbon::now()->format('Y-m-d');
+        $this->form['users_id'] = '0'; // Por defecto todos los usuarios
     }
 
     public function consultarActuaciones()
     {
-        if ($this->form['users_id'] == -1) {
+        if ($this->form['users_id'] == -1 || $this->form['users_id'] === '') {
             $this->actuaciones = collect();
 
             return;
@@ -54,19 +52,21 @@ class PaymentCreate extends Component
 
         if (! empty($this->form['fechaInicio']) && ! empty($this->form['fechaFin'])) {
             if ($this->form['users_id'] == '0') { // Todos los usuarios
-                $this->actuaciones = Actuacion::whereBetween('fechaActuacion', [$this->form['fechaInicio'], $this->form['fechaFin']])
+                $this->actuaciones = Actuacion::with(['tipoactuacion', 'contrato'])
+                    ->whereBetween('fechaActuacion', [$this->form['fechaInicio'], $this->form['fechaFin']])
                     ->where('actuacions.noaplicapago', 0)
                     ->orderBy('fechaActuacion', 'asc')
                     ->get();
             } else { // Actuaciones del usuario seleccionado
-                $this->actuaciones = Actuacion::join('listas', 'actuacions.id', '=', 'listas.actuacions_id')
+                $this->actuaciones = Actuacion::with(['tipoactuacion', 'contrato'])
+                    ->join('listas', 'actuacions.id', '=', 'listas.actuacions_id')
                     ->join('listas_user', 'listas.id', '=', 'listas_user.listas_id')
                     ->where('listas_user.user_id', $this->form['users_id'])
                     ->where('listas_user.disponible', 1)
                     ->where('actuacions.noaplicapago', 0)
                     ->whereBetween('actuacions.fechaActuacion', [$this->form['fechaInicio'], $this->form['fechaFin']])
                     ->orderBy('actuacions.fechaActuacion', 'asc')
-                    ->select('actuacions.*') // Asegúrate de seleccionar solo las columnas de actuacions
+                    ->select('actuacions.*')
                     ->get();
             }
         }
@@ -90,10 +90,14 @@ class PaymentCreate extends Component
     public function save()
     {
         $this->validate([
+            'form.users_id' => 'required|not_in:-1',
             'form.fechaPago' => 'required|date',
             'form.descripcion' => 'required|string|max:255',
             'form.fechaInicio' => 'required|date',
             'form.fechaFin' => 'required|date|after_or_equal:form.fechaInicio',
+        ], [
+            'form.users_id.not_in' => __('Has de seleccionar un músic o triar tots els músics.'),
+            'form.fechaFin.after_or_equal' => __('La data final ha de ser igual o posterior a la data d\'inici.'),
         ]);
 
         try {
@@ -170,12 +174,14 @@ class PaymentCreate extends Component
             });
 
             Log::info('Payment created successfully.');
-            $this->dispatch('notconfirmed');
+            session()->flash('flash.banner', __('Liquidació generada correctament.'));
+            session()->flash('flash.bannerStyle', 'success');
 
             return redirect()->route('payments.index');
         } catch (\Exception $e) {
             Log::error('Error creating payment: ', ['error' => $e->getMessage()]);
-            $this->dispatch('notconfirmed');
+            session()->flash('flash.banner', __('Error generant la liquidació: ').$e->getMessage());
+            session()->flash('flash.bannerStyle', 'danger');
 
             return redirect()->route('payments.index');
         }

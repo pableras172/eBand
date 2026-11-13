@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
@@ -17,7 +17,26 @@ class Payment extends Model
         'descripcion',
         'fechaInicio',
         'fechaFin',
+        'totalPago',
+        'confirmadausuaroi',
+        'paymentresume_id',
+        'observaciones',
     ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'fechaPago' => 'datetime',
+            'fechaInicio' => 'datetime',
+            'fechaFin' => 'datetime',
+            'totalPago' => 'decimal:2',
+            'confirmadausuaroi' => 'boolean',
+            'paymentresume_id' => 'integer',
+        ];
+    }
 
     public function user()
     {
