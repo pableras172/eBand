@@ -376,7 +376,7 @@
                     @endif
 
                     {{-- Gestión de Disponibilidad del Músico (Dudas y Bajas) --}}
-                    @if ($listaId)
+                    @if ($user)
                         <div class="flex flex-col gap-2 pt-1 border-t border-indigo-50/80">
                             {{-- Si el usuario está marcado para asistir se muestra que está convocado --}}
                             @if ($usuarioConvocado)
@@ -390,7 +390,7 @@
                                 {{-- Opción 1: Tinc Dubtes --}}
                                 <button type="button" 
                                     id="btn-status-duda" 
-                                    onclick="setBentoAttendance('duda', {{ $listaId }}, {{ $user->id }})"
+                                    onclick="setBentoAttendance('duda', {{ $listaId ? $listaId : 'null' }}, {{ $user->id }}, {{ $proximaActuacion->id }})"
                                     class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-amber-200' }}"
                                     title="{{ __('Notifica que no saps segur si podràs assistir') }}">
                                     <span class="material-symbols-outlined text-[17px]">help</span>
@@ -400,7 +400,7 @@
                                 {{-- Opción 2: No puc anar --}}
                                 <button type="button" 
                                     id="btn-status-no" 
-                                    onclick="setBentoAttendance('no', {{ $listaId }}, {{ $user->id }})"
+                                    onclick="setBentoAttendance('no', {{ $listaId ? $listaId : 'null' }}, {{ $user->id }}, {{ $proximaActuacion->id }})"
                                     class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-rose-200' }}"
                                     title="{{ __('Comunica la teua baixa') }}">
                                     <span class="material-symbols-outlined text-[17px]">cancel</span>
@@ -787,7 +787,7 @@
 
 {{-- SCRIPT PARA INTERACCIÓN DEL CONMUTADOR DE ASISTENCIA Y CARGA DEL MAPA --}}
 <script>
-    function setBentoAttendance(choice, listaId, userId) {
+    function setBentoAttendance(choice, listaId, userId, actuacionId) {
         const btnDuda = document.getElementById('btn-status-duda');
         const btnNo = document.getElementById('btn-status-no');
         const bannerConvocado = document.getElementById('banner-convocado');
@@ -823,6 +823,13 @@
             if (bannerConvocado) bannerConvocado.style.display = 'flex';
         }
 
+        const payload = {
+            usuario_id: userId,
+            estado: targetEstado
+        };
+        if (listaId) payload.lista_id = listaId;
+        if (actuacionId) payload.actuacion_id = actuacionId;
+
         // Llamada AJAX para sincronizar con el backend de eBand
         fetch('/listauserdisp', {
             method: 'POST',
@@ -831,11 +838,7 @@
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: new URLSearchParams({
-                lista_id: listaId,
-                usuario_id: userId,
-                estado: targetEstado
-            })
+            body: new URLSearchParams(payload)
         })
         .then(response => {
             if (!response.ok) {
@@ -846,6 +849,10 @@
             return response.json();
         })
         .then(data => {
+            if (data.lista_id && actuacionId) {
+                btnDuda.setAttribute('onclick', `setBentoAttendance('duda', ${data.lista_id}, ${userId}, ${actuacionId})`);
+                btnNo.setAttribute('onclick', `setBentoAttendance('no', ${data.lista_id}, ${userId}, ${actuacionId})`);
+            }
             if (typeof showToast === 'function') {
                 showToast(data);
             }

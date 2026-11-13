@@ -108,16 +108,30 @@ class ListasUsersController extends Controller
     {
         // Validar los datos recibidos en la solicitud
         $request->validate([
-            'lista_id' => 'required|exists:listas,id',
+            'lista_id' => 'nullable|exists:listas,id',
+            'actuacion_id' => 'nullable|exists:actuacions,id',
             'usuario_id' => 'required|exists:users,id',
             'estado' => 'nullable|string|in:duda,no,disponible,si',
             'disponible' => 'nullable',
             'duda' => 'nullable',
         ]);
 
+        $listaId = $request->lista_id;
+        if (! $listaId && $request->actuacion_id) {
+            $lista = Listas::firstOrCreate(
+                ['actuacions_id' => $request->actuacion_id],
+                ['pagada' => 0, 'cuentas' => 0]
+            );
+            $listaId = $lista->id;
+        }
+
+        if (! $listaId) {
+            return response()->json(['message' => 'No se pudo identificar la lista de la actuación'], 422);
+        }
+
         $hasDudaColumn = Schema::hasColumn('listas_user', 'duda');
 
-        $existingRelation = ListasUser::where('listas_id', $request->lista_id)
+        $existingRelation = ListasUser::where('listas_id', $listaId)
             ->where('user_id', $request->usuario_id)
             ->first();
 
@@ -185,7 +199,7 @@ class ListasUsersController extends Controller
             };
 
             $nuevoModel = new ListasUser;
-            $nuevoModel->listas_id = $request->lista_id;
+            $nuevoModel->listas_id = $listaId;
             $nuevoModel->user_id = $request->usuario_id;
             $nuevoModel->disponible = ($nuevoEstado === 'no') ? 0 : 1;
             if ($hasDudaColumn) {
@@ -201,7 +215,7 @@ class ListasUsersController extends Controller
         };
 
         try {
-            $lista = Listas::with('actuacion')->findOrFail($request->lista_id);
+            $lista = Listas::with('actuacion')->findOrFail($listaId);
             $actuacion = $lista->actuacion;
             $user = User::where('id', $request->usuario_id)->first();
 
@@ -223,6 +237,7 @@ class ListasUsersController extends Controller
             'alert_type' => 'success',
             'nuevo_estado' => $nuevoEstado,
             'estado_label' => $customText,
+            'lista_id' => $listaId,
         ];
 
         return response()->json($notification, 200);

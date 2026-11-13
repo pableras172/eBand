@@ -9,6 +9,12 @@ class Listas extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'actuacions_id',
+        'pagada',
+        'cuentas',
+    ];
+
     public function actuacion()
     {
         return $this->belongsTo(Actuacion::class, 'actuacions_id');

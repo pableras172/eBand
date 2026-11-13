@@ -332,7 +332,7 @@
                                 @endif
 
                                 {{-- Gestión de Disponibilidad rápida (Dudas y No Disponible) --}}
-                                @if ($listaId && $currentUser)
+                                @if ($currentUser)
                                     <div class="flex flex-col gap-1.5 pt-1 border-t border-indigo-50/70">
                                         {{-- Banner Estàs convocat --}}
                                         <div id="banner-convocado-{{ $actuacion->id }}" 
@@ -345,7 +345,7 @@
                                         <div class="grid grid-cols-2 gap-2 bg-surface-subtle p-1.5 rounded-2xl">
                                             <button type="button" 
                                                 id="btn-status-duda-{{ $actuacion->id }}" 
-                                                onclick="setCalendarAttendance('duda', {{ $listaId }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
+                                                onclick="setCalendarAttendance('duda', {{ $listaId ? $listaId : 'null' }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
                                                 class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-amber-200' }}"
                                                 title="{{ __('Notifica que no saps segur si podràs assistir') }}">
                                                 <span class="material-symbols-outlined text-[16px]">help</span>
@@ -354,7 +354,7 @@
 
                                             <button type="button" 
                                                 id="btn-status-no-{{ $actuacion->id }}" 
-                                                onclick="setCalendarAttendance('no', {{ $listaId }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
+                                                onclick="setCalendarAttendance('no', {{ $listaId ? $listaId : 'null' }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
                                                 class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-rose-200' }}"
                                                 title="{{ __('Comunica la teua baixa') }}">
                                                 <span class="material-symbols-outlined text-[16px]">cancel</span>
@@ -459,6 +459,15 @@
                 if (bannerConvocado) bannerConvocado.classList.replace('hidden', 'flex');
             }
 
+            const payload = {
+                usuario_id: userId,
+                actuacion_id: actuacionId,
+                estado: targetEstado
+            };
+            if (listaId) {
+                payload.lista_id = listaId;
+            }
+
             fetch('/listauserdisp', {
                 method: 'POST',
                 headers: {
@@ -466,11 +475,7 @@
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                body: new URLSearchParams({
-                    lista_id: listaId,
-                    usuario_id: userId,
-                    estado: targetEstado
-                })
+                body: new URLSearchParams(payload)
             })
             .then(response => {
                 if (!response.ok) {
@@ -481,6 +486,10 @@
                 return response.json();
             })
             .then(data => {
+                if (data.lista_id) {
+                    btnDuda.setAttribute('onclick', `setCalendarAttendance('duda', ${data.lista_id}, ${userId}, ${actuacionId})`);
+                    btnNo.setAttribute('onclick', `setCalendarAttendance('no', ${data.lista_id}, ${userId}, ${actuacionId})`);
+                }
                 if (typeof showToast === 'function') {
                     showToast(data);
                 }

@@ -35,6 +35,18 @@ class Actuacion extends Model
         'is_draft' => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        static::created(function ($actuacion) {
+            if (! $actuacion->lista()->exists()) {
+                $actuacion->lista()->create([
+                    'pagada' => 0,
+                    'cuentas' => 0,
+                ]);
+            }
+        });
+    }
+
     public function lista()
     {
         // return $this->hasMany(Listas::class, 'actuacions_id');
