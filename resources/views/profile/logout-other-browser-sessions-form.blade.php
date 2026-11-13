@@ -1,122 +1,116 @@
-<x-action-section>
-    <x-slot name="title">
-        <div class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-            <div class="flex items-center space-x-3">
-                <div class="bg-gradient-to-br from-cyan-500 to-blue-600 p-2.5 rounded-lg shadow-lg">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ __('Sesiones de navegador') }}</h3>
-                    <div class="h-1 w-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mt-1"></div>
-                </div>
-            </div>
+<div class="bg-white dark:bg-slate-800 rounded-3xl border border-indigo-50/80 dark:border-slate-700/80 shadow-bento p-5 sm:p-8">
+    <!-- Encabezado de la Tarjeta Bento -->
+    <div class="flex items-center gap-3.5 pb-6 border-b border-slate-100 dark:border-slate-700/60">
+        <div class="h-11 w-11 rounded-2xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 flex items-center justify-center flex-shrink-0 shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
         </div>
-    </x-slot>
-
-    <x-slot name="description">
-        <div class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 space-y-2">
-            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                {{ __('Administre y cierre sesión en sus sesiones activas en otros navegadores y dispositivos.') }}
+        <div>
+            <h3 class="text-xl font-black text-slate-800 dark:text-white tracking-tight">
+                {{ __('Sessions de Navegador Actives') }}
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                {{ __('Revisa i tanca les sessions iniciades en altres dispositius o navegadors.') }}
             </p>
-            <div class="flex items-start space-x-2 bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 rounded-lg p-3">
-                <svg class="w-5 h-5 text-cyan-600 dark:text-cyan-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p class="text-xs text-cyan-700 dark:text-cyan-300">
-                    {{ __('Controla on inicies sessió per mantenir el teu compte segur.') }}
-                </p>
-            </div>
         </div>
-    </x-slot>
+    </div>
 
-    <x-slot name="content">
-        <div class="max-w-xl text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Si es necesario, puede cerrar sesión en todas las demás sesiones de su navegador en todos sus dispositivos. Algunas de sus sesiones recientes se enumeran a continuación; sin embargo, esta lista puede no ser exhaustiva. Si cree que su cuenta ha sido comprometida, también debe actualizar su contraseña.') }}
-        </div>
+    <div class="py-6 space-y-6">
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl">
+            {{ __('Si cal, pots tancar la sessió a tots els altres dispositius i navegadors. Si sospites que el teu compte ha sigut compromés, et recomanem a més canviar la teua contrasenya.') }}
+        </p>
 
         @if (count($this->sessions) > 0)
-            <div class="mt-5 space-y-6">
-                <!-- Other Browser Sessions -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 @foreach ($this->sessions as $session)
-                    <div class="flex items-center">
-                        <div>
+                    <div class="flex items-center gap-3.5 p-3.5 rounded-2xl border border-slate-100 dark:border-slate-700/60 bg-slate-50/60 dark:bg-slate-900/40">
+                        <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-xs border border-slate-100 dark:border-slate-700 flex-shrink-0">
                             @if ($session->agent->isDesktop())
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
                             @else
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
                             @endif
                         </div>
 
-                        <div class="ms-3">
-                            <div class="text-sm text-gray-600 dark:text-gray-400">
-                                {{ $session->agent->platform() ? $session->agent->platform() : __('Desconocido') }} - {{ $session->agent->browser() ? $session->agent->browser() : __('Unknown') }}
+                        <div class="flex-1 min-w-0">
+                            <div class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 truncate">
+                                {{ $session->agent->platform() ? $session->agent->platform() : __('Desconegut') }} — {{ $session->agent->browser() ? $session->agent->browser() : __('Desconegut') }}
                             </div>
-
-                            <div>
-                                <div class="text-xs text-gray-500">
-                                    {{ $session->ip_address }},
-
-                                    @if ($session->is_current_device)
-                                        <span class="text-green-500 font-semibold">{{ __('Este dispositivo') }}</span>
-                                    @else
-                                        {{ __('Ultima activa') }} {{ $session->last_active }}
-                                    @endif
-                                </div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                                <span>{{ $session->ip_address }}</span>
+                                <span>•</span>
+                                @if ($session->is_current_device)
+                                    <span class="inline-flex items-center gap-1 font-bold text-emerald-600 dark:text-emerald-400">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        {{ __('Aquest dispositiu') }}
+                                    </span>
+                                @else
+                                    <span>{{ __('Última activa') }}: {{ $session->last_active }}</span>
+                                @endif
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
         @endif
+    </div>
 
-        <div class="flex items-center mt-5">
-            <x-button wire:click="confirmLogout" wire:loading.attr="disabled">
-                {{ __('Cerrar sesión en otras sesiones del navegador') }}
-            </x-button>
+    <!-- Acciones -->
+    <div class="flex items-center gap-3 pt-6 border-t border-slate-100 dark:border-slate-700/60">
+        <button type="button" 
+                wire:click="confirmLogout" 
+                wire:loading.attr="disabled"
+                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold shadow-xs transition-colors">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>{{ __('Tancar altres sessions del navegador') }}</span>
+        </button>
 
-            <x-action-message class="ms-3" on="loggedOut">
-                {{ __('Hecho.') }}
-            </x-action-message>
-        </div>
+        <x-action-message class="ms-3 text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400" on="loggedOut">
+            {{ __('Fet.') }}
+        </x-action-message>
+    </div>
 
-        <!-- Log Out Other Devices Confirmation Modal -->
-        <x-dialog-modal wire:model.live="confirmingLogout">
-            <x-slot name="title">
-                {{ __('Cerrar sesión en otras sesiones del navegador') }}
-            </x-slot>
+    <!-- Modal de Confirmación -->
+    <x-dialog-modal wire:model.live="confirmingLogout">
+        <x-slot name="title">
+            {{ __('Tancar altres sessions del navegador') }}
+        </x-slot>
 
-            <x-slot name="content">
-                {{ __('Ingrese su contraseña para confirmar que desea cerrar sesión en sus otras sesiones de navegador en todos sus dispositivos.') }}
+        <x-slot name="content">
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                {{ __('Introdueix la teua contrasenya per confirmar que vols tancar la sessió a tots els teus altres dispositius i navegadors.') }}
+            </p>
 
-                <div class="mt-4" x-data="{}" x-on:confirming-logout-other-browser-sessions.window="setTimeout(() => $refs.password.focus(), 250)">
-                    <x-input type="password" class="mt-1 block w-3/4"
-                                autocomplete="current-password"
-                                placeholder="{{ __('Password') }}"
-                                x-ref="password"
-                                wire:model="password"
-                                wire:keydown.enter="logoutOtherBrowserSessions" />
+            <div class="mt-4" x-data="{}" x-on:confirming-logout-other-browser-sessions.window="setTimeout(() => $refs.password.focus(), 250)">
+                <x-input type="password" class="mt-1 block w-full rounded-xl border-slate-200 dark:border-slate-700 text-sm"
+                            autocomplete="current-password"
+                            placeholder="{{ __('Contrasenya') }}"
+                            x-ref="password"
+                            wire:model="password"
+                            wire:keydown.enter="logoutOtherBrowserSessions" />
 
-                    <x-input-error for="password" class="mt-2" />
-                </div>
-            </x-slot>
+                <x-input-error for="password" class="mt-2" />
+            </div>
+        </x-slot>
 
-            <x-slot name="footer">
-                <x-secondary-button wire:click="$toggle('confirmingLogout')" wire:loading.attr="disabled">
-                    {{ __('Cancelar') }}
-                </x-secondary-button>
+        <x-slot name="footer">
+            <x-secondary-button wire:click="$toggle('confirmingLogout')" wire:loading.attr="disabled" class="rounded-xl">
+                {{ __('Cancel·lar') }}
+            </x-secondary-button>
 
-                <x-button class="ms-3"
-                            wire:click="logoutOtherBrowserSessions"
-                            wire:loading.attr="disabled">
-                    {{ __('Cerrar sesión en otras sesiones del navegador') }}
-                </x-button>
-            </x-slot>
-        </x-dialog-modal>
-    </x-slot>
-</x-action-section>
+            <button type="button" 
+                    class="ms-3 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs sm:text-sm font-bold shadow-md shadow-primary/20 transition-all"
+                    wire:click="logoutOtherBrowserSessions"
+                    wire:loading.attr="disabled">
+                {{ __('Tancar altres sessions') }}
+            </button>
+        </x-slot>
+    </x-dialog-modal>
+</div>

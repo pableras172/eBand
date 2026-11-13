@@ -1,63 +1,67 @@
-<x-form-section submit="updatePassword">
-    <x-slot name="title">
-        <div class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-            <div class="flex items-center space-x-3">
-                <div class="bg-gradient-to-br from-green-500 to-emerald-600 p-2.5 rounded-lg shadow-lg">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ __('Actualiza contraseña') }}</h3>
-                    <div class="h-1 w-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full mt-1"></div>
-                </div>
-            </div>
-        </div>
-    </x-slot>
-
-    <x-slot name="description">
-        <div class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 space-y-2">
-            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                {{ __('Asegúrese de que su cuenta utilice una contraseña larga y aleatoria para mantenerse segura.') }}
-            </p>
-            <div class="flex items-start space-x-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
-                <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+<div class="bg-white dark:bg-slate-800 rounded-3xl border border-indigo-50/80 dark:border-slate-700/80 shadow-bento p-5 sm:p-8">
+    <form wire:submit="updatePassword">
+        <!-- Encabezado de la Tarjeta Bento -->
+        <div class="flex items-center gap-3.5 pb-6 border-b border-slate-100 dark:border-slate-700/60">
+            <div class="h-11 w-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
-                <p class="text-xs text-amber-700 dark:text-amber-300">
-                    {{ __('Utilitza una contrasenya forta amb lletres, números i símbols.') }}
+            </div>
+            <div>
+                <h3 class="text-xl font-black text-slate-800 dark:text-white tracking-tight">
+                    {{ __('Actualitzar Contrasenya') }}
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                    {{ __('Assegura\'t que el teu compte utilitza una contrasenya llarga i segura per protegir el teu accés.') }}
                 </p>
             </div>
         </div>
-    </x-slot>
 
-    <x-slot name="form">
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="current_password" value="{{ __('Contraseña actual') }}" />
-            <x-input id="current_password" type="password" class="mt-1 block w-full" wire:model="state.current_password" autocomplete="current-password" />
-            <x-input-error for="current_password" class="mt-2" />
+        <div class="py-6 space-y-5 max-w-xl">
+            <!-- Contraseña Actual -->
+            <div>
+                <x-label for="current_password" value="{{ __('Contrasenya actual') }}" class="font-semibold text-slate-700 dark:text-slate-300" />
+                <x-input id="current_password" type="password" 
+                    class="mt-1.5 block w-full rounded-xl border-slate-200 dark:border-slate-700 focus:border-primary focus:ring-primary/20 text-sm shadow-xs" 
+                    wire:model="state.current_password" autocomplete="current-password" />
+                <x-input-error for="current_password" class="mt-1.5" />
+            </div>
+
+            <!-- Nueva Contraseña -->
+            <div>
+                <x-label for="password" value="{{ __('Nova contrasenya') }}" class="font-semibold text-slate-700 dark:text-slate-300" />
+                <x-input id="password" type="password" 
+                    class="mt-1.5 block w-full rounded-xl border-slate-200 dark:border-slate-700 focus:border-primary focus:ring-primary/20 text-sm shadow-xs" 
+                    wire:model="state.password" autocomplete="new-password" />
+                <x-input-error for="password" class="mt-1.5" />
+                <p class="text-xs text-slate-400 mt-1">
+                    {{ __('Recomanem almenys 8 caràcters barrejant lletres, números i símbols.') }}
+                </p>
+            </div>
+
+            <!-- Confirmar Contraseña -->
+            <div>
+                <x-label for="password_confirmation" value="{{ __('Confirma la nova contrasenya') }}" class="font-semibold text-slate-700 dark:text-slate-300" />
+                <x-input id="password_confirmation" type="password" 
+                    class="mt-1.5 block w-full rounded-xl border-slate-200 dark:border-slate-700 focus:border-primary focus:ring-primary/20 text-sm shadow-xs" 
+                    wire:model="state.password_confirmation" autocomplete="new-password" />
+                <x-input-error for="password_confirmation" class="mt-1.5" />
+            </div>
         </div>
 
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="password" value="{{ __('Nou Password') }}" />
-            <x-input id="password" type="password" class="mt-1 block w-full" wire:model="state.password" autocomplete="new-password" />
-            <x-input-error for="password" class="mt-2" />
+        <!-- Acciones / Botón Guardar -->
+        <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-100 dark:border-slate-700/60">
+            <x-action-message class="me-3 text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400" on="saved">
+                {{ __('Contrasenya actualitzada.') }}
+            </x-action-message>
+
+            <button type="submit" 
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-xs sm:text-sm shadow-md shadow-primary/20 transition-all duration-200 active:scale-[0.98]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ __('Desar Contrasenya') }}</span>
+            </button>
         </div>
-
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="password_confirmation" value="{{ __('Confirma Password') }}" />
-            <x-input id="password_confirmation" type="password" class="mt-1 block w-full" wire:model="state.password_confirmation" autocomplete="new-password" />
-            <x-input-error for="password_confirmation" class="mt-2" />
-        </div>
-    </x-slot>
-
-    <x-slot name="actions">
-        <x-action-message class="me-3" on="saved">
-            {{ __('Guardat.') }}
-        </x-action-message>
-
-        <x-button>
-            {{ __('Guardar') }}
-        </x-button>
-    </x-slot>
-</x-form-section>
+    </form>
+</div>
