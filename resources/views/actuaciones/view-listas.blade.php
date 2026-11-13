@@ -17,88 +17,136 @@
         </div>
     </x-slot>
 
+    @php
+        $hayFiltrosActivos = (request('fecha') || isset($filtroFecha) || isset($filtrotipo) || isset($filtropobla));
+    @endphp
+
     <div class="space-y-6 pb-28">
-        {{-- Módulo de Filtros y Búsqueda (Neo-Bento Violet) --}}
-        <div class="bg-white border border-indigo-50 shadow-bento rounded-3xl p-4 lg:p-5">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-indigo-50 pb-4">
+        {{-- Módulo de Filtros y Búsqueda (Neo-Bento Violet Colapsable) --}}
+        <div class="bg-white border border-indigo-50 shadow-bento rounded-3xl p-4 lg:p-5 transition-all"
+             x-data="{ openFilters: {{ $hayFiltrosActivos ? 'true' : 'false' }} }">
+            
+            {{-- Encabezado compacto del card de filtros --}}
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-primary">
+                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-primary flex-shrink-0">
                         <span class="material-symbols-outlined text-[20px]">filter_list</span>
                     </div>
                     <div>
-                        <h2 class="text-xs font-bold text-on-surface uppercase tracking-wider">
-                            {{ __('Filtres del Calendari') }}
-                        </h2>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-xs sm:text-sm font-bold text-on-surface uppercase tracking-wider">
+                                {{ __('Filtres del Calendari') }}
+                            </h2>
+                            @if ($hayFiltrosActivos)
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                    {{ __('Filtres actius') }}
+                                </span>
+                            @endif
+                        </div>
                         <p class="text-xs text-slate-500">
                             {{ __('Filtra per tipus, data o localitat de l\'esdeveniment') }}
                         </p>
                     </div>
                 </div>
 
-                {{-- Filtro por Fecha --}}
-                <form action="{{ route('actuaciones-fecha') }}" method="GET" class="flex flex-wrap items-center gap-2">
-                    <label for="fecha" class="text-xs font-semibold text-slate-600">
-                        {{ __('Des de:') }}
-                    </label>
-                    <input type="date" id="fecha" name="fecha" 
-                        value="{{ request('fecha', $filtroFecha ?? '') }}"
-                        onchange="if(this.value) this.form.submit()"
-                        class="bg-surface-subtle border border-indigo-100 text-on-surface text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
-                        min="{{ now()->subMonths(3)->format('Y-m-d') }}"
-                        max="{{ now()->format('Y-m-d') }}">
-                    <button type="submit" class="inline-flex items-center px-3.5 py-2 bg-primary hover:bg-primary-dark text-white text-xs font-bold rounded-xl shadow-sm transition-colors">
-                        {{ __('Filtrar') }}
-                    </button>
-                    @if(isset($filtroFecha) || isset($filtrotipo) || isset($filtropobla))
-                        <a href="{{ route('actuacion.index') }}" class="inline-flex items-center px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-colors">
-                            {{ __('Netejar tots') }}
+                {{-- Acciones de la barra de filtros: Botón Limpiar (destacado) y Botón Plegar/Desplegar --}}
+                <div class="flex items-center gap-2 self-end sm:self-auto">
+                    @if ($hayFiltrosActivos)
+                        <a href="{{ route('actuacion.index') }}" 
+                           class="inline-flex items-center gap-1.5 px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 text-xs font-bold rounded-xl transition-all shadow-xs active:scale-95"
+                           title="{{ __('Restablir tots els filtres') }}">
+                            <span class="material-symbols-outlined text-[16px]">clear_all</span>
+                            <span>{{ __('Netejar tots') }}</span>
                         </a>
                     @endif
-                </form>
+
+                    <button type="button" 
+                            @click="openFilters = !openFilters" 
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-indigo-100 bg-surface-subtle hover:bg-indigo-50/70 text-slate-700 text-xs font-bold transition-all shadow-xs active:scale-95">
+                        <span class="material-symbols-outlined text-[18px] text-primary transition-transform duration-200" 
+                              :class="openFilters ? 'rotate-180' : ''">
+                            keyboard_arrow_down
+                        </span>
+                        <span x-text="openFilters ? '{{ __('Amagar filtres') }}' : '{{ __('Desplegar filtres') }}'"></span>
+                    </button>
+                </div>
             </div>
 
-            {{-- Chips de Filtrado por Tipo --}}
-            <div class="pt-4 space-y-3">
-                <div class="flex flex-wrap items-center gap-2">
-                    <span class="text-xs font-bold text-slate-400 mr-2 flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                        {{ __('Tipus:') }}
-                    </span>
-                    <a href="{{ route('actuacion.index') }}" 
-                        class="px-3 py-1.5 rounded-xl text-xs font-bold transition {{ !isset($filtrotipo) ? 'bg-primary text-white shadow-sm' : 'bg-surface-subtle text-slate-600 hover:bg-indigo-50 border border-indigo-100/60' }}">
-                        {{ __('Tots els tipus') }}
-                    </a>
-                    @foreach ($tiposActuacion as $tipo)
-                        @php
-                            $isSelected = isset($filtrotipo) && $filtrotipo == $tipo->id;
-                        @endphp
-                        <a href="{{ route('actuaciones-tipo', ['tipoactuacion' => $tipo->id]) }}"
-                            class="px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ $isSelected ? 'bg-primary text-white shadow-sm font-bold' : 'bg-surface-subtle text-slate-600 hover:bg-indigo-50 border border-indigo-100/60' }}">
-                            {{ $tipo->nombre }}
+            {{-- Contenido desplegable de los Filtros --}}
+            <div x-show="openFilters" 
+                 x-collapse
+                 style="{{ $hayFiltrosActivos ? '' : 'display: none;' }}"
+                 class="pt-4 mt-3 border-t border-indigo-50 space-y-4">
+                
+                {{-- Filtro por Fecha --}}
+                <div class="flex flex-wrap items-center justify-between gap-3 bg-surface-subtle p-3 rounded-2xl border border-indigo-50/60">
+                    <form action="{{ route('actuaciones-fecha') }}" method="GET" class="flex flex-wrap items-center gap-2.5">
+                        <label for="fecha" class="text-xs font-semibold text-slate-600">
+                            {{ __('Des de:') }}
+                        </label>
+                        <input type="date" id="fecha" name="fecha" 
+                            value="{{ request('fecha', $filtroFecha ?? '') }}"
+                            onchange="if(this.value) this.form.submit()"
+                            class="bg-white border border-indigo-100 text-on-surface text-xs rounded-xl px-3 py-1.5 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition shadow-xs"
+                            min="{{ now()->subMonths(3)->format('Y-m-d') }}"
+                            max="{{ now()->format('Y-m-d') }}">
+                        <button type="submit" class="inline-flex items-center px-3.5 py-1.5 bg-primary hover:bg-primary-dark text-white text-xs font-bold rounded-xl shadow-xs transition-colors">
+                            {{ __('Filtrar') }}
+                        </button>
+                    </form>
+
+                    @if(isset($filtroFecha))
+                        <span class="text-xs text-slate-500 font-medium">
+                            {{ __('Mostrant actes des de:') }} <strong class="text-primary">{{ \Carbon\Carbon::parse($filtroFecha)->format('d/m/Y') }}</strong>
+                        </span>
+                    @endif
+                </div>
+
+                {{-- Chips de Filtrado por Tipo --}}
+                <div class="space-y-1.5">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs font-bold text-slate-400 mr-2 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                            {{ __('Tipus:') }}
+                        </span>
+                        <a href="{{ route('actuacion.index') }}" 
+                            class="px-3 py-1.5 rounded-xl text-xs font-bold transition {{ !isset($filtrotipo) ? 'bg-primary text-white shadow-sm' : 'bg-surface-subtle text-slate-600 hover:bg-indigo-50 border border-indigo-100/60' }}">
+                            {{ __('Tots els tipus') }}
                         </a>
-                    @endforeach
+                        @foreach ($tiposActuacion as $tipo)
+                            @php
+                                $isSelected = isset($filtrotipo) && $filtrotipo == $tipo->id;
+                            @endphp
+                            <a href="{{ route('actuaciones-tipo', ['tipoactuacion' => $tipo->id]) }}"
+                                class="px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ $isSelected ? 'bg-primary text-white shadow-sm font-bold' : 'bg-surface-subtle text-slate-600 hover:bg-indigo-50 border border-indigo-100/60' }}">
+                                {{ $tipo->nombre }}
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
 
                 {{-- Chips de Filtrado por Población --}}
                 @if(isset($poblaciones) && count($poblaciones) > 0)
-                    <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-indigo-50">
-                        <span class="text-xs font-bold text-slate-400 mr-2 flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                            {{ __('Població:') }}
-                        </span>
-                        <a href="{{ route('actuacion.index') }}" 
-                            class="px-3 py-1.5 rounded-xl text-xs font-bold transition {{ !isset($filtropobla) ? 'bg-cyan-600 text-white shadow-sm' : 'bg-surface-subtle text-slate-600 hover:bg-cyan-50 border border-cyan-100/60' }}">
-                            {{ __('Totes les poblacions') }}
-                        </a>
-                        @foreach ($poblaciones as $poblacion)
-                            @php
-                                $isPoblaSelected = isset($filtropobla) && $filtropobla == $poblacion;
-                            @endphp
-                            <a href="{{ route('actuaciones-poblacion', ['poblacion' => $poblacion]) }}"
-                                class="px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ $isPoblaSelected ? 'bg-cyan-600 text-white shadow-sm font-bold' : 'bg-surface-subtle text-slate-600 hover:bg-cyan-50 border border-cyan-100/60' }}">
-                                {{ $poblacion }}
+                    <div class="space-y-1.5 pt-2 border-t border-indigo-50/70">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-xs font-bold text-slate-400 mr-2 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
+                                {{ __('Població:') }}
+                            </span>
+                            <a href="{{ route('actuacion.index') }}" 
+                                class="px-3 py-1.5 rounded-xl text-xs font-bold transition {{ !isset($filtropobla) ? 'bg-cyan-600 text-white shadow-sm' : 'bg-surface-subtle text-slate-600 hover:bg-cyan-50 border border-cyan-100/60' }}">
+                                {{ __('Totes les poblacions') }}
                             </a>
-                        @endforeach
+                            @foreach ($poblaciones as $poblacion)
+                                @php
+                                    $isPoblaSelected = isset($filtropobla) && $filtropobla == $poblacion;
+                                @endphp
+                                <a href="{{ route('actuaciones-poblacion', ['poblacion' => $poblacion]) }}"
+                                    class="px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ $isPoblaSelected ? 'bg-cyan-600 text-white shadow-sm font-bold' : 'bg-surface-subtle text-slate-600 hover:bg-cyan-50 border border-cyan-100/60' }}">
+                                    {{ $poblacion }}
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
             </div>
@@ -128,36 +176,44 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                     @foreach ($actuacionesDelMes->sortBy('fechaActuacion') as $actuacion)
                         @php
-                            $estaEnLista = false;
-                            $noDisponible = false;
-                            $pivot = null;
+                            $lista = $actuacion->lista;
+                            $listaId = $lista?->id;
+                            $totalConvocados = 0;
+                            $convocadosCount = 0;
+                            $dudasCount = 0;
+                            $noDisponiblesCount = 0;
+                            $porcentajeConvocados = 0;
+                            $porcentajeDudas = 0;
+                            $porcentajeNoDisp = 0;
+                            $userDispState = 'disponible';
+                            $usuarioConvocado = false;
+                            $currentUser = auth()->user();
 
-                            if (auth()->check()) {
-                                try {
-                                    $listaId = $actuacion->lista_id ?? (optional($actuacion->lista)->id ?? null);
-                                    if ($listaId) {
-                                        $pivot = \Illuminate\Support\Facades\DB::table('listas_user')
-                                            ->where('listas_id', $listaId)
-                                            ->where('user_id', auth()->id())
-                                            ->first();
+                            if ($lista && $lista->relationLoaded('users')) {
+                                $totalConvocados = $lista->users->count();
+                                $convocadosCount = $lista->users->filter(fn ($u) => (int) $u->pivot->disponible !== 0 && empty($u->pivot->duda))->count();
+                                $dudasCount = $lista->users->filter(fn ($u) => (int) $u->pivot->disponible !== 0 && ! empty($u->pivot->duda))->count();
+                                $noDisponiblesCount = $lista->users->filter(fn ($u) => (int) $u->pivot->disponible === 0)->count();
 
-                                        if ($pivot) {
-                                            $estaEnLista = true;
-                                            if (isset($pivot->disponible)) {
-                                                $noDisponible = (int) $pivot->disponible === 0;
-                                            } elseif (isset($pivot->asiste)) {
-                                                $noDisponible = (int) $pivot->asiste === 0;
-                                            } elseif (isset($pivot->estado)) {
-                                                $estado = strtolower((string) $pivot->estado);
-                                                $noDisponible = in_array(
-                                                    $estado,
-                                                    ['no', '0', 'nd', 'ausente', 'no_disponible', 'no disponible'],
-                                                    true
-                                                );
-                                            }
+                                if ($totalConvocados > 0) {
+                                    $porcentajeConvocados = round(($convocadosCount / $totalConvocados) * 100);
+                                    $porcentajeDudas = round(($dudasCount / $totalConvocados) * 100);
+                                    $porcentajeNoDisp = round(($noDisponiblesCount / $totalConvocados) * 100);
+                                }
+
+                                if ($currentUser) {
+                                    $userPivot = $lista->users->where('id', $currentUser->id)->first()?->pivot;
+                                    if ($userPivot) {
+                                        if ((int) $userPivot->disponible === 0) {
+                                            $userDispState = 'no';
+                                        } elseif (! empty($userPivot->duda)) {
+                                            $userDispState = 'duda';
+                                        } else {
+                                            $userDispState = 'disponible';
+                                            $usuarioConvocado = true;
                                         }
                                     }
-                                } catch (\Throwable $e) {}
+                                }
                             }
 
                             $fechaAct = \Carbon\Carbon::parse($actuacion->fechaActuacion);
@@ -198,24 +254,6 @@
                                             @endif
                                         @endcan
                                     </div>
-
-                                    {{-- Estado Asistencia personal --}}
-                                    @if ($estaEnLista)
-                                        @if ($noDisponible)
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold bg-status-unavailable text-white shadow-sm">
-                                                <span class="material-symbols-outlined text-[14px]">cancel</span>
-                                                {{ __('No assistisc') }}
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold bg-status-available text-white shadow-sm">
-                                                <span class="material-symbols-outlined text-[14px]">check_circle</span>
-                                                {{ __('Confirmant') }}
-                                                @if ($pivot && (int) $pivot->coche === 1)
-                                                    <span>🚗</span>
-                                                @endif
-                                            </span>
-                                        @endif
-                                    @endif
                                 </div>
 
                                 {{-- Fecha y Hora sobre el degradado inferior del banner --}}
@@ -238,29 +276,90 @@
                             </div>
 
                             {{-- Cuerpo de la tarjeta --}}
-                            <div class="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
-                                <div>
+                            <div class="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3.5">
+                                <div class="space-y-1">
                                     <h3 class="text-base font-bold font-headline text-on-surface group-hover:text-primary transition-colors line-clamp-2">
                                         {{ $actuacion->descripcion }}
                                     </h3>
                                     @if ($actuacion->contrato?->descripcion)
-                                        <p class="text-xs text-slate-500 mt-1 line-clamp-1">
+                                        <p class="text-xs text-slate-500 line-clamp-1">
                                             {{ $actuacion->contrato->descripcion }}
                                         </p>
                                     @endif
                                 </div>
 
-                                {{-- Quórum de músicos requeridos --}}
-                                @if ($actuacion->musicos > 0)
-                                    <div class="bg-surface-subtle rounded-2xl p-3 space-y-1.5 border border-indigo-50/60">
+                                {{-- Quórum de plantilla (Convocados, Dudas, No disponible) --}}
+                                @if ($totalConvocados > 0)
+                                    <div class="p-3 rounded-2xl bg-surface-subtle border border-indigo-50/70 flex flex-col gap-2">
+                                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs">
+                                            <div class="flex items-center gap-1.5 text-slate-700 font-bold">
+                                                <span class="material-symbols-outlined text-primary text-[17px]">groups</span>
+                                                <span>{{ __('Quòrum de plantilla') }}</span>
+                                            </div>
+                                            <div class="flex items-center flex-wrap gap-x-2.5 gap-y-1 text-[11px]">
+                                                <span class="font-bold text-emerald-700 flex items-center gap-1">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                    <span>{{ __('Convocats') }} ({{ $convocadosCount }})</span>
+                                                </span>
+                                                <span class="font-bold text-amber-700 flex items-center gap-1">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                                    <span>{{ __('Té dubtes') }} ({{ $dudasCount }})</span>
+                                                </span>
+                                                <span class="font-bold text-rose-700 flex items-center gap-1">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                                    <span>{{ __('No disponible') }} ({{ $noDisponiblesCount }})</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="w-full bg-slate-200/80 h-2 rounded-full overflow-hidden flex">
+                                            <div class="bg-emerald-500 h-full transition-all duration-500" style="width: {{ $porcentajeConvocados }}%" title="{{ __('Convocats') }}: {{ $convocadosCount }}"></div>
+                                            <div class="bg-amber-400 h-full transition-all duration-500" style="width: {{ $porcentajeDudas }}%" title="{{ __('Té dubtes') }}: {{ $dudasCount }}"></div>
+                                            <div class="bg-rose-500 h-full transition-all duration-500" style="width: {{ $porcentajeNoDisp }}%" title="{{ __('No disponible') }}: {{ $noDisponiblesCount }}"></div>
+                                        </div>
+                                    </div>
+                                @elseif ($actuacion->musicos > 0)
+                                    <div class="bg-surface-subtle rounded-2xl p-2.5 space-y-1 border border-indigo-50/60">
                                         <div class="flex items-center justify-between text-xs">
                                             <span class="text-slate-600 font-semibold flex items-center gap-1.5">
                                                 <span class="material-symbols-outlined text-primary text-[16px]">groups</span>
-                                                {{ __('Convocatòria plantilla') }}
+                                                {{ __('Plantilla prevista') }}
                                             </span>
                                             <span class="font-extrabold text-primary">
                                                 {{ $actuacion->musicos }} {{ __('músics') }}
                                             </span>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                {{-- Gestión de Disponibilidad rápida (Dudas y No Disponible) --}}
+                                @if ($listaId && $currentUser)
+                                    <div class="flex flex-col gap-1.5 pt-1 border-t border-indigo-50/70">
+                                        {{-- Banner Estàs convocat --}}
+                                        <div id="banner-convocado-{{ $actuacion->id }}" 
+                                             class="{{ $usuarioConvocado ? 'flex' : 'hidden' }} items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-xs">
+                                            <span class="material-symbols-outlined text-[16px] text-status-available">verified</span>
+                                            <span>{{ __('Estàs convocat') }}</span>
+                                        </div>
+
+                                        {{-- Botones interactivos de Duda y No asistencia --}}
+                                        <div class="grid grid-cols-2 gap-2 bg-surface-subtle p-1.5 rounded-2xl">
+                                            <button type="button" 
+                                                id="btn-status-duda-{{ $actuacion->id }}" 
+                                                onclick="setCalendarAttendance('duda', {{ $listaId }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
+                                                class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-amber-200' }}"
+                                                title="{{ __('Notifica que no saps segur si podràs assistir') }}">
+                                                <span class="material-symbols-outlined text-[16px]">help</span>
+                                                <span class="truncate">{{ __('Tinc dubtes') }}</span>
+                                            </button>
+
+                                            <button type="button" 
+                                                id="btn-status-no-{{ $actuacion->id }}" 
+                                                onclick="setCalendarAttendance('no', {{ $listaId }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
+                                                class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-rose-200' }}"
+                                                title="{{ __('Comunica la teua baixa') }}">
+                                                <span class="material-symbols-outlined text-[16px]">cancel</span>
+                                                <span class="truncate">{{ __('No puc assistir') }}</span>
+                                            </button>
                                         </div>
                                     </div>
                                 @endif
@@ -296,7 +395,7 @@
 
                                     <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}"
                                         class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-sm transition active:scale-95">
-                                        <span>{{ __('Convocatòria') }}</span>
+                                        <span>{{ __('Veure detalls') }}</span>
                                         <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                                     </a>
                                 </div>
@@ -324,6 +423,76 @@
     </div>
 
     <x-subscription-info />
+
+    {{-- SCRIPT PARA GESTIÓN DE DISPONIBILIDAD DESDE EL CALENDARIO --}}
+    <script>
+        function setCalendarAttendance(choice, listaId, userId, actuacionId) {
+            const btnDuda = document.getElementById('btn-status-duda-' + actuacionId);
+            const btnNo = document.getElementById('btn-status-no-' + actuacionId);
+            const bannerConvocado = document.getElementById('banner-convocado-' + actuacionId);
+
+            if (!btnDuda || !btnNo) return;
+
+            const yaEnDuda = btnDuda.classList.contains('bg-status-pending');
+            const yaEnNo = btnNo.classList.contains('bg-status-unavailable');
+
+            let targetEstado = choice;
+            if (choice === 'duda' && yaEnDuda) {
+                targetEstado = 'disponible';
+            } else if (choice === 'no' && yaEnNo) {
+                targetEstado = 'disponible';
+            }
+
+            const baseDuda = "flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white border border-transparent hover:border-amber-200 transition-all active:scale-95";
+            const baseNo = "flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white border border-transparent hover:border-rose-200 transition-all active:scale-95";
+
+            btnDuda.className = baseDuda;
+            btnNo.className = baseNo;
+
+            if (targetEstado === 'duda') {
+                btnDuda.className = "flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40 transition-all active:scale-95";
+                if (bannerConvocado) bannerConvocado.classList.replace('flex', 'hidden');
+            } else if (targetEstado === 'no') {
+                btnNo.className = "flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40 transition-all active:scale-95";
+                if (bannerConvocado) bannerConvocado.classList.replace('flex', 'hidden');
+            } else {
+                if (bannerConvocado) bannerConvocado.classList.replace('hidden', 'flex');
+            }
+
+            fetch('/listauserdisp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: new URLSearchParams({
+                    lista_id: listaId,
+                    usuario_id: userId,
+                    estado: targetEstado
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errData => {
+                        throw new Error(errData.message || 'Error del servidor (' + response.status + ')');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (typeof showToast === 'function') {
+                    showToast(data);
+                }
+            })
+            .catch(err => {
+                console.error('Error al actualitzar disponibilitat:', err);
+                if (typeof showToast === 'function') {
+                    showToast({ message: err.message || 'Error al actualitzar disponibilitat', alert_type: 'error' });
+                }
+            });
+        }
+    </script>
 
     @can('admin')
         <script>

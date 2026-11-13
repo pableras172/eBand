@@ -29,7 +29,7 @@ class ActuacionController extends Controller
      */
     public function index()
     {
-        $actuaciones = Actuacion::with('contrato', 'lista', 'tipoactuacion')
+        $actuaciones = Actuacion::with('contrato', 'lista.users', 'tipoactuacion')
             ->whereDate('fechaActuacion', '>=', now()->toDateString())
             ->where('visible', 1)
             ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
@@ -658,7 +658,7 @@ class ActuacionController extends Controller
         }
 
         // Obtener actuaciones por población y fecha de actuación
-        $actuaciones = Actuacion::with(['contrato', 'lista', 'tipoactuacion'])
+        $actuaciones = Actuacion::with(['contrato', 'lista.users', 'tipoactuacion'])
             ->whereHas('contrato', function ($query) use ($poblacion) {
                 $query->where('poblacion', $poblacion);
             })
@@ -833,7 +833,7 @@ class ActuacionController extends Controller
     public function getActuacionesPorTipo(Request $request, $tipoActuiacionId)
     {
 
-        $actuaciones = Actuacion::with('contrato', 'lista', 'tipoactuacion')
+        $actuaciones = Actuacion::with('contrato', 'lista.users', 'tipoactuacion')
             ->whereDate('fechaActuacion', '>=', now()->toDateString())
             ->where('tipoactuacions_id', $tipoActuiacionId)
             ->orderBy('fechaActuacion', 'asc') // Ordenar por fechaActuacion ascendente
@@ -863,7 +863,7 @@ class ActuacionController extends Controller
     public function getActuacionesPorPoblacion(Request $request, $poblacion)
     {
         // Obtener actuaciones por población y fecha de actuación
-        $actuaciones = Actuacion::with(['contrato', 'lista', 'tipoactuacion'])
+        $actuaciones = Actuacion::with(['contrato', 'lista.users', 'tipoactuacion'])
             ->whereHas('contrato', function ($query) use ($poblacion) {
                 $query->where('poblacion', $poblacion);
             })
@@ -993,7 +993,7 @@ class ActuacionController extends Controller
             return redirect()->route('actuacion.index');
         }
 
-        $actuaciones = Actuacion::with('contrato', 'lista', 'tipoactuacion')
+        $actuaciones = Actuacion::with('contrato', 'lista.users', 'tipoactuacion')
             ->whereDate('fechaActuacion', '>=', $fecha)
             ->where('visible', 1)
             ->orderBy('fechaActuacion', 'asc')
