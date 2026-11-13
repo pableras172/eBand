@@ -358,7 +358,7 @@
                             @if ($usuarioConvocado)
                                 <div id="banner-convocado" class="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-bold shadow-sm">
                                     <span class="material-symbols-outlined text-[18px] text-status-available">verified</span>
-                                    <span>{{ __('Estàs convocat per la direcció per a aquesta actuació') }}</span>
+                                    <span>{{ __('Estàs convocat') }}</span>
                                 </div>
                             @endif
 
@@ -383,11 +383,6 @@
                                     <span>{{ __('No puc assistir') }}</span>
                                 </button>
                             </div>
-
-                            <p class="text-[11px] text-slate-400 font-medium flex items-center gap-1 px-1">
-                                <span class="material-symbols-outlined text-[14px] text-slate-400">info</span>
-                                <span>{{ __('L\'assistència definitiva a la plantilla la confirmen els administradors.') }}</span>
-                            </p>
                         </div>
                     @endif
                 </div>
