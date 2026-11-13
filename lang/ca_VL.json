@@ -1345,5 +1345,8 @@
     "Actualitzant disponibilitat...": "Actualitzant disponibilitat...",
     "Sincronitzant amb la plantilla de la banda": "Sincronitzant amb la plantilla de la banda",
     "Has sigut convocat per la direcció. No pots marcar que no assisteixes o que tens dubtes. Contacta amb un administrador.": "Has sigut convocat per la direcció. No pots marcar que no assisteixes o que tens dubtes. Contacta amb un administrador.",
-    "No es pot canviar la disponibilitat amb menys de :dias dies d'antelació. Contacta amb la direcció.": "No es pot canviar la disponibilitat amb menys de :dias dies d'antelació. Contacta amb la direcció."
+    "No es pot canviar la disponibilitat amb menys de :dias dies d'antelació. Contacta amb la direcció.": "No es pot canviar la disponibilitat amb menys de :dias dies d'antelació. Contacta amb la direcció.",
+    "Disponibilitat restablida": "Disponibilitat restablida",
+    "Dubte comunicat (pendent)": "Dubte comunicat (pendent)",
+    "No disponible (Baixa comunicada)": "No disponible (Baixa comunicada)"
 }

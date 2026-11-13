@@ -178,89 +178,92 @@ class ListasUsersController extends Controller
             }
         }
 
-        $nuevoEstado = 'disponible';
+        $nuevoEstado = 'vacio';
 
         if ($existingRelation) {
             $actualDisponible = (int) $existingRelation->disponible;
             $actualDuda = $hasDudaColumn ? (bool) $existingRelation->duda : false;
 
             if ($estadoSolicitado === 'duda') {
-                // Toggle: si ya estaba en duda, vuelve a disponible
+                // Toggle: si ya estaba en duda, vuelve al estado por defecto (vacío/eliminado)
                 if ($actualDuda) {
-                    $nuevoEstado = 'disponible';
-                    $existingRelation->update(array_filter([
-                        'disponible' => 1,
-                        'duda' => $hasDudaColumn ? false : null,
-                    ], fn ($v) => $v !== null));
+                    $existingRelation->delete();
+                    $nuevoEstado = 'vacio';
                 } else {
                     $nuevoEstado = 'duda';
-                    $existingRelation->update(array_filter([
+                    $existingRelation->update([
                         'disponible' => 1,
-                        'duda' => $hasDudaColumn ? true : null,
-                    ], fn ($v) => $v !== null));
+                        'duda' => true,
+                    ]);
                 }
             } elseif ($estadoSolicitado === 'no') {
-                // Toggle: si ya estaba en 'no', vuelve a disponible
+                // Toggle: si ya estaba en 'no', vuelve al estado por defecto (vacío/eliminado)
                 if ($actualDisponible === 0) {
-                    $nuevoEstado = 'disponible';
-                    $existingRelation->update(array_filter([
-                        'disponible' => 1,
-                        'duda' => $hasDudaColumn ? false : null,
-                    ], fn ($v) => $v !== null));
+                    $existingRelation->delete();
+                    $nuevoEstado = 'vacio';
                 } else {
                     $nuevoEstado = 'no';
-                    $existingRelation->update(array_filter([
+                    $existingRelation->update([
                         'disponible' => 0,
-                        'duda' => $hasDudaColumn ? false : null,
-                    ], fn ($v) => $v !== null));
+                        'duda' => false,
+                    ]);
                 }
             } else {
-                // Restablecer a disponible
-                $nuevoEstado = 'disponible';
-                $existingRelation->update(array_filter([
-                    'disponible' => 1,
-                    'duda' => $hasDudaColumn ? false : null,
-                ], fn ($v) => $v !== null));
+                // Restablecer a por defecto (vacío/eliminado)
+                $existingRelation->delete();
+                $nuevoEstado = 'vacio';
             }
         } else {
-            $nuevoEstado = match ($estadoSolicitado) {
-                'duda' => 'duda',
-                'no' => 'no',
-                default => 'disponible',
-            };
-
-            $nuevoModel = new ListasUser;
-            $nuevoModel->listas_id = $listaId;
-            $nuevoModel->user_id = $request->usuario_id;
-            $nuevoModel->disponible = ($nuevoEstado === 'no') ? 0 : 1;
-            if ($hasDudaColumn) {
-                $nuevoModel->duda = ($nuevoEstado === 'duda');
+            if ($estadoSolicitado === 'duda') {
+                $nuevoEstado = 'duda';
+                $nuevoModel = new ListasUser;
+                $nuevoModel->listas_id = $listaId;
+                $nuevoModel->user_id = $request->usuario_id;
+                $nuevoModel->disponible = 1;
+                if ($hasDudaColumn) {
+                    $nuevoModel->duda = true;
+                }
+                $nuevoModel->save();
+            } elseif ($estadoSolicitado === 'no') {
+                $nuevoEstado = 'no';
+                $nuevoModel = new ListasUser;
+                $nuevoModel->listas_id = $listaId;
+                $nuevoModel->user_id = $request->usuario_id;
+                $nuevoModel->disponible = 0;
+                if ($hasDudaColumn) {
+                    $nuevoModel->duda = false;
+                }
+                $nuevoModel->save();
+            } else {
+                $nuevoEstado = 'vacio';
             }
-            $nuevoModel->save();
         }
 
         $customText = match ($nuevoEstado) {
             'duda' => 'Dubte comunicat (pendent)',
             'no' => 'No disponible (Baixa comunicada)',
-            default => 'Disponible / Convocat',
+            'vacio' => 'Disponibilitat restablida',
+            default => 'Disponible',
         };
 
-        try {
-            $lista = Listas::with('actuacion')->findOrFail($listaId);
-            $actuacion = $lista->actuacion;
-            $user = User::where('id', $request->usuario_id)->first();
+        if ($nuevoEstado !== 'vacio') {
+            try {
+                $lista = Listas::with('actuacion')->find($listaId);
+                $actuacion = $lista?->actuacion;
+                $user = User::where('id', $request->usuario_id)->first();
 
-            $mailadmin = Configuration::where('param', 'emaildisponibles')->first();
+                $mailadmin = Configuration::where('param', 'emaildisponibles')->first();
 
-            if ($mailadmin != null && $mailadmin->value != '') {
-                $emails = explode(';', $mailadmin->value);
-                foreach ($emails as $email) {
-                    Mail::to(trim($email))->send(new UserNoDisponible($user, $actuacion, $customText));
+                if ($mailadmin != null && $mailadmin->value != '') {
+                    $emails = explode(';', $mailadmin->value);
+                    foreach ($emails as $email) {
+                        Mail::to(trim($email))->send(new UserNoDisponible($user, $actuacion, $customText));
+                    }
                 }
-            }
 
-        } catch (Exception $e) {
-            logger()->error('Error al enviar el correo: '.$e->getMessage());
+            } catch (Exception $e) {
+                logger()->error('Error al enviar el correo: '.$e->getMessage());
+            }
         }
 
         $notification = [

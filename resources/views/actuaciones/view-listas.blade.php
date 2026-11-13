@@ -185,7 +185,7 @@
                             $porcentajeConvocados = 0;
                             $porcentajeDudas = 0;
                             $porcentajeNoDisp = 0;
-                            $userDispState = 'disponible';
+                            $userDispState = 'vacio';
                             $usuarioConvocado = false;
                             $currentUser = auth()->user();
 

@@ -20,7 +20,7 @@
     $porcentajeConvocados = 0;
     $porcentajeDudas = 0;
     $porcentajeNoDisp = 0;
-    $userDispState = 'disponible'; // Por defecto disponible
+    $userDispState = 'vacio'; // Por defecto vacio (sin marcar)
     $usuarioConvocado = false;
 
     if ($lista) {
