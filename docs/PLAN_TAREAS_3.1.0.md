@@ -57,13 +57,14 @@ Cada pantalla se aborda de extremo a extremo (Frontend Blade/Livewire + adaptaci
 
 ---
 
-## 📅 Fase 3: Vertical Slice 2 — Actuaciones, Calendario y Detalle de Bolo
+## 📅 Fase 3: Vertical Slice 2 — Actuaciones, Calendario y Detalle de Bolo (Completada)
 
-- [ ] **Tarea 3.1: Calendario y Listado de Actuaciones**
-  - Tarjetas de bolo en móvil con etiquetas de festividad y localización.
-  - Tabla de datos filtrable por mes y tipo de actuación en desktop.
-- [ ] **Tarea 3.2: Detalle de Actuación y Control de Asistencia**
-  - Vista *Master-Detail* en escritorio: Datos del acto a la izquierda, matriz de cuerdas y confirmaciones a la derecha.
+- [x] **Tarea 3.1: Calendario y Listado de Actuaciones**
+  - Tarjetas de bolo en móvil con etiquetas de festividad y localización (`resources/views/actuaciones/view-listas.blade.php`).
+  - Dark Command Center con chips de filtrado rápido por tipo y población, selector de fecha y rejilla responsive 1-3 columnas.
+- [x] **Tarea 3.2: Detalle de Actuación y Control de Asistencia**
+  - Vista *Master-Detail* en escritorio (5 cols info/quórum/mapa + 7 cols roster de cuerdas y chat interactivo) en `resources/views/actuaciones/detalles-actuacion.blade.php`.
+  - Botonera flotante inferior Dark Command Center con conmutador de disponibilidad táctil de alto contraste y soporte AJAX/Livewire intacto.
 
 ---
 

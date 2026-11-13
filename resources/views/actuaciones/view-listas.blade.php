@@ -1,452 +1,371 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-ui.breadcrumbs>
-            <x-ui.breadcrumbs.link href="/">{{ __('common.dashboard') }}</x-ui.breadcrumbs.link>
-            <x-ui.breadcrumbs.separator />
-            <x-ui.breadcrumbs.link active>{{ __('common.calendario') }}</x-ui.breadcrumbs.link>
-        </x-ui.breadcrumbs>
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('common.calendario_proximas') }}
-        </h2>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <x-ui.breadcrumbs>
+                    <x-ui.breadcrumbs.link href="/">{{ __('common.dashboard') }}</x-ui.breadcrumbs.link>
+                    <x-ui.breadcrumbs.separator />
+                    <x-ui.breadcrumbs.link active>{{ __('common.calendario') }}</x-ui.breadcrumbs.link>
+                </x-ui.breadcrumbs>
+                <h1 class="text-2xl lg:text-3xl font-extrabold font-headline text-white tracking-tight mt-1">
+                    {{ __('common.calendario_proximas') }}
+                </h1>
+                <p class="text-sm text-slate-400">
+                    {{ __('Gestió d\'actuacions, assajos i convocatòries de la banda') }}
+                </p>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="bg-white border border-gray-200 divide-y divide-gray-200  m-2">
-        <details class="p-2 group" @isset($filtroFecha) open @else close @endisset>
-            <summary id="driver-actuaciones-filter" class="flex items-center justify-between cursor-pointer">
-                <h5 class="text-lg font-medium text-gray-900">
-                    {{ __('Filtrar per data') }}: @isset($filtroFecha)
-                        {{ $filtroFecha }}
-                    @endisset
-                </h5>
+    <div class="space-y-6 pb-12">
+        {{-- Módulo de Filtros y Búsqueda (Dark Command Center) --}}
+        <div class="bg-[#111827] border border-slate-800/80 rounded-2xl p-4 lg:p-5 shadow-lg backdrop-blur-sm">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-slate-800/80 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-white uppercase tracking-wider">
+                            {{ __('Filtres del Calendari') }}
+                        </h2>
+                        <p class="text-xs text-slate-400">
+                            {{ __('Filtra per tipus, data o localitat de l\'esdeveniment') }}
+                        </p>
+                    </div>
+                </div>
 
-                @isset($filtroFecha)
-                    <a href="{{ route('actuacion.index') }}">
-                        <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path
-                                    d="M15 15L21 21M21 15L15 21M10 21V14.6627C10 14.4182 10 14.2959 9.97237 14.1808C9.94787 14.0787 9.90747 13.9812 9.85264 13.8917C9.7908 13.7908 9.70432 13.7043 9.53137 13.5314L3.46863 7.46863C3.29568 7.29568 3.2092 7.2092 3.14736 7.10828C3.09253 7.01881 3.05213 6.92127 3.02763 6.81923C3 6.70414 3 6.58185 3 6.33726V4.6C3 4.03995 3 3.75992 3.10899 3.54601C3.20487 3.35785 3.35785 3.20487 3.54601 3.10899C3.75992 3 4.03995 3 4.6 3H19.4C19.9601 3 20.2401 3 20.454 3.10899C20.6422 3.20487 20.7951 3.35785 20.891 3.54601C21 3.75992 21 4.03995 21 4.6V6.33726C21 6.58185 21 6.70414 20.9724 6.81923C20.9479 6.92127 20.9075 7.01881 20.8526 7.10828C20.7908 7.2092 20.7043 7.29568 20.5314 7.46863L17 11"
-                                    stroke="#b2843e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </g>
-                        </svg>
-                    </a>
-                @else
-                    <span class="relative flex-shrink-0 ml-1.5 w-5 h-5">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="absolute inset-0 w-5 h-5 opacity-100 group-open:opacity-0" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="absolute inset-0 w-5 h-5 opacity-0 group-open:opacity-100" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </span>
-                @endisset
-            </summary>
-            <div class="mt-2">
-                <p class="text-sm text-gray-600 mb-3">
-                    {{__('Pots veure actuacions dels últims 3 mesos. Selecciona una data per veure totes les actuacions des d\'eixe dia fins avui.')}}
-                </p>
-                <p class="text-sm text-gray-500">
-                    {{ __('Puedes usar los filtros para acotar la lista de actuaciones') }}
-                </p>
-                <form action="{{ route('actuaciones-fecha') }}" method="GET" class="flex flex-wrap items-center gap-2 mt-2">
-                    <label for="fecha" class="text-sm font-medium text-gray-700">{{__('Selecciona data')}}</label>
+                {{-- Filtro por Fecha --}}
+                <form action="{{ route('actuaciones-fecha') }}" method="GET" class="flex flex-wrap items-center gap-2">
+                    <label for="fecha" class="text-xs font-medium text-slate-300">
+                        {{ __('Des de:') }}
+                    </label>
                     <input type="date" id="fecha" name="fecha" 
                         value="{{ request('fecha', $filtroFecha ?? '') }}"
                         onchange="if(this.value) this.form.submit()"
-                        class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                        class="bg-[#0B1120] border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                         min="{{ now()->subMonths(3)->format('Y-m-d') }}"
                         max="{{ now()->format('Y-m-d') }}">
-                    <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md shadow-sm transition-colors">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                        </svg>
+                    <button type="submit" class="inline-flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow-md transition-colors">
                         {{ __('Filtrar') }}
                     </button>
-                    @isset($filtroFecha)
-                        <a href="{{ route('actuacion.index') }}" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-md transition-colors">
-                            {{ __('Netejar') }}
+                    @if(isset($filtroFecha) || isset($filtrotipo) || isset($filtropobla))
+                        <a href="{{ route('actuacion.index') }}" class="inline-flex items-center px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 transition-colors">
+                            {{ __('Netejar tots') }}
                         </a>
-                    @endisset
+                    @endif
                 </form>
             </div>
-        </details>
-        <details class="p-2 group" @isset($filtrotipo) open @else close @endisset>
-            <summary class="flex items-center justify-between cursor-pointer">
-                <h5 class="text-lg font-medium text-gray-900">
-                    {{ __('Filtrar actuacions per tipus') }}: @isset($filtrotipo)
-                        {{ $tiposActuacion[0]->nombre }}
-                    @endisset
-                </h5>
-                @isset($filtrotipo)
-                    <a href="{{ route('actuacion.index') }}">
-                        <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path
-                                    d="M15 15L21 21M21 15L15 21M10 21V14.6627C10 14.4182 10 14.2959 9.97237 14.1808C9.94787 14.0787 9.90747 13.9812 9.85264 13.8917C9.7908 13.7908 9.70432 13.7043 9.53137 13.5314L3.46863 7.46863C3.29568 7.29568 3.2092 7.2092 3.14736 7.10828C3.09253 7.01881 3.05213 6.92127 3.02763 6.81923C3 6.70414 3 6.58185 3 6.33726V4.6C3 4.03995 3 3.75992 3.10899 3.54601C3.20487 3.35785 3.35785 3.20487 3.54601 3.10899C3.75992 3 4.03995 3 4.6 3H19.4C19.9601 3 20.2401 3 20.454 3.10899C20.6422 3.20487 20.7951 3.35785 20.891 3.54601C21 3.75992 21 4.03995 21 4.6V6.33726C21 6.58185 21 6.70414 20.9724 6.81923C20.9479 6.92127 20.9075 7.01881 20.8526 7.10828C20.7908 7.2092 20.7043 7.29568 20.5314 7.46863L17 11"
-                                    stroke="#b2843e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </g>
-                        </svg>
-                    </a>
-                @else
-                    <span class="relative flex-shrink-0 ml-1.5 w-5 h-5">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="absolute inset-0 w-5 h-5 opacity-100 group-open:opacity-0" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
 
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="absolute inset-0 w-5 h-5 opacity-0 group-open:opacity-100" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+            {{-- Chips de Filtrado por Tipo --}}
+            <div class="pt-4 space-y-3">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-semibold text-slate-400 mr-2 flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                        {{ __('Tipus:') }}
                     </span>
-                @endisset
-
-            </summary>
-            @foreach ($tiposActuacion as $tipo)
-                <a href="{{ route('actuaciones-tipo', ['tipoactuacion' => $tipo->id]) }}"><span
-                        class="bg-gray-200 px-2 py-1 rounded-md mr-2">{{ $tipo->nombre }}</span></a>
-            @endforeach
-        </details>
-
-        <details class="p-2 group" @isset($filtropobla) open @else close @endisset>
-            <summary class="flex items-center justify-between cursor-pointer">
-                <h5 class="text-lg font-medium text-gray-900">
-                    {{ __('Filtrar actuacions per població') }}: @isset($filtropobla)
-                        {{ $poblaciones[0] }}
-                    @endisset
-                </h5>
-                @isset($filtropobla)
-                    <a href="{{ route('actuacion.index') }}">
-                        <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path
-                                    d="M15 15L21 21M21 15L15 21M10 21V14.6627C10 14.4182 10 14.2959 9.97237 14.1808C9.94787 14.0787 9.90747 13.9812 9.85264 13.8917C9.7908 13.7908 9.70432 13.7043 9.53137 13.5314L3.46863 7.46863C3.29568 7.29568 3.2092 7.2092 3.14736 7.10828C3.09253 7.01881 3.05213 6.92127 3.02763 6.81923C3 6.70414 3 6.58185 3 6.33726V4.6C3 4.03995 3 3.75992 3.10899 3.54601C3.20487 3.35785 3.35785 3.20487 3.54601 3.10899C3.75992 3 4.03995 3 4.6 3H19.4C19.9601 3 20.2401 3 20.454 3.10899C20.6422 3.20487 20.7951 3.35785 20.891 3.54601C21 3.75992 21 4.03995 21 4.6V6.33726C21 6.58185 21 6.70414 20.9724 6.81923C20.9479 6.92127 20.9075 7.01881 20.8526 7.10828C20.7908 7.2092 20.7043 7.29568 20.5314 7.46863L17 11"
-                                    stroke="#b2843e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </g>
-                        </svg>
+                    <a href="{{ route('actuacion.index') }}" 
+                        class="px-3 py-1.5 rounded-full text-xs font-medium transition {{ !isset($filtrotipo) ? 'bg-blue-600 text-white shadow-md shadow-blue-900/30 font-semibold' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-slate-700/60' }}">
+                        {{ __('Tots els tipus') }}
                     </a>
-                @else
-                    <span class="relative flex-shrink-0 ml-1.5 w-5 h-5">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="absolute inset-0 w-5 h-5 opacity-100 group-open:opacity-0" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                    @foreach ($tiposActuacion as $tipo)
+                        @php
+                            $isSelected = isset($filtrotipo) && $filtrotipo == $tipo->id;
+                        @endphp
+                        <a href="{{ route('actuaciones-tipo', ['tipoactuacion' => $tipo->id]) }}"
+                            class="px-3 py-1.5 rounded-full text-xs font-medium transition {{ $isSelected ? 'bg-blue-600 text-white shadow-md shadow-blue-900/30 font-semibold' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-slate-700/60' }}">
+                            {{ $tipo->nombre }}
+                        </a>
+                    @endforeach
+                </div>
 
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="absolute inset-0 w-5 h-5 opacity-0 group-open:opacity-100" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </span>
-                @endisset
-            </summary>
-
-            @foreach ($poblaciones as $poblacion)
-                <a href="{{ route('actuaciones-poblacion', ['poblacion' => $poblacion]) }}"><span
-                        class="bg-gray-200 px-2 py-1 rounded-md mr-2">{{ $poblacion }}</span></a>
-            @endforeach
-
-        </details>
-
-
-
-    </div>
-
-
-    <!-- Actuaciones agrupadas por mes -->
-    <div class="p-2">
-        @foreach ($actuacionesPorMes as $mes => $actuacionesDelMes)
-            <div class="w-full bg-white border-b border-gray-300 p-2">
-                <h2
-                    class="mb-1 mt-2 text-2xl font-extrabold text-gray-900 dark:text-white md:text-2xl lg:text-2xl text-center">
-                    @php
-                        $fechaCarbon = \Carbon\Carbon::createFromFormat('m/Y', $mes);
-                        $mesFormateado = ucfirst($fechaCarbon->translatedFormat('F Y'));
-                    @endphp
-                    <div class="flex justify-center items-center space-x-2">
-                        <span class="text-zinc-950">
-                            {{ __($mesFormateado) }}
+                {{-- Chips de Filtrado por Población (si hay disponibles) --}}
+                @if(isset($poblaciones) && count($poblaciones) > 0)
+                    <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-800/60">
+                        <span class="text-xs font-semibold text-slate-400 mr-2 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                            {{ __('Població:') }}
                         </span>
-                        <span class="text-zinc-950 text-sm" style="color: darkgray;">
-                            ({{ $actuacionesDelMes->count() }} {{ strtolower(__('eventos')) }})
+                        <a href="{{ route('actuacion.index') }}" 
+                            class="px-3 py-1.5 rounded-full text-xs font-medium transition {{ !isset($filtropobla) ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-slate-700/60' }}">
+                            {{ __('Totes les poblacions') }}
+                        </a>
+                        @foreach ($poblaciones as $poblacion)
+                            @php
+                                $isPoblaSelected = isset($filtropobla) && $filtropobla == $poblacion;
+                            @endphp
+                            <a href="{{ route('actuaciones-poblacion', ['poblacion' => $poblacion]) }}"
+                                class="px-3 py-1.5 rounded-full text-xs font-medium transition {{ $isPoblaSelected ? 'bg-amber-500/30 text-amber-200 border border-amber-500/40 font-semibold' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-slate-700/60' }}">
+                                {{ $poblacion }}
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        {{-- Convocatorias agrupadas por Mes --}}
+        @forelse ($actuacionesPorMes as $mes => $actuacionesDelMes)
+            @php
+                $fechaCarbon = \Carbon\Carbon::createFromFormat('m/Y', $mes);
+                $mesFormateado = ucfirst($fechaCarbon->translatedFormat('F Y'));
+            @endphp
+            <div class="space-y-4">
+                {{-- Encabezado de Mes Sticky --}}
+                <div class="flex items-center justify-between sticky top-16 z-10 bg-[#0B1120]/90 backdrop-blur-md py-3 px-1 border-b border-slate-800">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2.5 h-7 bg-blue-600 rounded-full"></div>
+                        <h2 class="text-xl lg:text-2xl font-bold font-headline text-white tracking-tight">
+                            {{ $mesFormateado }}
+                        </h2>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                            {{ $actuacionesDelMes->count() }} {{ $actuacionesDelMes->count() === 1 ? __('acte') : __('actes') }}
                         </span>
                     </div>
-                </h2>
-            </div>
+                </div>
 
+                {{-- Grid de Actuaciones (1 col móvil, 2 cols tablet, 3 cols desktop xl) --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                    @foreach ($actuacionesDelMes->sortBy('fechaActuacion') as $actuacion)
+                        @php
+                            $estaEnLista = false;
+                            $noDisponible = false;
+                            $pivot = null;
 
+                            if (auth()->check()) {
+                                try {
+                                    $listaId = $actuacion->lista_id ?? (optional($actuacion->lista)->id ?? null);
+                                    if ($listaId) {
+                                        $pivot = \Illuminate\Support\Facades\DB::table('listas_user')
+                                            ->where('listas_id', $listaId)
+                                            ->where('user_id', auth()->id())
+                                            ->first();
 
-            <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700">
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-                @foreach ($actuacionesDelMes->sortBy('fechaActuacion') as $actuacion)
-                    @php
-                        $cardBorderClass = $actuacion->oficial == 1 ? 'border-2 border-orange-500' : 'border border-transparent';
-                        $estaEnLista = false;
-                        $noDisponible = false;
-                        $pivot = null;
-
-                        if (auth()->check()) {
-                            try {
-                                $listaId = $actuacion->lista_id ?? (optional($actuacion->lista)->id ?? null);
-
-                                if ($listaId) {
-                                    $pivot = \Illuminate\Support\Facades\DB::table('listas_user')
-                                        ->where('listas_id', $listaId)
-                                        ->where('user_id', auth()->id())
-                                        ->first();
-
-                                    if ($pivot) {
-                                        $estaEnLista = true;
-
-                                        if (isset($pivot->disponible)) {
-                                            $noDisponible = (int) $pivot->disponible === 0;
-                                        } elseif (isset($pivot->asiste)) {
-                                            $noDisponible = (int) $pivot->asiste === 0;
-                                        } elseif (isset($pivot->estado)) {
-                                            $estado = strtolower((string) $pivot->estado);
-                                            $noDisponible = in_array(
-                                                $estado,
-                                                ['no', '0', 'nd', 'ausente', 'no_disponible', 'no disponible'],
-                                                true,
-                                            );
+                                        if ($pivot) {
+                                            $estaEnLista = true;
+                                            if (isset($pivot->disponible)) {
+                                                $noDisponible = (int) $pivot->disponible === 0;
+                                            } elseif (isset($pivot->asiste)) {
+                                                $noDisponible = (int) $pivot->asiste === 0;
+                                            } elseif (isset($pivot->estado)) {
+                                                $estado = strtolower((string) $pivot->estado);
+                                                $noDisponible = in_array(
+                                                    $estado,
+                                                    ['no', '0', 'nd', 'ausente', 'no_disponible', 'no disponible'],
+                                                    true
+                                                );
+                                            }
                                         }
-
-                                        $cardBorderClass = $noDisponible
-                                            ? 'border-2 border-red-500'
-                                            : 'border-2 border-green-500';
                                     }
+                                } catch (\Throwable $e) {
+                                    // Ignore quietly in view
                                 }
-                            } catch (\Throwable $e) {
-                                \Illuminate\Support\Facades\Log::error(
-                                    'Error comprobando pertenencia/estado en lista (view-listas)',
-                                    [
-                                        'actuacion_id' => $actuacion->id ?? null,
-                                        'user_id' => auth()->id(),
-                                        'message' => $e->getMessage(),
-                                    ],
-                                );
                             }
-                        }
-                    @endphp
 
-                    <div @if($loop->first) id="driver-actuacion-first" @endif class="relative flex flex-col shadow-md rounded-xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 max-w-sm {{ $cardBorderClass }}">
-                        <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}" class="z-20 absolute h-full w-full top-0 left-0">&nbsp;</a>
+                            $fechaAct = \Carbon\Carbon::parse($actuacion->fechaActuacion);
+                            $esHoy = $fechaAct->isToday();
+                            $esPasada = $fechaAct->isPast() && !$esHoy;
+                        @endphp
 
-
-                        <div class="h-auto overflow-hidden">
-                            <div class="h-40 overflow-hidden relative">
+                        <div @if($loop->first && $loop->parent->first) id="driver-actuacion-first" @endif 
+                            class="group relative flex flex-col bg-[#111827] border {{ $actuacion->oficial == 1 ? 'border-amber-500/40 hover:border-amber-500' : 'border-slate-800 hover:border-slate-700' }} rounded-2xl overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/10">
+                            
+                            {{-- Banner visual con imagen / icono representativo --}}
+                            <div class="relative h-44 overflow-hidden bg-slate-900">
                                 <img src="{{ \App\Models\Tipoactuacion::resolveIconUrl($actuacion->tipoactuacion?->icon) }}"
                                     onerror="this.onerror=null;this.src='{{ asset(\App\Models\Tipoactuacion::DEFAULT_ICON_PATH) }}';"
-                                    alt="{{ $actuacion->tipoactuacion?->nombre ?? 'Actuación' }}" class="object-cover w-full h-full">
-                            </div>
-                        </div>
-                        <div class="bg-white py-4 px-3">
-                            @if ($actuacion->oficial == 1)
-                                <div class="absolute top-2 right-2  font-bold px-2 py-1 rounded" title="{{__('Acte Oficial')}}">
-                                    <x-oficial w="24" h="24" />
-                                </div>
-                            @endif
-                            @can('admin')
-                                @if ($actuacion->is_draft)
-                                    <div class="absolute top-2 left-2">
-                                        <span
-                                            class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-semibold text-yellow-800">
-                                            {{ __('Borrador') }}
-                                        </span>
-                                    </div>
-                                @endif
-                            @endcan
-                            <h3 class="text-l mb-2 font-medium">{{ $actuacion->descripcion }}</h3>
+                                    alt="{{ $actuacion->tipoactuacion?->nombre ?? 'Actuació' }}" 
+                                    class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-90">
+                                
+                                <div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/40 to-transparent"></div>
 
-                            <div class="flex items-center justify-between">
-                                <h2 class="text-l mb-2 font-medium" style="color: darkgray;">
-                                    {{ $actuacion->contrato->descripcion }}
-                                </h2>
-
-                                <div class="flex items-center gap-1">
-                                    @if ($estaEnLista)
-                                        <div class="flex items-center">
-                                            @if ($noDisponible)
-                                                {{-- No disponible --}}
-                                                <x-disponible w="24" h="24" />
-                                            @else
-                                                {{-- Está en la lista --}}
-                                                @if ($pivot && (int) $pivot->coche === 1)
-                                                    <x-coche w="24" h="24" />
-                                                @endif
-                                                <x-verificado w="24" h="24" />
-                                            @endif
-
-                                        </div>
-                                    @endif                                    
-                                </div>
-                            </div>
-
-                            <hr class="p-2">
-                            <div class="flex items-center mb-2">
-                                <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px"
-                                    viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve"
-                                    fill="#000000" transform="rotate(0)">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <g>
-                                            <path fill="#eeb759"
-                                                d="M32,52.789l-12-18C18.5,32,16,28.031,16,24c0-8.836,7.164-16,16-16s16,7.164,16,16 c0,4.031-2.055,8-4,10.789L32,52.789z">
-                                            </path>
-                                            <g>
-                                                <path fill="#394240"
-                                                    d="M32,0C18.746,0,8,10.746,8,24c0,5.219,1.711,10.008,4.555,13.93c0.051,0.094,0.059,0.199,0.117,0.289 l16,24C29.414,63.332,30.664,64,32,64s2.586-0.668,3.328-1.781l16-24c0.059-0.09,0.066-0.195,0.117-0.289 C54.289,34.008,56,29.219,56,24C56,10.746,45.254,0,32,0z M44,34.789l-12,18l-12-18C18.5,32,16,28.031,16,24 c0-8.836,7.164-16,16-16s16,7.164,16,16C48,28.031,45.945,32,44,34.789z">
-                                                </path>
-                                                <circle fill="#394240" cx="32" cy="24" r="8"></circle>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </svg>
-                                {{ $actuacion->contrato->poblacion }}
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center mb-1">
-                                    <svg width="26px" height="26px" viewBox="0 0 1024 1024" class="icon"
-                                        version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
-                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                        </g>
-                                        <g id="SVGRepo_iconCarrier">
-                                            <path d="M182.067 383.79h664.916v473.911H182.067z" fill="#FCE3C3"></path>
-                                            <path
-                                                d="M846.983 857.701H170.007V401.632h676.976v456.069zM189.428 838.28h638.134V421.053H189.428V838.28z"
-                                                fill="#ffc46c"></path>
-                                            <path
-                                                d="M850.483 861.201H166.507V398.132h683.977v463.069z m-676.976-7h669.977V405.132H173.507v449.069z m657.555-12.421H185.929V417.553h645.134V841.78z m-638.133-7h631.134V424.553H192.929V834.78z"
-                                                fill="#ffc46c"></path>
-                                            <path d="M179.718 273.282h657.556v138.061H179.718z" fill="#ffc46c"></path>
-                                            <path
-                                                d="M840.774 414.844H176.219V269.782h664.556v145.062z m-657.555-7h650.556V276.782H183.219v131.062z"
-                                                fill="#ffc46c"></path>
-                                            <path
-                                                d="M846.983 421.053H170.007V263.572h676.976v157.481z m-657.555-19.421h638.134V282.994H189.428v118.638z"
-                                                fill="#ffc46c"></path>
-                                            <path
-                                                d="M850.483 424.553H166.507v-164.48h683.977v164.48z m-676.976-7h669.977v-150.48H173.507v150.48z m657.555-12.421H185.929V279.494h645.134v125.638z m-638.133-7h631.134V286.494H192.929v111.638z"
-                                                fill="#ffc46c"></path>
-                                            <path d="M672.215 190.225h63.426v162.87h-63.426z" fill="#ED8F27"></path>
-                                            <path
-                                                d="M745.351 362.806h-82.847V180.514h82.847v182.292z m-63.426-19.421h44.005v-143.45h-44.005v143.45z"
-                                                fill="#ffc46c"></path>
-                                            <path d="M281.351 190.225h63.426v162.87h-63.426z" fill="#ED8F27"></path>
-                                            <path
-                                                d="M354.487 362.806H271.64V180.514h82.847v182.292z m-63.426-19.421h44.005v-143.45h-44.005v143.45z"
-                                                fill="#ffc46c"></path>
-                                            <path d="M688.071 468.427h66.597v66.597h-66.597z" fill="#B12800"></path>
-                                            <path
-                                                d="M688.071 596.369h66.597v66.597h-66.597zM688.071 724.31h66.597v66.598h-66.597zM546.156 468.427h66.597v66.597h-66.597z"
-                                                fill="#228E9D"></path>
-                                            <path d="M546.156 596.369h66.597v66.597h-66.597z" fill="#B12800"></path>
-                                            <path
-                                                d="M546.156 724.31h66.597v66.598h-66.597zM404.239 468.427h66.598v66.597h-66.598z"
-                                                fill="#228E9D"></path>
-                                            <path d="M404.239 596.369h66.598v66.597h-66.598z" fill="#B12800"></path>
-                                            <path
-                                                d="M404.239 724.31h66.598v66.598h-66.598zM262.323 596.369h66.598v66.597h-66.598z"
-                                                fill="#228E9D"></path>
-                                            <path d="M262.323 724.31h66.598v66.598h-66.598z" fill="#B12800"></path>
-                                        </g>
-                                    </svg>
-
-                                    @php
-                                        $fechaActuacion = Carbon\Carbon::parse($actuacion->fechaActuacion);
-                                        $nombreDia = ucfirst($fechaActuacion->translatedFormat('l')); // Nombre del día con la primera letra en mayúscula
-                                        $fechaFormateada = $fechaActuacion->format('d/m/Y');
-                                    @endphp
-
-                                    <p class="text-base text-black-400">
-                                        {{ $nombreDia }} ({{ $fechaFormateada }})
-                                    </p>
-                                </div>
-
-                                <div class="relative z-40 flex items-center gap-2">
-                                    @if ($actuacion->comments()->count() > 0)
-                                        <div>
-                                            <a
-                                                href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}#messages">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    class="h-7 w-7 mr-2 text-blue-600 animate-bounce"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path
-                                                        d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                {{-- Badges superiores flotantes --}}
+                                <div class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+                                    <div class="flex items-center gap-1.5">
+                                        @if ($actuacion->oficial == 1)
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/90 text-slate-950 shadow-md backdrop-blur-sm">
+                                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                                 </svg>
-                                            </a>
+                                                {{ __('Acte Oficial') }}
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-900/80 text-slate-200 border border-slate-700/80 backdrop-blur-sm">
+                                                {{ $actuacion->tipoactuacion?->nombre ?? __('Actuació') }}
+                                            </span>
+                                        @endif
+
+                                        @can('admin')
+                                            @if ($actuacion->is_draft)
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
+                                                    {{ __('Esborrany') }}
+                                                </span>
+                                            @endif
+                                        @endcan
+                                    </div>
+
+                                    {{-- Estado Asistencia personal --}}
+                                    @if ($estaEnLista)
+                                        @if ($noDisponible)
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 backdrop-blur-md">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                                                {{ __('No assistisc') }}
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 backdrop-blur-md">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                                {{ __('Confirmant') }}
+                                                @if ($pivot && (int) $pivot->coche === 1)
+                                                    <span title="{{ __('Aportes cotxe') }}">🚗</span>
+                                                @endif
+                                            </span>
+                                        @endif
+                                    @endif
+                                </div>
+
+                                {{-- Fecha y Hora sobre el degradado inferior del banner --}}
+                                <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between pointer-events-none">
+                                    <div class="flex items-center gap-2">
+                                        <div class="px-2.5 py-1 rounded-lg bg-blue-600/90 text-white font-bold text-xs uppercase tracking-wider backdrop-blur-sm shadow-md">
+                                            {{ $fechaAct->translatedFormat('D d M') }}
+                                        </div>
+                                        <div class="text-xs font-semibold text-slate-200 bg-slate-900/80 px-2 py-1 rounded-lg border border-slate-700/60 backdrop-blur-sm">
+                                            {{ $fechaAct->format('H:i') }} h
+                                        </div>
+                                    </div>
+                                    @if($actuacion->contrato?->poblacion)
+                                        <div class="text-xs font-medium text-slate-300 flex items-center gap-1 bg-slate-900/80 px-2 py-1 rounded-lg border border-slate-700/60">
+                                            <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                            <span class="truncate max-w-[120px]">{{ $actuacion->contrato->poblacion }}</span>
                                         </div>
                                     @endif
-                                    @can('admin')
-                                        @if (Carbon\Carbon::parse($actuacion->fechaActuacion)->isToday() ||
-                                                Carbon\Carbon::parse($actuacion->fechaActuacion)->isFuture())
-                                            <a class="enviarNotificacion text-orange-600 hover:text-blue-500"
-                                                href="#" alt="Notificar" data-actuacion-id="{{ $actuacion->id }}"
-                                                data-actuacion-inf="{{ $actuacion->descripcion }}">
-                                                <x-aviso w="32" h="32" />
+                                </div>
+                            </div>
+
+                            {{-- Cuerpo de la tarjeta --}}
+                            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                                <div>
+                                    <h3 class="text-base font-bold font-headline text-white group-hover:text-blue-400 transition-colors line-clamp-2">
+                                        {{ $actuacion->descripcion }}
+                                    </h3>
+                                    @if ($actuacion->contrato?->descripcion)
+                                        <p class="text-xs text-slate-400 mt-1 line-clamp-1">
+                                            {{ $actuacion->contrato->descripcion }}
+                                        </p>
+                                    @endif
+                                </div>
+
+                                {{-- Barra de quórum / métrica de músicos requeridos --}}
+                                @if ($actuacion->musicos > 0)
+                                    <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-2.5 space-y-1.5">
+                                        <div class="flex items-center justify-between text-xs">
+                                            <span class="text-slate-400 font-medium flex items-center gap-1.5">
+                                                <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                </svg>
+                                                {{ __('Convocatòria plantilla') }}
+                                            </span>
+                                            <span class="font-bold text-slate-200">
+                                                {{ $actuacion->musicos }} {{ __('músics') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                {{-- Pie con acciones --}}
+                                <div class="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2">
+                                        {{-- Enlace a Comentarios --}}
+                                        @if ($actuacion->comments()->count() > 0)
+                                            <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}#messages"
+                                                class="inline-flex items-center gap-1 text-xs font-semibold text-blue-400 hover:text-blue-300 bg-blue-600/10 px-2 py-1 rounded-lg border border-blue-500/20">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                </svg>
+                                                {{ $actuacion->comments()->count() }}
                                             </a>
-                                            
                                         @endif
-                                        <a class="text-gray-600 hover:text-blue-500"
-                                            href="{{ route('actuacion.edit', ['actuacion' => $actuacion]) }}" alt="Editar">
-                                            <x-adminact w="28" h="28" />
-                                        </a>
-                                    @endcan
+
+                                        {{-- Opciones de Administrador --}}
+                                        @can('admin')
+                                            @if ($esHoy || $fechaAct->isFuture())
+                                                <button type="button" 
+                                                    class="enviarNotificacion text-slate-400 hover:text-amber-400 p-1.5 rounded-lg hover:bg-slate-800 transition"
+                                                    title="{{ __('Notificar al grup') }}"
+                                                    data-actuacion-id="{{ $actuacion->id }}"
+                                                    data-actuacion-inf="{{ $actuacion->descripcion }}">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                                    </svg>
+                                                </button>
+                                            @endif
+                                            <a href="{{ route('actuacion.edit', ['actuacion' => $actuacion]) }}" 
+                                                class="text-slate-400 hover:text-blue-400 p-1.5 rounded-lg hover:bg-slate-800 transition"
+                                                title="{{ __('Editar actuació') }}">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                </svg>
+                                            </a>
+                                        @endcan
+                                    </div>
+
+                                    {{-- Botón Principal: Ver Detalle y Asistencia --}}
+                                    <a href="{{ route('listas.actuacion', ['actuacion_id' => $actuacion->id]) }}"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-all shadow-md hover:shadow-blue-900/30">
+                                        <span>{{ __('Convocatòria') }}</span>
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
-        @endforeach
+        @empty
+            <div class="bg-[#111827] border border-slate-800 rounded-2xl p-12 text-center max-w-xl mx-auto">
+                <div class="w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 mx-auto flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold font-headline text-white mb-1">
+                    {{ __('No hi ha actuacions programades') }}
+                </h3>
+                <p class="text-sm text-slate-400 mb-6">
+                    {{ __('No s\'han trobat esdeveniments amb els criteris seleccionats.') }}
+                </p>
+                <a href="{{ route('actuacion.index') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl shadow-lg transition">
+                    {{ __('Veure totes les actuacions') }}
+                </a>
+            </div>
+        @endforelse
     </div>
+
     <x-subscription-info />
 
     @can('admin')
         <script>
-            var botonesNotificacion = document.querySelectorAll('.enviarNotificacion');
-
-            // Iterar sobre cada botón y agregar el event listener
-            botonesNotificacion.forEach(function(boton) {
-                boton.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    var listaId = boton.getAttribute('data-actuacion-id');
-                    var mensaje = boton.getAttribute('data-actuacion-inf');
-
-                    enviarNotif(listaId, mensaje);
+            document.addEventListener('DOMContentLoaded', function() {
+                var botonesNotificacion = document.querySelectorAll('.enviarNotificacion');
+                botonesNotificacion.forEach(function(boton) {
+                    boton.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        var listaId = boton.getAttribute('data-actuacion-id');
+                        var mensaje = boton.getAttribute('data-actuacion-inf');
+                        enviarNotif(listaId, mensaje);
+                    });
                 });
             });
 
             function enviarNotif(idActua, detalle) {
-
-                if (confirm('{{ __('common.notificargrupo') }}' + detalle)) {
-
+                if (confirm('{{ __('common.notificargrupo') }} ' + detalle)) {
                     $.ajax({
                         url: '/notificaractuacion',
                         method: 'POST',
@@ -455,21 +374,29 @@
                             _token: '{{ csrf_token() }}'
                         },
                         success: function(response) {
-                            showToast(response);
+                            if (typeof showToast === 'function') {
+                                showToast(response);
+                            } else {
+                                alert(response.message || 'Notificació enviada');
+                            }
                         },
                         error: function(xhr, status, error) {
-                            showToast(xhr.responseJSON);
+                            if (typeof showToast === 'function') {
+                                showToast(xhr.responseJSON);
+                            } else {
+                                alert('Error enviant la notificació');
+                            }
                         }
                     });
                 }
-
             }
         </script>
     @endcan
+
     @php
         $driverSteps = [
-            ['element' => '#driver-actuaciones-filter', 'popover' => ['title' => __('Filtrar'), 'description' => __('Usa los filtros para acotar la lista de actuaciones.'), 'position' => 'bottom']],
-            ['element' => '#driver-actuacion-first', 'popover' => ['title' => __('Actuación'), 'description' => __('Haz clic para ver detalles de la actuación.'), 'position' => 'right']],
+            ['element' => '#fecha', 'popover' => ['title' => __('Filtrar'), 'description' => __('Usa els filtres per afinar la llista d\'actuacions.'), 'position' => 'bottom']],
+            ['element' => '#driver-actuacion-first', 'popover' => ['title' => __('Actuació'), 'description' => __('Fes clic per veure els detalls i la convocatòria de l\'acte.'), 'position' => 'right']],
         ];
     @endphp
 
