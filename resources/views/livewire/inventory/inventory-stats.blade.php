@@ -1,18 +1,36 @@
 <div class="max-w-7xl mx-auto py-2 px-2 pb-24 sm:px-6 lg:px-8 space-y-6">
     <x-slot name="header">
-        <div class="flex items-center gap-4">
-            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-3 rounded-xl shadow-md">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                    </svg>
+                </div>
+                <div>
+                    <x-ui.breadcrumbs>
+                        <x-ui.breadcrumbs.link href="/">{{ __('common.dashboard') }}</x-ui.breadcrumbs.link>
+                        <x-ui.breadcrumbs.separator />
+                        <x-ui.breadcrumbs.link href="{{ route('inventory.index') }}">{{ __('Inventari') }}</x-ui.breadcrumbs.link>
+                        <x-ui.breadcrumbs.separator />
+                        <x-ui.breadcrumbs.link active>{{ __('Estadístiques') }}</x-ui.breadcrumbs.link>
+                    </x-ui.breadcrumbs>
+                    <h1 class="text-2xl lg:text-3xl font-extrabold font-headline text-slate-900 tracking-tight mt-0.5">
+                        {{ __('Estadístiques d\'Inventari') }}
+                    </h1>
+                </div>
+            </div>
+
+            <a href="{{ route('inventory.index') }}"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold shadow-xs transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-            </div>
-            <div>
-                <h1 class="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-1">{{ __('Estadísticas') }}</h1>
-                <p class="text-gray-600 dark:text-gray-300">{{ __('Distribución del valor del inventario por categoría') }}</p>
-            </div>
+                <span>{{ __('Tornar a l\'Inventari') }}</span>
+            </a>
         </div>
     </x-slot>
 

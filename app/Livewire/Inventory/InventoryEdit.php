@@ -33,6 +33,8 @@ class InventoryEdit extends Component
 
     public array $availableUsers = [];
 
+    public bool $confirmingDeletion = false;
+
     public function mount(): void
     {
         $this->authorize('update', $this->item);
@@ -40,10 +42,10 @@ class InventoryEdit extends Component
         $this->inventory_category_id = $this->item->inventory_category_id;
         $this->nombre = $this->item->nombre;
         $this->cantidad = $this->item->cantidad;
-        $this->valor_unitario = $this->item->valor_unitario;
+        $this->valor_unitario = (float) $this->item->valor_unitario;
         $this->estado = $this->item->estado;
         $this->observaciones = $this->item->observaciones;
-        $this->depreciation_rate = $this->item->depreciation_rate;
+        $this->depreciation_rate = (float) $this->item->depreciation_rate;
         $this->purchase_date = $this->item->purchase_date?->format('Y-m-d');
         $this->responsables = $this->item->responsables->pluck('id')->toArray();
         $this->availableUsers = User::all()->pluck('name', 'id')->toArray();
@@ -65,6 +67,26 @@ class InventoryEdit extends Component
         ];
     }
 
+    public function confirmDelete(): void
+    {
+        $this->confirmingDeletion = true;
+    }
+
+    public function cancelDelete(): void
+    {
+        $this->confirmingDeletion = false;
+    }
+
+    public function delete(): void
+    {
+        $this->authorize('delete', $this->item);
+
+        $this->item->delete();
+
+        session()->flash('message', __('Material eliminat correctament de l\'inventari.'));
+        $this->redirect(route('inventory.index'), navigate: true);
+    }
+
     public function save(): void
     {
         $this->authorize('update', $this->item);
@@ -84,7 +106,7 @@ class InventoryEdit extends Component
             'descripcion' => 'Item actualizado en el inventario',
         ]);
 
-        session()->flash('message', 'Item actualizado exitosamente.');
+        session()->flash('message', __('Material actualitzat correctament de l\'inventari.'));
         $this->redirect(route('inventory.index'), navigate: true);
     }
 

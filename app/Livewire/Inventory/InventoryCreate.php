@@ -78,7 +78,7 @@ class InventoryCreate extends Component
             'descripcion' => 'Item registrado en el inventario',
         ]);
 
-        session()->flash('message', 'Item creado exitosamente.');
+        session()->flash('message', __('Material creat correctament en l\'inventari.'));
         $this->redirect(route('inventory.index'), navigate: true);
     }
 

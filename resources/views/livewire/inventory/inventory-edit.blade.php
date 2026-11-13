@@ -221,23 +221,64 @@
             </div>
 
             <!-- Botones -->
-            <div class="flex justify-between items-center">
-                <a href="{{ route('inventory.index') }}"
-                    class="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    {{ __('Cancelar') }}
-                </a>
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-4">
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('inventory.index') }}"
+                        class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-2xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-xs">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        {{ __('Cancel·lar') }}
+                    </a>
+
+                    <button type="button" wire:click="confirmDelete"
+                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-xs font-bold shadow-xs transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        <span>{{ __('Eliminar material') }}</span>
+                    </button>
+                </div>
+
                 <button type="submit"
-                    class="inline-flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg text-sm font-semibold hover:from-indigo-600 hover:to-purple-700 transition shadow-sm">
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-bold shadow-md shadow-indigo-600/20 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
-                    {{ __('Actualizar') }}
+                    {{ __('Desar canvis') }}
                 </button>
             </div>
 
         </form>
     </div>
+
+    {{-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN --}}
+    <x-dialog-modal wire:model.live="confirmingDeletion">
+        <x-slot name="title">
+            <div class="flex items-center gap-2 text-rose-600 font-bold">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span>{{ __('Eliminar material de l\'inventari') }}</span>
+            </div>
+        </x-slot>
+
+        <x-slot name="content">
+            <p class="text-sm text-slate-600">
+                {{ __('Estàs segur que vols eliminar aquest element de l\'inventari? S\'eliminaran també els registres de moviments i assignacions vinculades. Aquesta acció no es pot desfer.') }}
+            </p>
+        </x-slot>
+
+        <x-slot name="footer">
+            <div class="flex items-center justify-end gap-3">
+                <x-secondary-button wire:click="cancelDelete">
+                    {{ __('Cancel·lar') }}
+                </x-secondary-button>
+
+                <x-danger-button wire:click="delete" wire:loading.attr="disabled">
+                    {{ __('Eliminar definitivament') }}
+                </x-danger-button>
+            </div>
+        </x-slot>
+    </x-dialog-modal>
 </div>

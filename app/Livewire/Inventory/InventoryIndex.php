@@ -27,6 +27,12 @@ class InventoryIndex extends Component
 
     public bool $isAdmin = false;
 
+    public bool $hasAssignedItems = false;
+
+    public ?int $itemToDeleteId = null;
+
+    public bool $confirmingDeletion = false;
+
     public function mount(): void
     {
         $this->authorize('viewAny', InventoryItem::class);
@@ -35,10 +41,16 @@ class InventoryIndex extends Component
         $user = Auth::user();
 
         $this->isAdmin = $user->hasRole('SuperAdmin') || $user->hasRole('Admin');
+        $this->hasAssignedItems = $user->inventoryItems()->exists();
+
         $years = $this->getYears();
         $currentYear = now()->year;
 
-        $this->selectedYear = in_array($currentYear, $years, true) ? $currentYear : ($years[0] ?? null);
+        if ($this->isAdmin) {
+            $this->selectedYear = in_array($currentYear, $years, true) ? $currentYear : ($years[0] ?? null);
+        } else {
+            $this->selectedYear = null;
+        }
     }
 
     public function updatedSearch(): void
@@ -61,6 +73,41 @@ class InventoryIndex extends Component
         $this->resetPage();
     }
 
+    public function resetFilters(): void
+    {
+        $this->reset(['search', 'selectedCategory', 'selectedState', 'selectedYear']);
+        $this->resetPage();
+    }
+
+    public function confirmDelete(int $itemId): void
+    {
+        $this->itemToDeleteId = $itemId;
+        $this->confirmingDeletion = true;
+    }
+
+    public function cancelDelete(): void
+    {
+        $this->itemToDeleteId = null;
+        $this->confirmingDeletion = false;
+    }
+
+    public function deleteItem(): void
+    {
+        if (! $this->itemToDeleteId) {
+            return;
+        }
+
+        $item = InventoryItem::findOrFail($this->itemToDeleteId);
+        $this->authorize('delete', $item);
+
+        $item->delete();
+
+        $this->itemToDeleteId = null;
+        $this->confirmingDeletion = false;
+
+        session()->flash('message', __('Material eliminat correctament de l\'inventari.'));
+    }
+
     public function getCategories(): Collection
     {
         return InventoryCategory::all();
@@ -69,6 +116,7 @@ class InventoryIndex extends Component
     public function getYears(): array
     {
         return $this->baseQuery()
+            ->whereNotNull('year')
             ->select('year')
             ->distinct()
             ->orderBy('year', 'desc')
@@ -127,6 +175,7 @@ class InventoryIndex extends Component
             'categories' => $this->getCategories(),
             'years' => $this->getYears(),
             'isAdmin' => $this->isAdmin,
+            'hasAssignedItems' => $this->hasAssignedItems,
         ]);
     }
 }

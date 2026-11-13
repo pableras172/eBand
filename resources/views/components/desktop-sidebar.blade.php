@@ -65,7 +65,7 @@
             @endif
 
             {{-- 5. Inventario --}}
-            @if (Route::has('inventory.index'))
+            @if (Route::has('inventory.index') && (Auth::user()->can('admin') || Auth::user()->inventoryItems()->exists()))
                 @php $isInv = request()->routeIs('inventory.*'); @endphp
                 <a href="{{ route('inventory.index') }}"
                    class="flex items-center gap-3 px-3 py-2 rounded-2xl font-medium text-xs transition-all {{ $isInv ? 'bg-indigo-50 text-primary border border-indigo-100 font-bold shadow-sm' : 'text-slate-600 hover:text-primary hover:bg-slate-50' }}">

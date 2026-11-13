@@ -112,16 +112,18 @@
                                     </div>
                                 </x-nav-link>
                             </div>
-                            <div class="w-60 px-4  m-2">
-                                <x-nav-link href="{{ route('inventory.index') }}" :active="request()->routeIs('inventory.index', 'inventory.show')">
-                                    <div class="flex items-center space-x-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                        </svg>
-                                        <span>{{ __('Inventario') }}</span>
-                                    </div>
-                                </x-nav-link>
-                            </div>
+                            @if (Auth::user()->can('admin') || Auth::user()->inventoryItems()->exists())
+                                <div class="w-60 px-4 m-2">
+                                    <x-nav-link href="{{ route('inventory.index') }}" :active="request()->routeIs('inventory.index', 'inventory.show')">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                            </svg>
+                                            <span>{{ __('Inventari') }}</span>
+                                        </div>
+                                    </x-nav-link>
+                                </div>
+                            @endif
                         </x-slot>
                     </x-dropdown>
                 </div>
@@ -648,14 +650,16 @@
                     </div>
                 </x-responsive-nav-link>
 
-                <x-responsive-nav-link href="{{ route('inventory.index') }}" :active="request()->routeIs('inventory.index', 'inventory.show')">
-                    <div class="flex items-center space-x-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
-                        <span>{{ __('Inventario') }}</span>
-                    </div>
-                </x-responsive-nav-link>
+                @if (Auth::user()->can('admin') || Auth::user()->inventoryItems()->exists())
+                    <x-responsive-nav-link href="{{ route('inventory.index') }}" :active="request()->routeIs('inventory.index', 'inventory.show')">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                            <span>{{ __('Inventari') }}</span>
+                        </div>
+                    </x-responsive-nav-link>
+                @endif
 
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                     <x-responsive-nav-link href="{{ route('api-tokens.index') }}" :active="request()->routeIs('api-tokens.index')">
