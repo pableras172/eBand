@@ -683,8 +683,8 @@
             <span class="text-xs text-slate-400 font-medium">{{ __('Gestió i informació') }}</span>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {{-- Card 1: Calendari d'Actuacions --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 @can('admin') lg:grid-cols-3 @else lg:grid-cols-2 @endcan gap-3">
+            {{-- Card 1: Calendari d'Actuacions (Lo ven Todos) --}}
             <a href="{{ route('actuacion.index') }}" 
                class="flex items-center justify-between p-4 bg-white rounded-3xl border border-indigo-50/80 shadow-bento hover:shadow-md transition-all active:scale-[0.99] group">
                 <div class="flex items-center gap-3.5">
@@ -701,41 +701,49 @@
                 </div>
             </a>
 
-            {{-- Card 2: Plantilla de Músics --}}
-            <a href="{{ route('users.index') }}" 
-               class="flex items-center justify-between p-4 bg-white rounded-3xl border border-indigo-50/80 shadow-bento hover:shadow-md transition-all active:scale-[0.99] group">
-                <div class="flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-2xl bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600 group-hover:scale-105 transition-transform">
-                        <span class="material-symbols-outlined text-[22px]">groups</span>
-                    </div>
-                    <div>
-                        <span class="text-sm font-bold text-on-surface block leading-tight">{{ __('Músics i Plantilla') }}</span>
-                        <span class="text-[11px] text-slate-400 mt-0.5 block leading-tight">{{ __('Directori de la banda') }}</span>
-                    </div>
-                </div>
-                <div class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all shrink-0">
-                    <span class="material-symbols-outlined text-[17px]">arrow_forward</span>
-                </div>
-            </a>
-
-            {{-- Card 3: Liquidacions / Bolos --}}
-            @if (Route::has('payments.user') && $user)
-                <a href="{{ route('payments.user', ['user' => $user->id]) }}" 
+            {{-- Card 2: Plantilla de Músics (Solo Administradores) --}}
+            @can('admin')
+                <a href="{{ route('users.index') }}" 
                    class="flex items-center justify-between p-4 bg-white rounded-3xl border border-indigo-50/80 shadow-bento hover:shadow-md transition-all active:scale-[0.99] group">
                     <div class="flex items-center gap-3.5">
-                        <div class="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 group-hover:scale-105 transition-transform">
-                            <span class="material-symbols-outlined text-[22px]">payments</span>
+                        <div class="w-11 h-11 rounded-2xl bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600 group-hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-[22px]">groups</span>
                         </div>
                         <div>
-                            <span class="text-sm font-bold text-on-surface block leading-tight">{{ __('Liquidacions') }}</span>
-                            <span class="text-[11px] text-slate-400 mt-0.5 block leading-tight">{{ __('Els meus bolos i dietes') }}</span>
+                            <span class="text-sm font-bold text-on-surface block leading-tight">{{ __('Músics i Plantilla') }}</span>
+                            <span class="text-[11px] text-slate-400 mt-0.5 block leading-tight">{{ __('Directori de la banda') }}</span>
                         </div>
                     </div>
                     <div class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all shrink-0">
                         <span class="material-symbols-outlined text-[17px]">arrow_forward</span>
                     </div>
                 </a>
-            @endif
+            @endcan
+
+            {{-- Card 3: Liquidacions / Bolos (Lo ven Todos) --}}
+            @php
+                $rutaLiquidaciones = route('actuacion.index');
+                if (Gate::allows('admin') && Route::has('payments.index')) {
+                    $rutaLiquidaciones = route('payments.index');
+                } elseif ($user && Route::has('payments.user')) {
+                    $rutaLiquidaciones = route('payments.user', ['user' => $user->id]);
+                }
+            @endphp
+            <a href="{{ $rutaLiquidaciones }}" 
+               class="flex items-center justify-between p-4 bg-white rounded-3xl border border-indigo-50/80 shadow-bento hover:shadow-md transition-all active:scale-[0.99] group">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 group-hover:scale-105 transition-transform">
+                        <span class="material-symbols-outlined text-[22px]">payments</span>
+                    </div>
+                    <div>
+                        <span class="text-sm font-bold text-on-surface block leading-tight">{{ __('Liquidacions') }}</span>
+                        <span class="text-[11px] text-slate-400 mt-0.5 block leading-tight">{{ __('Els meus bolos i dietes') }}</span>
+                    </div>
+                </div>
+                <div class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all shrink-0">
+                    <span class="material-symbols-outlined text-[17px]">arrow_forward</span>
+                </div>
+            </a>
         </div>
     </section>
 
