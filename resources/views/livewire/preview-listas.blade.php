@@ -1,102 +1,99 @@
 <div>
-    @if($floatButon)
-    <div class="fixed left-0 top-1/2 transform -translate-y-1/2 z-50">
-        <button class="cursor-pointer ms-6 text-sm text-gray-400 underline"
-            wire:click="$set('displayingPreviewListas', true)">
-            <x-lupa w="32" h="32" />
-        </button>
-    </div>
-    @else
-        <x-label class="cursor-pointer  text-sm text-gray-400 underline"
-            wire:click="$set('displayingPreviewListas', true)">
-            <x-lupa w="32" h="32" />            
-        </x-label>
-    @endif
+    <button type="button" 
+        wire:click="$set('displayingPreviewListas', true)"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold border border-slate-200 shadow-sm transition active:scale-95 shrink-0"
+        title="{{ __('Previsualitzar convocatòria') }}">
+        <span class="material-symbols-outlined text-[17px] text-primary">visibility</span>
+        <span>{{ __('Previsualitzar') }}</span>
+    </button>
 
     <x-dialog-modal wire:model.live="displayingPreviewListas">
         <x-slot name="title">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ $actuacion->descripcion }}
-            </h2>
-            <div class="flex items-center mt-2 mb-4 text-gray-500 w-full">
-                <x-ubicacion w="16" h="16" />
-                <span class="mr-4">{{ $actuacion->contrato->poblacion }}</span>
-                <!-- Icono de calendario -->
-                <x-calendario w="16" h="16" />
-                <!-- Fecha de la actuación -->
-                <span class="mr-4">{{ \Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y') }}</span>
-                <!-- Icono de usuarios -->
+            <div class="flex items-center justify-between gap-3 border-b border-indigo-50 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
+                    <h2 class="font-extrabold text-base sm:text-lg text-slate-800 tracking-tight">
+                        {{ $actuacion->descripcion }}
+                    </h2>
+                </div>
+                <button type="button" wire:click="$set('displayingPreviewListas', false)" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+            <div class="flex flex-wrap items-center gap-3 mt-2 text-xs font-semibold text-slate-500">
+                <span class="inline-flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px] text-slate-400">location_on</span>
+                    {{ $actuacion->contrato?->poblacion ?? __('No especificada') }}
+                </span>
+                <span class="inline-flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px] text-slate-400">event</span>
+                    {{ \Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y') }} · {{ \Carbon\Carbon::parse($actuacion->fechaActuacion)->format('H:i') }} h
+                </span>
                 @if ($actuacion->musicos > 0)
-                    <x-musicos w="16" h="16" />
-                    <!-- Número de músicos -->
-                    <span class="mr-4">{{ $actuacion->musicos }}</span>
+                    <span class="inline-flex items-center gap-1 text-primary">
+                        <span class="material-symbols-outlined text-[16px]">groups</span>
+                        {{ $totalFilas ?? 0 }} / {{ $actuacion->musicos }} {{ __('músics') }}
+                    </span>
                 @endif
                 @if ($actuacion->coches > 0)
-                    <x-coche w="16" h="16" />
-                    <span class="mr-4">{{ $actuacion->coches }}</span>
+                    <span class="inline-flex items-center gap-1 text-amber-600">
+                        <span class="material-symbols-outlined text-[16px]">directions_car</span>
+                        {{ $cochesCount ?? 0 }} / {{ $actuacion->coches }} {{ __('vehicles') }}
+                    </span>
                 @endif
             </div>
         </x-slot>
 
         <x-slot name="content">
-            <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+            <div class="space-y-3 max-h-[60vh] sm:max-h-[65vh] overflow-y-auto pr-1">
                 @foreach ($usuarios->groupBy('instrument_id') as $instrumento => $usuariosDelInstrumento)
-                    <details class="p-2 group" close>
-                        <summary class="flex items-center justify-between cursor-pointer">
-                            <h5 class="text-lg font-medium text-gray-900">
-                                {{ $usuariosDelInstrumento->first()->instrument->name }}
-                                ({{ $usuariosDelInstrumento->where('seleccionado', true)->count() }})
-                            </h5>
-                            <span class="relative flex-shrink-0 ml-1.5 w-5 h-5">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="absolute inset-0 w-5 h-5 opacity-100 group-open:opacity-0" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="absolute inset-0 w-5 h-5 opacity-0 group-open:opacity-100" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
+                    @php
+                        $nombreInst = $usuariosDelInstrumento->first()->instrument->name ?? __('Sense instrument');
+                        $convocadosInst = $usuariosDelInstrumento->where('seleccionado', true)->count();
+                    @endphp
+                    <details class="group bg-surface-subtle border border-indigo-50/80 rounded-2xl p-2.5 transition" open>
+                        <summary class="flex items-center justify-between cursor-pointer select-none font-bold text-xs text-on-surface uppercase tracking-wider py-1 px-1">
+                            <span class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[16px] text-primary transition-transform group-open:rotate-90">chevron_right</span>
+                                <span>{{ $nombreInst }}</span>
                             </span>
-                        </summary class="flex items-center justify-between cursor-pointer">
+                            <span class="text-[11px] font-extrabold text-primary bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
+                                {{ $convocadosInst }}
+                            </span>
+                        </summary>
 
-                        <ul class="divide-y divide-gray-200">
+                        <ul class="divide-y divide-slate-100 mt-2 bg-white rounded-xl border border-indigo-50/60 overflow-hidden">
                             @foreach ($usuariosDelInstrumento->sortBy('name')->sortBy('forastero') as $user)
                                 @if (!$user->disponible || !$user->seleccionado)
                                     @continue
                                 @endif
-                                <li class="@if ($user->forastero) forastero {{ $user->instrument->name }} @endif p-3 flex justify-between items-center user-card "
-                                    style="@if (Auth::user()->id == $user->id) background-color: #ffbd59; @endif">
-
-                                    <div class="flex items-center">
+                                <li class="p-2.5 flex justify-between items-center text-xs {{ Auth::id() == $user->id ? 'bg-indigo-50/50 font-bold' : '' }}">
+                                    <div class="flex items-center gap-2.5">
                                         <img src="{{ asset($user->profile_photo_url) }}" alt="{{ $user->name }}"
-                                            class="h-10 w-10 rounded-full">
-                                        <span class="ml-2 font-medium flex items-center">
+                                            class="h-8 w-8 rounded-full object-cover border border-slate-200">
+                                        <span class="font-medium text-slate-800">
                                             {{ $user->name }}
                                             @if ($user->forastero)
-                                                <button type="button"
-                                                    class="ml-2 mr-2 font-medium bg-fondobotonnaranja text-white p-2 rounded leading-none flex items-center">
+                                                <span class="ml-1.5 px-1.5 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-800 rounded">
                                                     {{ __('common.llogat') }}
-                                                </button>
+                                                </span>
+                                            @endif
+                                            @if (Auth::id() == $user->id)
+                                                <span class="ml-1.5 px-1.5 py-0.5 text-[10px] font-bold bg-indigo-100 text-indigo-700 rounded">
+                                                    {{ __('Tu') }}
+                                                </span>
                                             @endif
                                         </span>
                                     </div>
 
-                                    <div>
-                                        <div class="flex items-center">
-                                            <input style="float: left;margin-right: 15px;" type="checkbox"
-                                                data-lista-id="{{ $lista->id }}"
-                                                data-usuario-id="{{ $user->id }}"
-                                                {{ $user->seleccionado ? 'checked' : '' }} disabled>
-
-                                            @if ($user->coche)
-                                                <x-coche w="24" h="24" />
-                                            @endif
-                                        </div>
+                                    <div class="flex items-center gap-2">
+                                        @if ($user->coche)
+                                            <span class="text-xs" title="{{ __('Cotxe') }}">🚗</span>
+                                        @endif
+                                        @if ($user->furgona)
+                                            <span class="text-xs" title="{{ __('Furgona') }}">🚐</span>
+                                        @endif
+                                        <span class="text-emerald-600 font-bold text-xs">✓</span>
                                     </div>
                                 </li>
                             @endforeach
@@ -105,13 +102,14 @@
                 @endforeach
             </div>
         </x-slot>
+
         <x-slot name="footer">
-         <div class="flex justify-between w-full">
-            <x-print  w="32" h="32" a='{{$actuacion->id}}' />
-            <x-secondary-button wire:click="$set('displayingPreviewListas', false)" wire:loading.attr="disabled">
-                {{ __('Close') }}
-            </x-secondary-button>
-         </div>
+            <div class="flex items-center justify-between w-full gap-2">
+                <x-print w="32" h="32" a='{{ $actuacion->id }}' />
+                <x-secondary-button wire:click="$set('displayingPreviewListas', false)" wire:loading.attr="disabled" class="rounded-xl">
+                    {{ __('Tancar') }}
+                </x-secondary-button>
+            </div>
         </x-slot>
     </x-dialog-modal>
 </div>

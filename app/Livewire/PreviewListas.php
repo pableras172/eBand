@@ -68,7 +68,8 @@ class PreviewListas extends Component
         }
 
         // Obtener todos los usuarios
-        $usuarios = User::where('activo', 1)
+        $usuarios = User::with('instrument')
+            ->where('activo', 1)
             ->whereNotNull('instrument_id')
             ->whereDoesntHave('hijos') // no es padre
             ->get();
@@ -81,24 +82,30 @@ class PreviewListas extends Component
             $usuario->disponible = true;
             // Verificar si el usuario está en la lista
             if ($lista && $lista->users && $lista->users->contains($usuario->id)) {
-                if (! $lista->users()->where('users.id', $usuario->id)->first()->pivot->disponible) {
+                $userPivot = $lista->users()->where('users.id', $usuario->id)->first()?->pivot;
+                if (! $userPivot || ! $userPivot->disponible) {
                     $usuario->disponible = false;
 
                     continue;
                 }
                 $usuario->seleccionado = true;
                 // Verificar si el usuario tiene marcado el campo coche en la lista
-                if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->coche) {
+                if ($userPivot->coche) {
                     $usuario->coche = true;
                 }
-                if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->furgona) {
+                if ($userPivot->furgona) {
                     $usuario->furgona = true;
                 }
             }
         }
 
+        $totalFilas = $lista ? ListasUser::where('listas_id', $lista->id)->where('disponible', '<>', 0)->count() : 0;
+        $cochesCount = $lista ? ListasUser::where('listas_id', $lista->id)->where(function ($q) {
+            $q->where('coche', 1)->orWhere('furgona', 1);
+        })->count() : 0;
+
         // Verificar si la lista está mostrándose y si hay usuarios disponibles
-        return view('livewire.preview-listas', compact('actuacion', 'usuarios', 'lista'));
+        return view('livewire.preview-listas', compact('actuacion', 'usuarios', 'lista', 'totalFilas', 'cochesCount'));
     }
 
     public function getUsuariosDisponibles($listaId)

@@ -1,4 +1,4 @@
-<nav class="fixed bottom-0 inset-x-0 z-50 pb-safe px-4 pointer-events-none block lg:hidden" aria-label="{{ __('Navegació mòbil') }}">
+<nav class="fixed bottom-0 inset-x-0 z-40 pb-safe px-4 pointer-events-none block lg:hidden" aria-label="{{ __('Navegació mòbil') }}">
     <div class="mb-2 mx-auto max-w-md pointer-events-auto bg-white/90 backdrop-blur-2xl border border-white/80 shadow-glass rounded-3xl px-3 py-1.5 flex items-center justify-around">
         {{-- 1. Inicio --}}
         @php $isDashboard = request()->routeIs('dashboard'); @endphp

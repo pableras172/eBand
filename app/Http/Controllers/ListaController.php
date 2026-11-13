@@ -48,7 +48,8 @@ class ListaController extends Controller
             }
         }
 
-        $usuarios = User::where('activo', 1)
+        $usuarios = User::with('instrument')
+            ->where('activo', 1)
             ->whereNotNull('instrument_id') // excluir usuarios sin instrumento asignado
             ->join('instruments as i', 'users.instrument_id', '=', 'i.id')
             ->orderBy('i.orden')

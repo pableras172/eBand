@@ -4,7 +4,36 @@
     $nombreDia = ucfirst($fechaActuacion->translatedFormat('l'));
     $fechaFormateada = $fechaActuacion->format('d/m/Y');
     $horaFormateada = $fechaActuacion->format('H:i');
-    $limiteAntelacion = ConfigHelper::getConfigValue('diasantelacion') ?? 5;
+    $limiteAntelacion = (int) (ConfigHelper::getConfigValue('diasantelacion') ?? 5);
+
+    $currentUser = auth()->user();
+    $diasRestantes = (int) now()->startOfDay()->diffInDays($fechaActuacion->startOfDay(), false);
+    $fueraDePlazo = ($diasRestantes <= $limiteAntelacion) && !$currentUser?->can('admin');
+
+    $currentUserRel = $lista ? $lista->users()->where('users.id', $currentUser?->id)->first() : null;
+    $usuarioConvocado = false;
+    $userDispState = 'vacio';
+
+    if ($currentUserRel) {
+        $pivot = $currentUserRel->pivot;
+        if ((int) $pivot->disponible === 0) {
+            $userDispState = 'no';
+        } elseif (!empty($pivot->duda)) {
+            $userDispState = 'duda';
+        } elseif ((int) $pivot->disponible === 1) {
+            $usuarioConvocado = true;
+            $userDispState = 'convocado';
+        }
+    }
+
+    // Métricas del quórum de plantilla
+    $dudasCount = $lista ? \App\Models\ListasUser::where('listas_id', $lista->id)->where('duda', 1)->count() : 0;
+    $noDisponiblesCount = $lista ? \App\Models\ListasUser::where('listas_id', $lista->id)->where('disponible', 0)->count() : 0;
+    $convocadosCount = $lista ? \App\Models\ListasUser::where('listas_id', $lista->id)->where('disponible', 1)->where(function($q) { $q->whereNull('duda')->orWhere('duda', 0); })->count() : 0;
+    $baseMusicos = $actuacion->musicos > 0 ? $actuacion->musicos : max(1, $convocadosCount + $dudasCount + $noDisponiblesCount);
+    $porcentajeConvocados = min(100, round(($convocadosCount / $baseMusicos) * 100));
+    $porcentajeDudas = min(100 - $porcentajeConvocados, round(($dudasCount / $baseMusicos) * 100));
+    $porcentajeNoDisp = min(100 - $porcentajeConvocados - $porcentajeDudas, round(($noDisponiblesCount / $baseMusicos) * 100));
 @endphp
 
 <x-app-layout>
@@ -35,7 +64,26 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
+                @can('admin')
+                    @if (Carbon\Carbon::parse($actuacion->fechaActuacion)->isToday() || Carbon\Carbon::parse($actuacion->fechaActuacion)->isFuture())
+                        <button id="cleanListaButton" type="button" data-lista-id="{{ $lista->id }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-white hover:bg-rose-50 text-slate-700 hover:text-rose-600 text-xs font-bold border border-slate-200 shadow-sm transition active:scale-95"
+                            title="{{ __('Buidar convocatòria') }}">
+                            <span class="material-symbols-outlined text-[16px]">delete</span>
+                            <span class="hidden sm:inline">{{ __('Buidar') }}</span>
+                        </button>
+
+                        <button id="avisarMarcados" type="button" data-lista-id="{{ $lista->id }}"
+                            onclick="enviarNotif({{ $lista->id }},'{{ json_encode($actuacion->descripcion) }}')"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-sm transition active:scale-95"
+                            title="{{ __('Notificar a la plantilla convocada') }}">
+                            <span class="material-symbols-outlined text-[16px]">campaign</span>
+                            <span class="hidden sm:inline">{{ __('Avisar') }}</span>
+                        </button>
+                    @endif
+                @endcan
+
                 <a href="{{ route('actuacion.index') }}" 
                     class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold border border-slate-200 shadow-sm transition">
                     <span class="material-symbols-outlined text-[16px]">arrow_back</span>
@@ -57,32 +105,8 @@
         </div>
     </div>
 
-    {{-- Alertas de Disponibilidad y Antelación --}}
-    <div class="space-y-3 mb-6">
-        @if ($usuarioDisponible && $antelacion->days <= $limiteAntelacion)
-            <div class="bg-amber-50 border border-amber-200 rounded-3xl p-4 flex items-center gap-3 text-amber-900 text-xs shadow-sm">
-                <span class="material-symbols-outlined text-amber-600 text-[20px] shrink-0">warning</span>
-                <span>{{ __('No es pot canviar la disponibilitat amb pocs dies d\'antelació. Si tens una incidència greu, contacta amb la direcció.') }}</span>
-            </div>
-        @endif
-
-        @if (!$usuarioDisponible)
-            <div class="bg-rose-50 border border-rose-200 rounded-3xl p-4 flex items-center justify-between gap-3 text-rose-900 text-xs shadow-sm">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-2xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
-                        <span class="material-symbols-outlined text-[18px]">cancel</span>
-                    </div>
-                    <div>
-                        <span class="font-bold text-sm block">{{ __('Has comunicat que NO estàs disponible per a aquesta actuació.') }}</span>
-                        <p class="text-[11px] text-rose-700 mt-0.5">{{ __('La teua absència està registrada en el còmput de la plantilla.') }}</p>
-                    </div>
-                </div>
-            </div>
-        @endif
-    </div>
-
     {{-- Layout Principal Master-Detail: 12 columnas en Desktop, 1 columna en Móvil --}}
-    <div class="lg:grid lg:grid-cols-12 lg:gap-8 space-y-6 lg:space-y-0 pb-32">
+    <div class="lg:grid lg:grid-cols-12 lg:gap-8 space-y-6 lg:space-y-0 pb-24 lg:pb-12">
 
         {{-- COLUMNA IZQUIERDA (5 columnas): Datos del Evento, Quórum, Mapa y Observaciones --}}
         <div class="lg:col-span-5 space-y-6" id="driver-detalles">
@@ -136,15 +160,31 @@
                             {{ __('Quòrum de Plantilla') }}
                         </span>
                         <span class="text-xs font-extrabold text-on-surface">
-                            <span id="musics_count" class="text-primary text-sm font-black">{{ $totalFilas }}</span> / {{ $actuacion->musicos > 0 ? $actuacion->musicos : '--' }} {{ __('músics') }}
+                            <span id="musics_count" class="text-primary text-sm font-black">{{ $convocadosCount }}</span> / {{ $actuacion->musicos > 0 ? $actuacion->musicos : '--' }} {{ __('músics') }}
                         </span>
                     </div>
 
-                    @php
-                        $porcentajeQuorum = ($actuacion->musicos > 0 && $totalFilas > 0) ? min(100, round(($totalFilas / $actuacion->musicos) * 100)) : 0;
-                    @endphp
-                    <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-                        <div class="bg-gradient-to-r from-primary to-cyan-500 h-2 rounded-full transition-all duration-500" style="width: {{ $porcentajeQuorum }}%"></div>
+                    {{-- Desglose Convocats, Té dubtes, No disponible --}}
+                    <div class="flex items-center gap-2 text-[11px] font-bold text-slate-500 flex-wrap">
+                        <span class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            {{ __('Convocats') }} ({{ $convocadosCount }})
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                            {{ __('Té dubtes') }} ({{ $dudasCount }})
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-rose-700 bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-100">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                            {{ __('No disponible') }} ({{ $noDisponiblesCount }})
+                        </span>
+                    </div>
+
+                    {{-- Barra visual tricolor --}}
+                    <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden flex">
+                        <div class="bg-emerald-500 h-full transition-all duration-500" style="width: {{ $porcentajeConvocados }}%" title="{{ __('Convocats') }}: {{ $convocadosCount }}"></div>
+                        <div class="bg-amber-400 h-full transition-all duration-500" style="width: {{ $porcentajeDudas }}%" title="{{ __('Té dubtes') }}: {{ $dudasCount }}"></div>
+                        <div class="bg-rose-500 h-full transition-all duration-500" style="width: {{ $porcentajeNoDisp }}%" title="{{ __('No disponible') }}: {{ $noDisponiblesCount }}"></div>
                     </div>
 
                     <div class="flex items-center justify-between pt-1 border-t border-indigo-50 text-xs">
@@ -170,6 +210,82 @@
                         </p>
                     </div>
                 @endif
+
+                {{-- Disponibilidad del Músico (Dudas y No disponible) --}}
+                @auth
+                    <div class="pt-3 border-t border-indigo-50 space-y-2.5" id="driver-botonera">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-primary text-[17px]">how_to_reg</span>
+                                {{ __('La teua disponibilitat') }}
+                            </span>
+                            @if ($userDispState === 'duda')
+                                <span class="px-2 py-0.5 rounded-lg text-[10.5px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                    {{ __('Dubte comunicat') }}
+                                </span>
+                            @elseif ($userDispState === 'no')
+                                <span class="px-2 py-0.5 rounded-lg text-[10.5px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                                    {{ __('Baixa comunicada') }}
+                                </span>
+                            @elseif ($usuarioConvocado)
+                                <span class="px-2 py-0.5 rounded-lg text-[10.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                    {{ __('Convocat') }}
+                                </span>
+                            @endif
+                        </div>
+
+                        @if ($usuarioConvocado)
+                            {{-- Músico CONVOCADO por la dirección: NO puede indicar que no asiste ni dudas --}}
+                            <div class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-xs">
+                                <span class="material-symbols-outlined text-[20px] text-status-available shrink-0">verified</span>
+                                <div class="flex flex-col">
+                                    <span class="text-xs">{{ __('Estàs convocat') }}</span>
+                                    <span class="text-[10.5px] font-medium text-emerald-700">{{ __('Assistència confirmada per la direcció. No pots marcar baixa ni dubte.') }}</span>
+                                </div>
+                            </div>
+                        @elseif ($fueraDePlazo)
+                            {{-- Fuera de plazo por antelación --}}
+                            <div class="px-3.5 py-2.5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-900 text-xs flex items-center gap-2.5">
+                                <span class="material-symbols-outlined text-amber-600 text-[20px] shrink-0">lock_clock</span>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-xs">{{ __('Termini de canvi tancat') }}</span>
+                                    <span class="text-[10.5px] text-amber-800">{{ __('Menys de :dias dies d\'antelació. Contacta amb direcció.', ['dias' => $limiteAntelacion]) }}</span>
+                                </div>
+                            </div>
+                        @else
+                            {{-- Botones interactivos de Duda y No asistencia --}}
+                            <div class="grid grid-cols-2 gap-2.5 bg-surface-subtle p-2 rounded-2xl border border-indigo-50/80">
+                                <button type="button" 
+                                    id="btn-detalles-duda" 
+                                    onclick="setDetallesAttendance('duda', {{ $lista->id }}, {{ auth()->id() }}, {{ $actuacion->id }})"
+                                    class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40' : 'bg-white hover:bg-amber-50/50 text-slate-700 border border-slate-200 hover:border-amber-300' }}"
+                                    title="{{ __('Notifica que no saps segur si podràs assistir') }}">
+                                    <span class="material-symbols-outlined text-[17px]">help</span>
+                                    <span>{{ __('Tinc dubtes') }}</span>
+                                </button>
+
+                                <button type="button" 
+                                    id="btn-detalles-no" 
+                                    onclick="setDetallesAttendance('no', {{ $lista->id }}, {{ auth()->id() }}, {{ $actuacion->id }})"
+                                    class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40' : 'bg-white hover:bg-rose-50/50 text-slate-700 border border-slate-200 hover:border-rose-300' }}"
+                                    title="{{ __('Comunica la teua baixa') }}">
+                                    <span class="material-symbols-outlined text-[17px]">cancel</span>
+                                    <span>{{ __('No puc assistir') }}</span>
+                                </button>
+                            </div>
+
+                            @if ($userDispState === 'duda')
+                                <p class="text-[11px] text-amber-700 leading-tight">
+                                    {{ __('Has marcat que tens dubtes. Pots tornar a prémer el botó per a anul·lar-ho i restablir la disponibilitat.') }}
+                                </p>
+                            @elseif ($userDispState === 'no')
+                                <p class="text-[11px] text-rose-700 leading-tight">
+                                    {{ __('Has marcat que no pots assistir. Pots tornar a prémer el botó per a anul·lar la baixa i restablir la disponibilitat.') }}
+                                </p>
+                            @endif
+                        @endif
+                    </div>
+                @endauth
             </div>
 
             {{-- Tarjeta de Localización / Mapa --}}
@@ -234,22 +350,24 @@
             
             {{-- Panel de la Plantilla de Músicos / Cuerdas --}}
             <div id="driver-componentes" class="bg-white border border-indigo-50 shadow-bento rounded-3xl overflow-hidden">
-                <div class="p-4 sm:p-5 border-b border-indigo-50 flex items-center justify-between bg-surface-subtle">
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-primary">
+                <div class="p-4 sm:p-5 border-b border-indigo-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-surface-subtle">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-9 h-9 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-primary shrink-0">
                             <span class="material-symbols-outlined text-[20px]">groups</span>
                         </div>
-                        <div>
-                            <h2 class="text-xs font-bold font-headline text-on-surface uppercase tracking-wider">
+                        <div class="min-w-0">
+                            <h2 class="text-xs font-bold font-headline text-on-surface uppercase tracking-wider truncate">
                                 {{ __('Plantilla per Cordes') }}
                             </h2>
-                            <p class="text-xs text-slate-500">
+                            <p class="text-xs text-slate-500 truncate">
                                 {{ __('Distribució d\'instruments i assignació de transport') }}
                             </p>
                         </div>
                     </div>
 
-                    @livewire('preview-listas', ['id' => $actuacion->id])
+                    <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                        @livewire('preview-listas', ['id' => $actuacion->id])
+                    </div>
                 </div>
 
                 {{-- Acordeón / Secciones de Cuerdas --}}
@@ -491,81 +609,11 @@
 
     </div>
 
-    {{-- BOTONERA FIJA INFERIOR (Floating Glass Bento Command Bar) --}}
-    <div id="driver-botonera"></div>
-    <footer class="fixed bottom-0 left-0 right-0 z-30 bg-white/90 backdrop-blur-2xl border-t border-slate-200/80 py-3 px-4 shadow-glass">
-        <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-            
-            {{-- Botón Volver --}}
-            <a href="{{ route('actuacion.index') }}"
-                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-surface-subtle hover:bg-slate-100 text-slate-700 text-xs font-bold border border-indigo-100 transition">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
-                <span class="hidden sm:inline">{{ __('Tornar') }}</span>
-            </a>
-
-            {{-- Conmutador de Asistencia Táctil Principal --}}
-            <div class="flex-1 max-w-md">
-                @if ($usuarioDisponible)
-                    <button id="btnodisponible" type="button"
-                        data-lista-id="{{ $lista->id }}"
-                        data-usuario-id="{{ Auth::user()->id }}" 
-                        data-disponible="0"
-                        data-usuario-seleccionado="{{ $usuarioSeleccionado ? 1 : 0 }}"
-                        data-antelacion="{{ $antelacion->days }}" 
-                        onclick="gestionarDisponibilidad(event,this)"
-                        data-limite-antelacion="{{ $limiteAntelacion }}"
-                        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-status-unavailable hover:bg-rose-600 text-white text-xs sm:text-sm font-bold shadow-md shadow-rose-500/20 transition-all active:scale-95">
-                        <span class="material-symbols-outlined text-[18px]">cancel</span>
-                        <span>{{ __('No puc assistir (Comunica Baixa)') }}</span>
-                    </button>
-                @else
-                    <button id="btnodisponible" type="button"
-                        data-lista-id="{{ $lista->id }}"
-                        data-usuario-id="{{ Auth::user()->id }}" 
-                        data-disponible="1"
-                        data-usuario-seleccionado="{{ $usuarioSeleccionado ? 1 : 0 }}"
-                        data-antelacion="{{ $antelacion->days }}" 
-                        onclick="gestionarDisponibilidad(event,this)"
-                        data-limite-antelacion="{{ $limiteAntelacion }}"
-                        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-status-available hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold shadow-md shadow-emerald-500/20 transition-all active:scale-95">
-                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
-                        <span>{{ __('Ara sí puc assistir (Confirmar)') }}</span>
-                    </button>
-                @endif
-            </div>
-
-            {{-- Acciones de Administración --}}
-            @can('admin')
-                <div class="flex items-center gap-2">
-                    @if (Carbon\Carbon::parse($actuacion->fechaActuacion)->isToday() || Carbon\Carbon::parse($actuacion->fechaActuacion)->isFuture())
-                        {{-- Botón Vaciar Lista --}}
-                        <button id="cleanListaButton" type="button" data-lista-id="{{ $lista->id }}"
-                            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-surface-subtle hover:bg-rose-50 text-slate-700 hover:text-rose-600 text-xs font-bold border border-slate-200 transition"
-                            title="{{ __('Buidar convocatòria') }}">
-                            <span class="material-symbols-outlined text-[16px]">delete</span>
-                            <span class="hidden md:inline">{{ __('Buidar') }}</span>
-                        </button>
-
-                        {{-- Botón Avisar Seleccionados --}}
-                        <button id="avisarMarcados" type="button" data-lista-id="{{ $lista->id }}"
-                            onclick="enviarNotif({{ $lista->id }},'{{ json_encode($actuacion->descripcion) }}')"
-                            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-primary hover:bg-primary-dark text-white text-xs font-bold shadow-sm transition active:scale-95"
-                            title="{{ __('Notificar a la plantilla convocada') }}">
-                            <span class="material-symbols-outlined text-[16px]">campaign</span>
-                            <span class="hidden md:inline">{{ __('Avisar') }}</span>
-                        </button>
-                    @endif
-                </div>
-            @endcan
-
-        </div>
-    </footer>
-
     {{-- SCRIPTS DE COMPORTAMIENTO --}}
     <script>
         let availabilityUpdateInProgress = false;
 
-        function setPageLoadingState(isLoading, message = 'Actualitzant disponibilitat...') {
+        function setPageLoadingState(isLoading, message = '{{ __('Actualitzant disponibilitat...') }}') {
             const overlay = document.getElementById('pageLoadingOverlay');
             const messageElement = document.getElementById('pageLoadingMessage');
 
@@ -582,6 +630,41 @@
                 overlay.classList.add('hidden');
                 document.body.classList.remove('overflow-hidden');
             }
+        }
+
+        function setDetallesAttendance(estado, listaId, usuarioId, actuacionId) {
+            if (availabilityUpdateInProgress) return;
+
+            availabilityUpdateInProgress = true;
+            setPageLoadingState(true, '{{ __('Actualitzant disponibilitat...') }}');
+
+            $.ajax({
+                url: '/listauserdisp',
+                method: 'POST',
+                data: {
+                    lista_id: listaId,
+                    usuario_id: usuarioId,
+                    actuacion_id: actuacionId,
+                    estado: estado,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (typeof showToast === 'function') {
+                        showToast(response);
+                    }
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    let message = xhr.responseJSON?.message || '{{ __('Error al comunicar la disponibilitat.') }}';
+                    if (typeof showToast === 'function') {
+                        showToast(message);
+                    } else {
+                        alert(message);
+                    }
+                    availabilityUpdateInProgress = false;
+                    setPageLoadingState(false);
+                }
+            });
         }
 
         function actualizarSeleccion(checkbox) {
@@ -658,7 +741,7 @@
         }
 
         function enviarNotif(idActua, detalle) {
-            if (confirm('Segur que vols notificar als usuaris convocats d\'aquesta actuació?')) {
+            if (confirm('{{ __('Segur que vols notificar als usuaris convocats d\'aquesta actuació?') }}')) {
                 $.ajax({
                     url: '/notificaractuacionlista',
                     method: 'POST',
@@ -670,80 +753,18 @@
                         if (typeof showToast === 'function') {
                             showToast(response);
                         } else {
-                            alert(response.message || 'Notificació enviada');
+                            alert(response.message || '{{ __('Notificació enviada correctament.') }}');
                         }
                     },
                     error: function(xhr, status, error) {
                         if (typeof showToast === 'function') {
                             showToast(xhr.responseJSON);
                         } else {
-                            alert('Error enviant notificació');
+                            alert('{{ __('Error enviant la notificació.') }}');
                         }
                     }
                 });
             }
-        }
-
-        function gestionarDisponibilidad(event, componente) {
-            event.preventDefault();
-
-            if (availabilityUpdateInProgress) return;
-
-            availabilityUpdateInProgress = true;
-            setPageLoadingState(true);
-
-            componente.disabled = true;
-
-            var listaId = componente.getAttribute('data-lista-id');
-            var usuarioId = componente.getAttribute('data-usuario-id');
-            var disponible = componente.getAttribute('data-disponible');
-            var usuarioSeleccionado = parseInt(componente.getAttribute('data-usuario-seleccionado') ?? 0);
-            var antelacion = parseInt(componente.getAttribute('data-antelacion'));
-            var limiteAntelacion = parseInt(componente.getAttribute('data-limite-antelacion') ?? 3);
-
-            if (disponible == 0 && usuarioSeleccionado === 1) {
-                alert('Si ja estàs a la llista de convocats no pots marcar que no estàs disponible. Contacta amb la direcció.');
-                availabilityUpdateInProgress = false;
-                setPageLoadingState(false);
-                componente.disabled = false;
-                return;
-            }
-
-            if (disponible == 0 && antelacion <= limiteAntelacion) {
-                alert('No es pot canviar la disponibilitat amb tan pocs dies d\'antelació.');
-                availabilityUpdateInProgress = false;
-                setPageLoadingState(false);
-                componente.disabled = false;
-                return;
-            }
-
-            $.ajax({
-                url: '/listauserdisp',
-                method: 'POST',
-                data: {
-                    lista_id: listaId,
-                    usuario_id: usuarioId,
-                    disponible: disponible == 1 ? 1 : 0,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (typeof showToast === 'function') {
-                        showToast(response);
-                    }
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    let message = xhr.responseJSON?.message || 'Error al comunicar disponibilitat.';
-                    if (typeof showToast === 'function') {
-                        showToast(message);
-                    } else {
-                        alert(message);
-                    }
-                    availabilityUpdateInProgress = false;
-                    setPageLoadingState(false);
-                    componente.disabled = false;
-                }
-            });
         }
 
         @can('admin')
@@ -753,7 +774,7 @@
                     event.preventDefault();
                     var listaId = cleanListaButton.getAttribute('data-lista-id');
 
-                    if (confirm("Segur que vols buidar tota la convocatòria d'aquesta llista?")) {
+                    if (confirm("{{ __('Segur que vols buidar tota la convocatòria d\'aquesta llista?') }}")) {
                         fetch(`/listauserclean/${listaId}`, {
                             method: 'DELETE',
                             headers: {
@@ -762,12 +783,12 @@
                             },
                         })
                         .then(response => {
-                            if (!response.ok) throw new Error('Error al buidar la llista');
+                            if (!response.ok) throw new Error('{{ __('Error al buidar la llista.') }}');
                             window.location.reload();
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            alert('Error al buidar la llista');
+                            alert('{{ __('Error al buidar la llista.') }}');
                         });
                     }
                 });
