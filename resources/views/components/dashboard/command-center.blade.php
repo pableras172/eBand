@@ -37,40 +37,72 @@
         ->orderBy('fechaActuacion', 'asc')
         ->get();
 
-    // 3. Métricas de Asistencia y Ensayos del Mes
-    $actuacionesMes = \App\Models\Actuacion::whereBetween('fechaActuacion', [$inicioMes, $finMes])
+    // 3. Métrica de Asistencia y Convocatorias de Tipo Ensayo
+    $yearActual = now()->year;
+
+    // Consulta base de actuaciones de tipo ensayo (por flag 'tipoensayo' o por denominación)
+    $filtroTipoEnsayo = function ($q) {
+        $q->where('tipoensayo', true)
+          ->orWhereRaw('LOWER(nombre) LIKE ?', ['%ensayo%'])
+          ->orWhereRaw('LOWER(nombre) LIKE ?', ['%assaig%']);
+    };
+
+    // A) Ensayos celebrados hasta hoy en el año actual (base para el cálculo de asistencia)
+    $queryEnsayosCelebrados = \App\Models\Actuacion::query()
         ->where('is_draft', false)
-        ->get();
+        ->where('fechaActuacion', '<=', now())
+        ->whereYear('fechaActuacion', $yearActual)
+        ->whereHas('tipoactuacion', $filtroTipoEnsayo);
 
-    $ensayosCount = $actuacionesMes->filter(function ($act) {
-        $nombreTipo = strtolower($act->tipoactuacion?->nombre ?? $act->tipo?->nombre ?? '');
-        return str_contains($nombreTipo, 'assaig') || str_contains($nombreTipo, 'ensayo');
-    })->count();
+    $totalEnsayosCelebrados = (clone $queryEnsayosCelebrados)->count();
 
-    if ($ensayosCount === 0) {
-        $ensayosCount = $actuacionesMes->count();
-    }
-
-    $asistenciaPorcentaje = 94;
-    try {
-        $listasIdsMes = $actuacionesMes->pluck('lista_id')->filter();
-        if ($listasIdsMes->isNotEmpty()) {
-            $totalAsignadas = \Illuminate\Support\Facades\DB::table('listas_user')
-                ->whereIn('listas_id', $listasIdsMes)
-                ->where('user_id', $user->id)
-                ->count();
-            if ($totalAsignadas > 0) {
-                $asistidas = \Illuminate\Support\Facades\DB::table('listas_user')
-                    ->whereIn('listas_id', $listasIdsMes)
-                    ->where('user_id', $user->id)
-                    ->where('disponible', '<>', 0)
-                    ->count();
-                $asistenciaPorcentaje = round(($asistidas / $totalAsignadas) * 100);
-            }
+    // Si no hay ensayos registrados en este año todavía, consultamos histórico global para no mostrar vacío
+    $esHistorico = false;
+    if ($totalEnsayosCelebrados === 0) {
+        $totalHistoricos = \App\Models\Actuacion::query()
+            ->where('is_draft', false)
+            ->where('fechaActuacion', '<=', now())
+            ->whereHas('tipoactuacion', $filtroTipoEnsayo)
+            ->count();
+        if ($totalHistoricos > 0) {
+            $totalEnsayosCelebrados = $totalHistoricos;
+            $esHistorico = true;
         }
-    } catch (\Throwable $e) {
-        $asistenciaPorcentaje = 94;
     }
+
+    // Ensayos a los que el músico asistió (disponible <> 0)
+    $ensayosAsistidos = 0;
+    if ($totalEnsayosCelebrados > 0) {
+        $queryAsistencias = \Illuminate\Support\Facades\DB::table('listas')
+            ->join('listas_user', 'listas.id', '=', 'listas_user.listas_id')
+            ->join('actuacions', 'listas.actuacions_id', '=', 'actuacions.id')
+            ->join('tipoactuacions', 'actuacions.tipoactuacions_id', '=', 'tipoactuacions.id')
+            ->where('listas_user.user_id', $user->id)
+            ->where('listas_user.disponible', '<>', 0)
+            ->where('actuacions.is_draft', false)
+            ->where('actuacions.fechaActuacion', '<=', now())
+            ->where(function ($q) {
+                $q->where('tipoactuacions.tipoensayo', true)
+                  ->orWhereRaw('LOWER(tipoactuacions.nombre) LIKE ?', ['%ensayo%'])
+                  ->orWhereRaw('LOWER(tipoactuacions.nombre) LIKE ?', ['%assaig%']);
+            });
+
+        if (! $esHistorico) {
+            $queryAsistencias->whereYear('actuacions.fechaActuacion', $yearActual);
+        }
+
+        $ensayosAsistidos = $queryAsistencias->count();
+        $asistenciaEnsayosPorcentaje = round(($ensayosAsistidos / $totalEnsayosCelebrados) * 100);
+    } else {
+        $asistenciaEnsayosPorcentaje = 100;
+    }
+
+    // B) Próximos ensayos futuros programados
+    $proximosEnsayosCount = \App\Models\Actuacion::query()
+        ->where('is_draft', false)
+        ->where('fechaActuacion', '>=', now())
+        ->whereHas('tipoactuacion', $filtroTipoEnsayo)
+        ->count();
 
     // 4. Avisos / Comunicados de Dirección
     $avisosRecientes = collect();
@@ -168,27 +200,33 @@
 
     {{-- 2. Asymmetric Neo-Bento Metrics Grid --}}
     <section class="grid grid-cols-12 gap-3 sm:gap-4">
-        {{-- Bento Block 1: Asistencia Gauge (7 cols) --}}
+        {{-- Bento Block 1: Asistencia Gauge a Ensayos (7 cols) --}}
         <div class="col-span-12 sm:col-span-7 bg-white rounded-3xl p-4 sm:p-5 border border-indigo-50/80 shadow-bento flex flex-col justify-between relative overflow-hidden group">
             <div class="flex items-center justify-between">
-                <span class="material-symbols-outlined text-status-available text-[20px] bg-status-available-subtle p-2 rounded-2xl">verified</span>
+                <span class="material-symbols-outlined text-status-available text-[20px] bg-status-available-subtle p-2 rounded-2xl">how_to_reg</span>
                 <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-status-available-subtle text-status-available">
-                    {{ ucfirst(now()->translatedFormat('F')) }}
+                    {{ __('Assajos') }} {{ $yearActual }}
                 </span>
             </div>
             <div class="mt-4 flex items-baseline gap-3">
-                <span class="font-headline text-3xl sm:text-4xl font-extrabold text-on-surface tracking-tight">{{ $asistenciaPorcentaje }}%</span>
+                <span class="font-headline text-3xl sm:text-4xl font-extrabold text-on-surface tracking-tight">{{ $asistenciaEnsayosPorcentaje }}%</span>
                 <div class="h-2 flex-1 bg-slate-100 rounded-full overflow-hidden self-center">
-                    <div class="h-full bg-gradient-to-r from-emerald-400 to-status-available rounded-full transition-all duration-700" style="width: {{ $asistenciaPorcentaje }}%"></div>
+                    <div class="h-full bg-gradient-to-r from-emerald-400 to-status-available rounded-full transition-all duration-700" style="width: {{ $asistenciaEnsayosPorcentaje }}%"></div>
                 </div>
             </div>
             <div class="flex items-center justify-between mt-2 text-xs">
-                <p class="font-semibold text-slate-500">{{ __('Índex d\'assistència mensual') }}</p>
-                <span class="text-[11px] text-slate-400 font-medium">{{ __('Actes i assajos') }}</span>
+                <p class="font-semibold text-slate-500">{{ __('Assistència a assajos') }}</p>
+                <span class="text-[11px] text-slate-400 font-medium">
+                    @if ($totalEnsayosCelebrados > 0)
+                        {{ $ensayosAsistidos }}/{{ $totalEnsayosCelebrados }} {{ __('assistits') }}
+                    @else
+                        {{ __('Sense assajos previs') }}
+                    @endif
+                </span>
             </div>
         </div>
 
-        {{-- Bento Block 2: Ensayos Counter (5 cols) --}}
+        {{-- Bento Block 2: Próximos Ensayos Counter (5 cols) --}}
         <div class="col-span-12 sm:col-span-5 bg-gradient-to-br from-primary to-primary-dark rounded-3xl p-4 sm:p-5 shadow-bento-glow text-white flex flex-col justify-between relative overflow-hidden">
             <div class="absolute -right-3 -bottom-3 text-white/10 font-bold pointer-events-none">
                 <span class="material-symbols-outlined text-[80px] leading-none">event_repeat</span>
@@ -200,8 +238,8 @@
                 </span>
             </div>
             <div class="mt-4 relative z-10">
-                <span class="font-headline text-3xl sm:text-4xl font-extrabold text-white tracking-tight">{{ $ensayosCount }}</span>
-                <p class="text-xs font-medium text-indigo-100 mt-1">{{ __('Convocatòries programades') }}</p>
+                <span class="font-headline text-3xl sm:text-4xl font-extrabold text-white tracking-tight">{{ $proximosEnsayosCount }}</span>
+                <p class="text-xs font-medium text-indigo-100 mt-1">{{ __('Pròxims assajos programats') }}</p>
             </div>
         </div>
     </section>
