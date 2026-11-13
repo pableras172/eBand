@@ -184,16 +184,14 @@ class ListasUsersController extends Controller
                 default => 'disponible',
             };
 
-            $nuevoRegistro = [
-                'listas_id' => $request->lista_id,
-                'user_id' => $request->usuario_id,
-                'disponible' => ($nuevoEstado === 'no') ? 0 : 1,
-            ];
+            $nuevoModel = new ListasUser;
+            $nuevoModel->listas_id = $request->lista_id;
+            $nuevoModel->user_id = $request->usuario_id;
+            $nuevoModel->disponible = ($nuevoEstado === 'no') ? 0 : 1;
             if ($hasDudaColumn) {
-                $nuevoRegistro['duda'] = ($nuevoEstado === 'duda');
+                $nuevoModel->duda = ($nuevoEstado === 'duda');
             }
-
-            ListasUser::create($nuevoRegistro);
+            $nuevoModel->save();
         }
 
         $customText = match ($nuevoEstado) {

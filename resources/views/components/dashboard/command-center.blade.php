@@ -16,6 +16,7 @@
     $totalConvocados = 0;
     $totalConfirmados = 0;
     $userDispState = 'disponible'; // Por defecto disponible
+    $usuarioConvocado = false;
 
     if ($lista) {
         $totalConvocados = $lista->users->count();
@@ -29,6 +30,7 @@
                 $userDispState = 'duda';
             } else {
                 $userDispState = 'disponible';
+                $usuarioConvocado = true;
             }
         }
     }
@@ -352,21 +354,13 @@
                     {{-- Gestión de Disponibilidad del Músico (Dudas y Bajas) --}}
                     @if ($listaId)
                         <div class="flex flex-col gap-2 pt-1 border-t border-indigo-50/80">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                    {{ __('La teua disponibilitat:') }}
-                                </span>
-                                <span id="badge-current-status" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all
-                                    {{ $userDispState === 'no' ? 'bg-status-unavailable text-white' : ($userDispState === 'duda' ? 'bg-status-pending text-white' : 'bg-status-available-subtle text-status-available') }}">
-                                    @if ($userDispState === 'no')
-                                        {{ __('Baixa comunicada') }}
-                                    @elseif ($userDispState === 'duda')
-                                        {{ __('Dubte comunicat') }}
-                                    @else
-                                        {{ __('Disponible / Convocat') }}
-                                    @endif
-                                </span>
-                            </div>
+                            {{-- Si el usuario está marcado para asistir se muestra que está convocado --}}
+                            @if ($usuarioConvocado)
+                                <div id="banner-convocado" class="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-bold shadow-sm">
+                                    <span class="material-symbols-outlined text-[18px] text-status-available">verified</span>
+                                    <span>{{ __('Estàs convocat per la direcció per a aquesta actuació') }}</span>
+                                </div>
+                            @endif
 
                             <div class="grid grid-cols-2 gap-2 bg-surface-subtle p-1.5 rounded-2xl" id="attendance-toggle-group">
                                 {{-- Opción 1: Tinc Dubtes --}}
@@ -769,7 +763,7 @@
     function setBentoAttendance(choice, listaId, userId) {
         const btnDuda = document.getElementById('btn-status-duda');
         const btnNo = document.getElementById('btn-status-no');
-        const badgeStatus = document.getElementById('badge-current-status');
+        const bannerConvocado = document.getElementById('banner-convocado');
 
         if (!btnDuda || !btnNo) return;
 
@@ -794,21 +788,12 @@
         // Feedback visual optimista
         if (targetEstado === 'duda') {
             btnDuda.className = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40 transition-all active:scale-95";
-            if (badgeStatus) {
-                badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-status-pending text-white transition-all";
-                badgeStatus.innerText = "{{ __('Dubte comunicat') }}";
-            }
+            if (bannerConvocado) bannerConvocado.style.display = 'none';
         } else if (targetEstado === 'no') {
             btnNo.className = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40 transition-all active:scale-95";
-            if (badgeStatus) {
-                badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-status-unavailable text-white transition-all";
-                badgeStatus.innerText = "{{ __('Baixa comunicada') }}";
-            }
+            if (bannerConvocado) bannerConvocado.style.display = 'none';
         } else {
-            if (badgeStatus) {
-                badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-status-available-subtle text-status-available transition-all";
-                badgeStatus.innerText = "{{ __('Disponible / Convocat') }}";
-            }
+            if (bannerConvocado) bannerConvocado.style.display = 'flex';
         }
 
         // Llamada AJAX para sincronizar con el backend de eBand
@@ -816,6 +801,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: new URLSearchParams({
@@ -824,7 +810,14 @@
                 estado: targetEstado
             })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errData => {
+                    throw new Error(errData.message || 'Error del servidor (' + response.status + ')');
+                });
+            }
+            return response.json();
+        })
         .then(data => {
             if (typeof showToast === 'function') {
                 showToast(data);
@@ -832,6 +825,9 @@
         })
         .catch(err => {
             console.error('Error al actualizar disponibilidad:', err);
+            if (typeof showToast === 'function') {
+                showToast({ message: err.message || 'Error al actualitzar disponibilitat', alert_type: 'error' });
+            }
         });
     }
 

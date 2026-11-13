@@ -10,6 +10,8 @@ class ListasUser extends Model
     protected $table = 'listas_user';
 
     protected $fillable = [
+        'listas_id',
+        'user_id',
         'disponible',
         'duda',
         'payment_id',
