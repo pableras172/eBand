@@ -82,10 +82,10 @@ Cada pantalla se aborda de extremo a extremo (Frontend Blade/Livewire + adaptaci
 
 ---
 
-## 🎺 Fase 6: Vertical Slice 5 — Inventario, Material y Ficha de Músico
+## 🎺 Fase 6: Vertical Slice 5 — Inventario, Material y Ficha de Músico (Completada)
 
-- [ ] **Tarea 6.1:** Vista de material asignado (instrumento prestado, boquillas, uniformes).
-- [ ] **Tarea 6.2:** Ficha de perfil de músico (datos de contacto, talla de uniforme, cuerdas).
+- [x] **Tarea 6.1:** Vista de material asignado (instrumento prestado, accesorios, uniformes) con filtros avanzados por categoría, año y estado Dark Command Center (`resources/views/livewire/inventory/inventory-index.blade.php`).
+- [x] **Tarea 6.2:** Ficha de perfil de músico (datos de contacto, asignación de instrumentos, vehículos y seguridad) (`resources/views/profile/show.blade.php`).
 
 ---
 
