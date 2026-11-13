@@ -2,7 +2,20 @@
     use App\Helpers\ConfigHelper;
 @endphp
 
-<nav x-data="{ open: false, mobileAdminOpen: false, mobileActivityOpen: false }" class="bg-white/85 backdrop-blur-xl border-b border-indigo-50/80 sticky top-0 z-50 shadow-bento pt-safe" style="padding-top: env(safe-area-inset-top, 0px);">
+<nav x-data="{ 
+    open: false, 
+    mobileAdminOpen: false, 
+    mobileActivityOpen: false,
+    init() {
+        this.$watch('open', value => {
+            const wrapper = document.getElementById('app-content-wrapper');
+            if (wrapper) {
+                wrapper.classList.toggle('blur-sm', value);
+                wrapper.classList.toggle('pointer-events-none', value);
+            }
+        });
+    }
+}" class="bg-white/85 backdrop-blur-xl border-b border-indigo-50/80 sticky top-0 z-50 shadow-bento pt-safe" style="padding-top: env(safe-area-inset-top, 0px);">
     
 
     <!-- Primary Navigation Menu -->
@@ -497,19 +510,30 @@
     </div>
 
     <!-- Backdrop oscurecido y borroso al abrir el menú móvil -->
-    <div x-show="open"
-        x-transition:enter="transition-opacity ease-out duration-200"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="transition-opacity ease-in duration-150"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-        @click="open = false"
-        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 sm:hidden"
-        style="display: none; top: calc(5rem + env(safe-area-inset-top, 0px));"></div>
+    <template x-teleport="body">
+        <div x-show="open"
+            x-transition:enter="transition-all ease-out duration-300"
+            x-transition:enter-start="opacity-0 backdrop-blur-none"
+            x-transition:enter-end="opacity-100 backdrop-blur-sm"
+            x-transition:leave="transition-all ease-in duration-200"
+            x-transition:leave-start="opacity-100 backdrop-blur-sm"
+            x-transition:leave-end="opacity-0 backdrop-blur-none"
+            @click="open = false"
+            class="fixed inset-0 bg-slate-900/35 backdrop-blur-sm z-40 sm:hidden"
+            style="display: none;"
+            aria-hidden="true"></div>
+    </template>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{ 'block': open, 'hidden': !open }" class="relative z-50 hidden sm:hidden bg-white dark:bg-gray-800 max-h-[85vh] overflow-y-auto border-b border-gray-200 dark:border-gray-700 shadow-2xl pb-safe">
+    <div :class="{ 'block': open, 'hidden': !open }" 
+         x-show="open"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-2"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 -translate-y-2"
+         class="relative z-50 hidden sm:hidden bg-white/95 backdrop-blur-2xl dark:bg-gray-800/95 max-h-[85vh] overflow-y-auto border-b border-indigo-100 dark:border-gray-700 shadow-2xl pb-safe">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 <div class="flex items-center space-x-3">

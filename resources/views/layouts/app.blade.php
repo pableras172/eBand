@@ -174,19 +174,22 @@
             </div>
         @endif
 
-        <!-- Page Heading -->
-        @if (isset($header))
-            <header class="bg-white/90 backdrop-blur-md border-b border-indigo-50/80 shadow-sm">
-                <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endif
+        <!-- Page Content Wrapper with smooth blur transition when menu opens -->
+        <div id="app-content-wrapper" class="transition-[filter] duration-300 ease-out">
+            <!-- Page Heading -->
+            @if (isset($header))
+                <header class="bg-white/90 backdrop-blur-md border-b border-indigo-50/80 shadow-sm">
+                    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endif
 
-        <!-- Page Content -->
-        <main class="pb-20 lg:pb-0">
-            {{ $slot }}
-        </main>
+            <!-- Page Content -->
+            <main class="pb-20 lg:pb-0">
+                {{ $slot }}
+            </main>
+        </div>
     </div>
 
     <x-bottom-nav />
