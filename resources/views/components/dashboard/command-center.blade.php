@@ -650,11 +650,11 @@
         </section>
     @endif
 
-    {{-- 7. Accesos Ràpids (Gestió i Músic) --}}
+    {{-- 7. Accessos Ràpids (Gestió i Músic) --}}
     <section class="flex flex-col gap-2.5">
         <div class="flex items-center justify-between px-1">
             <h2 class="font-headline text-base sm:text-lg font-bold text-on-surface">
-                {{ __('Accesos ràpids') }}
+                {{ __('Accessos ràpids') }}
             </h2>
             <span class="text-xs text-slate-400 font-medium">{{ __('Gestió i informació') }}</span>
         </div>
