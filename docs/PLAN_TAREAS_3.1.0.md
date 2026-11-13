@@ -75,10 +75,10 @@ Cada pantalla se aborda de extremo a extremo (Frontend Blade/Livewire + adaptaci
 
 ---
 
-## 💶 Fase 5: Vertical Slice 4 — Liquidaciones y Reparto de Bolos
+## 💶 Fase 5: Vertical Slice 4 — Liquidaciones y Reparto de Bolos (Completada)
 
-- [ ] **Tarea 5.1:** Panel de liquidaciones con saldo acumulado y resumen de pagos (`specs/payments`).
-- [ ] **Tarea 5.2:** Desglose por bolo y kilometraje adaptado al tema oscuro.
+- [x] **Tarea 5.1:** Panel de liquidaciones con selector de menor para familias, buscador en tiempo real y badges de estado liquidado/pendiente (`resources/views/livewire/payments/index.blade.php`).
+- [x] **Tarea 5.2:** Desglose por bolo y kilometraje (coche, furgona, actuación y total) adaptado al tema oscuro (`resources/views/livewire/payments/payment-listas-users-detail.blade.php` y `paymentresumes/index.blade.php`).
 
 ---
 

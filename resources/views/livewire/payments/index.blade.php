@@ -1,39 +1,51 @@
-<div class="mx-auto max-w-7xl space-y-4 px-2 py-3 sm:px-4 lg:px-4">
+<div class="mx-auto max-w-7xl space-y-6 px-2 py-4 sm:px-4 lg:px-6 pb-20">
 
     <x-slot name="header">
-        <x-ui.breadcrumbs>
-            <x-ui.breadcrumbs.link href="/">{{ __('common.dashboard') }}</x-ui.breadcrumbs.link>
-            <x-ui.breadcrumbs.separator />
-            <x-ui.breadcrumbs.link active>{{ __('Payments') }}</x-ui.breadcrumbs.link>
-        </x-ui.breadcrumbs>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <x-ui.breadcrumbs>
+                    <x-ui.breadcrumbs.link href="/">{{ __('common.dashboard') }}</x-ui.breadcrumbs.link>
+                    <x-ui.breadcrumbs.separator />
+                    <x-ui.breadcrumbs.link active>{{ __('Liquidacions i Pagaments') }}</x-ui.breadcrumbs.link>
+                </x-ui.breadcrumbs>
+                <h1 class="text-2xl lg:text-3xl font-extrabold font-headline text-white tracking-tight mt-1">
+                    {{ __('Liquidacions i Repartiment de Bolos') }}
+                </h1>
+                <p class="text-xs text-slate-400">
+                    {{ __('Control econòmic d\'actuacions, dietes i desplaçaments') }}
+                </p>
+            </div>
+        </div>
+
         @php
-                use Illuminate\Support\Facades\Auth;
+            use Illuminate\Support\Facades\Auth;
 
-                $user = Auth::user();
-                $esPadre = $user->hijos()->exists();
-                $hijos = $esPadre ? $user->hijos : collect();
-                $usuarioActivo = session('usuarioActivo', $user); // ya debes tener esto en algún middleware o lógica previa
+            $user = Auth::user();
+            $esPadre = $user->hijos()->exists();
+            $hijos = $esPadre ? $user->hijos : collect();
+            $usuarioActivo = session('usuarioActivo', $user);
+        @endphp
 
-            @endphp
-
+        {{-- Selector de Menor para Familias / Padres --}}
         @if ($esPadre)
-            <div class="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900 shadow-sm">
-                {{-- Icono --}}
-                <x-shield w="32" h="32"/>
+            <div class="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-200 shadow-lg">
+                <div class="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-400 flex-shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
 
-                {{-- Texto --}}
-                <span>
-                    <span class="font-semibold">{{ __('Estàs veient la informació de:') }}</span>
+                <span class="font-bold">
+                    {{ __('Estàs consultant la liquidació de:') }}
                 </span>
 
                 @if (Auth::user()->hijos && Auth::user()->hijos->count() > 0)
-                    <form method="GET" id="hijoForm">
-                        <select name="hijo_id" class="ml-1 rounded-lg border-amber-300 bg-white px-2 py-1 text-sm shadow-sm focus:border-amber-400 focus:ring-amber-400"
+                    <form method="GET" id="hijoForm" class="inline-flex">
+                        <select name="hijo_id" class="rounded-xl border border-amber-500/40 bg-[#0B1120] text-amber-300 px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400"
                             onchange="window.location.href = '/payments/user/' + this.value + '?hijo_id=' + this.value">
-
                             <option value="{{ Auth::user()->id }}"
                                 {{ Auth::user()->id == $usuarioActivo->id ? 'selected' : '' }}>
-                                {{ Auth::user()->name }} ({{ __('Yo') }})
+                                {{ Auth::user()->name }} ({{ __('Tu') }})
                             </option>
                             @foreach (Auth::user()->hijos as $hijo)
                                 <option value="{{ $hijo->id }}"
@@ -44,100 +56,154 @@
                         </select>
                     </form>
                 @endif
-
             </div>
-
         @endif
         
     </x-slot>
 
-    <div class="rounded-2xl border border-slate-200 bg-gradient-to-r from-white to-slate-50 px-3 py-3 shadow-sm">
+    {{-- BARRA DE ACCIÓN Y BÚSQUEDA (Dark Command Center) --}}
+    <div class="rounded-2xl border border-slate-800 bg-[#111827] p-4 shadow-xl">
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div class="w-full md:max-w-md">
-                <x-ui.input wire:model.live="search" type="text"
-                    class="w-full border-slate-300 bg-white/90"
-                    placeholder="{{ __('Search') }} {{ __('Actuaciones pagadas') }}..." />
+            <div class="w-full md:max-w-md relative">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </span>
+                <input wire:model.live="search" type="text"
+                    class="w-full pl-10 pr-4 py-2.5 text-xs bg-[#0B1120] border border-slate-700 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    placeholder="{{ __('Cercar liquidació o actuació pagada...') }}" />
             </div>
 
             @can('create', App\Models\Payment::class)
                 <a wire:navigate href="{{ route('payments.create') }}">
-                    <x-ui.button class="w-full bg-lime-700 shadow-sm transition hover:bg-lime-800 md:w-auto">{{ __('Generar pago') }}</x-ui.button>
+                    <button type="button" class="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-lg shadow-blue-900/30 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <span>{{ __('Generar nou pagament') }}</span>
+                    </button>
                 </a>
             @endcan
         </div>
     </div>
 
-    {{-- Delete Modal --}}
+    {{-- MODAL DE CONFIRMACIÓN DE ELIMINACIÓN --}}
     <x-ui.modal.confirm wire:model="confirmingDeletion">
-        <x-slot name="title"> {{ __('Delete') }} </x-slot>
+        <x-slot name="title">
+            <span class="text-white font-headline">{{ __('Eliminar registre de pagament') }}</span>
+        </x-slot>
 
         <x-slot name="content">
-            {{ __('¿Estas seguro de que quieres eliminar el pago?') }}
-            <p class="mt-2 rounded-lg bg-slate-100 px-2 py-1 text-sm font-semibold text-slate-700">{{ $deletingPaymentDescription }}</p>
+            <p class="text-slate-300 text-sm">
+                {{ __('Estàs segur que vols eliminar este registre de liquidació?') }}
+            </p>
+            <p class="mt-2 rounded-xl bg-slate-900 border border-slate-800 px-3 py-2 text-xs font-semibold text-rose-400">{{ $deletingPaymentDescription }}</p>
         </x-slot>
 
         <x-slot name="footer">
-            <x-ui.button wire:click="$toggle('confirmingDeletion')" wire:loading.attr="disabled">
-                {{ __('Cancel') }}
-            </x-ui.button>
+            <button type="button" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 transition"
+                wire:click="$toggle('confirmingDeletion')" wire:loading.attr="disabled">
+                {{ __('Cancel·lar') }}
+            </button>
 
-            <x-ui.button.danger class="ml-3" wire:click="delete({{ $deletingPayment }})"
-                wire:loading.attr="disabled">
-                {{ __('Delete') }}
-            </x-ui.button.danger>
+            <button type="button" class="ml-3 px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl shadow-md transition"
+                wire:click="delete({{ $deletingPayment }})" wire:loading.attr="disabled">
+                {{ __('Eliminar') }}
+            </button>
         </x-slot>
     </x-ui.modal.confirm>
 
-    {{-- Index Table --}}
-    <x-ui.container.table class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <x-ui.table>
-            <x-slot name="head">
-                <x-ui.table.header for-crud wire:click="sortBy('users_id')">{{ __('Nom') }}</x-ui.table.header>
-                <x-ui.table.header for-crud wire:click="sortBy('fechaPago')">{{ __('Fecha pago') }}</x-ui.table.header>
-                <x-ui.table.action-header>{{ __('Actions') }}</x-ui.table.action-header>
-            </x-slot>
-
-            <x-slot name="body">
+    {{-- TABLA DE PAGOS Y LIQUIDACIONES (Dark Command Center) --}}
+    <div class="overflow-hidden rounded-2xl border border-slate-800 bg-[#111827] shadow-xl">
+        <table class="min-w-full divide-y divide-slate-800">
+            <thead class="bg-slate-900/60">
+                <tr>
+                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider cursor-pointer hover:text-white"
+                        wire:click="sortBy('users_id')">
+                        {{ __('Músic') }}
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider cursor-pointer hover:text-white"
+                        wire:click="sortBy('fechaPago')">
+                        {{ __('Data Pagament') }}
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        {{ __('Estat') }}
+                    </th>
+                    <th class="px-4 py-3 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        {{ __('Accions') }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/80">
                 @forelse ($payments as $payment)
-                    <x-ui.table.row wire:loading.class.delay="opacity-75"
-                        class="transition-colors hover:bg-slate-50 {{ $payment->confirmadausuaroi ? 'bg-emerald-50/70' : 'bg-rose-50/70' }}">
-                        <x-ui.table.column for-crud>
-                            <div class="flex items-center gap-2">
-                                <span class="inline-flex h-2.5 w-2.5 rounded-full {{ $payment->confirmadausuaroi ? 'bg-emerald-500' : 'bg-rose-500' }}"></span>
-                                <span class="font-medium text-slate-800">{{ $payment->user->name }}</span>
+                    <tr wire:loading.class.delay="opacity-75"
+                        class="hover:bg-slate-800/40 transition-colors {{ $payment->confirmadausuaroi ? 'bg-emerald-950/10' : 'bg-rose-950/10' }}">
+                        
+                        {{-- Músico --}}
+                        <td class="px-4 py-3.5 whitespace-nowrap">
+                            <div class="flex items-center gap-2.5">
+                                <span class="inline-flex h-2.5 w-2.5 rounded-full {{ $payment->confirmadausuaroi ? 'bg-emerald-500 shadow-sm shadow-emerald-500/50' : 'bg-rose-500 shadow-sm shadow-rose-500/50' }}"></span>
+                                <span class="font-bold text-sm text-white">{{ $payment->user->name }}</span>
                             </div>
-                        </x-ui.table.column>
-                        <x-ui.table.column for-crud>
-                            <span class="rounded-md bg-white px-2 py-1 text-sm font-medium text-slate-700 shadow-sm">
+                        </td>
+
+                        {{-- Fecha de Pago --}}
+                        <td class="px-4 py-3.5 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#0B1120] text-slate-300 border border-slate-700">
                                 {{ \Carbon\Carbon::parse($payment->fechaPago)->format('d/m/Y') }}
                             </span>
-                        </x-ui.table.column>
-                        <x-ui.table.action-column>
+                        </td>
+
+                        {{-- Estado Confirmación --}}
+                        <td class="px-4 py-3.5 whitespace-nowrap">
+                            @if ($payment->confirmadausuaroi)
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                                    ✓ {{ __('Liquidat') }}
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                                    ⏳ {{ __('Pendent de confirmació') }}
+                                </span>
+                            @endif
+                        </td>
+
+                        {{-- Acciones --}}
+                        <td class="px-4 py-3.5 whitespace-nowrap text-center">
                             <div class="flex items-center justify-center gap-2">
                                 @can('update', $payment)
-                                    <x-ui.action wire:navigate href="{{ route('payments.edit', $payment) }}">
-                                        <x-editar w="18" h="18" />
-                                    </x-ui.action>
+                                    <a wire:navigate href="{{ route('payments.edit', $payment) }}"
+                                        class="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition"
+                                        title="{{ __('Editar liquidació') }}">
+                                        <x-editar w="16" h="16" />
+                                    </a>
                                 @endcan
                                 @can('delete', $payment)
-                                    <x-ui.action.danger wire:click="confirmDeletion({{ $payment->id }})">
-                                        <x-delete w="18" h="18" />
-                                    </x-ui.action.danger>
+                                    <button type="button" wire:click="confirmDeletion({{ $payment->id }})"
+                                        class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/50 text-rose-400 border border-slate-700 transition"
+                                        title="{{ __('Eliminar') }}">
+                                        <x-delete w="16" h="16" />
+                                    </button>
                                 @endcan
                             </div>
-                        </x-ui.table.action-column>
+                        </td>
 
-                    </x-ui.table.row>
+                    </tr>
                 @empty
-                    <x-ui.table.row>
-                        <x-ui.table.column colspan="4">
-                            <div class="py-6 text-center text-sm font-medium text-slate-500">{{ __('No Results Found.') }}</div>
-                        </x-ui.table.column>
-                    </x-ui.table.row>
+                    <tr>
+                        <td colspan="4" class="px-6 py-12 text-center text-slate-400">
+                            <p class="font-bold text-white text-base">{{ __('No s\'han trobat liquidacions') }}</p>
+                            <p class="text-xs mt-1">{{ __('No hi ha registres de pagament que coincidisquen amb la cerca.') }}</p>
+                        </td>
+                    </tr>
                 @endforelse
-            </x-slot>
-        </x-ui.table>
+            </tbody>
+        </table>
 
-        <div class="border-t border-slate-100 px-2 py-2">{{ $payments->links() }}</div>
-    </x-ui.container.table>
+        @if ($payments->hasPages())
+            <div class="border-t border-slate-800 px-4 py-3 bg-slate-900/40">
+                {{ $payments->links() }}
+            </div>
+        @endif
+    </div>
 </div>
