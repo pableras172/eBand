@@ -45,6 +45,8 @@
 
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
     <!--link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet"-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
         crossorigin="anonymous">
@@ -155,8 +157,8 @@
 
 </head>
 
-<body class="font-sans antialiased" x-data="themeSwitcher()" :class="{ 'dark': switchOn }">
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900 pb-safe">
+<body class="font-sans antialiased bg-[#F5F6FC] text-[#0F172A] selection:bg-indigo-100 selection:text-indigo-700">
+    <div class="min-h-screen bg-[#F5F6FC] pb-safe">
         @livewire('navigation-menu')
 
         <x-banner />
@@ -174,7 +176,7 @@
 
         <!-- Page Heading -->
         @if (isset($header))
-            <header class="bg-white dark:bg-gray-800 shadow">
+            <header class="bg-white/90 backdrop-blur-md border-b border-indigo-50/80 shadow-sm">
                 <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>

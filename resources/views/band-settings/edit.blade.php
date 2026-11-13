@@ -1,67 +1,73 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-4">
-            <div class="bg-gradient-to-br from-cyan-500 to-blue-600 p-3 rounded-xl shadow-md">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21V7a2 2 0 012-2h10a2 2 0 012 2v14M9 9h6M9 13h6M9 17h3" />
                 </svg>
             </div>
             <div>
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ __('Datos de la banda') }}</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('Personaliza la información pública y de contacto de la banda.') }}</p>
+                <x-ui.breadcrumbs>
+                    <x-ui.breadcrumbs.link href="/">{{ __('common.dashboard') }}</x-ui.breadcrumbs.link>
+                    <x-ui.breadcrumbs.separator />
+                    <x-ui.breadcrumbs.link active>{{ __('Dades de la banda') }}</x-ui.breadcrumbs.link>
+                </x-ui.breadcrumbs>
+                <h1 class="text-2xl lg:text-3xl font-extrabold font-headline text-slate-900 tracking-tight mt-0.5">{{ __('Datos de la banda') }}</h1>
+                <p class="text-xs text-slate-500 mt-0.5">{{ __('Personaliza la información pública y de contacto de la banda.') }}</p>
             </div>
         </div>
     </x-slot>
 
     <div class="max-w-6xl mx-auto py-4 px-2 sm:px-4 lg:px-6 space-y-6 pb-28">
         @if (session('success_message'))
-            <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+            <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-800">
                 {{ session('success_message') }}
             </div>
         @endif
 
         @if (session('error_message'))
-            <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+            <div class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-semibold text-rose-800">
                 {{ session('error_message') }}
             </div>
         @endif
-<section>@if ($bandSetting?->activarcontactoinfo)
-                    <div class="mt-4 rounded-xl border border-cyan-200 bg-cyan-50 p-4">
-                        <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                            <div>
-                                <p class="text-sm font-semibold text-cyan-900">{{ __('QR de acceso a /masinfo') }}</p>
-                                <p class="text-xs text-cyan-700">{{ __('Genera o actualiza el QR con la URL pública de contacto. Se guardará en almacenamiento para usarlo cuando quieras.') }}</p>
 
-                                <form method="POST" action="{{ route('band-settings.generate-contact-qr') }}" class="mt-3">
-                                    @csrf
-                                    <button type="submit"
-                                        class="inline-flex items-center rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-700">
-                                        {{ __('Generar QR de /masinfo') }}
-                                    </button>
-                                </form>
-                            </div>
+        @if ($bandSetting?->activarcontactoinfo)
+            <section class="rounded-3xl border border-indigo-50/80 bg-white p-6 shadow-bento">
+                <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                    <div>
+                        <p class="text-sm font-bold text-slate-900">{{ __('QR de acceso a /masinfo') }}</p>
+                        <p class="text-xs text-slate-500 mt-1">{{ __('Genera o actualiza el QR con la URL pública de contacto. Se guardará en almacenamiento para usarlo cuando quieras.') }}</p>
 
-                            @if ($bandSetting?->qr_contacto_masinfo)
-                                <div class="flex flex-col items-center gap-2">
-                                    <img src="{{ asset('storage/' . $bandSetting->qr_contacto_masinfo) }}"
-                                        alt="QR /masinfo"
-                                        class="h-40 w-40 rounded-lg border border-cyan-200 bg-white object-contain p-2">
-                                    <a href="{{ asset('storage/' . $bandSetting->qr_contacto_masinfo) }}"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="text-xs font-medium text-cyan-700 hover:text-cyan-900">
-                                        {{ __('Abrir QR') }}
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
+                        <form method="POST" action="{{ route('band-settings.generate-contact-qr') }}" class="mt-4">
+                            @csrf
+                            <button type="submit"
+                                class="inline-flex items-center rounded-2xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-md shadow-indigo-600/20 hover:bg-indigo-700 transition">
+                                {{ __('Generar QR de /masinfo') }}
+                            </button>
+                        </form>
                     </div>
-                @endif</section>
+
+                    @if ($bandSetting?->qr_contacto_masinfo)
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="{{ asset('storage/' . $bandSetting->qr_contacto_masinfo) }}"
+                                alt="QR /masinfo"
+                                class="h-40 w-40 rounded-2xl border border-indigo-100 bg-white object-contain p-2 shadow-xs">
+                            <a href="{{ asset('storage/' . $bandSetting->qr_contacto_masinfo) }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-xs font-bold text-indigo-600 hover:text-indigo-800">
+                                {{ __('Abrir QR') }}
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </section>
+        @endif
         <form method="POST" action="{{ route('band-settings.update') }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
 
-            <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+            <section class="rounded-3xl bg-white p-6 shadow-bento border border-indigo-50/80">
                 <div class="mb-4 border-b border-gray-100 pb-3">
                     <h3 class="text-base font-semibold text-gray-900">{{ __('Identidad de la banda') }}</h3>
                     <p class="text-sm text-gray-500">{{ __('Nombre, fiscalidad y datos básicos de contacto.') }}</p>
@@ -132,7 +138,7 @@
                 </div>
             </section>
 
-            <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+            <section class="rounded-3xl bg-white p-6 shadow-bento border border-indigo-50/80">
                 <div class="mb-4 border-b border-gray-100 pb-3">
                     <h3 class="text-base font-semibold text-gray-900">{{ __('Presidencia e imagen') }}</h3>
                     <p class="text-sm text-gray-500">{{ __('Selecciona la presidencia actual y el logo de la banda.') }}</p>
@@ -179,7 +185,7 @@
                 </div>
             </section>
 
-            <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+            <section class="rounded-3xl bg-white p-6 shadow-bento border border-indigo-50/80">
                 <div class="mb-4 border-b border-gray-100 pb-3">
                     <h3 class="text-base font-semibold text-gray-900">{{ __('Redes sociales') }}</h3>
                     <p class="text-sm text-gray-500">{{ __('URLs oficiales para compartir desde la web y documentos.') }}</p>
@@ -221,7 +227,7 @@
                 </div>
             </section>
 
-            <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+            <section class="rounded-3xl bg-white p-6 shadow-bento border border-indigo-50/80">
                 <div class="mb-4 border-b border-gray-100 pb-3">
                     <h3 class="text-base font-semibold text-gray-900">{{ __('Formulario público de contacto') }}</h3>
                     <p class="text-sm text-gray-500">{{ __('Permite activar o desactivar el acceso público a /masinfo.') }}</p>
@@ -250,8 +256,10 @@
 
             <div class="flex justify-end">
                 <button type="submit"
-                    class="inline-flex items-center rounded-xl bg-cyan-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2">
+                    class="inline-flex items-center rounded-2xl bg-indigo-600 px-6 py-3 text-xs font-bold text-white shadow-md shadow-indigo-600/20 transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                     {{ __('Guardar datos de la banda') }}
+                </button>
+            </div>
                 </button>
             </div>
         </form>

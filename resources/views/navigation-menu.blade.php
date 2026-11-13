@@ -2,7 +2,7 @@
     use App\Helpers\ConfigHelper;
 @endphp
 
-<nav x-data="{ open: false, mobileAdminOpen: false, mobileActivityOpen: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 shadow-md pt-safe" style="padding-top: env(safe-area-inset-top, 0px);">
+<nav x-data="{ open: false, mobileAdminOpen: false, mobileActivityOpen: false }" class="bg-white/85 backdrop-blur-xl border-b border-indigo-50/80 sticky top-0 z-50 shadow-bento pt-safe" style="padding-top: env(safe-area-inset-top, 0px);">
     
 
     <!-- Primary Navigation Menu -->
@@ -53,7 +53,7 @@
                         <x-slot name="trigger">
                             <span class="inline-flex rounded-md">
                                 <button type="button"
-                                    class="inline-flex items-center rounded-md px-3 py-2 text-sm leading-4 font-medium transition ease-in-out duration-150 {{ request()->routeIs('actuaciones.usuario.anyo', 'payments.user', 'suggestions.index', 'inventory.index', 'inventory.show') ? 'border border-cyan-200 bg-cyan-50 text-cyan-700' : 'border border-transparent bg-white text-gray-500 hover:text-gray-700 focus:bg-gray-50 active:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:bg-gray-700 dark:active:bg-gray-700' }}">
+                                    class="inline-flex items-center rounded-xl px-3 py-2 text-sm leading-4 font-semibold transition ease-in-out duration-150 {{ request()->routeIs('actuaciones.usuario.anyo', 'payments.user', 'suggestions.index', 'inventory.index', 'inventory.show') ? 'border border-indigo-100 bg-indigo-50/80 text-indigo-700 shadow-xs' : 'border border-transparent bg-white/70 text-slate-600 hover:text-slate-900 hover:bg-slate-50 focus:bg-slate-50' }}">
                                     {{ __('La meva activitat') }}
                                     <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -120,7 +120,7 @@
                             <x-slot name="trigger">
                                 <span class="inline-flex rounded-md">
                                     <button type="button"
-                                        class="inline-flex items-center rounded-md px-3 py-2 text-sm leading-4 font-medium transition ease-in-out duration-150 {{ request()->routeIs('tipoactuacion.*', 'instrument.*', 'users.*', 'band-settings.*', 'contratos.*', 'payments.*', 'paymentresumes.*', 'comments.*', 'configurations*', 'announcements.*', 'concert-programs.*') ? 'border border-cyan-200 bg-cyan-50 text-cyan-700' : 'border border-transparent bg-white text-gray-500 hover:text-gray-700 focus:bg-gray-50 active:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300 dark:focus:bg-gray-700 dark:active:bg-gray-700' }}">
+                                        class="inline-flex items-center rounded-xl px-3 py-2 text-sm leading-4 font-semibold transition ease-in-out duration-150 {{ request()->routeIs('tipoactuacion.*', 'instrument.*', 'users.*', 'band-settings.*', 'contratos.*', 'payments.*', 'paymentresumes.*', 'comments.*', 'configurations*', 'announcements.*', 'concert-programs.*') ? 'border border-indigo-100 bg-indigo-50/80 text-indigo-700 shadow-xs' : 'border border-transparent bg-white/70 text-slate-600 hover:text-slate-900 hover:bg-slate-50 focus:bg-slate-50' }}">
                                         {{ __('Administracion') }}
                                         <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

@@ -50,7 +50,7 @@
                 datasets: [{
                     data: data,
                     backgroundColor: colors,
-                    borderColor: '#111827',
+                    borderColor: '#FFFFFF',
                     borderWidth: 2,
                     spacing: 3
                 }]
@@ -92,16 +92,16 @@
 }" 
 
 
-class="max-w-6xl mx-auto space-y-6 bg-[#111827] shadow-xl rounded-2xl p-6 border border-slate-800">
+class="max-w-6xl mx-auto space-y-6 bg-white shadow-bento rounded-3xl p-6 lg:p-8 border border-indigo-50/80">
     
     <!-- Título con icono -->
-    <div class="flex items-center space-x-2 mb-6 pb-4 border-b border-slate-800">
-        <div class="w-9 h-9 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+    <div class="flex items-center space-x-2 mb-6 pb-4 border-b border-indigo-50">
+        <div class="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.657-1.79 3-4 3s-4-1.343-4-3 1.79-3 4-3 4 1.343 4 3zm12-3c0 1.657-1.79 3-4 3s-4-1.343-4-3 1.79-3 4-3 4 1.343 4 3z" />
             </svg>
         </div>
-        <h3 class="text-base font-bold font-headline text-white uppercase tracking-wider">{{ __('Músics per instrument') }}</h3>
+        <h3 class="text-base font-bold font-headline text-slate-900 uppercase tracking-wider">{{ __('Músics per instrument') }}</h3>
     </div>
 
     <div x-show="!loading" x-cloak class="space-y-6">
@@ -110,21 +110,21 @@ class="max-w-6xl mx-auto space-y-6 bg-[#111827] shadow-xl rounded-2xl p-6 border
                 <div class="relative w-full max-w-[28rem] aspect-square">
                     <canvas x-ref="instrumentsChart"></canvas>
                     <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <div class="text-4xl sm:text-5xl font-extrabold text-white" x-text="stats.totalMusicians"></div>
-                        <div class="text-xs text-slate-400 mt-1 tracking-wider uppercase font-semibold">{{ __('Músics totals') }}</div>
+                        <div class="text-4xl sm:text-5xl font-extrabold text-slate-900" x-text="stats.totalMusicians"></div>
+                        <div class="text-xs text-slate-400 mt-1 tracking-wider uppercase font-bold">{{ __('Músics totals') }}</div>
                     </div>
                 </div>
             </div>
 
-            <div class="lg:col-span-2 bg-[#0B1120] rounded-xl p-4 border border-slate-800">
+            <div class="lg:col-span-2 bg-[#F5F6FC] rounded-2xl p-4 border border-indigo-50/70">
                 <div class="space-y-2.5 max-h-80 overflow-y-auto pr-1">
                     <template x-for="(instrument, index) in stats.instruments" :key="instrument.id">
-                        <div class="flex items-center justify-between text-xs py-1 border-b border-slate-800/60 last:border-0">
+                        <div class="flex items-center justify-between text-xs py-1 border-b border-indigo-50/80 last:border-0">
                             <div class="flex items-center space-x-2">
                                 <span class="w-2.5 h-2.5 rounded-full" :style="`background-color: ${palette[index % palette.length]}`"></span>
-                                <span class="text-slate-300 font-medium" x-text="instrument.name"></span>
+                                <span class="text-slate-700 font-semibold" x-text="instrument.name"></span>
                             </div>
-                            <span class="font-bold text-white bg-slate-800 px-2 py-0.5 rounded-md" x-text="instrument.musicians"></span>
+                            <span class="font-bold text-indigo-700 bg-white shadow-xs border border-indigo-100 px-2 py-0.5 rounded-md" x-text="instrument.musicians"></span>
                         </div>
                     </template>
                 </div>

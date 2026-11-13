@@ -99,27 +99,27 @@
 }" 
 
 
-class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6  bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+class="max-w-6xl mx-auto space-y-6 bg-white shadow-bento rounded-3xl p-6 lg:p-8 border border-indigo-50/80">
     
     <!-- Título con icono -->
-    <div class="flex items-center space-x-2 mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="flex items-center space-x-2 mb-6 pb-4 border-b border-indigo-50">
+        <div class="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.657-1.79 3-4 3s-4-1.343-4-3 1.79-3 4-3 4 1.343 4 3zm12-3c0 1.657-1.79 3-4 3s-4-1.343-4-3 1.79-3 4-3 4 1.343 4 3z" />
             </svg>
         </div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ __('Tipus d\'actuació per any') }}</h3>
+        <h3 class="text-base font-bold font-headline text-slate-900 uppercase tracking-wider">{{ __('Tipus d\'actuació per any') }}</h3>
     </div>
 
     <div>
-        <label for="year-select-tipo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label for="year-select-tipo" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
             {{ __('Any') }}
         </label>
         <select
             id="year-select-tipo"
             x-model="selectedYear"
             @change="loadStats()"
-            class="w-full md:w-64 rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all">
+            class="w-full md:w-64 rounded-2xl border border-indigo-100 bg-[#F5F6FC] px-4 py-2.5 text-xs font-bold text-slate-800 shadow-xs focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all">
             <template x-for="year in years" :key="year">
                 <option :value="year" x-text="year"></option>
             </template>
@@ -129,24 +129,24 @@ class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6  bg-white dark:bg-gray-800 sh
     <div x-show="!loading" x-cloak class="space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-center">
             <div class="lg:col-span-3 flex justify-center">
-                <div class="relative w-full max-w-[32rem] aspect-square">
+                <div class="relative w-full max-w-[28rem] aspect-square">
                     <canvas x-ref="tiposChart"></canvas>
                     <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <div class="text-5xl font-extrabold bg-gradient-to-r from-indigo-600 via-cyan-600 to-emerald-600 bg-clip-text text-transparent" x-text="stats.total"></div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-2 tracking-wide uppercase">{{ __('Actuacions totals') }}</div>
+                        <div class="text-4xl sm:text-5xl font-extrabold text-slate-900" x-text="stats.total"></div>
+                        <div class="text-xs text-slate-400 mt-1 tracking-wider uppercase font-bold">{{ __('Actuacions totals') }}</div>
                     </div>
                 </div>
             </div>
 
-            <div class="lg:col-span-2 bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
-                <div class="space-y-3 max-h-80 overflow-y-auto pr-1">
+            <div class="lg:col-span-2 bg-[#F5F6FC] rounded-2xl p-4 border border-indigo-50/70">
+                <div class="space-y-2.5 max-h-80 overflow-y-auto pr-1">
                     <template x-for="(tipo, index) in stats.tipos" :key="tipo.id">
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-center justify-between text-xs py-1 border-b border-indigo-50/80 last:border-0">
                             <div class="flex items-center space-x-2">
-                                <span class="w-3 h-3 rounded-full" :style="`background-color: ${palette[index % palette.length]}`"></span>
-                                <span class="text-sm text-gray-700 dark:text-gray-300" x-text="tipo.name"></span>
+                                <span class="w-2.5 h-2.5 rounded-full" :style="`background-color: ${palette[index % palette.length]}`"></span>
+                                <span class="text-slate-700 font-semibold" x-text="tipo.name"></span>
                             </div>
-                            <span class="text-sm font-semibold text-gray-900 dark:text-gray-100" x-text="tipo.percentage + '%' "></span>
+                            <span class="font-bold text-indigo-700 bg-white shadow-xs border border-indigo-100 px-2 py-0.5 rounded-md" x-text="tipo.percentage + '%' "></span>
                         </div>
                     </template>
                 </div>
