@@ -68,10 +68,10 @@ Cada pantalla se aborda de extremo a extremo (Frontend Blade/Livewire + adaptaci
 
 ---
 
-## 👥 Fase 4: Vertical Slice 3 — Directorio de Músicos y Cuerdas
+## 👥 Fase 4: Vertical Slice 3 — Directorio de Músicos y Cuerdas (Completada)
 
-- [ ] **Tarea 4.1: Vista Móvil:** Tarjetas compactas con avatar, instrumento y botón de contacto/ficha.
-- [ ] **Tarea 4.2: Vista Escritorio:** Tabla densa con buscador en tiempo real, selector de cuerda (*Madera, Metal, Percusión*) y ordenación.
+- [x] **Tarea 4.1: Vista Móvil:** Tarjetas táctiles y compactas con avatar, instrumento, badges de estado y accesos rápidos a estadísticas y edición (`resources/views/users/index.blade.php`).
+- [x] **Tarea 4.2: Vista Escritorio:** Tabla densa de alto contraste con buscador, filtro de instrumentos y estados, modal de exportación Dark Command Center y gráfico de cuerdas adaptado (`<x-statistics.instruments />`).
 
 ---
 
