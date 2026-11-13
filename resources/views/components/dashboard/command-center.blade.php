@@ -349,8 +349,8 @@
             @endif
 
             {{-- Acceso 6: Liquidaciones / Pagos --}}
-            @if (Route::has('payments.user'))
-                <a href="{{ route('payments.user') }}"
+            @if (Route::has('payments.user') && $user)
+                <a href="{{ route('payments.user', ['user' => $user->id]) }}"
                    class="flex flex-col items-center text-center p-3 sm:p-4 bg-slate-900/90 border border-slate-800 hover:border-blue-500/50 rounded-xl shadow-md hover:bg-slate-800/80 transition-all active:scale-[0.98] group">
                     <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-2 group-hover:bg-amber-600 group-hover:text-slate-950 transition-colors">
                         <span class="material-symbols-outlined text-[20px]">payments</span>
