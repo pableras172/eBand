@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 
 class ListasUsersController extends Controller
 {
@@ -109,40 +110,99 @@ class ListasUsersController extends Controller
         $request->validate([
             'lista_id' => 'required|exists:listas,id',
             'usuario_id' => 'required|exists:users,id',
+            'estado' => 'nullable|string|in:duda,no,disponible,si',
+            'disponible' => 'nullable',
+            'duda' => 'nullable',
         ]);
+
+        $hasDudaColumn = Schema::hasColumn('listas_user', 'duda');
 
         $existingRelation = ListasUser::where('listas_id', $request->lista_id)
             ->where('user_id', $request->usuario_id)
             ->first();
 
-        if ($existingRelation) {
-
-            if ($request->disponible) {
-                ListasUser::where('listas_id', $request->lista_id)
-                    ->where('user_id', $request->usuario_id)
-                    ->delete();
-
+        // Determinar el nuevo estado solicitado
+        $estadoSolicitado = $request->input('estado');
+        if (! $estadoSolicitado) {
+            if ($request->boolean('duda')) {
+                $estadoSolicitado = 'duda';
+            } elseif ($request->has('disponible')) {
+                $estadoSolicitado = ((int) $request->disponible === 0) ? 'no' : 'disponible';
             } else {
-                ListasUser::where('listas_id', $request->lista_id)
-                    ->where('user_id', $request->usuario_id)
-                    ->update(['disponible' => 0]);
-
+                $estadoSolicitado = 'disponible';
             }
-
-        } else {
-
-            $listaUser = new ListasUser;
-            $listaUser->listas_id = $request->lista_id;
-            $listaUser->user_id = $request->usuario_id;
-            $listaUser->disponible = $request->disponible;
-
-            $listaUser->save();
         }
 
-        $customText = $request->disponible ? 'Disponible' : 'No disponible';
+        $nuevoEstado = 'disponible';
+
+        if ($existingRelation) {
+            $actualDisponible = (int) $existingRelation->disponible;
+            $actualDuda = $hasDudaColumn ? (bool) $existingRelation->duda : false;
+
+            if ($estadoSolicitado === 'duda') {
+                // Toggle: si ya estaba en duda, vuelve a disponible
+                if ($actualDuda) {
+                    $nuevoEstado = 'disponible';
+                    $existingRelation->update(array_filter([
+                        'disponible' => 1,
+                        'duda' => $hasDudaColumn ? false : null,
+                    ], fn ($v) => $v !== null));
+                } else {
+                    $nuevoEstado = 'duda';
+                    $existingRelation->update(array_filter([
+                        'disponible' => 1,
+                        'duda' => $hasDudaColumn ? true : null,
+                    ], fn ($v) => $v !== null));
+                }
+            } elseif ($estadoSolicitado === 'no') {
+                // Toggle: si ya estaba en 'no', vuelve a disponible
+                if ($actualDisponible === 0) {
+                    $nuevoEstado = 'disponible';
+                    $existingRelation->update(array_filter([
+                        'disponible' => 1,
+                        'duda' => $hasDudaColumn ? false : null,
+                    ], fn ($v) => $v !== null));
+                } else {
+                    $nuevoEstado = 'no';
+                    $existingRelation->update(array_filter([
+                        'disponible' => 0,
+                        'duda' => $hasDudaColumn ? false : null,
+                    ], fn ($v) => $v !== null));
+                }
+            } else {
+                // Restablecer a disponible
+                $nuevoEstado = 'disponible';
+                $existingRelation->update(array_filter([
+                    'disponible' => 1,
+                    'duda' => $hasDudaColumn ? false : null,
+                ], fn ($v) => $v !== null));
+            }
+        } else {
+            $nuevoEstado = match ($estadoSolicitado) {
+                'duda' => 'duda',
+                'no' => 'no',
+                default => 'disponible',
+            };
+
+            $nuevoRegistro = [
+                'listas_id' => $request->lista_id,
+                'user_id' => $request->usuario_id,
+                'disponible' => ($nuevoEstado === 'no') ? 0 : 1,
+            ];
+            if ($hasDudaColumn) {
+                $nuevoRegistro['duda'] = ($nuevoEstado === 'duda');
+            }
+
+            ListasUser::create($nuevoRegistro);
+        }
+
+        $customText = match ($nuevoEstado) {
+            'duda' => 'Dubte comunicat (pendent)',
+            'no' => 'No disponible (Baixa comunicada)',
+            default => 'Disponible / Convocat',
+        };
 
         try {
-
             $lista = Listas::with('actuacion')->findOrFail($request->lista_id);
             $actuacion = $lista->actuacion;
             $user = User::where('id', $request->usuario_id)->first();
@@ -163,6 +223,8 @@ class ListasUsersController extends Controller
         $notification = [
             'message' => Lang::get('messages.disponibilidadactualizada'),
             'alert_type' => 'success',
+            'nuevo_estado' => $nuevoEstado,
+            'estado_label' => $customText,
         ];
 
         return response()->json($notification, 200);

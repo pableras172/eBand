@@ -15,7 +15,7 @@
     $listaId = $lista?->id;
     $totalConvocados = 0;
     $totalConfirmados = 0;
-    $userDispState = 'si'; // Por defecto disponible
+    $userDispState = 'disponible'; // Por defecto disponible
 
     if ($lista) {
         $totalConvocados = $lista->users->count();
@@ -23,7 +23,13 @@
 
         $userPivot = $lista->users->where('id', $user->id)->first()?->pivot;
         if ($userPivot) {
-            $userDispState = ($userPivot->disponible == 0) ? 'no' : 'si';
+            if ((int) $userPivot->disponible === 0) {
+                $userDispState = 'no';
+            } elseif (! empty($userPivot->duda)) {
+                $userDispState = 'duda';
+            } else {
+                $userDispState = 'disponible';
+            }
         }
     }
 
@@ -343,40 +349,51 @@
                         </div>
                     @endif
 
-                    {{-- Segmented Attendance Switcher (Neo-Bento 3 Estados) --}}
+                    {{-- Gestión de Disponibilidad del Músico (Dudas y Bajas) --}}
                     @if ($listaId)
-                        <div class="flex flex-col gap-1.5 pt-1">
-                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                {{ __('El teu estat d\'assistència:') }}
-                            </span>
-                            <div class="grid grid-cols-3 gap-1.5 bg-surface-subtle p-1 rounded-2xl" id="attendance-toggle-group">
-                                {{-- Opción 1: Asistiré --}}
-                                <button type="button" 
-                                    id="btn-status-si" 
-                                    onclick="setBentoAttendance('si', {{ $listaId }}, {{ $user->id }})"
-                                    class="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'si' ? 'bg-status-available text-white shadow-sm' : 'text-slate-600 hover:bg-white' }}">
-                                    <span class="material-symbols-outlined text-[16px]">check_circle</span>
-                                    <span>{{ __('Assistiré') }}</span>
-                                </button>
+                        <div class="flex flex-col gap-2 pt-1 border-t border-indigo-50/80">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                    {{ __('La teua disponibilitat:') }}
+                                </span>
+                                <span id="badge-current-status" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all
+                                    {{ $userDispState === 'no' ? 'bg-status-unavailable text-white' : ($userDispState === 'duda' ? 'bg-status-pending text-white' : 'bg-status-available-subtle text-status-available') }}">
+                                    @if ($userDispState === 'no')
+                                        {{ __('Baixa comunicada') }}
+                                    @elseif ($userDispState === 'duda')
+                                        {{ __('Dubte comunicat') }}
+                                    @else
+                                        {{ __('Disponible / Convocat') }}
+                                    @endif
+                                </span>
+                            </div>
 
-                                {{-- Opción 2: Duda --}}
+                            <div class="grid grid-cols-2 gap-2 bg-surface-subtle p-1.5 rounded-2xl" id="attendance-toggle-group">
+                                {{-- Opción 1: Tinc Dubtes --}}
                                 <button type="button" 
                                     id="btn-status-duda" 
                                     onclick="setBentoAttendance('duda', {{ $listaId }}, {{ $user->id }})"
-                                    class="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm' : 'text-slate-600 hover:bg-white' }}">
-                                    <span class="material-symbols-outlined text-[16px]">help</span>
-                                    <span>{{ __('Dubte') }}</span>
+                                    class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-amber-200' }}"
+                                    title="{{ __('Notifica que no saps segur si podràs assistir') }}">
+                                    <span class="material-symbols-outlined text-[17px]">help</span>
+                                    <span>{{ __('Tinc dubtes') }}</span>
                                 </button>
 
-                                {{-- Opción 3: No voy --}}
+                                {{-- Opción 2: No puc anar --}}
                                 <button type="button" 
                                     id="btn-status-no" 
                                     onclick="setBentoAttendance('no', {{ $listaId }}, {{ $user->id }})"
-                                    class="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm' : 'text-slate-600 hover:bg-white' }}">
-                                    <span class="material-symbols-outlined text-[16px]">cancel</span>
-                                    <span>{{ __('No vaig') }}</span>
+                                    class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-rose-200' }}"
+                                    title="{{ __('Comunica la teua baixa') }}">
+                                    <span class="material-symbols-outlined text-[17px]">cancel</span>
+                                    <span>{{ __('No puc assistir') }}</span>
                                 </button>
                             </div>
+
+                            <p class="text-[11px] text-slate-400 font-medium flex items-center gap-1 px-1">
+                                <span class="material-symbols-outlined text-[14px] text-slate-400">info</span>
+                                <span>{{ __('L\'assistència definitiva a la plantilla la confirmen els administradors.') }}</span>
+                            </p>
                         </div>
                     @endif
                 </div>
@@ -413,11 +430,17 @@
                     @php
                         $actoFecha = \Carbon\Carbon::parse($acto->fechaActuacion);
                         $actoIcon = \App\Models\Tipoactuacion::resolveIconUrl($acto->tipoactuacion?->icon);
-                        $actoUserDisp = null;
+                        $actoUserDisp = 'disponible';
                         if ($acto->lista) {
                             $p = $acto->lista->users->where('id', $user->id)->first()?->pivot;
                             if ($p) {
-                                $actoUserDisp = ($p->disponible == 0) ? 'no' : 'si';
+                                if ((int) $p->disponible === 0) {
+                                    $actoUserDisp = 'no';
+                                } elseif (! empty($p->duda)) {
+                                    $actoUserDisp = 'duda';
+                                } else {
+                                    $actoUserDisp = 'disponible';
+                                }
                             }
                         }
                     @endphp
@@ -453,20 +476,20 @@
                             </a>
                         </div>
 
-                        {{-- Estado de asistencia pill / quick indicator --}}
+                        {{-- Estado de disponibilidad pill / quick indicator --}}
                         <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
                             <span class="text-slate-500 font-medium">{{ $acto->tipoactuacion?->nombre ?? __('Actuació') }}</span>
-                            @if ($actoUserDisp === 'si')
-                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-status-available-subtle text-status-available font-bold text-[11px]">
-                                    <span class="material-symbols-outlined text-[14px]">check_circle</span> {{ __('Assistiré') }}
-                                </span>
-                            @elseif ($actoUserDisp === 'no')
+                            @if ($actoUserDisp === 'no')
                                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-status-unavailable-subtle text-status-unavailable font-bold text-[11px]">
-                                    <span class="material-symbols-outlined text-[14px]">cancel</span> {{ __('No vaig') }}
+                                    <span class="material-symbols-outlined text-[14px]">cancel</span> {{ __('Baixa comunicada') }}
+                                </span>
+                            @elseif ($actoUserDisp === 'duda')
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-status-pending-subtle text-status-pending font-bold text-[11px]">
+                                    <span class="material-symbols-outlined text-[14px]">help</span> {{ __('Dubte comunicat') }}
                                 </span>
                             @else
-                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-status-pending-subtle text-status-pending font-bold text-[11px]">
-                                    <span class="material-symbols-outlined text-[14px]">help</span> {{ __('Pendent') }}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-status-available-subtle text-status-available font-bold text-[11px]">
+                                    <span class="material-symbols-outlined text-[14px]">check_circle</span> {{ __('Disponible') }}
                                 </span>
                             @endif
                         </div>
@@ -744,29 +767,51 @@
 {{-- SCRIPT PARA INTERACCIÓN DEL CONMUTADOR DE ASISTENCIA Y CARGA DEL MAPA --}}
 <script>
     function setBentoAttendance(choice, listaId, userId) {
-        const btnSi = document.getElementById('btn-status-si');
         const btnDuda = document.getElementById('btn-status-duda');
         const btnNo = document.getElementById('btn-status-no');
+        const badgeStatus = document.getElementById('badge-current-status');
 
-        if (!btnSi || !btnDuda || !btnNo) return;
+        if (!btnDuda || !btnNo) return;
 
-        // Reset visual a estado neutral
-        [btnSi, btnDuda, btnNo].forEach(btn => {
-            btn.className = "flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-white transition-all active:scale-95";
-        });
+        // Si se pulsa el botón que ya estaba activo, se desmarca para volver a Disponible
+        const yaEnDuda = btnDuda.classList.contains('bg-status-pending');
+        const yaEnNo = btnNo.classList.contains('bg-status-unavailable');
 
-        // Activar el seleccionado
-        if (choice === 'si') {
-            btnSi.className = "flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold bg-status-available text-white shadow-sm transition-all active:scale-95";
-        } else if (choice === 'duda') {
-            btnDuda.className = "flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold bg-status-pending text-white shadow-sm transition-all active:scale-95";
-        } else if (choice === 'no') {
-            btnNo.className = "flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold bg-status-unavailable text-white shadow-sm transition-all active:scale-95";
+        let targetEstado = choice;
+        if (choice === 'duda' && yaEnDuda) {
+            targetEstado = 'disponible';
+        } else if (choice === 'no' && yaEnNo) {
+            targetEstado = 'disponible';
+        }
+
+        // Estilos base neutros
+        const baseDuda = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-white border border-transparent hover:border-amber-200 transition-all active:scale-95";
+        const baseNo = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-white border border-transparent hover:border-rose-200 transition-all active:scale-95";
+
+        btnDuda.className = baseDuda;
+        btnNo.className = baseNo;
+
+        // Feedback visual optimista
+        if (targetEstado === 'duda') {
+            btnDuda.className = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40 transition-all active:scale-95";
+            if (badgeStatus) {
+                badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-status-pending text-white transition-all";
+                badgeStatus.innerText = "{{ __('Dubte comunicat') }}";
+            }
+        } else if (targetEstado === 'no') {
+            btnNo.className = "flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40 transition-all active:scale-95";
+            if (badgeStatus) {
+                badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-status-unavailable text-white transition-all";
+                badgeStatus.innerText = "{{ __('Baixa comunicada') }}";
+            }
+        } else {
+            if (badgeStatus) {
+                badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-status-available-subtle text-status-available transition-all";
+                badgeStatus.innerText = "{{ __('Disponible / Convocat') }}";
+            }
         }
 
         // Llamada AJAX para sincronizar con el backend de eBand
-        const disponibleValor = (choice === 'no') ? 0 : 1;
-
         fetch('/listauserdisp', {
             method: 'POST',
             headers: {
@@ -776,7 +821,7 @@
             body: new URLSearchParams({
                 lista_id: listaId,
                 usuario_id: userId,
-                disponible: disponibleValor
+                estado: targetEstado
             })
         })
         .then(response => response.json())

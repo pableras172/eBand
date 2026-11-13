@@ -11,6 +11,7 @@ class ListasUser extends Model
 
     protected $fillable = [
         'disponible',
+        'duda',
         'payment_id',
         'totalActuacion',
         'totalActo',
@@ -18,6 +19,23 @@ class ListasUser extends Model
         'coche',
         'furgona',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'disponible' => 'boolean',
+            'duda' => 'boolean',
+            'coche' => 'boolean',
+            'furgona' => 'boolean',
+            'pagada' => 'boolean',
+            'cuentas' => 'boolean',
+        ];
+    }
 
     use HasFactory;
 
