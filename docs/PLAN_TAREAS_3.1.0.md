@@ -45,15 +45,15 @@ Cada pantalla se aborda de extremo a extremo (Frontend Blade/Livewire + adaptaci
 
 ## 📱 Fase 2: Vertical Slice 1 — Dashboard (Inicio / Panel del Músico)
 
-- [ ] **Tarea 2.1: Lógica de Asistencia y Quórum en Livewire**
-  - Adaptar el conmutador de asistencia: vincularlo reactivamente con `listas_user` (con feedback instantáneo).
+- [x] **Tarea 2.1: Lógica de Asistencia y Quórum en Livewire** *(Completada - Commit dc9bae3)*
+  - Conmutador de asistencia reactivo con 3 estados (*Assistiré*, *Dubte*, *No vaig*) sincronizado vía AJAX a `/listauserdisp`.
   - Cálculo de quórum de cuerda y metal en la próxima actuación (músicos confirmados vs convocados).
-- [ ] **Tarea 2.2: Métricas y Feed de Comunicados**
-  - Cálculo del porcentaje de asistencia del mes en curso y ensayos activos.
-  - Cargar los últimos avisos desde el modelo `Announcement.php` con enlace de descarga.
-- [ ] **Tarea 2.3: Vista Blade Responsiva del Dashboard**
-  - Móvil: Flujo vertical continuo en una sola columna.
-  - Escritorio: Organización en *Bento Grid* de 3 columnas (Hero de próxima actuación en columna principal, avisos y métricas en columnas laterales).
+- [x] **Tarea 2.2: Métricas y Feed de Comunicados** *(Completada - Commit dc9bae3)*
+  - Cálculo del porcentaje de asistencia del mes en curso y actuaciones activas.
+  - Cargar los últimos avisos desde el modelo `Announcement.php` con enlace de acción.
+- [x] **Tarea 2.3: Vista Blade Responsiva del Dashboard** *(Completada - Commit dc9bae3)*
+  - Móvil: Flujo vertical continuo en una sola columna con cabecera y tarjetas táctiles.
+  - Escritorio: Organización en *Bento Grid* de 3 columnas (Hero de próxima actuación en 2 columnas, avisos y métricas en columna lateral, accesos rápidos en rejilla de 6 columnas).
 
 ---
 
