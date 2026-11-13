@@ -1,16 +1,6 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ $bandSetting?->nombre ?? config('app.banda', config('app.name', 'eBand')) }}
-        </h2>
-    </x-slot>
-
-    <div class="py-2">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                <x-welcome-user />
-            </div>
-        </div>
+    <div class="min-h-screen bg-[#0B1120] text-slate-100 py-2 sm:py-4">
+        <x-dashboard.command-center />
     </div>
 
     <livewire:announcement.announcement-popup />
