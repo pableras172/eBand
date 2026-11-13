@@ -9,6 +9,12 @@ class Instrument extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'orden',
+        'icon',
+    ];
+
     public const DEFAULT_ICON_PATH = 'images/defaults/instrument-default.svg';
 
     public function getIconUrlAttribute(): string

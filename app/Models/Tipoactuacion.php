@@ -9,6 +9,11 @@ class Tipoactuacion extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'nombre',
+        'icon',
+    ];
+
     public const DEFAULT_ICON_PATH = 'images/defaults/tipoactuacion-default.svg';
 
     public function getIconUrlAttribute(): string
