@@ -14,13 +14,26 @@
     $lista = $proximaActuacion?->lista;
     $listaId = $lista?->id;
     $totalConvocados = 0;
-    $totalConfirmados = 0;
+    $convocadosCount = 0;
+    $dudasCount = 0;
+    $noDisponiblesCount = 0;
+    $porcentajeConvocados = 0;
+    $porcentajeDudas = 0;
+    $porcentajeNoDisp = 0;
     $userDispState = 'disponible'; // Por defecto disponible
     $usuarioConvocado = false;
 
     if ($lista) {
         $totalConvocados = $lista->users->count();
-        $totalConfirmados = $lista->users->where('pivot.disponible', '<>', 0)->count();
+        $convocadosCount = $lista->users->filter(fn ($u) => (int) $u->pivot->disponible !== 0 && empty($u->pivot->duda))->count();
+        $dudasCount = $lista->users->filter(fn ($u) => (int) $u->pivot->disponible !== 0 && ! empty($u->pivot->duda))->count();
+        $noDisponiblesCount = $lista->users->filter(fn ($u) => (int) $u->pivot->disponible === 0)->count();
+
+        if ($totalConvocados > 0) {
+            $porcentajeConvocados = round(($convocadosCount / $totalConvocados) * 100);
+            $porcentajeDudas = round(($dudasCount / $totalConvocados) * 100);
+            $porcentajeNoDisp = round(($noDisponiblesCount / $totalConvocados) * 100);
+        }
 
         $userPivot = $lista->users->where('id', $user->id)->first()?->pivot;
         if ($userPivot) {
@@ -34,8 +47,6 @@
             }
         }
     }
-
-    $porcentajeQuorum = ($totalConvocados > 0) ? min(100, round(($totalConfirmados / $totalConvocados) * 100)) : 0;
 
     // 2. Actes dels pròxims 7 dies
     $fin7Dias = now()->addDays(7)->endOfDay();
@@ -333,20 +344,33 @@
                         </a>
                     </div>
 
-                    {{-- Attendance Stats Pill / Quórum --}}
+                    {{-- Attendance Stats Pill / Quórum de Plantilla --}}
                     @if ($totalConvocados > 0)
-                        <div class="p-3 rounded-2xl bg-surface-subtle border border-indigo-50/60 flex flex-col gap-1.5">
-                            <div class="flex items-center justify-between text-xs">
-                                <div class="flex items-center gap-1.5 text-slate-600 font-semibold">
-                                    <span class="material-symbols-outlined text-primary text-[17px]">group</span>
+                        <div class="p-3.5 rounded-2xl bg-surface-subtle border border-indigo-50/70 flex flex-col gap-2.5">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5">
+                                <div class="flex items-center gap-1.5 text-slate-700 font-bold text-xs">
+                                    <span class="material-symbols-outlined text-primary text-[18px]">groups</span>
                                     <span>{{ __('Quòrum de plantilla') }}</span>
                                 </div>
-                                <span class="text-xs text-primary font-extrabold">
-                                    {{ $totalConfirmados }}/{{ $totalConvocados }} {{ __('confirmats') }}
-                                </span>
+                                <div class="flex items-center flex-wrap gap-x-3 gap-y-1 text-xs">
+                                    <span class="font-bold text-emerald-700 flex items-center gap-1">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                        <span>{{ __('Convocats') }} ({{ $convocadosCount }})</span>
+                                    </span>
+                                    <span class="font-bold text-amber-700 flex items-center gap-1">
+                                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                        <span>{{ __('Té dubtes') }} ({{ $dudasCount }})</span>
+                                    </span>
+                                    <span class="font-bold text-rose-700 flex items-center gap-1">
+                                        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                                        <span>{{ __('No disponible') }} ({{ $noDisponiblesCount }})</span>
+                                    </span>
+                                </div>
                             </div>
-                            <div class="w-full bg-slate-200/80 h-2 rounded-full overflow-hidden">
-                                <div class="bg-gradient-to-r from-primary to-cyan-500 h-full rounded-full transition-all duration-500" style="width: {{ $porcentajeQuorum }}%"></div>
+                            <div class="w-full bg-slate-200/80 h-2.5 rounded-full overflow-hidden flex">
+                                <div class="bg-emerald-500 h-full transition-all duration-500" style="width: {{ $porcentajeConvocados }}%" title="{{ __('Convocats') }}: {{ $convocadosCount }}"></div>
+                                <div class="bg-amber-400 h-full transition-all duration-500" style="width: {{ $porcentajeDudas }}%" title="{{ __('Té dubtes') }}: {{ $dudasCount }}"></div>
+                                <div class="bg-rose-500 h-full transition-all duration-500" style="width: {{ $porcentajeNoDisp }}%" title="{{ __('No disponible') }}: {{ $noDisponiblesCount }}"></div>
                             </div>
                         </div>
                     @endif
