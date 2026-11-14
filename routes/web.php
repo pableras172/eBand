@@ -88,10 +88,10 @@ Route::get('/', function () {
 
 Route::get('/politica-privacidad', function () {
     return view('politica-privacidad');
-})->name('politica-privacidad');
+})->name('tenant.politica-privacidad');
 
 Route::get('/privacidad', function () {
-    return redirect()->route('politica-privacidad');
+    return redirect()->route('tenant.politica-privacidad');
 });
 
 Route::get('/demo/autologin', [DemoAutologinController::class, 'autologin'])

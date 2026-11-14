@@ -23,13 +23,13 @@
 
     <div class="space-y-6 pb-28">
         {{-- Módulo de Filtros y Búsqueda (Neo-Bento Violet Colapsable) --}}
-        <div class="bg-white border border-indigo-50 shadow-bento rounded-3xl p-4 lg:p-5 transition-all"
+        <div class="bg-white border border-indigo-50 shadow-bento rounded-xl p-4 lg:p-5 transition-all"
              x-data="{ openFilters: {{ $hayFiltrosActivos ? 'true' : 'false' }} }">
             
             {{-- Encabezado compacto del card de filtros --}}
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-primary flex-shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-primary flex-shrink-0">
                         <span class="material-symbols-outlined text-[20px]">filter_list</span>
                     </div>
                     <div>
@@ -158,22 +158,22 @@
                 $fechaCarbon = \Carbon\Carbon::createFromFormat('m/Y', $mes);
                 $mesFormateado = ucfirst($fechaCarbon->translatedFormat('F Y'));
             @endphp
-            <div class="space-y-4">
-                {{-- Encabezado de Mes Sticky --}}
-                <div class="flex items-center justify-between sticky top-16 z-10 bg-[#F5F6FC]/95 backdrop-blur-md py-3 px-1 border-b border-indigo-100/70">
-                    <div class="flex items-center gap-3">
-                        <div class="w-2.5 h-7 bg-primary rounded-full"></div>
-                        <h2 class="text-xl lg:text-2xl font-extrabold font-headline text-on-surface tracking-tight">
+            <section class="bg-white border border-indigo-50/80 shadow-bento rounded-xl p-4 sm:p-5 flex flex-col gap-4">
+                {{-- Encabezado integrado en la tarjeta --}}
+                <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[20px] text-primary">calendar_month</span>
+                        <h2 class="text-xs sm:text-sm font-bold text-on-surface uppercase tracking-wider">
                             {{ $mesFormateado }}
                         </h2>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-primary border border-indigo-100">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-primary border border-indigo-100">
                             {{ $actuacionesDelMes->count() }} {{ $actuacionesDelMes->count() === 1 ? __('acte') : __('actes') }}
                         </span>
                     </div>
                 </div>
 
                 {{-- Grid de Actuaciones (1 col móvil, 2 cols tablet, 3 cols desktop xl) --}}
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
                     @foreach ($actuacionesDelMes->sortBy('fechaActuacion') as $actuacion)
                         @php
                             $lista = $actuacion->lista;
@@ -225,7 +225,7 @@
                         @endphp
 
                         <div @if($loop->first && $loop->parent->first) id="driver-actuacion-first" @endif 
-                            class="group relative flex flex-col bg-white border border-indigo-50/80 rounded-3xl overflow-hidden shadow-bento hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            class="group relative flex flex-col bg-slate-50/70 hover:bg-white border border-slate-200/80 hover:border-indigo-200 rounded-xl overflow-hidden shadow-2xs hover:shadow-md transition-all duration-200">
                             
                             {{-- Banner visual con imagen / icono --}}
                             <div class="relative h-44 overflow-hidden bg-slate-900">
@@ -240,19 +240,19 @@
                                 <div class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
                                     <div class="flex items-center gap-1.5">
                                         @if ($actuacion->oficial == 1)
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold bg-status-unavailable text-white shadow-md backdrop-blur-sm">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-status-unavailable text-white shadow-md backdrop-blur-sm">
                                                 <span class="material-symbols-outlined text-[13px]">priority_high</span>
                                                 {{ __('Acte Oficial') }}
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-semibold bg-slate-900/80 text-white backdrop-blur-sm border border-white/10">
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900/80 text-white backdrop-blur-sm border border-white/10">
                                                 {{ $actuacion->tipoactuacion?->nombre ?? __('Actuació') }}
                                             </span>
                                         @endif
 
                                         @can('admin')
                                             @if ($actuacion->is_draft)
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-bold bg-amber-400 text-amber-950 shadow-sm">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold bg-amber-400 text-amber-950 shadow-sm">
                                                     {{ __('Esborrany') }}
                                                 </span>
                                             @endif
@@ -263,15 +263,15 @@
                                 {{-- Fecha y Hora sobre el degradado inferior del banner --}}
                                 <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between pointer-events-none">
                                     <div class="flex items-center gap-2">
-                                        <div class="px-2.5 py-1 rounded-xl bg-primary text-white font-bold text-xs uppercase tracking-wider shadow-md">
+                                        <div class="px-2.5 py-1 rounded-lg bg-primary text-white font-bold text-xs uppercase tracking-wider shadow-md">
                                             {{ $fechaAct->translatedFormat('D d M') }}
                                         </div>
-                                        <div class="text-xs font-bold text-white bg-slate-900/80 px-2.5 py-1 rounded-xl border border-white/10 backdrop-blur-sm">
+                                        <div class="text-xs font-bold text-white bg-slate-900/80 px-2.5 py-1 rounded-lg border border-white/10 backdrop-blur-sm">
                                             {{ $fechaAct->format('H:i') }} h
                                         </div>
                                     </div>
                                     @if($actuacion->contrato?->poblacion)
-                                        <div class="text-xs font-semibold text-slate-800 flex items-center gap-1 bg-white/95 px-2.5 py-1 rounded-xl shadow-sm">
+                                        <div class="text-xs font-semibold text-slate-800 flex items-center gap-1 bg-white/95 px-2.5 py-1 rounded-lg shadow-sm">
                                             <span class="material-symbols-outlined text-primary text-[15px]">location_on</span>
                                             <span class="truncate max-w-[120px]">{{ $actuacion->contrato->poblacion }}</span>
                                         </div>
@@ -292,13 +292,13 @@
                                     @endif
                                 </div>
 
-                                {{-- Quórum de plantilla (Convocados, Dudas, No disponible) --}}
-                                @if ($totalConvocados > 0)
-                                    <div class="p-3 rounded-2xl bg-surface-subtle border border-indigo-50/70 flex flex-col gap-2">
+                                {{-- Quórum de plantilla (Solo administradores) --}}
+                                @if ($isAdmin && $totalConvocados > 0)
+                                    <div class="p-3 rounded-xl bg-white border border-indigo-50/80 shadow-2xs flex flex-col gap-2">
                                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs">
                                             <div class="flex items-center gap-1.5 text-slate-700 font-bold">
                                                 <span class="material-symbols-outlined text-primary text-[17px]">groups</span>
-                                                <span>{{ __('Quòrum de plantilla') }}</span>
+                                                <span>{{ __('Músics:') }}</span>
                                             </div>
                                             <div class="flex items-center flex-wrap gap-x-2.5 gap-y-1 text-[11px]">
                                                 <span class="font-bold text-emerald-700 flex items-center gap-1">
@@ -321,12 +321,12 @@
                                             <div class="bg-rose-500 h-full transition-all duration-500" style="width: {{ $porcentajeNoDisp }}%" title="{{ __('No disponible') }}: {{ $noDisponiblesCount }}"></div>
                                         </div>
                                     </div>
-                                @elseif ($actuacion->musicos > 0)
-                                    <div class="bg-surface-subtle rounded-2xl p-2.5 space-y-1 border border-indigo-50/60">
+                                @elseif ($isAdmin && $actuacion->musicos > 0)
+                                    <div class="bg-white rounded-xl p-2.5 space-y-1 border border-indigo-50/80 shadow-2xs">
                                         <div class="flex items-center justify-between text-xs">
                                             <span class="text-slate-600 font-semibold flex items-center gap-1.5">
                                                 <span class="material-symbols-outlined text-primary text-[16px]">groups</span>
-                                                {{ __('Plantilla prevista') }}
+                                                <span>{{ __('Músics:') }}</span>
                                             </span>
                                             <span class="font-extrabold text-primary">
                                                 {{ $actuacion->musicos }} {{ __('músics') }}
@@ -339,31 +339,31 @@
                                 @if ($currentUser)
                                     <div class="flex flex-col gap-1.5 pt-1 border-t border-indigo-50/70">
                                         @if ($usuarioConvocado)
-                                            {{-- Músico CONVOCADO por la dirección: NO puede indicar que no asiste ni dudas --}}
+                                            {{-- Músico CONVOCADO por la junta: NO puede indicar que no asiste ni dudas --}}
                                             <div id="banner-convocado-{{ $actuacion->id }}" 
-                                                 class="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-xs">
+                                                 class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-xs">
                                                 <span class="material-symbols-outlined text-[18px] text-status-available">verified</span>
                                                 <div class="flex flex-col">
                                                     <span>{{ __('Estàs convocat') }}</span>
-                                                    <span class="text-[10.5px] font-medium text-emerald-700">{{ __('Assistència confirmada per la direcció') }}</span>
+                                                    <span class="text-[10.5px] font-medium text-emerald-700">{{ __('Assistència confirmada per la junta') }}</span>
                                                 </div>
                                             </div>
                                         @elseif ($fueraDePlazo)
                                             {{-- Fuera de plazo por antelación --}}
-                                            <div class="px-3 py-2 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-amber-900 text-xs flex items-center gap-2">
+                                            <div class="px-3 py-2 rounded-xl bg-amber-50/80 border border-amber-200/80 text-amber-900 text-xs flex items-center gap-2">
                                                 <span class="material-symbols-outlined text-amber-600 text-[18px] shrink-0">lock_clock</span>
                                                 <div class="flex flex-col">
                                                     <span class="font-bold text-[11px]">{{ __('Termini de canvi tancat') }}</span>
-                                                    <span class="text-[10px] text-amber-700">{{ __('Menys de :dias dies d\'antelació. Contacta amb direcció.', ['dias' => $limiteAntelacion]) }}</span>
+                                                    <span class="text-[10px] text-amber-700">{{ __('Menys de :dias dies d\'antelació. Contacta amb la junta.', ['dias' => $limiteAntelacion]) }}</span>
                                                 </div>
                                             </div>
                                         @else
                                             {{-- Botones interactivos de Duda y No asistencia --}}
-                                            <div class="grid grid-cols-2 gap-2 bg-surface-subtle p-1.5 rounded-2xl">
+                                            <div class="grid grid-cols-2 gap-2 bg-white p-1 rounded-xl border border-slate-100">
                                                 <button type="button" 
                                                     id="btn-status-duda-{{ $actuacion->id }}" 
                                                     onclick="setCalendarAttendance('duda', {{ $listaId ? $listaId : 'null' }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
-                                                    class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-amber-200' }}"
+                                                    class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-lg text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'duda' ? 'bg-status-pending text-white shadow-sm ring-2 ring-amber-300/40' : 'text-slate-600 hover:bg-slate-50 border border-transparent hover:border-amber-200' }}"
                                                     title="{{ __('Notifica que no saps segur si podràs assistir') }}">
                                                     <span class="material-symbols-outlined text-[16px]">help</span>
                                                     <span class="truncate">{{ __('Tinc dubtes') }}</span>
@@ -372,7 +372,7 @@
                                                 <button type="button" 
                                                     id="btn-status-no-{{ $actuacion->id }}" 
                                                     onclick="setCalendarAttendance('no', {{ $listaId ? $listaId : 'null' }}, {{ $currentUser->id }}, {{ $actuacion->id }})"
-                                                    class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40' : 'text-slate-600 hover:bg-white border border-transparent hover:border-rose-200' }}"
+                                                    class="flex items-center justify-center gap-1 py-2 px-2.5 rounded-lg text-xs font-bold transition-all active:scale-95 {{ $userDispState === 'no' ? 'bg-status-unavailable text-white shadow-sm ring-2 ring-rose-300/40' : 'text-slate-600 hover:bg-slate-50 border border-transparent hover:border-rose-200' }}"
                                                     title="{{ __('Comunica la teua baixa') }}">
                                                     <span class="material-symbols-outlined text-[16px]">cancel</span>
                                                     <span class="truncate">{{ __('No puc assistir') }}</span>
@@ -421,19 +421,19 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </section>
         @empty
-            <div class="bg-white border border-indigo-50 shadow-bento rounded-3xl p-12 text-center max-w-xl mx-auto">
-                <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-primary mx-auto flex items-center justify-center mb-4">
-                    <span class="material-symbols-outlined text-[32px]">event_busy</span>
+            <div class="bg-white border border-indigo-50 shadow-bento rounded-xl p-10 text-center max-w-xl mx-auto">
+                <div class="w-14 h-14 rounded-xl bg-indigo-50 text-primary mx-auto flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-[30px]">event_busy</span>
                 </div>
-                <h3 class="text-lg font-bold font-headline text-on-surface mb-1">
+                <h3 class="text-base font-bold font-headline text-on-surface mb-1">
                     {{ __('No hi ha actuacions programades') }}
                 </h3>
-                <p class="text-xs text-slate-500 mb-6">
+                <p class="text-xs text-slate-500 mb-5">
                     {{ __('No s\'han trobat esdeveniments amb els criteris seleccionats.') }}
                 </p>
-                <a href="{{ route('actuacion.index') }}" class="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-dark text-white text-xs font-bold rounded-2xl shadow-sm transition">
+                <a href="{{ route('actuacion.index') }}" class="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-dark text-white text-xs font-bold rounded-xl shadow-xs transition active:scale-95">
                     {{ __('Veure totes les actuacions') }}
                 </a>
             </div>
@@ -446,7 +446,7 @@
     <div id="calendar-loading-overlay" 
          class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-900/40 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none"
          aria-hidden="true">
-        <div class="bg-white rounded-3xl p-6 shadow-2xl border border-indigo-50 flex flex-col items-center gap-3.5 max-w-xs mx-4 text-center transform scale-95 transition-transform duration-300">
+        <div class="bg-white rounded-xl p-6 shadow-2xl border border-indigo-50 flex flex-col items-center gap-3.5 max-w-xs mx-4 text-center transform scale-95 transition-transform duration-300">
             <div class="relative w-12 h-12 flex items-center justify-center">
                 <div class="absolute inset-0 rounded-full border-4 border-indigo-100"></div>
                 <div class="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>

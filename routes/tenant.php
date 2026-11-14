@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
+use Livewire\Mechanisms\HandleRequests\RequireLivewireHeaders;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -26,8 +27,15 @@ Route::middleware([
 ])->group(function () {
     // Register Livewire's update route inside tenant middleware so tenancy
     // is initialized (and the session resolved) on every Livewire AJAX request.
-    Livewire::setUpdateRoute(function ($handle) {
-        return Route::post('/livewire/update', $handle);
+    Livewire::setUpdateRoute(function ($handle, $path) {
+        return Route::post($path, $handle)
+            ->middleware([
+                InitializeTenancyByDomain::class,
+                PreventAccessFromCentralDomains::class,
+                'web',
+                RequireLivewireHeaders::class,
+            ])
+            ->name('tenant.livewire.update');
     });
 
     require base_path('routes/web.php');

@@ -1,45 +1,56 @@
-<nav class="fixed bottom-0 inset-x-0 z-40 pb-safe px-4 pointer-events-none block lg:hidden" aria-label="{{ __('Navegació mòbil') }}">
-    <div class="mb-2 mx-auto max-w-md pointer-events-auto bg-white/90 backdrop-blur-2xl border border-white/80 shadow-glass rounded-3xl px-3 py-1.5 flex items-center justify-around">
+<nav class="fixed bottom-0 inset-x-0 z-40 w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 shadow-[0_-2px_12px_rgba(0,0,0,0.04)] block lg:hidden pb-safe"
+     style="padding-bottom: env(safe-area-inset-bottom, 0px);"
+     aria-label="{{ __('Navegació mòbil') }}">
+    <div class="w-full max-w-lg mx-auto flex flex-row items-center justify-around px-1 py-1 sm:py-1.5"
+         style="display: flex; flex-direction: row; align-items: center; justify-content: space-around;">
         {{-- 1. Inicio --}}
         @php $isDashboard = request()->routeIs('dashboard'); @endphp
         <a href="{{ route('dashboard') }}"
-           class="group flex flex-col items-center justify-center min-w-[60px] py-1 transition-all {{ $isDashboard ? 'text-primary font-bold' : 'text-slate-500 hover:text-primary font-medium' }}">
-            <div class="flex items-center justify-center w-12 h-7 rounded-2xl transition-all group-active:scale-90 {{ $isDashboard ? 'bg-indigo-50 text-primary shadow-sm' : 'text-slate-500' }}">
+           class="flex-1 flex flex-col items-center justify-center py-1 transition-all {{ $isDashboard ? 'text-primary dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 font-medium' }}"
+           style="flex: 1 1 0%; min-width: 0; text-align: center;">
+            <div class="flex items-center justify-center w-12 h-7 rounded-xl transition-all group-active:scale-90 {{ $isDashboard ? 'bg-indigo-50 dark:bg-indigo-950/60 text-primary dark:text-indigo-300' : 'text-slate-500 dark:text-slate-400' }}">
                 <span class="material-symbols-outlined text-[22px]">home</span>
             </div>
-            <span class="text-[11px] tracking-normal mt-0.5">{{ __('Inici') }}</span>
+            <span class="text-[10px] sm:text-[11px] truncate tracking-tight mt-0.5 block w-full text-center">{{ __('Inicio') }}</span>
         </a>
 
-        {{-- 2. Actuaciones / Calendario --}}
-        @php $isActuaciones = request()->routeIs('actuacion.*') || request()->routeIs('actuaciones.*'); @endphp
+        {{-- 2. Calendario --}}
+        @php 
+            $isCalendario = request()->routeIs('actuacion.*') || (request()->routeIs('actuaciones.*') && !request()->routeIs('actuaciones.usuario.*')); 
+        @endphp
         <a href="{{ route('actuacion.index') }}"
-           class="group flex flex-col items-center justify-center min-w-[60px] py-1 transition-all {{ $isActuaciones ? 'text-primary font-bold' : 'text-slate-500 hover:text-primary font-medium' }}">
-            <div class="flex items-center justify-center w-12 h-7 rounded-2xl transition-all group-active:scale-90 {{ $isActuaciones ? 'bg-indigo-50 text-primary shadow-sm' : 'text-slate-500' }}">
-                <span class="material-symbols-outlined text-[22px]">event</span>
+           class="flex-1 flex flex-col items-center justify-center py-1 transition-all {{ $isCalendario ? 'text-primary dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 font-medium' }}"
+           style="flex: 1 1 0%; min-width: 0; text-align: center;">
+            <div class="flex items-center justify-center w-12 h-7 rounded-xl transition-all group-active:scale-90 {{ $isCalendario ? 'bg-indigo-50 dark:bg-indigo-950/60 text-primary dark:text-indigo-300' : 'text-slate-500 dark:text-slate-400' }}">
+                <span class="material-symbols-outlined text-[22px]">calendar_month</span>
             </div>
-            <span class="text-[11px] tracking-normal mt-0.5">{{ __('Actuacions') }}</span>
+            <span class="text-[10px] sm:text-[11px] truncate tracking-tight mt-0.5 block w-full text-center">{{ __('Calendari') }}</span>
         </a>
 
-        {{-- 3. Músicos / Cuerdas --}}
-        @php $isMusicos = request()->routeIs('musicos.*') || request()->routeIs('users.*'); @endphp
-        @if (Route::has('users.index'))
-            <a href="{{ route('users.index') }}"
-               class="group flex flex-col items-center justify-center min-w-[60px] py-1 transition-all {{ $isMusicos ? 'text-primary font-bold' : 'text-slate-500 hover:text-primary font-medium' }}">
-                <div class="flex items-center justify-center w-12 h-7 rounded-2xl transition-all group-active:scale-90 {{ $isMusicos ? 'bg-indigo-50 text-primary shadow-sm' : 'text-slate-500' }}">
-                    <span class="material-symbols-outlined text-[22px]">groups</span>
-                </div>
-                <span class="text-[11px] tracking-normal mt-0.5">{{ __('Músics') }}</span>
-            </a>
-        @endif
-
-        {{-- 4. Mi Actividad / Gestió --}}
-        @php $isActivity = request()->routeIs('actividades.*') || request()->routeIs('inventory.*') || request()->routeIs('payments.*'); @endphp
-        <a href="{{ route('actuaciones.usuario.anyo', [Auth::user()->id, date('Y')]) }}"
-           class="group flex flex-col items-center justify-center min-w-[60px] py-1 transition-all {{ $isActivity ? 'text-primary font-bold' : 'text-slate-500 hover:text-primary font-medium' }}">
-            <div class="flex items-center justify-center w-12 h-7 rounded-2xl transition-all group-active:scale-90 {{ $isActivity ? 'bg-indigo-50 text-primary shadow-sm' : 'text-slate-500' }}">
-                <span class="material-symbols-outlined text-[22px]">business_center</span>
+        {{-- 3. Mis actuaciones --}}
+        @php 
+            $isMisActuaciones = request()->routeIs('actuaciones.usuario.*'); 
+        @endphp
+        <a href="{{ route('actuaciones.usuario.anyo', [Auth::id() ?? 0, date('Y')]) }}"
+           class="flex-1 flex flex-col items-center justify-center py-1 transition-all {{ $isMisActuaciones ? 'text-primary dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 font-medium' }}"
+           style="flex: 1 1 0%; min-width: 0; text-align: center;">
+            <div class="flex items-center justify-center w-12 h-7 rounded-xl transition-all group-active:scale-90 {{ $isMisActuaciones ? 'bg-indigo-50 dark:bg-indigo-950/60 text-primary dark:text-indigo-300' : 'text-slate-500 dark:text-slate-400' }}">
+                <span class="material-symbols-outlined text-[22px]">event_available</span>
             </div>
-            <span class="text-[11px] tracking-normal mt-0.5">{{ __('Activitat') }}</span>
+            <span class="text-[10px] sm:text-[11px] truncate tracking-tight mt-0.5 block w-full text-center">{{ __('Les meves actuacions') }}</span>
+        </a>
+
+        {{-- 4. Perfil --}}
+        @php 
+            $isProfile = request()->routeIs('profile.*'); 
+        @endphp
+        <a href="{{ route('profile.show') }}"
+           class="flex-1 flex flex-col items-center justify-center py-1 transition-all {{ $isProfile ? 'text-primary dark:text-indigo-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 font-medium' }}"
+           style="flex: 1 1 0%; min-width: 0; text-align: center;">
+            <div class="flex items-center justify-center w-12 h-7 rounded-xl transition-all group-active:scale-90 {{ $isProfile ? 'bg-indigo-50 dark:bg-indigo-950/60 text-primary dark:text-indigo-300' : 'text-slate-500 dark:text-slate-400' }}">
+                <span class="material-symbols-outlined text-[22px]">person</span>
+            </div>
+            <span class="text-[10px] sm:text-[11px] truncate tracking-tight mt-0.5 block w-full text-center">{{ __('Perfil') }}</span>
         </a>
     </div>
 </nav>

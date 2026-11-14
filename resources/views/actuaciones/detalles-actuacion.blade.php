@@ -249,7 +249,7 @@
                                 <span class="material-symbols-outlined text-amber-600 text-[20px] shrink-0">lock_clock</span>
                                 <div class="flex flex-col">
                                     <span class="font-bold text-xs">{{ __('Termini de canvi tancat') }}</span>
-                                    <span class="text-[10.5px] text-amber-800">{{ __('Menys de :dias dies d\'antelació. Contacta amb direcció.', ['dias' => $limiteAntelacion]) }}</span>
+                                    <span class="text-[10.5px] text-amber-800">{{ __('Menys de :dias dies d\'antelació. Contacta amb la junta.', ['dias' => $limiteAntelacion]) }}</span>
                                 </div>
                             </div>
                         @else

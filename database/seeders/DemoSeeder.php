@@ -55,6 +55,7 @@ class DemoSeeder extends Seeder
         $this->seedComments($actuaciones, $musicians);
         $this->seedAnnouncements($musicians);
         $this->seedInventory($musicians);
+        (new ActividadSeeder)->run();
 
         $this->command?->info('¡Base de datos demo completada con éxito con grandes músicos famosos!');
     }

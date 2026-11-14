@@ -30,6 +30,7 @@
     <meta property="twitter:image" content="{{ asset('logo_e_band.png') }}">
 
     <!-- Mobile & PWA settings -->
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="eBand">

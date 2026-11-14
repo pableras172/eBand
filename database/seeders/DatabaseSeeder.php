@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             InventorySeeder::class,
             PaymentSeeder::class,
             ConcertProgramSeeder::class,
+            ActividadSeeder::class,
         ]);
     }
 }

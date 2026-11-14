@@ -143,7 +143,7 @@ class ListasUsersController extends Controller
 
             if ($diasRestantes <= $limiteAntelacion) {
                 return response()->json([
-                    'message' => __('No es pot canviar la disponibilitat amb menys de :dias dies d\'antelació. Contacta amb la direcció.', ['dias' => $limiteAntelacion]),
+                    'message' => __('No es pot canviar la disponibilitat amb menys de :dias dies d\'antelació. Contacta amb la junta.', ['dias' => $limiteAntelacion]),
                     'alert_type' => 'error',
                 ], 422);
             }
