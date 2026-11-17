@@ -205,25 +205,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Transición suave de contenido al navegar con Livewire para navegadores sin View Transitions API nativa
+// Efecto cinematográfico garantizado en cada cambio de vista con Livewire
 document.addEventListener('livewire:navigating', () => {
-    if (typeof document.startViewTransition !== 'function') {
-        const wrapper = document.getElementById('app-content-wrapper');
-        if (wrapper) {
-            wrapper.style.transition = 'opacity 120ms ease-out, transform 120ms ease-out';
-            wrapper.style.opacity = '0.7';
-            wrapper.style.transform = 'translateY(-4px)';
-        }
+    const wrapper = document.getElementById('app-content-wrapper');
+    if (wrapper) {
+        wrapper.classList.remove('page-content-enter');
+        wrapper.classList.add('page-content-exit');
     }
 });
 
 document.addEventListener('livewire:navigated', () => {
-    if (typeof document.startViewTransition !== 'function') {
-        const wrapper = document.getElementById('app-content-wrapper');
-        if (wrapper) {
-            wrapper.style.opacity = '1';
-            wrapper.style.transform = 'translateY(0)';
-        }
+    const wrapper = document.getElementById('app-content-wrapper');
+    if (wrapper) {
+        wrapper.classList.remove('page-content-exit');
+        wrapper.classList.add('page-content-enter');
+        setTimeout(() => {
+            wrapper.classList.remove('page-content-enter');
+        }, 320);
     }
 });
 

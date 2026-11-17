@@ -64,13 +64,13 @@
     animation: none !important;
 }
 
-/* Page Crossfade + Smooth Lift Transition for Livewire Navigate */
+/* Page Crossfade + Cinematic Lift Transition for Livewire Navigate */
 ::view-transition-old(livewire-navigate) {
-    animation: 130ms cubic-bezier(0.4, 0, 1, 1) both page-fade-out;
+    animation: 140ms cubic-bezier(0.4, 0, 1, 1) both page-fade-out;
 }
 
 ::view-transition-new(livewire-navigate) {
-    animation: 220ms cubic-bezier(0.16, 1, 0.3, 1) both page-fade-in-up;
+    animation: 280ms cubic-bezier(0.16, 1, 0.3, 1) both page-fade-in-up;
 }
 
 @keyframes page-fade-out {
@@ -80,16 +80,42 @@
     }
     to {
         opacity: 0;
-        transform: translateY(-6px);
+        transform: translateY(-8px);
     }
 }
 
 @keyframes page-fade-in-up {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(14px);
     }
     to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fallback y animación universal directa en #app-content-wrapper (100% navegadores) */
+#app-content-wrapper {
+    will-change: opacity, transform;
+}
+
+.page-content-exit {
+    opacity: 0.3 !important;
+    transform: translateY(-6px) scale(0.998) !important;
+    transition: opacity 120ms ease-in, transform 120ms ease-in !important;
+}
+
+.page-content-enter {
+    animation: pageUniversalEnter 280ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+@keyframes pageUniversalEnter {
+    0% {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    100% {
         opacity: 1;
         transform: translateY(0);
     }
@@ -111,7 +137,7 @@
         transform: scale(0.86);
     }
     50% {
-        transform: scale(1.14);
+        transform: scale(1.15);
     }
     100% {
         transform: scale(1);
@@ -119,7 +145,7 @@
 }
 
 .bottom-nav-tab.active-tab .tab-icon-wrapper {
-    animation: tab-bounce 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: tab-bounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .material-symbols-fill {
@@ -132,7 +158,11 @@
     ::view-transition-new(*) {
         animation: none !important;
     }
-    .bottom-nav-tab.active-tab .tab-icon-wrapper {
+    .bottom-nav-tab.active-tab .tab-icon-wrapper,
+    .page-content-enter {
         animation: none !important;
+    }
+    .page-content-exit {
+        transition: none !important;
     }
 }
