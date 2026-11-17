@@ -132,7 +132,7 @@ class ActuacionController extends Controller
             $actuacion = new Actuacion;
 
             // Asignar los valores del request al objeto Actuacion
-            $actuacion->fechaActuacion = $request->fechaActuacion;
+            $actuacion->fechaActuacion = Carbon::parse($request->fechaActuacion)->format('Y-m-d H:i:s');
             $actuacion->descripcion = $request->descripcion;
             $actuacion->tipoactuacions_id = $request->tipoactuacions_id;
             $actuacion->coches = $request->coches;
@@ -389,7 +389,7 @@ class ActuacionController extends Controller
         ]);
 
         // Asignar los valores del request al objeto Actuacion
-        $actuacion->fechaActuacion = $request->fechaActuacion;
+        $actuacion->fechaActuacion = Carbon::parse($request->fechaActuacion)->format('Y-m-d H:i:s');
         $actuacion->descripcion = $request->descripcion;
         $actuacion->tipoactuacions_id = $request->tipoactuacions_id;
         $actuacion->coches = $request->coches;

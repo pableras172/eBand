@@ -124,7 +124,7 @@ class ContratoActuaciones extends Component
             ->findOrFail($actuacionId);
 
         $this->actuacionId = $actuacion->id;
-        $this->fechaActuacion = Carbon::parse($actuacion->fechaActuacion)->format('Y-m-d');
+        $this->fechaActuacion = Carbon::parse($actuacion->fechaActuacion)->format('Y-m-d\TH:i');
         $this->descripcion = (string) $actuacion->descripcion;
         $this->tipoactuacions_id = $actuacion->tipoactuacions_id;
         $this->coches = $actuacion->coches;
@@ -164,7 +164,7 @@ class ContratoActuaciones extends Component
             $actuacion->contratos_id = $this->contrato->id;
         }
 
-        $actuacion->fechaActuacion = $validated['fechaActuacion'];
+        $actuacion->fechaActuacion = Carbon::parse($validated['fechaActuacion'])->format('Y-m-d H:i:s');
         $actuacion->descripcion = $validated['descripcion'];
         $actuacion->tipoactuacions_id = $validated['tipoactuacions_id'];
         $actuacion->coches = $validated['coches'];

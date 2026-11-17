@@ -81,7 +81,7 @@
                                     <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    {{ Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y') }}
+                                    {{ Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y · H:i') }} h
                                 </span>
                                 @if ($actuacion->is_draft)
                                     <span class="rounded-xl bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700 border border-amber-200">
@@ -189,7 +189,7 @@
                                     <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    {{ Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y') }}
+                                    {{ Carbon\Carbon::parse($actuacion->fechaActuacion)->format('d/m/Y · H:i') }} h
                                 </div>
                             </td>
                             <td class="px-5 py-4">
@@ -315,9 +315,9 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                             <div>
                                 <label class="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-600">
-                                    {{ __('Data actuacio') }} <span class="text-red-500">*</span>
+                                    {{ __('Data i hora actuació') }} <span class="text-red-500">*</span>
                                 </label>
-                                <input type="date" wire:model="fechaActuacion"
+                                <input type="datetime-local" wire:model="fechaActuacion"
                                     class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] py-2 px-3 text-xs font-medium text-slate-800 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition" required>
                                 @error('fechaActuacion') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                             </div>

@@ -84,11 +84,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
                         <label for="fechaActuacion" class="mb-1 block text-xs font-bold uppercase tracking-wide text-slate-600">
-                            {{ __('Data actuacio') }} <span class="text-red-500">*</span>
+                            {{ __('Data i hora actuació') }} <span class="text-red-500">*</span>
                         </label>
-                        <input type="date" id="fechaActuacion" name="fechaActuacion" required
+                        <input type="datetime-local" id="fechaActuacion" name="fechaActuacion" required
                             class="w-full rounded-2xl border border-indigo-100/70 bg-[#F5F6FC] py-2.5 px-3 text-xs font-medium text-slate-800 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition"
-                            value="{{ old('fechaActuacion', isset($actuacion) ? $actuacion->fechaActuacion : '') }}">
+                            value="{{ old('fechaActuacion', isset($actuacion) && $actuacion->fechaActuacion ? \Carbon\Carbon::parse($actuacion->fechaActuacion)->format('Y-m-d\TH:i') : '') }}">
                     </div>
 
                     <div>
