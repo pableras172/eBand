@@ -11,6 +11,10 @@ app/storage/
 public/storage
 public/hot
 public/imagenes
+!public/imagenes/icons/
+!public/imagenes/icons/**
+!public/imagenes/no-icon.png
+!public/imagenes/logo.png
 
 # Laravel 5 & Lumen specific with changed public path
 public_html/storage
