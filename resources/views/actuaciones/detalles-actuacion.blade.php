@@ -7,7 +7,7 @@
     $limiteAntelacion = (int) (ConfigHelper::getConfigValue('diasantelacion') ?? 5);
 
     $currentUser = auth()->user();
-    $diasRestantes = (int) now()->startOfDay()->diffInDays($fechaActuacion->startOfDay(), false);
+    $diasRestantes = (int) now()->startOfDay()->diffInDays($fechaActuacion->copy()->startOfDay(), false);
     $fueraDePlazo = ($diasRestantes <= $limiteAntelacion) && !$currentUser?->can('admin');
 
     $currentUserRel = $lista ? $lista->users()->where('users.id', $currentUser?->id)->first() : null;

@@ -217,10 +217,11 @@
                             }
 
                             $fechaAct = \Carbon\Carbon::parse($actuacion->fechaActuacion);
+                            $horaActuacion = $fechaAct->format('H:i');
                             $esHoy = $fechaAct->isToday();
                             $limiteAntelacion = (int) (\App\Helpers\ConfigHelper::getConfigValue('diasantelacion') ?? 5);
                             $isAdmin = $currentUser && $currentUser->roles()->where('title', 'Admin')->exists();
-                            $diasRestantes = now()->startOfDay()->diffInDays($fechaAct->startOfDay(), false);
+                            $diasRestantes = now()->startOfDay()->diffInDays($fechaAct->copy()->startOfDay(), false);
                             $fueraDePlazo = ($diasRestantes <= $limiteAntelacion && ! $isAdmin);
                         @endphp
 
@@ -267,7 +268,7 @@
                                             {{ $fechaAct->translatedFormat('D d M') }}
                                         </div>
                                         <div class="text-xs font-bold text-white bg-slate-900/80 px-2.5 py-1 rounded-lg border border-white/10 backdrop-blur-sm">
-                                            {{ $fechaAct->format('H:i') }} h
+                                            {{ $horaActuacion }} h
                                         </div>
                                     </div>
                                     @if($actuacion->contrato?->poblacion)
