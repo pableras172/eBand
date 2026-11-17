@@ -1,10 +1,10 @@
 <div>
     <button type="button" 
         wire:click="$set('displayingPreviewListas', true)"
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold border border-slate-200 shadow-sm transition active:scale-95 shrink-0"
+        class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white hover:bg-indigo-50/80 text-primary hover:text-primary-dark text-xs font-bold border border-indigo-100 shadow-xs transition active:scale-95"
         title="{{ __('Previsualitzar convocatòria') }}">
-        <span class="material-symbols-outlined text-[17px] text-primary">visibility</span>
-        <span>{{ __('Previsualitzar') }}</span>
+        <span class="material-symbols-outlined text-[18px]">visibility</span>
+        <span>{{ __('Previsualitzar convocatòria') }}</span>
     </button>
 
     <x-dialog-modal wire:model.live="displayingPreviewListas">

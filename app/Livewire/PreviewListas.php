@@ -74,32 +74,43 @@ class PreviewListas extends Component
             ->whereDoesntHave('hijos') // no es padre
             ->get();
 
+        $listaUsers = ($lista && $lista->users) ? $lista->users->keyBy('id') : collect();
+
         // Marcar los usuarios seleccionados y con coche
         foreach ($usuarios as $usuario) {
             $usuario->seleccionado = false; // Por defecto, no seleccionado
             $usuario->coche = false; // Por defecto, no marcado
             $usuario->furgona = false; // Por defecto, no marcado
             $usuario->disponible = true;
+            $usuario->duda = false;
+
             // Verificar si el usuario está en la lista
-            if ($lista && $lista->users && $lista->users->contains($usuario->id)) {
-                $userPivot = $lista->users()->where('users.id', $usuario->id)->first()?->pivot;
+            if ($listaUsers->has($usuario->id)) {
+                $userPivot = $listaUsers->get($usuario->id)?->pivot;
                 if (! $userPivot || ! $userPivot->disponible) {
                     $usuario->disponible = false;
-
-                    continue;
+                } elseif (! empty($userPivot->duda)) {
+                    $usuario->duda = true;
+                } else {
+                    $usuario->seleccionado = true;
                 }
-                $usuario->seleccionado = true;
+
                 // Verificar si el usuario tiene marcado el campo coche en la lista
-                if ($userPivot->coche) {
+                if ($userPivot && $userPivot->coche) {
                     $usuario->coche = true;
                 }
-                if ($userPivot->furgona) {
+                if ($userPivot && $userPivot->furgona) {
                     $usuario->furgona = true;
                 }
             }
         }
 
-        $totalFilas = $lista ? ListasUser::where('listas_id', $lista->id)->where('disponible', '<>', 0)->count() : 0;
+        $totalFilas = $lista ? ListasUser::where('listas_id', $lista->id)
+            ->where('disponible', '<>', 0)
+            ->where(function ($q) {
+                $q->whereNull('duda')->orWhere('duda', 0);
+            })
+            ->count() : 0;
         $cochesCount = $lista ? ListasUser::where('listas_id', $lista->id)->where(function ($q) {
             $q->where('coche', 1)->orWhere('furgona', 1);
         })->count() : 0;

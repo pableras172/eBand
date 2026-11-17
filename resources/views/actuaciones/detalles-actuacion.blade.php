@@ -152,12 +152,12 @@
                     </div>
                 </div>
 
-                {{-- Métricas de Quórum en Vivo --}}
+                {{-- Métricas de Plantilla en Vivo --}}
                 <div class="bg-surface-subtle border border-indigo-50/60 rounded-2xl p-4 space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-600 flex items-center gap-2">
                             <span class="material-symbols-outlined text-emerald-600 text-[18px]">verified</span>
-                            {{ __('Quòrum de Plantilla') }}
+                            {{ __('Plantilla') }}
                         </span>
                         <span class="text-xs font-extrabold text-on-surface">
                             <span id="musics_count" class="text-primary text-sm font-black">{{ $convocadosCount }}</span> / {{ $actuacion->musicos > 0 ? $actuacion->musicos : '--' }} {{ __('músics') }}
@@ -196,6 +196,11 @@
                             <span id="coches_count" class="text-amber-600">{{ $cochesCount }}</span> / <span id="coches_total">{{ $actuacion->coches > 0 ? $actuacion->coches : '--' }}</span>
                         </span>
                     </div>
+                </div>
+
+                {{-- Previsualitzar Convocatòria --}}
+                <div>
+                    @livewire('preview-listas', ['id' => $actuacion->id])
                 </div>
 
                 {{-- Observaciones de Dirección --}}
@@ -350,26 +355,6 @@
             
             {{-- Panel de la Plantilla de Músicos / Cuerdas --}}
             <div id="driver-componentes" class="bg-white border border-indigo-50 shadow-bento rounded-3xl overflow-hidden">
-                <div class="p-4 sm:p-5 border-b border-indigo-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-surface-subtle">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-9 h-9 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[20px]">groups</span>
-                        </div>
-                        <div class="min-w-0">
-                            <h2 class="text-xs font-bold font-headline text-on-surface uppercase tracking-wider truncate">
-                                {{ __('Plantilla per Cordes') }}
-                            </h2>
-                            <p class="text-xs text-slate-500 truncate">
-                                {{ __('Distribució d\'instruments i assignació de transport') }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
-                        @livewire('preview-listas', ['id' => $actuacion->id])
-                    </div>
-                </div>
-
                 {{-- Acordeón / Secciones de Cuerdas --}}
                 <div class="divide-y divide-slate-100">
                     @foreach ($usuarios->groupBy('instrument_id') as $instrumento => $usuariosDelInstrumento)
@@ -379,13 +364,13 @@
                         @endphp
                         <div>
                             {{-- Cabecera de la Cuerda / Instrumento --}}
-                            <div class="flex items-center justify-between px-4 py-3 bg-slate-50/70 border-b border-slate-100">
-                                <div class="flex items-center gap-2.5">
+                            <div class="relative flex items-center justify-center px-4 py-3 bg-slate-50/70 border-b border-slate-100">
+                                <div class="flex items-center justify-center gap-2.5">
                                     <img class="w-8 h-8 rounded-xl object-contain bg-white p-1 border border-slate-200 shadow-sm"
                                         src="{{ \App\Models\Instrument::resolveIconUrl($usuariosDelInstrumento->first()?->instrument?->icon) }}"
                                         onerror="this.onerror=null;this.src='{{ asset(\App\Models\Instrument::DEFAULT_ICON_PATH) }}';"
                                         alt="{{ $nombreInstrumento }}">
-                                    <h3 class="text-xs font-bold text-on-surface uppercase tracking-wider">
+                                    <h3 class="text-xs font-bold text-on-surface uppercase tracking-wider text-center">
                                         {{ $nombreInstrumento }}
                                     </h3>
                                     <span class="text-[11px] font-bold text-primary bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
@@ -395,12 +380,12 @@
 
                                 @can('admin')
                                     <button type="button" id="f_{{ $nombreInstrumento }}"
-                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold shadow-sm transition"
+                                        class="absolute right-3 sm:right-4 inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold shadow-sm transition"
                                         onclick="mostrarForasters(this)"
                                         data-instrument-name="{{ $nombreInstrumento }}"
                                         title="{{ __('Mostrar/Ocultar reforços') }}">
                                         <span class="material-symbols-outlined text-[15px] text-primary">visibility</span>
-                                        <span>{{ __('Reforços') }}</span>
+                                        <span class="hidden sm:inline">{{ __('Reforços') }}</span>
                                     </button>
                                 @endcan
                             </div>
@@ -416,24 +401,41 @@
 
                                     @php
                                         $esUsuarioActual = Auth::check() && (Auth::user()->id == $user->id || Auth::user()->hijos->contains($user->id));
+                                        $noDisponible = ! $user->disponible;
+                                        $tieneDuda = ! empty($user->duda);
+
+                                        $rowClasses = 'hover:bg-slate-50/80';
+                                        if ($noDisponible) {
+                                            $rowClasses = $esUsuarioActual 
+                                                ? 'bg-rose-100/80 border-l-4 border-rose-500 ring-2 ring-amber-300' 
+                                                : 'bg-rose-50/90 border-l-4 border-rose-500';
+                                        } elseif ($tieneDuda) {
+                                            $rowClasses = $esUsuarioActual 
+                                                ? 'bg-amber-100/90 border-l-4 border-amber-500 ring-2 ring-amber-400' 
+                                                : 'bg-amber-50/90 border-l-4 border-amber-400';
+                                        } elseif ($esUsuarioActual) {
+                                            $rowClasses = 'bg-amber-100/70 border-l-4 border-amber-500 shadow-xs';
+                                        }
                                     @endphp
 
-                                    <li class="@if ($user->forastero) forastero {{ $user->instrument->name }} @endif px-4 py-3 flex items-center justify-between transition-colors {{ $esUsuarioActual ? 'bg-indigo-50/40 border-l-4 border-primary' : 'hover:bg-slate-50' }}"
+                                    <li class="@if ($user->forastero) forastero {{ $user->instrument->name }} @endif px-4 py-3 flex items-center justify-between transition-colors {{ $rowClasses }}"
                                         @if ($user->forastero) style="display: none;" @endif>
 
                                         {{-- Info del Músico --}}
                                         <div class="flex items-center gap-3">
                                             <div class="relative">
                                                 <img src="{{ asset($user->profile_photo_url) }}" alt="{{ $user->name }}"
-                                                    class="h-9 w-9 rounded-2xl object-cover border {{ $esUsuarioActual ? 'border-primary ring-2 ring-primary/20' : 'border-slate-200' }}">
-                                                @if (!$user->disponible)
+                                                    class="h-9 w-9 rounded-2xl object-cover border {{ $esUsuarioActual ? 'border-amber-400 ring-2 ring-amber-300/60' : 'border-slate-200' }}">
+                                                @if ($noDisponible)
                                                     <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-rose-500 border-2 border-white flex items-center justify-center text-white text-[9px] font-bold" title="{{ __('No disponible') }}">✕</span>
+                                                @elseif ($tieneDuda)
+                                                    <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-amber-500 border-2 border-white flex items-center justify-center text-white text-[9px] font-bold" title="{{ __('Té dubtes') }}">?</span>
                                                 @endif
                                             </div>
 
                                             <div>
-                                                <div class="flex items-center gap-2">
-                                                    <span class="text-xs font-bold {{ $esUsuarioActual ? 'text-primary' : 'text-on-surface' }}">
+                                                <div class="flex items-center gap-2 flex-wrap">
+                                                    <span class="text-xs font-bold {{ $esUsuarioActual ? 'text-amber-950 font-extrabold' : ($noDisponible ? 'text-rose-900' : ($tieneDuda ? 'text-amber-900' : 'text-on-surface')) }}">
                                                         {{ $user->name }}
                                                     </span>
                                                     @if ($user->forastero)
@@ -442,8 +444,17 @@
                                                         </span>
                                                     @endif
                                                     @if ($esUsuarioActual)
-                                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-lg text-[10px] font-bold bg-indigo-100 text-indigo-700">
+                                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-lg text-[10px] font-extrabold bg-amber-300 text-amber-950 border border-amber-400 shadow-2xs">
                                                             {{ __('Tu') }}
+                                                        </span>
+                                                    @endif
+                                                    @if ($noDisponible)
+                                                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-[10px] font-bold bg-rose-200/90 text-rose-800 border border-rose-300">
+                                                            ✕ {{ __('No disponible') }}
+                                                        </span>
+                                                    @elseif ($tieneDuda)
+                                                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-[10px] font-bold bg-amber-200/90 text-amber-900 border border-amber-300">
+                                                            ? {{ __('Té dubtes') }}
                                                         </span>
                                                     @endif
                                                 </div>
@@ -462,26 +473,43 @@
                                             </div>
                                         </div>
 
-                                        {{-- Controles y Badges de Selección / Coche --}}
+                                        {{-- Controles de Selección / Coche --}}
                                         <div class="flex items-center gap-3">
                                             @cannot('admin')
-                                                <div class="flex items-center gap-2">
-                                                    @if ($user->seleccionado)
-                                                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                                            ✓ {{ __('Convocat') }}
-                                                        </span>
-                                                    @else
-                                                        <span class="inline-flex items-center px-2 py-0.5 rounded-xl text-xs font-medium bg-slate-100 text-slate-500">
-                                                            {{ __('Reserva') }}
-                                                        </span>
+                                                <div class="flex items-center gap-3">
+                                                    {{-- Toggle Furgona (Lectura) --}}
+                                                    @if ($user->tienefurgo || $user->furgona)
+                                                        <label class="flex items-center gap-1.5 text-xs text-slate-500 cursor-default" title="{{ $user->furgona ? __('Assignada furgona') : __('Sense furgona') }}">
+                                                            <input type="checkbox"
+                                                                class="rounded-lg border-slate-300 text-primary focus:ring-0 h-4 w-4 cursor-default disabled:opacity-75"
+                                                                {{ $user->furgona ? 'checked' : '' }} disabled />
+                                                            <span class="text-[11px]">🚐</span>
+                                                        </label>
                                                     @endif
+
+                                                    {{-- Toggle Coche (Lectura) --}}
+                                                    @if ($user->tienecoche || $user->coche)
+                                                        <label class="flex items-center gap-1.5 text-xs text-slate-500 cursor-default" title="{{ $user->coche ? __('Assignat vehicle') : __('Sense vehicle') }}">
+                                                            <input type="checkbox"
+                                                                class="rounded-lg border-slate-300 text-primary focus:ring-0 h-4 w-4 cursor-default disabled:opacity-75"
+                                                                {{ $user->coche ? 'checked' : '' }} disabled />
+                                                            <span class="text-[11px]">🚗</span>
+                                                        </label>
+                                                    @endif
+
+                                                    {{-- Convocado (Lectura) --}}
+                                                    <label class="flex items-center cursor-default" title="{{ $user->seleccionado ? __('Convocat') : __('No convocat') }}">
+                                                        <input type="checkbox"
+                                                            class="rounded-lg border-slate-300 text-primary focus:ring-0 h-5 w-5 cursor-default disabled:opacity-75"
+                                                            {{ $user->seleccionado ? 'checked' : '' }} disabled />
+                                                    </label>
                                                 </div>
                                             @endcannot
 
                                             @can('admin')
                                                 <div class="flex items-center gap-3">
                                                     {{-- Toggle Furgona --}}
-                                                    @if ($user->tienefurgo)
+                                                    @if ($user->tienefurgo || $user->furgona)
                                                         <label class="flex items-center gap-1.5 cursor-pointer text-xs text-slate-600">
                                                             <input type="checkbox"
                                                                 data-lista-id="{{ $lista->id }}"
@@ -495,7 +523,7 @@
                                                     @endif
 
                                                     {{-- Toggle Coche --}}
-                                                    @if ($user->tienecoche)
+                                                    @if ($user->tienecoche || $user->coche)
                                                         <label class="flex items-center gap-1.5 cursor-pointer text-xs text-slate-600">
                                                             <input type="checkbox"
                                                                 data-lista-id="{{ $lista->id }}"
@@ -910,7 +938,7 @@
 
             @php
                 $driverSteps = [
-                    ['element' => '#driver-detalles', 'popover' => ['title' => __('Detalls'), 'description' => __('Data, horari, mapa i quòrum de convocatòria.'), 'position' => 'bottom']],
+                    ['element' => '#driver-detalles', 'popover' => ['title' => __('Detalls'), 'description' => __('Data, horari, mapa i plantilla de convocatòria.'), 'position' => 'bottom']],
                     ['element' => '#driver-componentes', 'popover' => ['title' => __('Plantilla'), 'description' => __('Músics convocats per corda i assignació de transport.'), 'position' => 'top']],
                     ['element' => '#driver-botonera', 'popover' => ['title' => __('Disponibilitat'), 'description' => __('Comunica si pots o no pots assistir a aquesta actuació.'), 'position' => 'top']]
                 ];

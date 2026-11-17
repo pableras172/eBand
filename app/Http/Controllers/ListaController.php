@@ -56,34 +56,45 @@ class ListaController extends Controller
             ->select('users.*', 'i.orden as instrument_order')
             ->get();
 
+        $listaUsers = $lista->users->keyBy('id');
+
         // Marcar los usuarios seleccionados y con coche
         foreach ($usuarios as $usuario) {
             $usuario->seleccionado = false; // Por defecto, no seleccionado
             $usuario->coche = false; // Por defecto, no marcado
             $usuario->furgona = false; // Por defecto, no marcado
             $usuario->disponible = true;
-            // Verificar si el usuario está en la lista
-            if ($lista->users->contains($usuario->id)) {
-                if (! $lista->users()->where('users.id', $usuario->id)->first()->pivot->disponible) {
-                    $usuario->disponible = false;
+            $usuario->duda = false;
 
-                    continue;
+            // Verificar si el usuario está en la lista
+            if ($listaUsers->has($usuario->id)) {
+                $pivot = $listaUsers->get($usuario->id)->pivot;
+                if (! $pivot->disponible) {
+                    $usuario->disponible = false;
+                } elseif (! empty($pivot->duda)) {
+                    $usuario->duda = true;
+                } else {
+                    $usuario->seleccionado = true;
                 }
-                $usuario->seleccionado = true;
+
                 // Verificar si el usuario tiene marcado el campo coche en la lista
-                if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->coche) {
+                if ($pivot->coche) {
                     $usuario->coche = true;
                 }
-                if ($lista->users()->where('users.id', $usuario->id)->first()->pivot->furgona) {
+                if ($pivot->furgona) {
                     Log::info('Usuario con furgona: '.$usuario->id);
                     $usuario->furgona = true;
                 }
-
             }
         }
 
-        // Contar el número total de filas en ListasUser con el lista_id dado
-        $totalFilas = ListasUser::where('listas_id', $lista->id)->where('disponible', '<>', '0')->count();
+        // Contar el número total de convocados en ListasUser con el lista_id dado
+        $totalFilas = ListasUser::where('listas_id', $lista->id)
+            ->where('disponible', '<>', '0')
+            ->where(function ($q) {
+                $q->whereNull('duda')->orWhere('duda', 0);
+            })
+            ->count();
 
         // Contar el número de elementos con el campo "coche" igual a 1
         $cochesCount = ListasUser::where('listas_id', $lista->id)->where('coche', 1)->count();
