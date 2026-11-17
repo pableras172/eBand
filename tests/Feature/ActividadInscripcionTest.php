@@ -13,6 +13,7 @@ use App\Models\ActividadInscripcionItem;
 use App\Models\ActividadOpcion;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\TenantOneSignalService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -473,9 +474,10 @@ class ActividadInscripcionTest extends TestCase
             'estado' => 'abierta',
         ]);
 
-        \OneSignal::shouldReceive('sendNotificationToSegment')
+        $oneSignalMock = $this->mock(TenantOneSignalService::class);
+        $oneSignalMock->shouldReceive('sendNotificationToSegment')
             ->once()
-            ->andReturn(null);
+            ->andReturnNull();
 
         Livewire::actingAs($admin)
             ->test(ActividadAdminDetail::class, ['actividadId' => $actividad->id])

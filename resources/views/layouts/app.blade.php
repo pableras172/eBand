@@ -83,40 +83,61 @@
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
-        var userId = {{ Auth::user()->id }};
+        var userUUID = "{{ Auth::user()?->uuid ?? '' }}";
+        var tenantId = "{{ tenant('id') ?? '' }}";
         var appId = "{{ tenant_onesignal_app_id() }}";
         var currentHost = window.location.hostname;
         var isHttps = window.location.protocol === 'https:';
         var shouldInitOneSignal = isHttps && appId !== '';
 
-        if (shouldInitOneSignal) {
+        function registerOneSignalSubscriber(uuid) {
+            if (!uuid) return;
+
+            // Detectar si estamos dentro de la app móvil nativa (Capacitor / Cordova)
+            var isNativeMobile = !!(window.plugins && window.plugins.OneSignal) || !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+
+            if (isNativeMobile && window.plugins && window.plugins.OneSignal) {
+                try {
+                    window.plugins.OneSignal.login(uuid);
+                    if (tenantId) {
+                        window.plugins.OneSignal.User.addTag('tenant_id', tenantId);
+                    }
+                } catch (err) {
+                    console.warn('OneSignal native registration error:', err);
+                }
+            } else if (!isNativeMobile && shouldInitOneSignal) {
+                OneSignalDeferred.push(function(OneSignal) {
+                    OneSignal.init({
+                        appId: appId,
+                        serviceWorkerParam: { scope: '/' },
+                        serviceWorkerPath: 'OneSignalSDKWorker.js',
+                        cookie: {
+                            secure: true,
+                            sameSite: 'none'
+                        },
+                    }).then(function() {
+                        OneSignal.login(uuid);
+                        if (tenantId) {
+                            OneSignal.User.addTag('tenant_id', tenantId);
+                        }
+                    }).catch(function(error) {
+                        console.error('Error initializing OneSignal Web:', error);
+                    });
+                });
+            }
+        }
+
+        if (userUUID) {
+            registerOneSignalSubscriber(userUUID);
+        } else if (shouldInitOneSignal) {
             $.ajax({
-                url: '/usersuuid/' + userId,
+                url: '/usersuuid/{{ Auth::user()->id }}',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    var userUUID = response.uuid;
-
-                    if (!userUUID) {
-                        return;
+                    if (response && response.uuid) {
+                        registerOneSignalSubscriber(response.uuid);
                     }
-
-                    OneSignalDeferred.push(function(OneSignal) {
-                        OneSignal.init({
-                            appId: appId,
-                            serviceWorkerParam: { scope: '/' },
-                            serviceWorkerPath: 'OneSignalSDKWorker.js',
-                            cookie: {
-                                secure: true,
-                                sameSite: 'none'
-                            },
-                        }).then(function() {
-                            OneSignal.login(userUUID);
-                        }).catch(function(error) {
-                            console.error('Error initializing OneSignal:', error);
-                        });
-                    });
-
                 },
                 error: function(xhr, status, error) {
                     console.error('Error al obtener el UUID del usuario:', error);

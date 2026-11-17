@@ -8,12 +8,12 @@ use App\Models\Actividad;
 use App\Models\ActividadInscripcion;
 use App\Models\ActividadInscripcionItem;
 use App\Models\User;
+use App\Services\TenantOneSignalService;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
-use OneSignal;
 use Throwable;
 
 class ActividadAdminDetail extends Component
@@ -334,15 +334,12 @@ class ActividadAdminDetail extends Component
         $fechaLimite = $this->actividad->fecha_limite_inscripcion->translatedFormat('d M Y, H:i');
 
         try {
-            OneSignal::sendNotificationToSegment(
-                __('actividades.notification_title', ['titulo' => $this->actividad->titulo]),
-                'Active Subscriptions',
-                $url,
-                null,
-                null,
-                null,
-                __('actividades.notification_subtitle', ['fecha' => $fechaLimite]),
-                __('actividades.inscribe')
+            app(TenantOneSignalService::class)->sendNotificationToSegment(
+                heading: __('actividades.notification_title', ['titulo' => $this->actividad->titulo]),
+                segment: 'Active Subscriptions',
+                subtitle: __('actividades.notification_subtitle', ['fecha' => $fechaLimite]),
+                actionText: __('actividades.inscribe'),
+                url: $url,
             );
 
             $this->actividad->update([

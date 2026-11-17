@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Livewire\Actividades\Admin;
 
 use App\Models\Actividad;
+use App\Services\TenantOneSignalService;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\WithPagination;
-use OneSignal;
 use Throwable;
 
 class ActividadAdminIndex extends Component
@@ -69,15 +69,12 @@ class ActividadAdminIndex extends Component
         $fechaLimite = $actividad->fecha_limite_inscripcion->translatedFormat('d M Y, H:i');
 
         try {
-            OneSignal::sendNotificationToSegment(
-                __('actividades.notification_title', ['titulo' => $actividad->titulo]),
-                'Active Subscriptions',
-                $url,
-                null,
-                null,
-                null,
-                __('actividades.notification_subtitle', ['fecha' => $fechaLimite]),
-                __('actividades.inscribe')
+            app(TenantOneSignalService::class)->sendNotificationToSegment(
+                heading: __('actividades.notification_title', ['titulo' => $actividad->titulo]),
+                segment: 'Active Subscriptions',
+                subtitle: __('actividades.notification_subtitle', ['fecha' => $fechaLimite]),
+                actionText: __('actividades.inscribe'),
+                url: $url,
             );
 
             $actividad->update([
