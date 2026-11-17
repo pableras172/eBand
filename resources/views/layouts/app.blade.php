@@ -105,7 +105,7 @@
                         OneSignal.init({
                             appId: appId,
                             serviceWorkerParam: { scope: '/' },
-                            serviceWorkerPath: 'sw.js',
+                            serviceWorkerPath: 'OneSignalSDKWorker.js',
                             cookie: {
                                 secure: true,
                                 sameSite: 'none'
