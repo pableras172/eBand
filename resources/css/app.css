@@ -51,3 +51,88 @@
 .verForasteros:hover {
   background-color: #637e9b; /* Color de fondo del botón al pasar el ratón por encima */
 }
+
+/* ==========================================================================
+   Mobile Bottom Nav & Page View Transitions (UX App-like navigation)
+   ========================================================================== */
+
+#mobile-bottom-nav {
+    view-transition-name: mobile-bottom-nav;
+}
+
+::view-transition-group(mobile-bottom-nav) {
+    animation: none !important;
+}
+
+/* Page Crossfade + Smooth Lift Transition for Livewire Navigate */
+::view-transition-old(livewire-navigate) {
+    animation: 130ms cubic-bezier(0.4, 0, 1, 1) both page-fade-out;
+}
+
+::view-transition-new(livewire-navigate) {
+    animation: 220ms cubic-bezier(0.16, 1, 0.3, 1) both page-fade-in-up;
+}
+
+@keyframes page-fade-out {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes page-fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Bottom Nav Microinteractions (Squish & Pop) */
+.bottom-nav-tab {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.bottom-nav-tab:active .tab-icon-wrapper {
+    transform: scale(0.88);
+}
+
+@keyframes tab-bounce {
+    0% {
+        transform: scale(0.86);
+    }
+    50% {
+        transform: scale(1.14);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.bottom-nav-tab.active-tab .tab-icon-wrapper {
+    animation: tab-bounce 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.material-symbols-fill {
+    font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 22 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+    .bottom-nav-tab.active-tab .tab-icon-wrapper {
+        animation: none !important;
+    }
+}

@@ -539,17 +539,23 @@
 
     @can('admin')
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            function initNotifButtons() {
                 var botonesNotificacion = document.querySelectorAll('.enviarNotificacion');
                 botonesNotificacion.forEach(function(boton) {
-                    boton.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        var listaId = boton.getAttribute('data-actuacion-id');
-                        var mensaje = boton.getAttribute('data-actuacion-inf');
-                        enviarNotif(listaId, mensaje);
-                    });
+                    if (!boton.dataset.notifBound) {
+                        boton.dataset.notifBound = '1';
+                        boton.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            var listaId = boton.getAttribute('data-actuacion-id');
+                            var mensaje = boton.getAttribute('data-actuacion-inf');
+                            enviarNotif(listaId, mensaje);
+                        });
+                    }
                 });
-            });
+            }
+
+            document.addEventListener('DOMContentLoaded', initNotifButtons);
+            document.addEventListener('livewire:navigated', initNotifButtons);
 
             function enviarNotif(idActua, detalle) {
                 if (confirm('{{ __('common.notificargrupo') }} ' + detalle)) {

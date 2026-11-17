@@ -561,83 +561,94 @@
 
     {{-- CHART.JS SPARKLINE GRAPHS --}}
     <script>
-        document.getElementById('yearSelect')?.addEventListener('change', function() {
-            var year = this.value;
-            window.location.href = "/actuaciones/" + {{ $usuarioActivo->id }} + "/" + year;
-        });
+        (function() {
+            function initSparklines() {
+                var yearSelect = document.getElementById('yearSelect');
+                if (yearSelect && !yearSelect.dataset.listenerAttached) {
+                    yearSelect.dataset.listenerAttached = '1';
+                    yearSelect.addEventListener('change', function() {
+                        var year = this.value;
+                        window.location.href = "/actuaciones/" + {{ $usuarioActivo->id }} + "/" + year;
+                    });
+                }
 
-        const sparklineData = @json($sparklinePayload);
-
-        const colors = [
-            { bg: 'rgba(79, 70, 229, 0.25)', border: 'rgb(79, 70, 229)' },   // Indigo
-            { bg: 'rgba(6, 182, 212, 0.25)', border: 'rgb(6, 182, 212)' },    // Cyan
-            { bg: 'rgba(16, 185, 129, 0.25)', border: 'rgb(16, 185, 129)' },  // Emerald
-            { bg: 'rgba(245, 158, 11, 0.25)', border: 'rgb(245, 158, 11)' },  // Amber
-            { bg: 'rgba(139, 92, 246, 0.25)', border: 'rgb(139, 92, 246)' },  // Violet
-            { bg: 'rgba(244, 63, 94, 0.25)', border: 'rgb(244, 63, 94)' },    // Rose
-            { bg: 'rgba(59, 130, 246, 0.25)', border: 'rgb(59, 130, 246)' },   // Blue
-        ];
-
-        sparklineData.forEach((item, index) => {
-            const canvas = document.getElementById(`miniChart-${index}`);
-            if (canvas && typeof Chart !== 'undefined') {
-                const ctx = canvas.getContext('2d');
-                const color = colors[index % colors.length];
-
-                const count = item.usuario || 0;
-                const totalBanda = item.banda || count;
-                const pct = item.porcentaje || 0;
-
-                const trendData = [
-                    Math.round(count * 0.2),
-                    Math.round(count * 0.4),
-                    Math.round(count * 0.3),
-                    Math.round(count * 0.7),
-                    Math.round(count * 0.8),
-                    count
+                var sparklineData = @json($sparklinePayload);
+                var colors = [
+                    { bg: 'rgba(79, 70, 229, 0.25)', border: 'rgb(79, 70, 229)' },   // Indigo
+                    { bg: 'rgba(6, 182, 212, 0.25)', border: 'rgb(6, 182, 212)' },    // Cyan
+                    { bg: 'rgba(16, 185, 129, 0.25)', border: 'rgb(16, 185, 129)' },  // Emerald
+                    { bg: 'rgba(245, 158, 11, 0.25)', border: 'rgb(245, 158, 11)' },  // Amber
+                    { bg: 'rgba(139, 92, 246, 0.25)', border: 'rgb(139, 92, 246)' },  // Violet
+                    { bg: 'rgba(244, 63, 94, 0.25)', border: 'rgb(244, 63, 94)' },    // Rose
+                    { bg: 'rgba(59, 130, 246, 0.25)', border: 'rgb(59, 130, 246)' },   // Blue
                 ];
 
-                const gradient = ctx.createLinearGradient(0, 0, 0, 36);
-                gradient.addColorStop(0, color.bg);
-                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                sparklineData.forEach(function(item, index) {
+                    var canvas = document.getElementById('miniChart-' + index);
+                    if (canvas && typeof Chart !== 'undefined' && !canvas.dataset.chartInitialized) {
+                        canvas.dataset.chartInitialized = '1';
+                        var ctx = canvas.getContext('2d');
+                        var color = colors[index % colors.length];
 
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['', '', '', '', '', ''],
-                        datasets: [{
-                            data: trendData,
-                            backgroundColor: gradient,
-                            borderColor: color.border,
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 0,
-                            pointHoverRadius: 3,
-                            pointHoverBackgroundColor: color.border,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                enabled: true,
-                                callbacks: {
-                                    label: function() { 
-                                        return `${item.tipo}: ${count} / ${totalBanda} (${pct}%)`; 
+                        var count = item.usuario || 0;
+                        var totalBanda = item.banda || count;
+                        var pct = item.porcentaje || 0;
+
+                        var trendData = [
+                            Math.round(count * 0.2),
+                            Math.round(count * 0.4),
+                            Math.round(count * 0.3),
+                            Math.round(count * 0.7),
+                            Math.round(count * 0.8),
+                            count
+                        ];
+
+                        var gradient = ctx.createLinearGradient(0, 0, 0, 36);
+                        gradient.addColorStop(0, color.bg);
+                        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ['', '', '', '', '', ''],
+                                datasets: [{
+                                    data: trendData,
+                                    backgroundColor: gradient,
+                                    borderColor: color.border,
+                                    borderWidth: 2,
+                                    fill: true,
+                                    tension: 0.4,
+                                    pointRadius: 0,
+                                    pointHoverRadius: 3,
+                                    pointHoverBackgroundColor: color.border,
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        enabled: true,
+                                        callbacks: {
+                                            label: function() { 
+                                                return `${item.tipo}: ${count} / ${totalBanda} (${pct}%)`; 
+                                            }
+                                        }
                                     }
+                                },
+                                scales: {
+                                    x: { display: false },
+                                    y: { display: false, beginAtZero: true }
                                 }
                             }
-                        },
-                        scales: {
-                            x: { display: false },
-                            y: { display: false, beginAtZero: true }
-                        }
+                        });
                     }
                 });
             }
-        });
+
+            initSparklines();
+            document.addEventListener('livewire:navigated', initSparklines);
+        })();
     </script>
 </x-app-layout>

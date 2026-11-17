@@ -205,5 +205,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// Transición suave de contenido al navegar con Livewire para navegadores sin View Transitions API nativa
+document.addEventListener('livewire:navigating', () => {
+    if (typeof document.startViewTransition !== 'function') {
+        const wrapper = document.getElementById('app-content-wrapper');
+        if (wrapper) {
+            wrapper.style.transition = 'opacity 120ms ease-out, transform 120ms ease-out';
+            wrapper.style.opacity = '0.7';
+            wrapper.style.transform = 'translateY(-4px)';
+        }
+    }
+});
+
+document.addEventListener('livewire:navigated', () => {
+    if (typeof document.startViewTransition !== 'function') {
+        const wrapper = document.getElementById('app-content-wrapper');
+        if (wrapper) {
+            wrapper.style.opacity = '1';
+            wrapper.style.transform = 'translateY(0)';
+        }
+    }
+});
+
+
 
 
