@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -155,5 +156,17 @@ class User extends Authenticatable implements MustVerifyEmail
     public function actividadInscripciones(): HasMany
     {
         return $this->hasMany(ActividadInscripcion::class, 'user_id');
+    }
+
+    /**
+     * Get the URL to the user's profile photo.
+     */
+    public function profilePhotoUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            return $this->profile_photo_path
+                ? url('/storage/'.ltrim($this->profile_photo_path, '/'))
+                : $this->defaultProfilePhotoUrl();
+        });
     }
 }
