@@ -1,4 +1,10 @@
 <x-guest-layout>
+    @php
+        $bandName = function_exists('tenant_name') && function_exists('tenant') && tenant()
+            ? tenant_name()
+            : ($bandSetting?->nombre ?? config('app.banda', config('app.name', 'eBand')));
+        $bandLogo = $bandSetting?->logo ? asset('storage/'.$bandSetting->logo) : url('/imagenes/logo.png');
+    @endphp
     <section class="relative min-h-screen overflow-hidden bg-slate-50">
 
         <div class="grid min-h-screen grid-cols-1 md:grid-cols-2">
@@ -17,8 +23,8 @@
 
                 <div class="relative z-10 p-10">
                     <a href="/" class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3 py-2 backdrop-blur-sm transition hover:bg-white/20">
-                        <img class="h-8 w-auto" src="{{ URL::to('/') }}/imagenes/logo.png" alt="Logo" />
-                        <span class="text-sm font-semibold tracking-wide text-white">eBand</span>
+                        <img class="h-8 w-auto object-contain" src="{{ $bandLogo }}" alt="{{ $bandName }}" />
+                        <span class="text-sm font-semibold tracking-wide text-white">{{ $bandName }}</span>
                     </a>
                     <h2 class="mt-6 text-3xl font-black tracking-tight text-white">{{ __('Gestiona tu banda.') }}</h2>
                     <p class="mt-2 max-w-xs text-sm text-white/60">{{ __('Actuaciones, pagos y equipo en un solo lugar.') }}</p>
@@ -41,8 +47,8 @@
                     <div class="mb-6">
                         {{-- Logo visible en móvil --}}
                         <a href="/" class="mb-5 inline-flex items-center gap-2 rounded-xl border border-cyan-200 bg-white/90 px-3 py-2 shadow-sm backdrop-blur-sm transition hover:bg-white md:hidden">
-                            <img class="h-8 w-auto" src="{{ URL::to('/') }}/imagenes/logo.png" alt="Logo" />
-                            <span class="text-sm font-semibold tracking-wide text-slate-800">eBand</span>
+                            <img class="h-8 w-auto object-contain" src="{{ $bandLogo }}" alt="{{ $bandName }}" />
+                            <span class="text-sm font-semibold tracking-wide text-slate-800">{{ $bandName }}</span>
                         </a>
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-700">eBand Access</p>
                         <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900">{{ __('Bienvenido') }}</h2>
