@@ -53,67 +53,19 @@
 }
 
 /* ==========================================================================
-   Mobile Bottom Nav & Page View Transitions (UX App-like navigation)
+   Mobile Bottom Nav & Page Transitions (Instant Response & Smooth Motion)
    ========================================================================== */
 
-#mobile-bottom-nav {
-    view-transition-name: mobile-bottom-nav;
-}
-
-::view-transition-group(mobile-bottom-nav) {
-    animation: none !important;
-}
-
-/* Page Crossfade + Cinematic Lift Transition for Livewire Navigate */
-::view-transition-old(livewire-navigate) {
-    animation: 140ms cubic-bezier(0.4, 0, 1, 1) both page-fade-out;
-}
-
-::view-transition-new(livewire-navigate) {
-    animation: 280ms cubic-bezier(0.16, 1, 0.3, 1) both page-fade-in-up;
-}
-
-@keyframes page-fade-out {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-}
-
-@keyframes page-fade-in-up {
-    from {
-        opacity: 0;
-        transform: translateY(14px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Fallback y animación universal directa en #app-content-wrapper (100% navegadores) */
-#app-content-wrapper {
+/* Page Enter Animation (Runs reliably on 100% of browsers and page changes) */
+.page-enter-animation {
+    animation: pageSlideUpFade 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
     will-change: opacity, transform;
 }
 
-.page-content-exit {
-    opacity: 0.3 !important;
-    transform: translateY(-6px) scale(0.998) !important;
-    transition: opacity 120ms ease-in, transform 120ms ease-in !important;
-}
-
-.page-content-enter {
-    animation: pageUniversalEnter 280ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
-}
-
-@keyframes pageUniversalEnter {
+@keyframes pageSlideUpFade {
     0% {
         opacity: 0;
-        transform: translateY(14px);
+        transform: translateY(12px);
     }
     100% {
         opacity: 1;
@@ -152,17 +104,25 @@
     font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 22 !important;
 }
 
+/* Loading Shimmer Bar on Top of Bottom Nav */
+.loading-shimmer {
+    opacity: 1 !important;
+    background-size: 200% 100%;
+    animation: shimmer-load 1.2s infinite linear;
+}
+
+@keyframes shimmer-load {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
-    ::view-transition-group(*),
-    ::view-transition-old(*),
-    ::view-transition-new(*) {
+    .page-enter-animation,
+    .bottom-nav-tab.active-tab .tab-icon-wrapper {
         animation: none !important;
-    }
-    .bottom-nav-tab.active-tab .tab-icon-wrapper,
-    .page-content-enter {
-        animation: none !important;
-    }
-    .page-content-exit {
-        transition: none !important;
     }
 }

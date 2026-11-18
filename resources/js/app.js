@@ -205,25 +205,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Efecto cinematográfico garantizado en cada cambio de vista con Livewire
-document.addEventListener('livewire:navigating', () => {
-    const wrapper = document.getElementById('app-content-wrapper');
-    if (wrapper) {
-        wrapper.classList.remove('page-content-enter');
-        wrapper.classList.add('page-content-exit');
-    }
-});
-
-document.addEventListener('livewire:navigated', () => {
-    const wrapper = document.getElementById('app-content-wrapper');
-    if (wrapper) {
-        wrapper.classList.remove('page-content-exit');
-        wrapper.classList.add('page-content-enter');
-        setTimeout(() => {
-            wrapper.classList.remove('page-content-enter');
-        }, 320);
-    }
-});
 
 
 

@@ -1,6 +1,6 @@
 importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
 
-const CACHE_NAME = 'eband-shell-v2';
+const CACHE_NAME = 'eband-shell-v3';
 const OFFLINE_URL = '/offline.html';
 
 // Handle messages from clients (required at initial evaluation)
