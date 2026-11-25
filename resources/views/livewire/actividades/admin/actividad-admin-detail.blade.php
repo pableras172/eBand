@@ -448,8 +448,11 @@
 
     <!-- Modal Registrar / Editar Inscripción (Admin) -->
     @if ($showingInscripcionModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl space-y-5 border border-gray-100 max-h-[90vh] overflow-y-auto">
+        <div class="fixed inset-0 z-[120] flex items-center justify-center p-4 overflow-y-auto"
+             style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+                 wire:click="$set('showingInscripcionModal', false)"></div>
+            <div class="relative bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-5 border border-gray-100 max-h-[90vh] overflow-y-auto z-10 my-auto">
                 <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                     <div>
                         <h3 class="text-base font-bold text-gray-900">
@@ -614,8 +617,11 @@
 
     <!-- Modal Registrar Pago Rápido -->
     @if ($showingPaymentModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl space-y-4 border border-gray-100">
+        <div class="fixed inset-0 z-[120] flex items-center justify-center p-4 overflow-y-auto"
+             style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+                 wire:click="$set('showingPaymentModal', false)"></div>
+            <div class="relative bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 border border-gray-100 z-10 my-auto">
                 <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                     <h3 class="text-base font-bold text-gray-900">{{ __('actividades.record_payment') }}</h3>
                     <button type="button" wire:click="$set('showingPaymentModal', false)" class="text-gray-400 hover:text-gray-600">
@@ -661,8 +667,13 @@
 
     <!-- Modal Músicos Pendientes de Respuesta -->
     @if ($showingPendientesModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-xl space-y-4 border border-gray-100 max-h-[90vh] flex flex-col"
+        <div class="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-6"
+             style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;" role="dialog" aria-modal="true">
+            <!-- Backdrop oscurecido con cierre al hacer clic fuera -->
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+                 wire:click="closePendientesModal"></div>
+
+            <div class="relative bg-white rounded-2xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl space-y-4 border border-gray-100 max-h-[88vh] flex flex-col z-10 my-auto"
                 @keydown.escape.window="$wire.closePendientesModal()">
 
                 <!-- Cabecera -->
@@ -789,9 +800,12 @@
 
     <!-- Modal Compartir Enlace (Para ordenadores o navegadores sin Web Share) -->
     <div x-show="shareModalOpen" x-cloak
-        class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 backdrop-blur-xs flex items-center justify-center p-4"
-        @keydown.escape.window="shareModalOpen = false">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 border border-gray-100"
+        class="fixed inset-0 z-[120] flex items-center justify-center p-4"
+        style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;"
+        @keydown.escape.window="shareModalOpen = false" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+             @click="shareModalOpen = false"></div>
+        <div class="relative bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-gray-100 z-10 my-auto"
             @click.outside="shareModalOpen = false">
             <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                 <div class="flex items-center gap-2">

@@ -58,18 +58,17 @@
 
 /* Page Enter Animation (Runs reliably on 100% of browsers and page changes) */
 .page-enter-animation {
-    animation: pageSlideUpFade 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
-    will-change: opacity, transform;
+    animation: pageSlideUpFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes pageSlideUpFade {
     0% {
         opacity: 0;
-        transform: translateY(12px);
+        transform: translateY(10px);
     }
     100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: none;
     }
 }
 

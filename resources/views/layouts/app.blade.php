@@ -196,8 +196,8 @@
             </div>
         @endif
 
-        <!-- Page Content Wrapper with smooth page entrance animation and blur when menu opens -->
-        <div id="app-content-wrapper" class="page-enter-animation transition-[filter] duration-300 ease-out">
+        <!-- Page Content Wrapper with smooth blur when menu opens -->
+        <div id="app-content-wrapper" class="transition-[filter] duration-300 ease-out">
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white/90 backdrop-blur-md border-b border-indigo-50/80 shadow-sm">
@@ -208,7 +208,7 @@
             @endif
 
             <!-- Page Content -->
-            <main class="pb-20 lg:pb-0">
+            <main class="pb-20 lg:pb-0 page-enter-animation">
                 {{ $slot }}
             </main>
         </div>
