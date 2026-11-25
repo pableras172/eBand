@@ -194,4 +194,14 @@ return [
     'copied' => '¡Copiat!',
     'share_whatsapp' => 'Enviar per WhatsApp',
     'close' => 'Tancar',
+
+    // Modal Músics Pendents
+    'pending_modal_title' => 'Músics pendents de resposta',
+    'pending_modal_desc' => 'Músics actius que encara no han indicat si assistiran o no a esta activitat.',
+    'pending_search_placeholder' => 'Cercar per nom, instrument o telèfon...',
+    'no_pending_musicians' => 'Genial! Tots els músics actius han respost a la convocatòria.',
+    'no_pending_search_results' => 'No s\'han trobat músics pendents que coincidisquen amb la cerca.',
+    'click_to_view_pending' => 'Veure llistat',
+    'register_attendance' => 'Inscriure',
+    'showing_pending_count' => 'Mostrant :count de :total músics pendents',
 ];

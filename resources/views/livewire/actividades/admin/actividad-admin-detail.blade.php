@@ -168,20 +168,24 @@
             </div>
         </div>
 
-        <div class="rounded-2xl bg-white p-6 shadow-sm border border-amber-100 bg-amber-50/20 flex items-center justify-between">
+        <button type="button" wire:click="openPendientesModal"
+            class="text-left w-full rounded-2xl bg-white p-6 shadow-sm border border-amber-200/80 bg-amber-50/20 hover:bg-amber-50/50 hover:border-amber-300 hover:shadow-md transition-all duration-150 cursor-pointer group flex items-center justify-between">
             <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1">
-                    ⏳ {{ __('actividades.total_pending_response') }}
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-700 block mb-1 flex items-center gap-1.5">
+                    <span>⏳</span> {{ __('actividades.total_pending_response') }}
+                    <span class="text-[10px] font-semibold text-amber-700 bg-amber-100/90 px-2 py-0.5 rounded-full group-hover:bg-amber-200 transition">
+                        {{ __('actividades.click_to_view_pending') }} →
+                    </span>
                 </span>
                 <div class="text-3xl font-black text-amber-800">
                     {{ $totalPendienteRespuesta }}
                 </div>
                 <p class="text-xs text-amber-600 mt-1">{{ __('actividades.total_pending_response_sub') }}</p>
             </div>
-            <div class="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center text-3xl">
+            <div class="w-14 h-14 rounded-2xl bg-amber-100 group-hover:scale-105 transition-transform flex items-center justify-center text-3xl shadow-xs">
                 ❓
             </div>
-        </div>
+        </button>
     </div>
 
     @if ($actividad->es_de_pago)
@@ -204,9 +208,10 @@
                         </span>
                     @endif
                     @if ($totalPendienteRespuesta > 0)
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700">
-                            {{ $totalPendienteRespuesta }} {{ __('actividades.total_pending_response_badge') }}
-                        </span>
+                        <button type="button" wire:click="openPendientesModal"
+                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition cursor-pointer">
+                            {{ $totalPendienteRespuesta }} {{ __('actividades.total_pending_response_badge') }} →
+                        </button>
                     @endif
                 </div>
             </div>
@@ -648,6 +653,134 @@
                     <button type="button" wire:click="guardarPago"
                         class="rounded-lg bg-cyan-600 px-4 py-2 text-xs font-semibold text-white hover:bg-cyan-500 shadow-sm">
                         {{ __('actividades.mark_as_paid') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Músicos Pendientes de Respuesta -->
+    @if ($showingPendientesModal)
+        <div class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-xl space-y-4 border border-gray-100 max-h-[90vh] flex flex-col"
+                @keydown.escape.window="$wire.closePendientesModal()">
+
+                <!-- Cabecera -->
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">⏳</span>
+                        <div>
+                            <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
+                                <span>{{ __('actividades.pending_modal_title') }}</span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
+                                    {{ $totalPendienteRespuesta }}
+                                </span>
+                            </h3>
+                            <p class="text-xs text-gray-500 mt-0.5">{{ __('actividades.pending_modal_desc') }}</p>
+                        </div>
+                    </div>
+                    <button type="button" wire:click="closePendientesModal" class="text-gray-400 hover:text-gray-600 transition text-lg p-1">
+                        ✕
+                    </button>
+                </div>
+
+                <!-- Buscador rápido -->
+                <div class="relative">
+                    <input type="text"
+                        wire:model.live.debounce.250ms="searchPendientes"
+                        placeholder="{{ __('actividades.pending_search_placeholder') }}"
+                        class="w-full rounded-xl border-gray-200 text-xs py-2 pl-9 pr-8 text-gray-700 shadow-xs focus:border-amber-400 focus:ring-amber-400" />
+                    <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    @if ($searchPendientes !== '')
+                        <button type="button" wire:click="$set('searchPendientes', '')" class="absolute right-2.5 top-2.5 text-gray-400 hover:text-gray-600 text-xs">
+                            ✕
+                        </button>
+                    @endif
+                </div>
+
+                <!-- Lista de músicos con scroll -->
+                <div class="overflow-y-auto divide-y divide-gray-100 max-h-[52vh] -mx-2 px-2 space-y-1">
+                    @forelse ($musicosPendientes as $musico)
+                        <div wire:key="pendiente-{{ $musico->id }}" class="py-3 px-2 rounded-xl hover:bg-amber-50/40 transition flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <!-- Icono Instrumento / Avatar -->
+                                <div class="w-10 h-10 rounded-xl bg-amber-100/70 border border-amber-200/60 flex items-center justify-center text-gray-700 font-bold text-sm shrink-0">
+                                    @if ($musico->instrument && $musico->instrument->icon)
+                                        <img src="{{ $musico->instrument->icon_url }}" alt="{{ $musico->instrument->name }}" class="w-6 h-6 object-contain" />
+                                    @else
+                                        <span>{{ mb_substr($musico->name, 0, 1) }}</span>
+                                    @endif
+                                </div>
+
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-semibold text-sm text-gray-900 truncate">{{ $musico->name }}</span>
+                                        @if ($musico->instrument)
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-700 shrink-0">
+                                                {{ $musico->instrument->name }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-500 mt-0.5">
+                                        @if ($musico->email)
+                                            <span class="truncate">{{ $musico->email }}</span>
+                                        @endif
+                                        @if ($musico->telefono)
+                                            <span>•</span>
+                                            <span class="font-medium text-gray-700 flex items-center gap-1">
+                                                <span>📞</span> {{ $musico->telefono }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Acciones rápidas (WhatsApp / Inscribir) -->
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                @if ($musico->telefono)
+                                    @php
+                                        $cleanPhone = preg_replace('/[^0-9]/', '', $musico->telefono);
+                                        $waText = urlencode(__('actividades.share_text', ['title' => $actividad->titulo, 'date' => $actividad->fecha->translatedFormat('d M Y, H:i')]));
+                                    @endphp
+                                    <a href="https://api.whatsapp.com/send?phone={{ $cleanPhone }}&text={{ $waText }}"
+                                        target="_blank"
+                                        title="{{ __('actividades.share_whatsapp') }}"
+                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 transition text-sm">
+                                        💬
+                                    </a>
+                                @endif
+
+                                <button type="button" wire:click="inscribirDesdePendiente({{ $musico->id }})"
+                                    title="{{ __('actividades.register_attendance') }}"
+                                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-xs transition cursor-pointer">
+                                    <span>➕</span>
+                                    <span>{{ __('actividades.register_attendance') }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="py-10 text-center text-xs text-gray-500 space-y-2">
+                            @if ($searchPendientes !== '')
+                                <p class="text-gray-400 text-sm">🔍</p>
+                                <p>{{ __('actividades.no_pending_search_results') }}</p>
+                            @else
+                                <p class="text-emerald-500 text-2xl">🎉</p>
+                                <p class="font-semibold text-gray-700">{{ __('actividades.no_pending_musicians') }}</p>
+                            @endif
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Pie de Modal -->
+                <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+                    <span>
+                        {{ __('actividades.showing_pending_count', ['count' => $musicosPendientes->count(), 'total' => $totalPendienteRespuesta]) }}
+                    </span>
+                    <button type="button" wire:click="closePendientesModal"
+                        class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition cursor-pointer">
+                        {{ __('actividades.close') }}
                     </button>
                 </div>
             </div>

@@ -194,4 +194,14 @@ return [
     'copied' => 'Copied!',
     'share_whatsapp' => 'Send via WhatsApp',
     'close' => 'Close',
+
+    // Modal Pending Musicians
+    'pending_modal_title' => 'Musicians pending response',
+    'pending_modal_desc' => 'Active musicians who have not yet indicated whether they will attend this activity.',
+    'pending_search_placeholder' => 'Search by name, instrument or phone...',
+    'no_pending_musicians' => 'Great! All active musicians have responded to the call.',
+    'no_pending_search_results' => 'No pending musicians found matching your search.',
+    'click_to_view_pending' => 'View list',
+    'register_attendance' => 'Register',
+    'showing_pending_count' => 'Showing :count of :total pending musicians',
 ];

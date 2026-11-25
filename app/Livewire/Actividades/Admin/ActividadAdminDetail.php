@@ -33,6 +33,11 @@ class ActividadAdminDetail extends Component
     // Modal de Inscripción por Admin (Miembro o Manual)
     public bool $showingInscripcionModal = false;
 
+    // Modal de Músicos Pendientes de Respuesta
+    public bool $showingPendientesModal = false;
+
+    public string $searchPendientes = '';
+
     public ?int $editingInscripcionId = null;
 
     public string $tipoAsistente = 'miembro'; // 'miembro' o 'manual'
@@ -363,6 +368,25 @@ class ActividadAdminDetail extends Component
         session()->flash('success', __('actividades.registration_deleted', ['name' => $userName]));
     }
 
+    public function openPendientesModal(): void
+    {
+        $this->searchPendientes = '';
+        $this->showingPendientesModal = true;
+    }
+
+    public function closePendientesModal(): void
+    {
+        $this->showingPendientesModal = false;
+        $this->searchPendientes = '';
+    }
+
+    public function inscribirDesdePendiente(int $userId): void
+    {
+        $this->closePendientesModal();
+        $this->openCreateInscripcionModal();
+        $this->selectedUserId = $userId;
+    }
+
     public function render(): View
     {
         // Recargar datos y relaciones
@@ -437,6 +461,29 @@ class ActividadAdminDetail extends Component
             ->orderBy('name')
             ->get();
 
+        // Músicos pendientes detallados (solo si el modal está abierto)
+        $musicosPendientes = $this->showingPendientesModal
+            ? User::query()
+                ->where(function ($q): void {
+                    $q->where('activo', true)->orWhereNull('activo');
+                })
+                ->whereDoesntHave('actividadInscripciones', function ($q): void {
+                    $q->where('actividad_id', $this->actividad->id);
+                })
+                ->with('instrument')
+                ->when($this->searchPendientes !== '', function ($q): void {
+                    $term = trim($this->searchPendientes);
+                    $q->where(function ($sub) use ($term): void {
+                        $sub->where('name', 'like', "%{$term}%")
+                            ->orWhere('email', 'like', "%{$term}%")
+                            ->orWhere('telefono', 'like', "%{$term}%")
+                            ->orWhereHas('instrument', fn ($inst) => $inst->where('name', 'like', "%{$term}%"));
+                    });
+                })
+                ->orderBy('name')
+                ->get()
+            : collect();
+
         return view('livewire.actividades.admin.actividad-admin-detail', [
             'recuentoOpciones' => $recuentoOpciones,
             'totalPersonasInscritas' => $totalPersonasInscritas,
@@ -447,6 +494,7 @@ class ActividadAdminDetail extends Component
             'totalPendiente' => $totalPendiente,
             'inscritos' => $inscritos,
             'usuariosDisponibles' => $usuariosDisponibles,
+            'musicosPendientes' => $musicosPendientes,
         ]);
     }
 }

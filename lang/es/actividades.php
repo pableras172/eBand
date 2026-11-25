@@ -194,4 +194,14 @@ return [
     'copied' => '¡Copiado!',
     'share_whatsapp' => 'Enviar por WhatsApp',
     'close' => 'Cerrar',
+
+    // Modal Músicos Pendientes
+    'pending_modal_title' => 'Músicos pendientes de respuesta',
+    'pending_modal_desc' => 'Músicos activos que aún no han indicado si asistirán o no a esta actividad.',
+    'pending_search_placeholder' => 'Buscar por nombre, instrumento o teléfono...',
+    'no_pending_musicians' => '¡Genial! Todos los músicos activos han respondido a la convocatoria.',
+    'no_pending_search_results' => 'No se encontraron músicos pendientes que coincidan con la búsqueda.',
+    'click_to_view_pending' => 'Ver listado',
+    'register_attendance' => 'Inscribir',
+    'showing_pending_count' => 'Mostrando :count de :total músicos pendientes',
 ];
